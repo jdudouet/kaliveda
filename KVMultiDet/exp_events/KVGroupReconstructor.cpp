@@ -192,8 +192,8 @@ void KVGroupReconstructor::AnalyseParticles()
 
       Int_t n_nseg_1 = 0;
       //loop over particles counting up different cases
-      for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
-         KVReconstructedNucleus* nuc = it.get_pointer<KVReconstructedNucleus>();
+      for (KVReconstructedEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+         KVReconstructedNucleus* nuc = it.get_pointer();
          //ignore identified particles
          if (nuc->IsIdentified())
             continue;
@@ -215,8 +215,8 @@ void KVGroupReconstructor::AnalyseParticles()
          }
       }
       //loop again, setting status
-      for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
-         KVReconstructedNucleus* nuc = it.get_pointer<KVReconstructedNucleus>();
+      for (KVReconstructedEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+         KVReconstructedNucleus* nuc = it.get_pointer();
          if (nuc->IsIdentified())
             continue;           //ignore identified particles
 
@@ -249,8 +249,8 @@ void KVGroupReconstructor::AnalyseParticles()
 
       //loop over particles looking for the unidentified one
       KVReconstructedNucleus* nuc(nullptr);
-      for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
-         nuc = it.get_pointer<KVReconstructedNucleus>();
+      for (KVReconstructedEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+         nuc = it.get_pointer();
          if (!nuc->IsIdentified()) break;
       }
       //cout << "nuc->GetNSegDet()=" << nuc->GetNSegDet() << endl;
@@ -385,8 +385,8 @@ void KVGroupReconstructor::Identify()
    // have their Z estimated from the energy loss in the detector (if calibrated):
    // in this case the Z is a minimum value.
 
-   for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
-      KVReconstructedNucleus& d = it.get_reference<KVReconstructedNucleus>();
+   for (KVReconstructedEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+      KVReconstructedNucleus& d = it.get_reference();
       if (!d.IsIdentified()) {
          if (d.GetStatus() == KVReconstructedNucleus::kStatusOK) {
             // identifiable particles
