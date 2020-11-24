@@ -70,11 +70,10 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
 
 void KVINDRAGroupReconstructor::Identify()
 {
-   static int i = 0;
    KVGroupReconstructor::Identify();
-   for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+   for (KVReconstructedEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
 
-      KVReconstructedNucleus* d = it.get_pointer<KVReconstructedNucleus>();
+      KVReconstructedNucleus* d = it.get_pointer();
 
       if (!d->IsIdentified()) d->SetIDCode(KVINDRA::IDCodes::NO_IDENTIFICATION); // unidentifiable particle
       else {
