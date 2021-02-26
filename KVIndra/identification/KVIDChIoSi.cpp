@@ -70,24 +70,6 @@ Bool_t KVIDChIoSi::Identify(KVIdentificationResult* IDR, Double_t x, Double_t y)
    return kTRUE;
 }
 
-//________________________________________________________________________________________//
-
-Double_t KVIDChIoSi::GetIDMapX(Option_t*)
-{
-   //Default X coordinate for ChIo-Si identification is KVSilicon::GetEnergy
-   //unless silicon is not calibrated; then we use silicon pedestal-corrected 'PG' channel
-   return (fsi->IsCalibrated() ?
-           fsi->GetEnergy() : (fsi->GetACQData("PG") - fsipgped));
-}
-
-Double_t KVIDChIoSi::GetIDMapY(Option_t*)
-{
-   //Default Y coordinate for ChIo-Si identification is KVChIo::GetEnergy
-   //unless chio is not calibrated; then we use chio pedestal-corrected 'PG' channel
-   return (fchio->IsCalibrated() ?
-           fchio->GetEnergy() : (fchio->GetACQData("PG") - fchiopgped));
-}
-
 //____________________________________________________________________________________
 
 void KVIDChIoSi::Initialize()
@@ -100,8 +82,8 @@ void KVIDChIoSi::Initialize()
 
    fchio = GetDetector(1);
    fsi = GetDetector(2);
-   fsipgped = fsi->GetPedestal("PG");
-   fchiopgped = fchio->GetPedestal("PG");
+//   fsipgped = fsi->GetPedestal("PG");
+//   fchiopgped = fchio->GetPedestal("PG");
    ChIoSiGrid = (KVIDGChIoSi*) GetIDGrid();
    if (ChIoSiGrid) {
       ChIoSiGrid->Initialize();
