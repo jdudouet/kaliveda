@@ -80,6 +80,11 @@ public:
       return kFALSE;
    }
 
+   Bool_t GetValueNeedsExtraParameters() const
+   {
+      return kTRUE;
+   }
+
    ClassDef(KVZDependentCalibratedSignal, 1) //Handle several calibrations valid for different Z ranges
 };
 
