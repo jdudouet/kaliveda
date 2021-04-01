@@ -118,7 +118,7 @@ void KVINDRAUpDater::CheckStatusOfDetectors(KVDBRun* kvrun)
 
    TIter next(fArray->GetDetectors());
    KVDetector* det;
-   KVACQParam* acq;
+   KVEBYEDAT_ACQParam* acq;
 
    Int_t ndet_absent = 0;
    Int_t ndet_ooo = 0;

@@ -21,6 +21,7 @@ class KVDetectorSignal : public KVBase {
 
    const KVDetector* fDetector;//! associated detector
    Double_t    fValue;// signal value
+   Bool_t fFired;// set for raw parameters when read from raw data
 
 protected:
    void set_value(double x)
@@ -30,7 +31,7 @@ protected:
 
 public:
    KVDetectorSignal()
-      : KVBase(), fDetector(nullptr), fValue(0)
+      : KVBase(), fDetector(nullptr), fValue(0), fFired(false)
    {}
    KVDetectorSignal(const Char_t* type, const KVDetector* det = nullptr);
 
@@ -49,8 +50,11 @@ public:
    virtual void Reset()
    {
       // "Reset" the value of the signal, i.e. usually means set to zero.
-      // Only affects signals whose value can be 'Set' (see SetValue)
+      // Only affects signals whose value can be 'Set' (see SetValue).
+      //
+      // For raw parameters, also resets 'Fired' flag.
       SetValue(0);
+      SetFired(false);
    }
    virtual Double_t GetInverseValue(Double_t out_val, const TString& in_sig, const KVNameValueList& = "") const
    {
@@ -69,6 +73,14 @@ public:
    const KVDetector* GetDetector() const
    {
       return fDetector;
+   }
+   void SetFired(Bool_t yes = true)
+   {
+      fFired = yes;
+   }
+   Bool_t IsFired() const
+   {
+      return fFired;
    }
 
    virtual Bool_t IsValid() const
