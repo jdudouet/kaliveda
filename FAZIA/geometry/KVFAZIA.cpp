@@ -315,8 +315,8 @@ void KVFAZIA::GetDetectorEvent(KVDetectorEvent* detev, const TSeqCollection* det
       return;
    }
    if (!dets || !dets->GetEntries()) {
-      if (fFiredACQParams.GetEntries()) {
-         dets = &fFiredACQParams;
+      if (fFiredDetectors.GetEntries()) {
+         dets = &fFiredDetectors;
          //Info("GetDetectorEvent", "using internal list");
       }
    }
@@ -546,7 +546,7 @@ Bool_t KVFAZIA::treat_event(const DAQ::FzEvent& e)
                      Double_t energy = TreatEnergy(fIdSignal, ee, ren.value(ee));
                      det->SetFPGAEnergy(fIdSignal, ee, energy);
                   }
-                  fFiredACQParams.Add(det);
+                  fFiredDetectors.Add(det);
                }
                if (rdata.has_waveform()) {
                   const DAQ::Waveform& rwf = rdata.waveform();
