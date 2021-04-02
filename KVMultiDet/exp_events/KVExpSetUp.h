@@ -31,7 +31,6 @@ protected:
 #ifdef WITH_MFM
    Bool_t handle_raw_data_event_mfmframe(const MFMCommonFrame&);
 #endif
-   void prepare_to_handle_new_raw_data();
    void copy_fired_parameters_to_recon_param_list();
 
 public:
@@ -64,6 +63,9 @@ public:
    virtual void AcceptAllECodes();
 
    virtual void InitializeIDTelescopes();
+
+   void InitialiseRawDataReading(KVRawDataReader*);
+   Bool_t HandleRawDataEvent(KVRawDataReader*);
 
    ClassDef(KVExpSetUp, 1) //Describe an experimental set-up made of several KVMultiDetArray objects
 };

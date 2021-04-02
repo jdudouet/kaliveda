@@ -121,6 +121,8 @@ public:
       return kTRUE;
    }
 
+   TString GetFullName() const;
+
    ClassDef(KVDetectorSignal, 1) //Data produced by a detector
 };
 
