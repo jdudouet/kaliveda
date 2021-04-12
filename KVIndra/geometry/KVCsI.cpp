@@ -82,10 +82,15 @@ Double_t KVCsI::GetCorrectedEnergy(KVNucleus* nuc, Double_t lum, Bool_t)
       return -1;
    }
 
-   if ((eloss > 0) && GetDetectorSignal("TotLight")->GetStatus("LightIsGood")) {
+   // If TotLight is calculated from fast and slow components (INDRA data before Mesytec acquisition upgrade)
+   // we check that the calculation went well
+   if (!GetDetectorSignal("TotLight")->IsRaw() && !GetDetectorSignal("TotLight")->GetStatus("LightIsGood")) return -1.;
+
+   if (eloss > 0) {
       SetEnergy(eloss);
       return eloss;
    }
+   
    return -1.;
 }
 
