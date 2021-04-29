@@ -8,6 +8,8 @@
 
 ClassImp(KVINDRAGroupReconstructor)
 
+TString KVINDRAGroupReconstructor::CSI_ID_TYPE = "CSI";
+
 KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node)
 {
    // \param traj trajectory currently being scanned
@@ -28,7 +30,7 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
       if (node->GetDetector()->Fired(GetPartSeedCond())) {
 
          ++nfireddets;
-         KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType("CSI_R_L");
+         KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType(CSI_ID_TYPE);
          if (idt) {
 
             KVIdentificationResult idr;
@@ -111,7 +113,7 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
    //
    //UNIDENTIFIED PARTICLES
    //Unidentified particles receive the general ID code for non-identified particles (kIDCode14)
-   //EXCEPT if their identification in CsI R-L gave subcodes 6 or 7
+   //EXCEPT if their identification in CsI gave subcodes 6 or 7
    //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
    //Their "identifying" telescope is set to the CsI ID telescope
 
@@ -133,7 +135,7 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
    if (PART.IsIdentified()) {
 
       /******* IDENTIFIED PARTICLES *******/
-      if (partID.IsType("CSI_R_L")) {     /**** CSI R-L IDENTIFICATION ****/
+      if (partID.IsType(CSI_ID_TYPE)) {     /**** CSI IDENTIFICATION ****/
 
          //Identified particles with ID code = 2 with subcodes 4 & 5
          //(masse hors limite superieure/inferieure) are relabelled

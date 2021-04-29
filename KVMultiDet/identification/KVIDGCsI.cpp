@@ -79,17 +79,6 @@ void KVIDGCsI::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) con
 
    add_remove_imf_line IMF(fIdentifiers, IMFLine);
 
-   if (!IsIdentifiable(x, y)) {
-      //point below gamma line
-      const_cast < KVIDGCsI* >(this)->fICode = kICODE10;
-      idr->IDquality = fICode;
-      idr->Z = 0;
-      idr->A = 0;
-      idr->IDOK = kTRUE;
-      idr->SetComment("gamma");
-      return;
-   }
-
    SetInfos(x, y, idr);
 
    if (!const_cast<KVIDGCsI*>(this)->FindFourEmbracingLines(x, y, "above")) {

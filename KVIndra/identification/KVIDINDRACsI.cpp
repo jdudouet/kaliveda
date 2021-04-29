@@ -74,10 +74,20 @@ Bool_t KVIDINDRACsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t 
    IDR->SetIDType(GetType());
 
    //perform identification
-   Double_t csir, csil;
-   GetIDGridCoords(csil, csir, CsIGrid, x, y);
-   CsIGrid->Identify(csil, csir, IDR);
+   Double_t X, Y;
+   GetIDGridCoords(X, Y, CsIGrid, x, y);
    IDR->SetGridName(CsIGrid->GetName());
+   if (CsIGrid->IsIdentifiable(X, Y, &IDR->Rejecting_Cut)) {
+      CsIGrid->Identify(X, Y, IDR);
+   }
+   else {
+      // gamma rejection
+      IDR->IDquality = KVIDGCsI::kICODE10;
+      IDR->Z = 0;
+      IDR->A = 0;
+      IDR->IDOK = kTRUE;
+      IDR->SetComment("gamma");
+   }
 
    // set general ID code
    IDR->IDcode = GetIDCode();

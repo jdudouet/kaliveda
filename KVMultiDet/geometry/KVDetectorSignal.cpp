@@ -18,7 +18,7 @@ void KVDetectorSignal::ls(Option_t*) const
    double value = -1;
    // if value can be calculated without supplementary parameters, we print it
    if (IsAvailableFor("")) value = GetValue();
-   printf(" %-15s\t%-32s\t%-80s\t[%lf]\n", GetName(), ClassName(), GetType(), value);
+   printf(" %-15s\t%-32s\t%-80s\t[%lf]\t%s\n", GetName(), ClassName(), GetType(), value, IsFired() ? "*FIRED*" : "");
 }
 
 Int_t KVDetectorSignal::GetStatus(const TString&) const
