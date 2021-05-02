@@ -22,7 +22,6 @@ void ExampleReconAnalysis::InitAnalysis(void)
    zvtot->SetMaxNumBranches(1);    // only write "Z" component in TTree
 
    AddGV("KVMult", "mtot"); // total multiplicity
-
    // total multiplicity in forward CM hemisphere
    auto gv = AddGV("KVMult", "mtot_av");
    gv->SetSelection({
@@ -90,7 +89,7 @@ Bool_t ExampleReconAnalysis::Analysis(void)
    FillTree(); // write new results in TTree
 
    /*** LOOP OVER PARTICLES OF EVENT ***/
-   for (auto& n : OKEventIterator(*GetEvent())) {
+   for (auto& n : KVReconstructedEvent::OKEventIterator(GetEvent())) {
       // "OK" particles => using selection criteria of InitRun()
       // fill Z distribution
       FillHisto("zdist", n.GetZ());
