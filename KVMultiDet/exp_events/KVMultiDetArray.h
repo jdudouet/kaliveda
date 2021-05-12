@@ -39,7 +39,9 @@ class MFMMergeFrameManager;
 class KVMFMDataFileReader;
 class MFMEbyedatFrame;
 class MFMBufferReader;
+#ifdef WITH_MESYTEC
 class MFMMesytecMDPPFrame;
+#endif
 #endif
 #ifdef WITH_PROTOBUF
 class KVProtobufDataReader;
@@ -157,7 +159,9 @@ protected:
    virtual Bool_t handle_raw_data_event_mfmmergeframe(const MFMMergeFrameManager&);
    virtual Bool_t handle_raw_data_event_mfmframe(const MFMCommonFrame&);
    virtual Bool_t handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatFrame&);
+#ifdef WITH_MESYTEC
    virtual Bool_t handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPPFrame&);
+#endif
 #endif
 #ifdef WITH_PROTOBUF
    virtual Bool_t handle_raw_data_event_protobuf(KVProtobufDataReader&);

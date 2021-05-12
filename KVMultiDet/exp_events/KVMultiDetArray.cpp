@@ -51,7 +51,9 @@
 #ifdef WITH_MFM
 #include "KVMFMDataFileReader.h"
 #include "MFMEbyedatFrame.h"
+#ifdef WITH_MESYTEC
 #include "MFMMesytecMDPPFrame.h"
+#endif
 #endif
 #ifdef WITH_PROTOBUF
 #include "KVProtobufDataReader.h"
@@ -1094,7 +1096,7 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
                   else {
                      recon_nuc->SetIDCode(GetZminCode());//idt->SetIDCode(recon_nuc, idt->GetZminCode());
                   }
-                  recon_nuc->SetECode(GetNormalCalibrationCode());//recon_nuc->SetECode(idt->GetECode());
+                  recon_nuc->SetECode(idt->GetECode());
                   //recon_nuc->SetIsIdentified();
                   //recon_nuc->SetIsCalibrated();
                }
