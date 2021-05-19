@@ -55,7 +55,7 @@ public:
    void SetGroup(KVGroup* g)
    {
       KVGroupReconstructor::SetGroup(g);
-      theChio = g->GetDetectorByType("CI");
+      theChio = (KVChIo*)g->GetDetectorByType("CI");
    }
 
    KVReconstructedNucleus* ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);
@@ -66,7 +66,7 @@ public:
 
    virtual bool DoCoherencyAnalysis(KVReconstructedNucleus&) = 0;
 
-   virtual void DoCalibration(KVReconstructedNucleus*) = 0;
+   virtual void DoCalibration(KVReconstructedNucleus*) {}
 
    ClassDef(KVINDRAGroupReconstructor, 1) //Reconstruct particles in INDRA groups
 };
