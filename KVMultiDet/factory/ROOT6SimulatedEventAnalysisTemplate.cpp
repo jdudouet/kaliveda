@@ -1,3 +1,5 @@
+#include "KVSimEvent.h"
+
 void ROOT6SimulatedEventAnalysisTemplate::InitAnalysis()
 {
    // INITIALISATION PERFORMED AT BEGINNING OF ANALYSIS
@@ -44,7 +46,7 @@ Bool_t ROOT6SimulatedEventAnalysisTemplate::Analysis()
 
    Int_t EC = GetGV("mult_EC")->GetValue(); // event class according to mult
 
-   for (auto& part : KVSimEvent::EventIterator(GetEvent())) {
+   for (auto& part : SimEventIterator(GetEvent())) {
       if (part.IsIsotope(2, 4)) FillHisto(Form("VparVper_alphas_EC%d", EC),
                                              part.GetVpar(), part.GetVperp());
    }
