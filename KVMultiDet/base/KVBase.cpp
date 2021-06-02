@@ -28,10 +28,10 @@ $Id: KVBase.cpp,v 1.57 2009/04/22 09:38:39 franklan Exp $
 #include "TPluginManager.h"
 #include "KVNameValueList.h"
 #include "TSystemDirectory.h"
+#include "KVVersion.h"
 #ifdef WITH_GIT_INFOS
 #include "KVGitInfo.h"
 #endif
-#include "KVVersion.h"
 #include "TROOT.h"
 #include "TDatime.h"
 #include "THashList.h"
@@ -39,10 +39,7 @@ $Id: KVBase.cpp,v 1.57 2009/04/22 09:38:39 franklan Exp $
 #include "TGMimeTypes.h"
 #include "TGClient.h"
 #include "TContextMenu.h"
-#include <TEntryList.h>
-#include <TEventList.h>
 #include <TFileMerger.h>
-#include <TGraph2D.h>
 #include <TH1.h>
 #include <TKey.h>
 #include "TTree.h"
@@ -636,7 +633,7 @@ const Char_t* KVBase::GetKVBuildDate()
 
 const Char_t* KVBase::GetKVBuildTime()
 {
-   //Returns KaliVeda build date
+   //Returns KaliVeda build time
    static TString tmp(KV_BUILD_TIME);
    return tmp.Data();
 }
