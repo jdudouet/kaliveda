@@ -8,7 +8,7 @@ See http://indra.in2p3.fr/kaliveda
 
 ## Use in ROOT interactive session
 
-The 'kaliveda' command launches a ROOT session with dynamic shared library paths set up so that all classes will be loaded as & when needed by the ROOT interpreter (either Cint or Cling). Example of use:
+The 'kaliveda' command launches a ROOT session with dynamic shared library paths set up so that all classes will be loaded as & when needed by the ROOT interpreter. Example of use:
 
     $ kaliveda
     
