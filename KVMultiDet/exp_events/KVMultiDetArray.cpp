@@ -1506,7 +1506,7 @@ void KVMultiDetArray::SetExpectedDetectorSignalNames()
       if (s.IsNull()) continue;
       s.Begin(",");
       while (!s.End()) {
-         det->AddDetectorSignal(new KVDetectorSignal(s.Next(kTRUE), det));
+         det->AddDetectorSignal(s.Next(kTRUE));
       }
    }
 }
@@ -3157,8 +3157,7 @@ void KVMultiDetArray::add_and_set_detector_signal(KVDetector* detector, KVString
    if (detector) {
       det_signal = detector->GetDetectorSignal(sig_type);
       if (!det_signal) {
-         det_signal = new KVDetectorSignal(sig_type, detector);
-         detector->AddDetectorSignal(det_signal);
+         det_signal = detector->AddDetectorSignal(sig_type);
       }
       fFiredDetectors.Add(detector);
    }
@@ -3459,8 +3458,10 @@ Bool_t KVMultiDetArray::handle_raw_data_event_mfmframe(const MFMCommonFrame& mfm
    // use these data formats.
    //
    // Return kTRUE if raw data was treated
+#ifdef WITH_MESYTEC
    if (mfmframe.GetFrameType() == MFM_MESYTEC_MDPP_FRAME_TYPE)
       return handle_raw_data_event_mfmframe_mesytec_mdpp((const MFMMesytecMDPPFrame&)mfmframe);
+#endif
    if (mfmframe.GetFrameType() == MFM_EBY_EN_FRAME_TYPE
          || mfmframe.GetFrameType() == MFM_EBY_TS_FRAME_TYPE
          || mfmframe.GetFrameType() == MFM_EBY_EN_TS_FRAME_TYPE)
@@ -3477,6 +3478,7 @@ Bool_t KVMultiDetArray::handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatF
    return kFALSE;
 }
 
+#ifdef WITH_MESYTEC
 Bool_t KVMultiDetArray::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPPFrame&)
 {
    // Read a raw data event from a Mesytec MFM Frame.
@@ -3484,6 +3486,7 @@ Bool_t KVMultiDetArray::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMes
    AbstractMethod("handle_raw_data_event_mfmframe_mesytec_mdpp");
    return kFALSE;
 }
+#endif
 #endif
 
 #ifdef WITH_PROTOBUF
