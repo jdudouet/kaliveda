@@ -9,12 +9,17 @@ ClassImp(KVDetectorSignal)
 KVDetectorSignal::KVDetectorSignal(const Char_t* type, const KVDetector* det)
    : KVBase(type), fDetector(det), fValue(0), fFired(false)
 {
+   // Constructor
+   // \param[in] type defines the name of the signal
+   // \param[in] det [optional] if given, detector to which signal is associated
+
    if (det) SetTitle(Form("Signal %s of detector %s", type, det->GetName()));
    else SetTitle(Form("Detector signal %s", type));
 }
 
 void KVDetectorSignal::ls(Option_t*) const
 {
+   // Print compact listing of infos on signal: name/type, associated detector, value
    double value = -1;
    // if value can be calculated without supplementary parameters, we print it
    if (IsAvailableFor("")) value = GetValue();
@@ -29,8 +34,7 @@ Int_t KVDetectorSignal::GetStatus(const TString&) const
 
 TString KVDetectorSignal::GetFullName() const
 {
-   // Return full name of detector signal, i.e. [detector].[signal-type] if
-   // associated to a detector, or [signal-type] if not.
+   // \returns full name of detector signal, i.e. `[detector].[signal-type]` if associated to a detector, or `[signal-type]` if not.
    if (fDetector)
       return Form("%s.%s", fDetector->GetName(), GetName());
    return GetName();
