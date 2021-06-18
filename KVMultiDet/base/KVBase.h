@@ -168,7 +168,7 @@ public:
    {
       SetTitle(str);
    }
-   const Char_t* GetType() const
+   virtual const Char_t* GetType() const
    {
       return GetTitle();
    }
@@ -179,7 +179,7 @@ public:
    virtual Bool_t IsType(const Char_t* typ) const
    {
       // Returns true if GetType() returns the given type name
-      return (fTitle == typ);
+      return !strcmp(GetType(), typ);
    }
    virtual Bool_t IsCalled(const Char_t* name) const
    {
