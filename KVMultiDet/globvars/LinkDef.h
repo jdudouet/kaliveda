@@ -36,5 +36,7 @@
 #pragma link C++ class KVDirectivity;
 #pragma link C++ class KVEventClassifier;
 #pragma link C++ class KVEventParameter;
+#pragma link C++ class KVReactionPlaneEstimator;
+#pragma link C++ class KVSubEventMaker;
 #pragma link C++ class KVDummyGV;
 #endif
