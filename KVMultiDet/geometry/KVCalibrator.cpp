@@ -1,5 +1,7 @@
 #include "KVCalibrator.h"
 #include "Riostream.h"
+
+#include <TGraph.h>
 using namespace std;
 
 ClassImp(KVCalibrator)
@@ -211,30 +213,16 @@ void KVCalibrator::SetOptions(const KVNameValueList& opt)
       fCalibFunc = new TF1("KVCalibrator::fCalibFunc", opt.GetStringValue("func"), opt.GetDoubleValue("min"), opt.GetDoubleValue("max"));
 }
 
-//TGraph* KVCalibrator::MakeGraph(Double_t xmin, Double_t xmax,
-//                                Int_t npoints) const
-//{
-//   //Creates a TGraph with npoints points (default 50 points) showing the calibration
-//   //formula between input values xmin and xmax (npoints equally-spaced points).
-//   //User should delete the TGraph after use.
-//   TGraph* tmp = 0;
-//   if (GetStatus()) {           // check calibrator is ready
-//      if (GetNumberParams()) {  // check calibrator is ready
-//         if (npoints > 1) {
-//            Double_t dx = (xmax - xmin) / ((Double_t) npoints - 1.0);
-//            if (dx) {
-//               Double_t* xval = new Double_t[npoints];
-//               Double_t* yval = new Double_t[npoints];
-//               for (int i = 0; i < npoints; i++) {
-//                  xval[i] = xmin + dx * ((Double_t) i);
-//                  yval[i] = Compute(xval[i]);
-//               }
-//               tmp = new TGraph(npoints, xval, yval);
-//               delete[]xval;
-//               delete[]yval;
-//            }
-//         }
-//      }
-//   }
-//   return tmp;
-//}
+TGraph* KVCalibrator::GetGraphOfCalibration(int npts, KVValueRange<double> input_range, const KVNameValueList& par)
+{
+   // Make graph of calibration function in given range with given number of points. Any extra required parameters
+   // should be given in the KVNameValueList argument.
+
+   auto gr = new TGraph;
+   for (int i = 0; i < npts; ++i) {
+      auto input = input_range.ValueIofN(i, npts);
+      gr->SetPoint(i, input, Compute(input, par));
+   }
+   return gr;
+}
+

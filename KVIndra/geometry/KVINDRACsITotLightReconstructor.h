@@ -49,24 +49,10 @@ class KVINDRACsITotLightReconstructor : public KVDetectorSignal {
    Bool_t LightIsGood() const;
 
 public:
-   KVINDRACsITotLightReconstructor()
-      : KVDetectorSignal("TotLight"), fFast(nullptr), fSlow(nullptr), fLumTotStatus(NOT_CALCULATED),
-        tau(20)
-   {
-      p0 = 400;
-      p1 = 900;
-      eps = 1.e-4;
-      /* Cette variable n'est pas utilisee, et ne figure pas dans e.g. le fortran de la 4eme campagne
-       Float_t pre=0.4318;
-      */
-      c1 = 1.5;
-      tau0 = 390.;
-      tau1 = 1590.;
-      tau2 = 3090.;
-   }
-   KVINDRACsITotLightReconstructor(const KVINDRADetector* det)
+   KVINDRACsITotLightReconstructor(const KVINDRADetector* det = nullptr)
       : KVDetectorSignal("TotLight", det),
-        fFast(det->GetDetectorSignal("R_PedCor")), fSlow(det->GetDetectorSignal("L_PedCor")),
+        fFast(det ? det->GetDetectorSignal("R_PedCor") : nullptr),
+        fSlow(det ? det->GetDetectorSignal("L_PedCor") : nullptr),
         fLumTotStatus(NOT_CALCULATED), tau(20)
    {
       p0 = 400;
@@ -102,6 +88,7 @@ public:
       else {
          c2 = 3.3;
       }
+      if (det) SetTitle(Form("Signal %s calculated from signals %s and %s of detector %s", GetName(), fFast->GetName(), fSlow->GetName(), GetDetector()->GetName()));
    }
 
    virtual ~KVINDRACsITotLightReconstructor() {}
@@ -117,6 +104,11 @@ public:
       fLumTotStatus = NOT_CALCULATED;
    }
    Int_t GetStatus(const TString&) const;
+   Bool_t IsRaw() const
+   {
+      // This is a calculated, not raw, parameter - cannot be used to decide if detector 'fired' or not
+      return kFALSE;
+   }
 
    ClassDef(KVINDRACsITotLightReconstructor, 1) //Calculation of light output from fast and slow components for INDRA CsI detectors
 };

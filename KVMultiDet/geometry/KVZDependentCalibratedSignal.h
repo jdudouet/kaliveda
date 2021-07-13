@@ -60,9 +60,10 @@ public:
       // find the right calibrated signal
 
       if (!params.HasIntParameter("Z")) {
-         Error("GetSignal", "No Z parameter given in KVNameValueList!");
+         Error("GetSignal", "%s: No Z parameter given in KVNameValueList!", GetName());
          return nullptr;
       }
+      Info("GetSignal", "%s: Getting signal for Z=%d", GetName(), params.GetIntValue("Z"));
       KVCalibratedSignal* sig = fSignalMap[params.GetIntValue("Z")];
       if (!sig) {
          //Error("GetSignal", "No calibration for Z=%d for detector %s", params.GetIntValue("Z"), GetDetector()->GetName());
@@ -70,12 +71,14 @@ public:
       return sig;
    }
 
-   Bool_t IsCalibratedFor(const KVNameValueList& params) const
+   Bool_t IsAvailableFor(const KVNameValueList& params) const
    {
       // Returns true if a calibration is defined for the "Z=..." parameter value in the list
 
       if (!params.HasIntParameter("Z")) return false;
-      return fSignalMap[params.GetIntValue("Z")] != nullptr;
+      auto ds = fSignalMap[params.GetIntValue("Z")];
+      if (ds) return ds->IsAvailableFor(params);
+      return kFALSE;
    }
 
    ClassDef(KVZDependentCalibratedSignal, 1) //Handle several calibrations valid for different Z ranges

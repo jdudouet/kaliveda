@@ -145,8 +145,8 @@ INDRA_e503_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e503_woVAMOS.HasCalibIdentInfos:   no
 INDRA_e503_woVAMOS.DataSet.RunFile.DoNotDelete: raw
 INDRA_e503_woVAMOS.DataSet.RunFileClass.raw:    GANIL
-INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
 
 # Experience e613
 # The marqueuers de temps for silicon detectors from SI_0101 to SI_0324
@@ -694,3 +694,5 @@ INDRA_camp5.GDir.Freq: 186.2
 # used in analysis class KVEventSelector::SetTriggerConditionsForRun in order to exclude reconstructed data
 # which is not consistent with the online DAQ trigger (multiplicity)
 +Plugin.KVTriggerConditions: ^INDRA_$*  KVINDRATriggerConditions KVIndraanalysis "KVINDRATriggerConditions()"
+
++Plugin.KVCalibrator: ^LightEnergyCsITabacaruCamp21017$  KVLightEnergyCsI_Tabacaru_Camp2_10_17   KVIndracalibration "KVLightEnergyCsI_Tabacaru_Camp2_10_17()"

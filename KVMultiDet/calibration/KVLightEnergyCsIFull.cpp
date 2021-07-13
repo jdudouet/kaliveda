@@ -378,7 +378,7 @@ Double_t KVLightEnergyCsIFull::GetLightApproxSilicon(double* x, double* par)
 
 //________________________________________________________________
 KVLightEnergyCsIFull::KVLightEnergyCsIFull()
-   : KVLightEnergyCsI(), fDlight(nullptr)
+   : KVLightEnergyCsI(false), fDlight(nullptr)
 {
    SetType("LightEnergyCsIFull");
 }

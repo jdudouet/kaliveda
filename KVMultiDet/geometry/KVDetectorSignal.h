@@ -86,6 +86,16 @@ public:
    void ls(Option_t* = "") const;
 
    virtual Int_t GetStatus(const TString&) const;
+   virtual Bool_t IsAvailableFor(const KVNameValueList&) const
+   {
+      // Used by KVCalibratedSignal to determine whether calibrated signals which depend
+      // on extra parameters (in the KVNameValueList) are effectively available for
+      // a given set of those extra parameters.
+      //
+      // Default here is kTRUE: if not overridden in child classes, this is a raw data
+      // signal and therefore always available.
+      return kTRUE;
+   }
 
    ClassDef(KVDetectorSignal, 1) //Data produced by a detector
 };

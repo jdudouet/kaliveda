@@ -1,6 +1,5 @@
 #include "KVLightEnergyCsI.h"
 #include "TMath.h"
-//#include "KVCsI.h"
 
 ClassImp(KVLightEnergyCsI)
 
@@ -38,11 +37,12 @@ Double_t KVLightEnergyCsI::CalculLumiere(Double_t* x, Double_t* par)
    return lumcalc;
 }
 
-KVLightEnergyCsI::KVLightEnergyCsI(): KVCalibrator()
+KVLightEnergyCsI::KVLightEnergyCsI(Bool_t make_func): KVCalibrator()
 {
-   //default initialisations
+   // \param[in] make_func used by child class constructors to inhibit creation of internal calibration function
+
    SetType("LightEnergyCsI");
-   SetCalibFunction(new TF1("fLight_CsI", this, &KVLightEnergyCsI::CalculLumiere, 0., 10000., 4));
+   if (make_func) SetCalibFunction(new TF1("fLight_CsI", this, &KVLightEnergyCsI::CalculLumiere, 0., 10000., 4));
    SetUseInverseFunction();
 }
 
@@ -58,6 +58,10 @@ Double_t KVLightEnergyCsI::Compute(Double_t light, const KVNameValueList& z_and_
    //~~~~~~~~~~~~~~~
    //
 
+   if (!IsAvailableFor(z_and_a)) {
+      Error("Compute", "Cannot compute without knowing Z and A of nucleus");
+      return -1;
+   }
    Z = z_and_a.GetIntValue("Z");
    A = z_and_a.GetIntValue("A");
    return KVCalibrator::Compute(light, z_and_a);
@@ -76,7 +80,17 @@ Double_t KVLightEnergyCsI::Invert(Double_t energy, const KVNameValueList& z_and_
    //~~~~~~~~~~~~~~~
    //
 
+   if (!IsAvailableFor(z_and_a)) {
+      Error("Compute", "Cannot compute without knowing Z and A of nucleus");
+      return -1;
+   }
    Z = z_and_a.GetIntValue("Z");
    A = z_and_a.GetIntValue("A");
    return KVCalibrator::Invert(energy, z_and_a);
+}
+
+Bool_t KVLightEnergyCsI::IsAvailableFor(const KVNameValueList& z_and_a) const
+{
+   // \return kFALSE if parameter list does not contain "Z=..." and "A=..."
+   return z_and_a.HasIntParameter("Z") && z_and_a.HasIntParameter("A");
 }

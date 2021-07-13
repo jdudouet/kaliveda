@@ -59,6 +59,20 @@ public:
       }
       return KVDetector::GetDetectorSignal(type);
    }
+   void RemoveCalibrators()
+   {
+      // Overrides KVDetector method for special case of `TotLight` signal.
+      //
+      // If `TotLight` was added to calculate from `L_PedCor` and `R_PedCor` signals we
+      // have to remove it from the list of signals by hand (no associated calibrator).
+
+      auto totlight = GetListOfDetectorSignals().get_object<KVDetectorSignal>("TotLight");
+      if (totlight && !totlight->IsRaw() && GetDetectorSignal("L_PedCor") && GetDetectorSignal("R_PedCor")) {
+         const_cast<KVSeqCollection&>(GetListOfDetectorSignals()).Remove(totlight);
+         delete totlight;
+      }
+      KVDetector::RemoveCalibrators();
+   }
 
    ClassDef(KVCsI, 5)           // The CsI(Tl) detectors of the INDRA array
 };

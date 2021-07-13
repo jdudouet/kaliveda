@@ -20,7 +20,7 @@ Double_t KVCalibratedSignal::GetValue(const KVNameValueList& params) const
    if (params.HasParameter("INPUT"))
       result = fCalibrator->Compute(params.GetDoubleValue("INPUT"), params);
    else
-      result = fCalibrator->Compute(fInputSignal->GetValue(), params);
+      result = fCalibrator->Compute(fInputSignal->GetValue(params), params);
    fInversionFail = fCalibrator->InversionFailure();
    return result;
 }

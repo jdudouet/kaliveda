@@ -5,6 +5,7 @@
 #include "TRef.h"
 #include "KVDetector.h"
 #include "TF1.h"
+#include "KVValueRange.h"
 
 /**
   \class KVCalibrator
@@ -174,7 +175,16 @@ public:
       // Same as Compute(x,par)
       return Compute(x, par);
    }
-   //virtual TGraph* MakeGraph(Double_t xmin, Double_t xmax, Int_t npoints = 50) const;
+   virtual Bool_t IsAvailableFor(const KVNameValueList&) const
+   {
+      // Used by KVCalibratedSignal to determine whether calibrated signals which depend
+      // on extra parameters (in the KVNameValueList) are effectively available for
+      // a given set of those extra parameters.
+      //
+      // To be overridden as necessary in child classes.
+
+      return kTRUE;
+   }
 
    static KVCalibrator* MakeCalibrator(const Char_t* type);
 
@@ -222,6 +232,8 @@ public:
       // Value returned by calibrator should not be used in this case
       return fInversionFail;
    }
+
+   TGraph* GetGraphOfCalibration(int npts,  KVValueRange<double> input_range, const KVNameValueList& par = "");
 
    ClassDef(KVCalibrator, 2)//Base class for calibration of detectors
 };

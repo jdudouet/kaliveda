@@ -9,4 +9,5 @@
 #pragma link C++ class KVRecombination+;
 #pragma link C++ class KVLightEnergyCsI+;
 #pragma link C++ class KVLightEnergyCsIFull+;
+#pragma link C++ class KVLightEnergyCsI_SharpCutOff+;
 #endif

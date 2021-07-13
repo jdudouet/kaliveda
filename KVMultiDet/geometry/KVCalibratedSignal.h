@@ -54,14 +54,17 @@ public:
    {
       return fInversionFail;
    }
-   virtual Bool_t IsCalibratedFor(const KVNameValueList&) const
+   virtual Bool_t IsAvailableFor(const KVNameValueList& params) const
    {
-      // Can be used in derived classes to determine if a calibration is effectively
-      // available based on the extra parameters in the KVNameValueList.
+      // Determine if a calibration is effectively available based on the extra parameters in the KVNameValueList.
       //
-      // Default behaviour is to return kTRUE in all cases.
+      // All of the parent signals which are used by this signal must also be available -
+      // therefore we check recursively
 
-      return kTRUE;
+      Bool_t ok = kTRUE;
+      if (fInputSignal) ok &= fInputSignal->IsAvailableFor(params);
+      if (fCalibrator) ok &= fCalibrator->IsAvailableFor(params);
+      return ok;
    }
 
    ClassDef(KVCalibratedSignal, 1) //Detector signal produced by a calibrator

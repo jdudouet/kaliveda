@@ -15,7 +15,10 @@ KVDetectorSignal::KVDetectorSignal(const Char_t* type, const KVDetector* det)
 
 void KVDetectorSignal::ls(Option_t*) const
 {
-   printf(" %s \t\t %s \t\t %s \t\t [%lf]\n", ClassName(), GetName(), GetType(), GetValue());
+   double value = -1;
+   // if value can be calculated without supplementary parameters, we print it
+   if (IsAvailableFor("")) value = GetValue();
+   printf(" %-15s\t%-32s\t%-80s\t[%lf]\n", GetName(), ClassName(), GetType(), value);
 }
 
 Int_t KVDetectorSignal::GetStatus(const TString&) const
