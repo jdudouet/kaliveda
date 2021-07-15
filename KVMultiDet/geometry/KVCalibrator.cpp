@@ -218,9 +218,9 @@ TGraph* KVCalibrator::GetGraphOfCalibration(int npts, KVValueRange<double> input
    // Make graph of calibration function in given range with given number of points. Any extra required parameters
    // should be given in the KVNameValueList argument.
 
-   auto gr = new TGraph;
+   TGraph* gr = new TGraph;
    for (int i = 0; i < npts; ++i) {
-      auto input = input_range.ValueIofN(i, npts);
+      double input = input_range.ValueIofN(i, npts);
       gr->SetPoint(i, input, Compute(input, par));
    }
    return gr;
