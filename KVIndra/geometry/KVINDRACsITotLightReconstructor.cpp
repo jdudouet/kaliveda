@@ -20,7 +20,7 @@ void KVINDRACsITotLightReconstructor::Calculate() const
 
    if (rap_corr < 0 || len_corr < 0) {
       fLumTotStatus = NEGATIVE_PEDESTAL_CORRECTED_VALUE;
-      const_cast<KVINDRACsITotLightReconstructor*>(this)->SetValue(0);
+      const_cast<KVINDRACsITotLightReconstructor*>(this)->set_value(0);
       return;
    }
    Double_t x;
@@ -68,12 +68,12 @@ void KVINDRACsITotLightReconstructor::Calculate() const
 
       if (niter > 50 || x <= tau) {
          fLumTotStatus = CALCULATION_NOT_CONVERGED;
-         const_cast<KVINDRACsITotLightReconstructor*>(this)->SetValue(0.0);
+         const_cast<KVINDRACsITotLightReconstructor*>(this)->set_value(0.0);
          return;
       }
    }
 
-   const_cast<KVINDRACsITotLightReconstructor*>(this)->SetValue(len_corr * (x - tau) / (x * bx));
+   const_cast<KVINDRACsITotLightReconstructor*>(this)->set_value(len_corr * (x - tau) / (x * bx));
 }
 
 //_______________________________________________________________________________________________

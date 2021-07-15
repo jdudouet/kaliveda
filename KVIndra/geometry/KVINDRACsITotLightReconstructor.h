@@ -100,7 +100,7 @@ public:
    }
    void Reset()
    {
-      KVDetectorSignal::Reset();
+      set_value(0);
       fLumTotStatus = NOT_CALCULATED;
    }
    Int_t GetStatus(const TString&) const;

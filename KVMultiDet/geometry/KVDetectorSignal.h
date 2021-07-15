@@ -22,6 +22,12 @@ class KVDetectorSignal : public KVBase {
    const KVDetector* fDetector;//! associated detector
    Double_t    fValue;// signal value
 
+protected:
+   void set_value(double x)
+   {
+      fValue = x;
+   }
+
 public:
    KVDetectorSignal()
       : KVBase(), fDetector(nullptr), fValue(0)
@@ -38,7 +44,7 @@ public:
    virtual void SetValue(Double_t x)
    {
       // Note that this has no effect on calibrated signals or signal expressions
-      if (IsRaw() && !IsExpression()) fValue = x;
+      if (IsRaw() && !IsExpression()) set_value(x);
    }
    virtual void Reset()
    {
