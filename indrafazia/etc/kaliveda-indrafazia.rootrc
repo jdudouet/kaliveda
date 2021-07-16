@@ -198,6 +198,7 @@ INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.CsI:          IDGridsFAZIA_CsI
 INDRAFAZIA.E789.FAZIA.Si-Si.GridOrder:                    QL1.Amplitude_Q2.FPGAEnergy,QH1.FPGAEnergy_Q2.FPGAEnergy
 INDRAFAZIA.E789.IdentificationParameterList.INDRA.CSI:          INDRA.CsI.IdentificationFiles.dat
 INDRAFAZIA.E789.IdentificationParameterList.FAZIA.Si-CsI:          FAZIA.Si-CsI.IdentificationFiles.dat
+INDRAFAZIA.E789.FAZIA.Si-CsI.GridOrder:                    1*Q2.FPGAEnergy_Q3.FPGAEnergy,Q2.FPGAEnergy_Q3.FPGAEnergy
 
 INDRAFAZIA.E789.QL1.BaseLineLength:            100
 INDRAFAZIA.E789.QL1.TauRC:                     250
