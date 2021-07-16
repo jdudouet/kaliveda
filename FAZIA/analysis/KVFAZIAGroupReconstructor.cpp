@@ -268,33 +268,36 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                }
             }
          }
-         else {
-            // As a general rule, we prefer Si-CsI identification to CsI identification, if both
-            // are available and both were successful
-            // THIS SHOULD ONLY BE DONE IF WE ARE SURE THAT A 2ND PARTICLE DID NOT STOP IN SI2
-            // I.E. AFTER CHECKING THAT CSI & SI-CSI IDENTIFICATIONS ARE COHERENT
-            // BUT IF THIS IS THE CASE, WHY CHANGE ?
-#ifndef WITH_CPP11
-            std::map<std::string, KVIdentificationResult*>::iterator si2csi = id_by_type.find("Si-CsI");
-#else
-            auto si2csi = id_by_type.find("Si-CsI");
-#endif
-            if (si2csi != id_by_type.end()) {
-               if (si2csi->second->IDOK && si2csi->second->IDquality < KVIDZAGrid::kICODE4) {
+         // remove the following case : now CsI grids starts only when the particle identification
+         // is good (high energy). Low energy particles will automatically be identified in Si-CsI.
+         // -> to be tested
+//         else {
+         // As a general rule, we prefer Si-CsI identification to CsI identification, if both
+         // are available and both were successful
+         // THIS SHOULD ONLY BE DONE IF WE ARE SURE THAT A 2ND PARTICLE DID NOT STOP IN SI2
+         // I.E. AFTER CHECKING THAT CSI & SI-CSI IDENTIFICATIONS ARE COHERENT
+         // BUT IF THIS IS THE CASE, WHY CHANGE ?
+//#ifndef WITH_CPP11
+//            std::map<std::string, KVIdentificationResult*>::iterator si2csi = id_by_type.find("Si-CsI");
+//#else
+//            auto si2csi = id_by_type.find("Si-CsI");
+//#endif
+//            if (si2csi != id_by_type.end()) {
+//               if (si2csi->second->IDOK && si2csi->second->IDquality < KVIDZAGrid::kICODE4) {
 
-                  // To be coherent, Si-CsI identification should not give
-                  //    1) same Z but larger A
-                  //    2) larger Z
-                  //Info("IdentifyParticle","Prefer SiCsI identification over CSI [Z=%d A=%d]",PART.GetZ(),PART.GetA());
-                  partID = *(si2csi->second);
-                  identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("Si-CsI");
-                  PART.SetIdentifyingTelescope(identifying_telescope);
-                  PART.SetIdentification(&partID, identifying_telescope);
-                  PART.GetParameters()->SetValue("CCode", 2);
-                  //PART.Print();
-               }
-            }
-         }
+//                  // To be coherent, Si-CsI identification should not give
+//                  //    1) same Z but larger A
+//                  //    2) larger Z
+//                  //Info("IdentifyParticle","Prefer SiCsI identification over CSI [Z=%d A=%d]",PART.GetZ(),PART.GetA());
+//                  partID = *(si2csi->second);
+//                  identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("Si-CsI");
+//                  PART.SetIdentifyingTelescope(identifying_telescope);
+//                  PART.SetIdentification(&partID, identifying_telescope);
+//                  PART.GetParameters()->SetValue("CCode", 2);
+//                  //PART.Print();
+//               }
+//            }
+//         }
       }
       else if (partID.IsType("Si-CsI")) {
          // ions correctly identified in Si2-CsI should have coherent identification in Si1-Si2: as the particle punches
