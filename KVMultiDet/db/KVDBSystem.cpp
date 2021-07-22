@@ -316,8 +316,8 @@ void KVDBSystem::SetRuns(KVNumberList& rl)
       KVDBRun* run = (KVDBRun*)runtable->GetRecord(run_number);
       if (run) {
          if (run->GetSystem()) {
-            Error("SetRuns", "Associating run %d with system \"%s\" : run already associated with system \"%s\"",
-                  run_number, GetName(), run->GetSystem()->GetName());
+//            Error("SetRuns", "Associating run %d with system \"%s\" : run already associated with system \"%s\"",
+//                  run_number, GetName(), run->GetSystem()->GetName());
          }
          else {
             if (AddLink("Runs", run)) {
