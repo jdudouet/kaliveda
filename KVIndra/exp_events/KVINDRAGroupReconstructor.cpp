@@ -208,7 +208,7 @@ void KVINDRAGroupReconstructor::CheckCsIEnergy(KVReconstructedNucleus* n)
    // for particles with E_csi > E_max_csi)
 
    KVDetector* csi = GetCsI(n);
-   if (csi && (n->GetZ() > 0) && (n->GetZ() < 3) && (csi->GetEnergy() > csi->GetMaxDeltaE(n->GetZ(), n->GetA()))) {
+   if (csi && (n->GetZ() > 0) && (n->GetZ() < 3) && (csi->GetDetectorSignalValue("Energy", Form("Z=%d,A=%d", n->GetZ(), n->GetA())) > csi->GetMaxDeltaE(n->GetZ(), n->GetA()))) {
       SETINDRAECODE(n, 3);
    }
 }
