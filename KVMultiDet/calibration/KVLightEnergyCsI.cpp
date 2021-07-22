@@ -59,7 +59,7 @@ Double_t KVLightEnergyCsI::Compute(Double_t light, const KVNameValueList& z_and_
    //
 
    if (!IsAvailableFor(z_and_a)) {
-      Error("Compute", "[%s] Cannot compute energy for : ", GetDetector()->GetName());
+      Error("Compute", "[%s] Cannot compute energy for : ", GetName());
       z_and_a.ls();
       return -1;
    }
