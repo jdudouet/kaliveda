@@ -319,12 +319,14 @@ void KVDBSystem::SetRuns(KVNumberList& rl)
             Error("SetRuns", "Associating run %d with system \"%s\" : run already associated with system \"%s\"",
                   run_number, GetName(), run->GetSystem()->GetName());
          }
-         if (AddLink("Runs", run)) {
-            //use name of system as title of run
-            run->SetTitle(GetName());
-         }
          else {
-            Info("SetRuns", "Could not add link for run %d", run_number);
+            if (AddLink("Runs", run)) {
+               //use name of system as title of run
+               run->SetTitle(GetName());
+            }
+            else {
+               Info("SetRuns", "Could not add link for run %d", run_number);
+            }
          }
       }
       else {
