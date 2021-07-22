@@ -59,7 +59,8 @@ Double_t KVLightEnergyCsI::Compute(Double_t light, const KVNameValueList& z_and_
    //
 
    if (!IsAvailableFor(z_and_a)) {
-      Error("Compute", "Cannot compute without knowing Z and A of nucleus");
+      Error("Compute", "Cannot compute energy for : ");
+      z_and_a.ls();
       return -1;
    }
    Z = z_and_a.GetIntValue("Z");
