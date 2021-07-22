@@ -431,6 +431,7 @@ Bool_t KVDetector::AddCalibrator(KVCalibrator* cal, const KVNameValueList& opts)
    if (!fCalibrators)
       fCalibrators = new KVList();
 
+   cal->SetDetector(this);
    fCalibrators->Add(cal);
    cal->SetName(Form("%s_%s", GetName(), cal->GetType()));
 
