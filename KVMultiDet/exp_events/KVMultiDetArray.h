@@ -169,7 +169,6 @@ protected:
 #ifdef WITH_BUILTIN_GRU
    virtual Bool_t handle_raw_data_event_ebyedat(KVGANILDataReader&);
 #endif
-   void prepare_to_handle_new_raw_data();
    void add_and_set_detector_signal(KVDetector* det, KVString detname, Double_t sig_data, KVString sig_type);
 
    virtual void PerformClosedROOTGeometryOperations();
@@ -219,7 +218,7 @@ protected:
    }
 
 public:
-
+   void prepare_to_handle_new_raw_data();
    KVNameValueList& GetReconParameters()
    {
       // any information placed in this list during event reconstruction will be

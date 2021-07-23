@@ -3201,7 +3201,6 @@ void KVMultiDetArray::SetRawDataFromReconEvent(KVNameValueList& l)
          name.Begin(".");
          name.Next(); // "ACQPAR"
          if (name.Next() != GetName()) continue; // check name of array - somebody else's parameter ?
-         KVDetectorSignal* ds = nullptr;
          KVString det_name;
          KVString sig_type;
          KVDetector* det = nullptr;
