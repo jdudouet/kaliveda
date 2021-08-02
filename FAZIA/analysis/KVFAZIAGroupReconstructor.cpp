@@ -185,18 +185,7 @@ void KVFAZIAGroupReconstructor::PostReconstructionProcessing()
 
          KVFAZIADetector* det = (KVFAZIADetector*)node->GetDetector();
 
-         TIter next_s(det->GetListOfSignals());
-         KVSignal* sig;
-         while ((sig = (KVSignal*)next_s())) {
-
-            if (!sig->PSAHasBeenComputed()) {
-               sig->TreateSignal();
-            }
-
-            sig->GetPSAResult(det);
-         }
-
-         // now copy all detector signals to reconstructed particle paramet// never seter list...
+         // now copy all detector signals to reconstructed particle parameter list...
          // they are stored with format "[detname].[signal_name]" except for
          // DetTag and GTTag which are the same for all detectors of the same telescope
          // and so are only stored once with name "DetTag" or "GTTag".

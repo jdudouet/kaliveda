@@ -295,11 +295,14 @@ Bool_t KVFAZIADetector::Fired(Option_t*) const
 void KVFAZIADetector::SetSignal(TGraph* signal, const Char_t* signal_name)
 {
    // Copy waveform data from TGraph into the signal with the given name (QH1-345 etc.)
-   // Then calculate Ymin/ymax, ADC data, shit, blabla
+   //
+   // Then perform analysis of signal and set the values of the corresponding KVDetectorSignalValue objects
 
    KVSignal* sig = GetSignal(signal_name);
    if (sig) {
       sig->SetData(signal->GetN(), signal->GetX(), signal->GetY());
+      sig->TreateSignal();
+      sig->GetPSAResult(this);
    }
    else {
       Warning("SetSignal", "%s : No signal of name #%s# is available", GetName(), signal_name);
