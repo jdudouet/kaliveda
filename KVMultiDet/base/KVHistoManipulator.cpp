@@ -544,36 +544,38 @@ TH1*  KVHistoManipulator::CumulatedHisto(TH1* hh, TString direction, Int_t bmin,
       hname.Form("%s_cumulated", hh->GetName());
       TH1* clone = (TH1*)hh->Clone(hname.Data());
       clone->Reset();
-      // get array of cumulated bins
-      Double_t* integral = hh->GetIntegral();
+      Double_t sum = 0;
+      Double_t big_sum = 0;
       if (direction == "C") {
          /* "standard" cumulative histogram, from bin 'bmin' to bin 'bmax' */
-         Double_t offset = integral[bmin - 1], rescale = 1.0;
-         if (bmax < hh->GetNbinsX() && integral[bmax] > offset) rescale = 1. / (integral[bmax] - offset);
-         for (Int_t nx = 1; nx <= hh->GetNbinsX(); nx += 1) {
-            if (nx >= bmin && nx <= bmax) clone->SetBinContent(nx, rescale * (integral[nx] - offset));
-            else if (nx > bmax) clone->SetBinContent(nx, 1.0);
-            else if (nx < bmin) clone->SetBinContent(nx, 0.0);
+         for (Int_t nx = 1; nx <= hh->GetNbinsX(); ++nx) {
+            if (nx < bmin) clone->SetBinContent(nx, 0);
+            else if (nx > bmax) clone->SetBinContent(nx, sum);
+            else {
+               sum += hh->GetBinContent(nx);
+               clone->SetBinContent(nx, sum);
+            }
+            big_sum += sum;
          }
       }
       else {
          /* "reverse" cumulative histogram, from bin 'bmax' to bin 'bmin' */
-         Double_t offset = integral[bmax], rescale = 1.0;
-         if (integral[bmin - 1] < offset) rescale = 1. / (offset - integral[bmin - 1]);
-         for (Int_t nx = 1; nx <= hh->GetNbinsX(); nx += 1) {
-            if (nx >= bmin && nx <= bmax) clone->SetBinContent(nx, rescale * (offset - integral[nx - 1]));
-            else if (nx > bmax) clone->SetBinContent(nx, 0.0);
-            else if (nx < bmin) clone->SetBinContent(nx, 1.0);
+         for (Int_t nx = hh->GetNbinsX(); nx >= 1; --nx) {
+            if (nx > bmax) clone->SetBinContent(nx, 0);
+            else if (nx < bmin) clone->SetBinContent(nx, sum);
+            else {
+               sum += hh->GetBinContent(nx);
+               clone->SetBinContent(nx, sum);
+            }
+            big_sum += sum;
          }
       }
       // normalisation
       if (!strcmp(norm, "surf")) {
-         Double_t sw = clone->GetSumOfWeights();
-         if (sw > 0) clone->Scale(1. / sw);
+         clone->Scale(1. / big_sum);
       }
       else if (!strcmp(norm, "max")) {
-         Double_t max = clone->GetMaximum();
-         if (max > 0) clone->Scale(1. / max);
+         clone->Scale(1. / sum);
       }
       return clone;
    }
@@ -1605,6 +1607,14 @@ TH1* KVHistoManipulator::MakeHistoRescaleX(TH1* hist1, TH1* hist2, TF1* scale_fu
    Double_t nxmax = (bins ? hist2->GetXaxis()->GetXmax() : -1);
    TH1* scalehisto = ScaleHisto(hist1, scale_func, 0, nx, -1, nxmin, nxmax, -1.0, -1.0, "width");
    if (norm) scalehisto->Scale(hist2->Integral("width") / scalehisto->Integral("width"));
+   if (kVisDebug) {
+      fVDCanvas->cd(4);
+      scalehisto->DrawCopy()->SetLineColor(kRed);
+      hist2->DrawCopy("same")->SetLineColor(kBlack);
+      gPad->SetLogy(kTRUE);
+      gPad->Modified();
+      gPad->Update();
+   }
    return scalehisto;
 }
 //-------------------------------------------------
