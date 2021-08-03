@@ -103,11 +103,6 @@ public:
       fLumTotStatus = NOT_CALCULATED;
    }
    Int_t GetStatus(const TString&) const;
-   Bool_t IsRaw() const
-   {
-      // This is a calculated, not raw, parameter - cannot be used to decide if detector 'fired' or not
-      return kFALSE;
-   }
 
    Bool_t IsRaw() const
    {
