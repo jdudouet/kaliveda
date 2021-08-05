@@ -15,7 +15,7 @@
  A KVDataQualityAudit object contains many essential informations about experimental data identification and calibrations,
  which can be used:
    - to assess the quality of newly-reconstructed & calibrated data;
-   - to provide an accurate replica of experimental identification capabilites, when filtering simulated data.
+   - to implement an accurate replica of experimental identification capabilites, when filtering simulated data.
 
  The audit is performed by reading a set of experimental data (see KVDataQualityAuditSelector).
  At the end, the audit contains a list of all identification telescopes (see KVIDTelescope) which contributed

@@ -1,8 +1,20 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 30th June 2021
+Last update: 5th August 2021
 
 ## Version 1.12/04 (current development version - dev branch)
+
+__Changes 5/8/2021 in__ \ref AnalysisInfra : __New data quality auditing tools__
+
+KVDataQualityAudit is a simple class which can contain many essential informations about experimental data identification and calibrations,
+which can be used:
+
+  - to assess the quality of newly-reconstructed & calibrated data;
+  
+  - to implement an accurate replica of experimental identification capabilites, when filtering simulated data.
+
+Data can be audited using the new dedicated analysis task, "Prepare data quality audits", run by KVDataQualityAuditSelector.
+We provide also KVDataQualityAuditReportMaker to help with the production of graphs and histograms from the audit.
 
 __Changes 30/6/2021 in Build system__
 
@@ -51,7 +63,7 @@ for(auto& n : ReconEventGroupIterator(GetEvent(), "alpha"))
     auto ec = list_of_variables.AddEventClassifier("QP", "Ex/A");
 ~~~~
 
-__Changes 21/6/2021 in__ \ref NucEvents : Major improvements to handling of kinematical frames
+__Changes 21/6/2021 in__ \ref NucEvents : __Major improvements to handling of kinematical frames__
 
 Including:
 
