@@ -28,7 +28,8 @@ class KVClassFactory;
 /**
   \class KVParticleCondition
 \brief Handles particle selection criteria for data analysis classes
-\ingroup Analysis,NucEvents
+\ingroup AnalysisInfra
+\ingroup NucEvents
 
 A KVParticleCondition object can be used to select nuclei to include in data analysis
 (see KVEventSelector::SetParticleConditions()) or in the calculation of global

@@ -11,7 +11,7 @@
 /**
    \class KVReconEventSelector
 \brief Base class for user analysis of reconstructed data
-\ingroup Analysis
+\ingroup AnalysisInfra
 */
 
 class KVReconEventSelector : public KVEventSelector {

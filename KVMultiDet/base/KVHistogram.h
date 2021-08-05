@@ -12,7 +12,7 @@
 /**
 \class KVHistogram
 \brief Wrapper for histograms and graphical cuts used by KVTreeAnalyzer
-\ingroup Analysis
+\ingroup AnalysisInfo
 
  \note GetType() returns either "Histo" or "Cut"
 */

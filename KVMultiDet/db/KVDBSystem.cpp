@@ -438,12 +438,12 @@ KVDBTable* KVDBSystem::GetRunsTable()
 
 //__________________________________________________________________________________//
 
-const Char_t* KVDBSystem::GetBatchName()
+TString KVDBSystem::GetBatchName()
 {
    // Gives name of system in compact form with all (unix-)illegal characters
    // replaced by '_'. Can be used for naming batch jobs, files, etc.
 
-   static KVString tmp;
+   TString tmp;
    tmp = "";
    if (GetKinematics()) {
       if (GetKinematics()->GetNucleus(1)) {
@@ -461,6 +461,48 @@ const Char_t* KVDBSystem::GetBatchName()
       tmp.ReplaceAll(" ", "_");
       tmp.ReplaceAll("/", "_");
    }
-   return tmp.Data();
+   return tmp;
+}
+
+TString KVDBSystem::GetBatchNameWithoutEnergy()
+{
+   // Gives name of system in compact form with all (unix-)illegal characters
+   // replaced by '_'. Can be used for naming batch jobs, files, etc.
+   // Only symbols of projectile and target are used, not the beam energy
+
+   TString tmp;
+   tmp = "";
+   if (GetKinematics()) {
+      if (GetKinematics()->GetNucleus(1)) {
+         tmp = GetKinematics()->GetNucleus(1)->GetSymbol();
+      }
+      if (GetKinematics()->GetNucleus(2)) {
+         tmp += GetKinematics()->GetNucleus(2)->GetSymbol();
+      }
+   }
+   if (tmp == "") {
+      tmp = GetName();
+      tmp.ReplaceAll(" ", "_");
+      tmp.ReplaceAll("/", "_");
+   }
+   return tmp;
+}
+
+TString KVDBSystem::GetReactionNameWithoutEnergy()
+{
+   // Returns name of reaction without the beam energy i.e. just projectile + target.
+   //
+   // E.g. for system "129Xe + natSn 50 MeV/A" we return "129Xe + natSn"
+
+   KVString name(GetName());
+   name.Begin(" ");
+   TString tmp;
+   int i = 0;
+   while (i < 3 && !name.End()) {
+      tmp += name.Next(kTRUE);
+      if (i < 2) tmp += " ";
+      ++i;
+   }
+   return tmp;
 }
 

@@ -21,7 +21,7 @@
 /**
 \class KVEventSelector
 \brief General purpose analysis class for TTree containing KVEvent objects
-\ingroup Analysis
+\ingroup AnalysisInfra
 
  Use this TSelector to analyse data in TTrees containing a branch with KVEvent-derived objects:
 

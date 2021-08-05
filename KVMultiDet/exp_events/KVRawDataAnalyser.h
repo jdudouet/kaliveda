@@ -19,7 +19,7 @@ class KVDetectorEvent;
 /**
    \class KVRawDataAnalyser
    \brief Abstract base class for user analysis of raw data
- \ingroup Analysis
+ \ingroup AnalysisInfra
 */
 
 class KVRawDataAnalyser : public KVDataSetAnalyser {

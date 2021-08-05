@@ -1,2 +1,2 @@
-\defgroup Analysis Data Analysis
-\brief Tools for data analysis
+\defgroup Analysis Data Analysis Tools
+\brief Tools for user data analysis

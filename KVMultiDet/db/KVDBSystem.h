@@ -147,7 +147,9 @@ public:
    void AddRun(KVDBRecord*);
    void AddRun(Int_t);
    void RemoveAllRuns();
-   virtual const Char_t* GetBatchName();
+   TString GetBatchName();
+   TString GetBatchNameWithoutEnergy();
+   TString GetReactionNameWithoutEnergy();
 
    ClassDef(KVDBSystem, 2)      // System class
 };

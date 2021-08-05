@@ -11,7 +11,7 @@
 /**
 \class KVDataPatchList
 \brief List of corrections to be applied to reconstructed calibrated data
-\ingroup Analysis
+\ingroup AnalysisInfra
 */
 
 class KVDataPatchList : public KVBase {

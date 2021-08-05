@@ -10,7 +10,7 @@
 /**
 \class KVDataPatch
 \brief Correction to be applied to reconstructed calibrated data
-\ingroup Analysis
+\ingroup AnalysisInfra
 
  Abstract base class for patches to be applied to reconstructed, identified,
  and/or calibrated data.

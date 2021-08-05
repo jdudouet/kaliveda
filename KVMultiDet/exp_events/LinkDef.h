@@ -49,4 +49,13 @@
 #pragma link C++ class KVDataPatch+;
 #pragma link C++ class KVDataPatchList+;
 #pragma link C++ class KVArrayMult+;
+#pragma link C++ class KVDataQualityAudit::isotope+;
+#pragma link C++ class std::pair<int,KVDataQualityAudit::isotope>+;
+#pragma link C++ class KVDataQualityAudit::element+;
+#pragma link C++ class std::pair<int,KVDataQualityAudit::element>+;
+#pragma link C++ class KVDataQualityAudit::idtelescope+;
+#pragma link C++ class KVDataQualityAudit+;
+#pragma link C++ class KVDataQualityAuditReportMaker+;
+#pragma link C++ class KVDataQualityAuditReportMaker::telescope;
+#pragma link C++ class KVDataQualityAuditSelector+;
 #endif

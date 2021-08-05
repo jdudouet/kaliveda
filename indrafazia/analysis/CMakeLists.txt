@@ -1,4 +1,4 @@
 BUILD_KALIVEDA_MODULE(analysis
 	PARENT ${KVSUBPROJECT}
-	EXTRA_LIBS KVMultiDetanalysis
+	EXTRA_LIBS KVMultiDetanalysis KVIndraexp_events FAZIAgeometry
 )

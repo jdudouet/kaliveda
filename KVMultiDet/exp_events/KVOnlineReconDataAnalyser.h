@@ -10,7 +10,7 @@
 /**
 \class KVOnlineReconDataAnalyser
 \brief Online analysis of reconstructed data
-\ingroup Analysis
+\ingroup AnalysisInfra
 */
 
 class KVOnlineReconDataAnalyser : public KVReconDataAnalyser {

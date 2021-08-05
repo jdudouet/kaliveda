@@ -39,7 +39,7 @@ Plugin.KVAvailableRunsFile:    local    KVAvailableRunsFile     KVMultiDetdata_m
 +Plugin.KVAvailableRunsFile:    dms    DMSAvailableRunsFile     KVMultiDetdata_management    "DMSAvailableRunsFile(const Char_t*,KVDataSet*)"
 #
 # Different types of data which can be associated with datasets
-KVDataSet.DataTypes: raw dst recon ident root
+KVDataSet.DataTypes: raw recon
 #
 # Names used for subdirectories containing data of different types
 KVDataSet.DataType.Subdir.raw:  raw
@@ -135,6 +135,14 @@ ReconAnalysis.DataAnalysisTask.StatusUpdateInterval:     5000
 ReconAnalysis.DataAnalysisTask.Analyser:     ReconDataAnalyser
 ReconAnalysis.DataAnalysisTask.UserClass.Base:     ReconEventSelector/TSelector
 
++DataAnalysisTask:     DataQualityAuditPreparation
+DataQualityAuditPreparation.DataAnalysisTask.Title:     Prepare data quality audits
+DataQualityAuditPreparation.DataAnalysisTask.Prereq:     recon
+DataQualityAuditPreparation.DataAnalysisTask.UserClass:     no
+DataQualityAuditPreparation.DataAnalysisTask.StatusUpdateInterval:     5000
+DataQualityAuditPreparation.DataAnalysisTask.Analyser:     ReconDataAnalyser
+DataQualityAuditPreparation.DataAnalysisTask.UserClass.Base:     DataQualityAudit/TSelector
+
 +DataAnalysisTask:     OnlineReconAnalysis
 OnlineReconAnalysis.DataAnalysisTask.Title:     Online analysis of reconstructed events (online)
 OnlineReconAnalysis.DataAnalysisTask.Prereq:     *
@@ -196,6 +204,8 @@ Plugin.KVDataAnalyser:   RawDataAnalyser        KVRawDataAnalyser            KVM
 +Plugin.TSelector:    EventSelector    KVEventSelector    KVMultiDetanalysis   "KVEventSelector()"
 +Plugin.TSelector:    EventFilter    KVEventFiltering    KVMultiDetexp_events   "KVEventFiltering()"
 +Plugin.TSelector:    ReconEventSelector    KVReconEventSelector    KVMultiDetanalysis   "KVReconEventSelector()"
++Plugin.TSelector:    DataQualityAudit    KVDataQualityAuditSelector    KVMultiDetexp_events   "KVDataQualityAuditSelector()"
+
 # allow to modify the template file as a function of the dataset being analysed
 ReconEventSelector.Template: ROOT6ReconDataSelectorTemplate
 

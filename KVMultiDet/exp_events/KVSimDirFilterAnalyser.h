@@ -13,7 +13,7 @@
 /**
 \class KVSimDirFilterAnalyser
 \brief Manage user analysis of filtered simulation data
-\ingroup Analysis
+\ingroup AnalysisInfra
 */
 
 class KVSimDirFilterAnalyser : public KVSimDirAnalyser {
@@ -54,7 +54,7 @@ public:
 #ifdef USING_ROOT6
    void SetTriggerConditionsForRun(int run);
 #endif
- ClassDef(KVSimDirFilterAnalyser, 1) //Analysis of filtered simulations
+   ClassDef(KVSimDirFilterAnalyser, 1) //Analysis of filtered simulations
 };
 
 #endif

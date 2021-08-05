@@ -10,7 +10,7 @@
 /**
 \class KVDataSetAnalyser
 \brief Pilots user analysis of experimental data
-\ingroup Analysis
+\ingroup AnalysisInfra
 */
 
 class KVDataSetAnalyser : public KVDataAnalyser {

@@ -11,7 +11,7 @@ class KVDBRun;
 
 /**
   \class KVReconDataAnalyser
-  \ingroup Analysis
+  \ingroup AnalysisInfra
   \brief Manages user analysis of reconstructed experimental data
  */
 class KVReconDataAnalyser: public KVDataSetAnalyser {

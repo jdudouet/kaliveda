@@ -12,7 +12,7 @@
 /**
   \class KVSimDirAnalyser
   \brief Class piloting analyses of simulated data
-  \ingroup Analysis
+  \ingroup AnalysisInfra
  */
 
 class KVSimDirAnalyser : public KVDataAnalyser {

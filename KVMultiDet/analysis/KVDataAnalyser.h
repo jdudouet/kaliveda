@@ -22,7 +22,7 @@ class KVDataAnalysisTask;
 
 /** \class KVDataAnalyser
 \brief Manager class which sets up and runs data analysis tasks
-\ingroup Analysis
+\ingroup AnalysisInfra
 
 This can be used either 'interactively' or in menu-driven mode.
 In both cases, in order to run a data analysis task, the user must

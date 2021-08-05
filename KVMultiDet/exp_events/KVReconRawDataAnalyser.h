@@ -6,7 +6,7 @@
 
 /**
   \class KVReconRawDataAnalyser
-  \ingroup Analysis
+  \ingroup AnalysisInfra
   \brief Base class for user analysis of raw data with event reconstruction
 
   In this analysis, the event reconstruction is performed just before the user's analysis
