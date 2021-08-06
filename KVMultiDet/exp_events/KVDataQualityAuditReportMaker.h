@@ -9,7 +9,7 @@
 /**
  \class KVDataQualityAuditReportMaker
  \brief Produce graphs and histograms from KVDataQualityAudit
- \ingroup AnalysisInfra
+ \ingroup Analysis
 
  This is a helper class for extracting & presenting useful informations from a KVDataQualityAudit
  in the form of graphs and histograms.

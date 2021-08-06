@@ -6,6 +6,7 @@
 /**
  \class KVDataQualityAuditSelector_E789
  \brief Special audit preparation for E789
+ \ingroup AnalysisInfra
 
  Specific audit preparation class for E789, used during data reduction.
 
