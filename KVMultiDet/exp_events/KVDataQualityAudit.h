@@ -66,7 +66,7 @@ public:
       // watch the alignment !
       Double_t counts{0};
       Float_t emin{-1.0};
-      UShort_t A;
+      UShort_t A{0};
       void add(const KVReconstructedNucleus& N);
       void print() const;
       void merge(const isotope& isoto)
@@ -87,7 +87,7 @@ public:
       Double_t counts{0};
       Float_t emin{-1.0};
       UShort_t A{0};// default (calculated) mass given when no isotopic identification available
-      UChar_t Z;
+      UChar_t Z{0};
       std::map<int, isotope> isotopes;
       void add(const KVReconstructedNucleus& N);
       void print() const;

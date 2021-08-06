@@ -83,14 +83,13 @@ void KVDataQualityAudit::element::add(const KVReconstructedNucleus& N)
    // if isotopically identified, add to list of isotopes
    //
    // for calibrated particles, we store the minimum energy (=> threshold)
-   Z = N.GetZ();
+   if (N.GetZ() > 0) Z = N.GetZ();
    ++counts;
    if (N.IsCalibrated() && ((emin < 0) || (N.GetEnergy() < emin))) emin = N.GetEnergy();
    if (N.IsAMeasured()) {
       isotopes[N.GetA()].add(N);
    }
-   else
-      A = N.GetA(); // default mass for Z-only identification
+   else if (N.GetA() > 0) A = N.GetA(); // default mass for Z-only identification
 }
 
 void KVDataQualityAudit::element::print() const
