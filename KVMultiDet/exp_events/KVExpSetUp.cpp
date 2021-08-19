@@ -326,7 +326,6 @@ Bool_t KVExpSetUp::HandleRawDataEvent(KVRawDataReader* rawdata)
 {
    // Set fRawDataReader pointer in each sub-array and call prepare_to_handle_new_raw_data()
    // for each sub-array, before treating raw data.
-   Info("KVExpSetUp::HandleRawDataEvent", "called");
    TIter next_array(&fMDAList);
    KVMultiDetArray* mda;
    while ((mda = (KVMultiDetArray*)next_array())) {
