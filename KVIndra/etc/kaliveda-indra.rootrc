@@ -314,7 +314,7 @@ INDRADB.Codeurs:    Codeurs.dat
 # liste des detecteurs physiquement absents
 INDRADB.AbsentDet:	AbsentDetectors.dat
 # liste des detecteurs ne marchant pas ou eteints (out of order)
-INDRADB.OoODet:    OoODetectors.dat
+INDRADB.OoODet:    INDRA.OoODetectors.dat
 # liste des parametres d acquisition ne marchant pas (-1 sur l ensemble d un run)
 INDRADB.OoOACQPar:    OoOACQParameters.dat
 

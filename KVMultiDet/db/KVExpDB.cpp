@@ -323,10 +323,33 @@ Bool_t KVExpDB::OpenCalibFile(const Char_t* type, ifstream& fs) const
    //INDRA_camp5.INDRADB.Pedestals:      Pedestals5.dat
    //
    //where 'INDRA_camp5' is the name of the dataset in question.
-   //GetDBEnv() always returns the correct filename for the currently active dataset.
 
-   TString fullpath = Form("%s/%s", GetDataSetDir(), GetCalibFileName(type));
-   return KVBase::SearchAndOpenKVFile(fullpath, fs);
+   return KVBase::SearchAndOpenKVFile(GetCalibFileName(type), fs, GetDataSetDir());
+}
+
+Bool_t KVExpDB::FindCalibFile(const Char_t* type, TString& fullpath) const
+{
+   //Find calibration parameter file of given type. Return kTRUE if all OK.
+   //In this case fullpath contains the full path to the file.
+   //
+   //Types are defined in $KVROOT/KVFiles/.kvrootrc by lines such as (use INDRA as example)
+   //
+   //~~~~
+   //# Default name for file describing systems for each dataset.
+   //INDRADB.Systems:     Systems.dat
+   //~~~~
+   //
+   //A file with the given name will be looked for in the dataset calibration file
+   //directory given by GetDataSetDir()
+   //
+   //Filenames specific to a given dataset may also be defined:
+   //
+   //~~~~
+   //INDRA_camp5.INDRADB.Pedestals:      Pedestals5.dat
+   //~~~~
+   //
+   //where 'INDRA_camp5' is the name of the dataset in question.
+   return KVBase::SearchKVFile(GetCalibFileName(type), fullpath, GetDataSetDir());
 }
 
 //__________________________________________________________________________________________________________________
@@ -455,8 +478,8 @@ void KVExpDB::ReadComments()
 
    TString comments_file = GetCalibFileName("Comments");
    if (comments_file == "") return;
-   TString fullpath = Form("%s/%s", GetDataSetDir(), comments_file.Data());
-   if (gSystem->AccessPathName(fullpath)) return;
+   TString fullpath;
+   if (!FindCalibFile("Comments", fullpath)) return;
    Info("ReadComments", "Reading run comments in file %s...", fullpath.Data());
 
    KVFileReader fr;
@@ -491,3 +514,4 @@ void KVExpDB::ReadComments()
       }
    }
 }
+

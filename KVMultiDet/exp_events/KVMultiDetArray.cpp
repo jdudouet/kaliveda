@@ -3118,7 +3118,14 @@ void KVMultiDetArray::SetRawDataFromReconEvent(KVNameValueList& l)
 
 void KVMultiDetArray::MakeCalibrationTables(KVExpDB* db)
 {
-   // We look for a file with the name given by
+   // We first look for a file with the name given by
+   //
+   //    [dataset].[name].OoODetectors:      [name.OoODetectors.dat]
+   //
+   // which should contain the runlists for each malfunctioning detector.
+   // If found we add to the experiment database a table '[name].OoO Detectors' where [name] is the name of this array.
+   //
+   // Then we look for a file with the name given by
    //
    //    [dataset].[name].CalibrationFiles:      [CalibrationFiles.dat]
    //
@@ -3126,6 +3133,7 @@ void KVMultiDetArray::MakeCalibrationTables(KVExpDB* db)
    // If found we add to the experiment database a table '[name].Calibrations' where [name] is the name of this array,
    // containing all calibrations as KVDBParameterSet objects with the name of the detector concerned.
 
+   ReadOoODetectors(db);
    ReadCalibrationFiles(db);
 }
 
@@ -3403,5 +3411,111 @@ void KVMultiDetArray::CalculateIdentificationGrids()
    KVIDTelescope* idt;
    while ((idt = (KVIDTelescope*) nxtid())) {
       idt->CalculateDeltaE_EGrid("1-92", 0, 20);
+   }
+}
+
+void KVMultiDetArray::CheckStatusOfDetectors(KVDBRun* kvrun, const TString& myname)
+{
+   // Sets status of detectors (KVDetector::IsPresent() and KVDetector::IsWorking()) for a given run of a dataset.
+   //
+   // If 'myname' is given, we look in database table "myname.OoODets"
+
+   KVRList* absdet = (myname != "" ? kvrun->GetLinks(Form("%s.Absent Detectors", myname.Data())) : kvrun->GetLinks("Absent Detectors"));
+   KVRList* ooodet = (myname != "" ? kvrun->GetLinks(Form("%s.OoO Detectors", myname.Data())) : kvrun->GetLinks("OoO Detectors"));
+
+   TIter next(GetDetectors());
+   KVDetector* det;
+
+   Int_t ndet_absent = 0;
+   Int_t ndet_ooo = 0;
+   TString absent_dets, ooo_dets;
+
+   while ((det = (KVDetector*)next())) {
+      //Test de la presence ou non du detecteur
+      if (!absdet) {
+         det->SetPresent();
+      }
+      else {
+         if (absdet->FindObject(det->GetName(), "Absent Detector")) {
+            det->SetPresent(kFALSE);
+            if (ndet_absent) absent_dets += ",";
+            absent_dets += det->GetName();
+            ndet_absent += 1;
+         }
+         else {
+            det->SetPresent();
+         }
+      }
+      if (det->IsPresent()) {
+         //Test du bon fonctionnement ou non du detecteur
+         if (!ooodet) {
+            det->SetDetecting();
+         }
+         else {
+            if (ooodet->FindObject(det->GetName(), "OoO Detector")) {
+               det->SetDetecting(kFALSE);
+               if (ndet_ooo) ooo_dets += ",";
+               ooo_dets += det->GetName();
+               ndet_ooo += 1;
+            }
+            else {
+               det->SetDetecting();
+            }
+         }
+      }
+   }
+
+   if (ndet_absent) Info("CheckStatusOfDetectors", "%d detectors absent during run : %s", ndet_absent, absent_dets.Data());
+   else  Info("CheckStatusOfDetectors", "All detectors present during run");
+   if (ndet_ooo) Info("CheckStatusOfDetectors", "%d detectors malfunctioned during run : %s", ndet_ooo, ooo_dets.Data());
+   else Info("CheckStatusOfDetectors", "All detectors functioning during run");
+}
+
+void KVMultiDetArray::ReadOoODetectors(KVExpDB* db)
+{
+   // Read a file containing runlists for each temporarily non-functioning detector.
+   //
+   // The file should be in TEnv format like so:
+   //
+   //~~~~
+   // DET_1: 100-122,541-1938
+   // DET_2,DET_3: 91-765
+   //~~~~
+   //
+   // i.e. more than one detector can be associated with the same runs (comma-separated list of
+   // detector names) and the list of runs are given using KVNumberList syntax.
+   //
+   // The data is added to the database in a table '[name].OoO Detectors' with the name of this array.
+
+   TString fullpath;
+   if (!db->FindCalibFile("OoODet", fullpath)) return;
+
+   Info("ReadOoODetectors()", "Reading lists of out-of-order detectors...");
+   auto fOoODet = db->AddTable(Form("%s.OoO Detectors", GetName()), "Name of out of order detectors");
+
+   KVDBRecord* dbrec = 0;
+   TEnv env;
+   TEnvRec* rec = 0;
+   env.ReadFile(fullpath.Data(), kEnvAll);
+   TIter it(env.GetTable());
+
+   while ((rec = (TEnvRec*)it.Next())) {
+      KVString srec(rec->GetName());
+      KVNumberList nl(rec->GetValue());
+      if (srec.Contains(",")) {
+         srec.Begin(",");
+         while (!srec.End()) {
+            dbrec = new KVDBRecord(srec.Next(), "OoO Detector");
+            dbrec->AddKey("Runs", "List of Runs");
+            fOoODet->AddRecord(dbrec);
+            db->LinkRecordToRunRange(dbrec, nl);
+         }
+      }
+      else {
+         dbrec = new KVDBRecord(rec->GetName(), "OoO Detector");
+         dbrec->AddKey("Runs", "List of Runs");
+         fOoODet->AddRecord(dbrec);
+         db->LinkRecordToRunRange(dbrec, nl);
+      }
    }
 }

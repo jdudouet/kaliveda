@@ -58,6 +58,7 @@ public:
 
    void MakeCalibrationTables(KVExpDB*);
    void SetCalibratorParameters(KVDBRun*, const TString& = "");
+   void CheckStatusOfDetectors(KVDBRun*, const TString& = "");
 
    ClassDef(KVExpSetUp, 1) //Describe an experimental set-up made of several KVMultiDetArray objects
 };

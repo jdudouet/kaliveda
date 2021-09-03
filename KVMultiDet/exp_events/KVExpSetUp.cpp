@@ -245,6 +245,16 @@ void KVExpSetUp::SetCalibratorParameters(KVDBRun* r, const TString&)
    }
 }
 
+void KVExpSetUp::CheckStatusOfDetectors(KVDBRun* r, const TString&)
+{
+   // Check status (present, working) for all detectors for the run
+   TIter next_array(&fMDAList);
+   KVMultiDetArray* mda;
+   while ((mda = (KVMultiDetArray*)next_array())) {
+      mda->CheckStatusOfDetectors(r, mda->GetName());
+   }
+}
+
 #ifdef WITH_MFM
 Bool_t KVExpSetUp::handle_raw_data_event_mfmframe(const MFMCommonFrame& mfmframe)
 {

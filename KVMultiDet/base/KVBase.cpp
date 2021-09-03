@@ -396,25 +396,32 @@ Bool_t KVBase::SearchKVFile(const Char_t* name, TString& fullpath,
    //  if 'name' = absolute path the function returns kTRUE if the file exists
    //  if name != absolute path:
    //      1. a. if 'kvsubdir'="" (default) look for file in $(pkgdatadir) directory
-   //      1. b. if 'kvsubdir'!="" look for file in $(pkgdatadir)/'kvsubdir'
+   //      1. b. if 'kvsubdir'!="":
+   //               if 'kvsubdir' is an absolute pathname, look in 'kvsubdir'
+   //               if 'kvsubdir' is not an absolute pathname,
+   //                    look in '$(pkdatadir)/kvsubdir'
    //      2. look for file with this name in user's home directory
    //      3. look for file with this name in working directory
    //in all cases the function returns kTRUE if the file was found.
    //'fullpath' then contains the absolute path to the file
 
    if (gSystem->IsAbsoluteFileName(name)) {
-      //absolute path
+      // absolute path
       fullpath = name;
       return !gSystem->AccessPathName(name);
    }
 
    TString kvfile_dir;
    if (strcmp(kvsubdir, "")) {
-      //subdirectory name given
-      kvfile_dir = GetDATADIRFilePath(kvsubdir);
+      // subdirectory hint given
+      if (!gSystem->IsAbsoluteFileName(kvsubdir))
+         kvfile_dir = GetDATADIRFilePath(kvsubdir); // relative path - assume in $(pkgdatadir)
+      else
+         kvfile_dir = kvsubdir; // absolute path - use as is
    }
-   else
+   else // no subdirectory hint given
       kvfile_dir = GetDATADIRFilePath();
+
    return SearchFile(name, fullpath, 3, kvfile_dir.Data(),
                      gSystem->HomeDirectory(), gSystem->pwd());
 }
@@ -430,10 +437,13 @@ Bool_t KVBase::SearchAndOpenKVFile(const Char_t* name, ifstream& file, const Cha
    //  if name != absolute path:
    //      1. a. if 'kvsubdir'="" (default) look for file in $(pkdatadir) directory
    //      1. b. if 'kvsubdir'!="" look for file in $(pkdatadir)/'kvsubdir'
+   //               if 'kvsubdir' is an absolute pathname, look in 'kvsubdir'
+   //               if 'kvsubdir' is not an absolute pathname,
+   //                    look in '$(pkdatadir)/kvsubdir'
    //      2. look for file with this name in user's home directory
    //      3. look for file with this name in working directory
    //if the file is not found, kFALSE is returned.
-   //if file is found and can be opened, file' is then an ifstream connected to the open (ascii) file
+   //if file is found and can be opened, 'file' is then an ifstream connected to the open (ascii) file
    //
    //LOCKFILE:
    //If a KVLockfile pointer is given, we use it to get a lock on the file before opening it.

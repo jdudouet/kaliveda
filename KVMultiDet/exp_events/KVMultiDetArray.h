@@ -164,6 +164,7 @@ protected:
    unique_ptr<KVFileReader> GetKVFileReader(KVExpDB* db, const Char_t* meth, const Char_t* keyw);
    void ReadCalibrationFiles(KVExpDB* db);
    void ReadCalibFile(const Char_t* filename, KVExpDB* db, KVDBTable* calib_table);
+   void ReadOoODetectors(KVExpDB* db);
 public:
    KVNameValueList& GetReconParameters()
    {
@@ -491,6 +492,7 @@ public:
 
    virtual void MakeCalibrationTables(KVExpDB*);
    virtual void SetCalibratorParameters(KVDBRun*, const TString& = "");
+   virtual void CheckStatusOfDetectors(KVDBRun*, const TString& = "");
 
    ClassDef(KVMultiDetArray, 7) //Base class for multidetector arrays
 };

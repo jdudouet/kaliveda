@@ -36,6 +36,7 @@ public:
    KVExpDB(const Char_t* name);
    KVExpDB(const Char_t* name, const Char_t* title);
 
+   Bool_t FindCalibFile(const Char_t* type, TString& fullpath) const;
    void SetDataSet(const TString& s)
    {
       fDataSet = s;

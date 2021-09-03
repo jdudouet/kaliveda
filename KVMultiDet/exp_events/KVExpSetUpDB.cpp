@@ -9,6 +9,17 @@
 
 ClassImp(KVExpSetUpDB)
 
+void KVExpSetUpDB::ReadOoODetectors(const TString&)
+{
+   // Overrides base class method.
+   //
+   // Calls KVExpDB::ReadOoODetectors for each multidetector in the KVExpSetUp in turn with the
+   // name of the array as value of the argument.
+   //
+   // This will create a table for each multidetector with names: NAME1.OoO Detectors, NAME2.OoODetectors, etc.
+
+}
+
 KVExpSetUpDB::KVExpSetUpDB()
    : KVExpDB()
 {
@@ -41,12 +52,7 @@ KVExpSetUpDB::~KVExpSetUpDB()
 void KVExpSetUpDB::Build()
 {
    // Build the database.
-   // Runs & Systems tables are handled by us, calibrations are handled by
-   // individual databases for each multidetector
-   // The classes for these are deduced from the variable
-   //   [dataset].ExpSetUp.DataBases: [dataset1] [dataset2] ...
-   // containing the names of datasets for which we should use the defined
-   // database plugin
+   // Runs & Systems tables are handled by us, calibrations are handled by each multidetector
 
    FillRunsTable();
    ReadComments();

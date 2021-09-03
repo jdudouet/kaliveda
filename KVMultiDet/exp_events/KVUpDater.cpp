@@ -61,6 +61,7 @@ void KVUpDater::SetParameters(UInt_t run)
    // Set parameters of multidetector for this run
    //This will:
    //      set the target corresponding to the run
+   //      set detector statuses (present/working) for the run
    //      set calibration parameters for the run
    //      set identification parameters for the run
 
@@ -73,6 +74,7 @@ void KVUpDater::SetParameters(UInt_t run)
       return;
    }
    SetTarget(kvrun);
+   CheckStatusOfDetectors(kvrun);
    SetCalibrationParameters(run);
    SetIdentificationParameters(run);
 }
@@ -146,6 +148,14 @@ void KVUpDater::SetCalibrationParameters(UInt_t run)
       return;
    }
    SetCalibParameters(kvrun);
+}
+
+void KVUpDater::CheckStatusOfDetectors(KVDBRun* r)
+{
+   // Check status (present, working) of each detector for run
+   cout << "Checking detectors statuses of multidetector array for run " << r->GetName() << ":" <<
+        endl;
+   fArray->CheckStatusOfDetectors(r);
 }
 
 void KVUpDater::SetCalibParameters(KVDBRun* r)

@@ -15,6 +15,8 @@
  */
 class KVExpSetUpDB : public KVExpDB {
 
+   virtual void ReadOoODetectors(const TString& = "");
+
 public:
    KVExpSetUpDB();
    KVExpSetUpDB(const Char_t* name);

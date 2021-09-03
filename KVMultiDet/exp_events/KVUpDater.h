@@ -35,6 +35,7 @@ public:
    virtual void SetParameters(UInt_t);
    virtual void SetIdentificationParameters(UInt_t) ;
    virtual void SetCalibrationParameters(UInt_t);
+   virtual void CheckStatusOfDetectors(KVDBRun*);
    virtual void SetTarget(KVDBRun*);
    virtual void SetIDGrids(UInt_t);
    virtual void SetCalibParameters(KVDBRun*);
