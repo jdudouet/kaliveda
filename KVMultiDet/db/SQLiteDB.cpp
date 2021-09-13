@@ -322,7 +322,7 @@ namespace KVSQLite {
       fInserting = false;
    }
 
-   bool database::select_data(const TString& table, const TString& columns, const TString& selection, bool distinct, const TString& anything_else)
+   bool database::select_data(const TString& table, const TString& columns, const TString& selection, bool distinct, const TString& anything_else) const
    {
       // Select data in database from given table according to
       //~~~~
@@ -401,7 +401,7 @@ namespace KVSQLite {
       return false;
    }
 
-   bool database::get_next_result()
+   bool database::get_next_result() const
    {
       // Retrieve next result row resulting from previous call to select_data()
       // \returns kFALSE when no more data is retrieved
@@ -514,7 +514,7 @@ namespace KVSQLite {
       delete_data(name);
    }
 
-   int database::count(const TString& table, const TString& column, const TString& selection, bool distinct)
+   int database::count(const TString& table, const TString& column, const TString& selection, bool distinct) const
    {
       // Returns number of rows in table for which selection holds true:
       //
