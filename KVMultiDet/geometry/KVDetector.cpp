@@ -486,7 +486,7 @@ Bool_t KVDetector::IsCalibrated(const KVNameValueList& params) const
    // this signal can be calculated
 
    KVCalibratedSignal* e_sig = dynamic_cast<KVCalibratedSignal*>(GetDetectorSignal("Energy"));
-   return (e_sig && e_sig->IsAvailableFor(params));
+   return (e_sig && e_sig->IsAvailableFor(params) && IsOK());
 }
 
 //_______________________________________________________________________________
