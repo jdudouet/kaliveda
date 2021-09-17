@@ -71,18 +71,20 @@ void KVFAZIAIDSiPSA::Initialize()
    // Initialisation of grid is performed here.
    // IsReadyForID() will return kTRUE if a grid is associated to this telescope for the current run.
 //printf("Initializing SiPSA\n");
-   IGrid = (KVIDZAGrid*) GetIDGrid(); // for the moment we defined only Igrids -> to be modified latter
-   fSi = (KVFAZIADetector*)GetDetector(1);
-   if (IGrid) {
-      SetHasMassID(IGrid->HasMassIDCapability());
-      IGrid->Initialize();
-      SetBit(kReadyForID);
-   }
-   else {
-      ResetBit(kReadyForID);
-   }
+
+   KVIDTelescope::Initialize();
+//   IGrid = (KVIDZAGrid*) GetIDGrid(); // for the moment we defined only Igrids -> to be modified latter
+//   fSi = (KVFAZIADetector*)GetDetector(1);
+//   if (IGrid) {
+//      SetHasMassID(IGrid->HasMassIDCapability());
+//      IGrid->Initialize();
+//      SetBit(kReadyForID);
+//   }
+//   else {
+//      ResetBit(kReadyForID);
+//   }
    if (!gDataSet->HasCalibIdentInfos()) { // for filtering simulations
-      SetBit(kReadyForID, fSi->IsLabelled("SI1"));// only activate PSA for SI1
+      SetBit(kReadyForID, GetDetector(1)->IsLabelled("SI1"));// only activate PSA for SI1
       // if not, no particles are identified in SI1-SI2
    }
 }

@@ -53,36 +53,41 @@ Bool_t KVFAZIAIDSiCsI::Identify(KVIdentificationResult* idr, Double_t x, Double_
 
 //____________________________________________________________________________________
 
-void KVFAZIAIDSiCsI::Initialize()
-{
-   // Initialisation of telescope before identification.
-   // This method MUST be called once before any identification is attempted.
-   // Initialisation of grid is performed here.
-   // IsReadyForID() will return kTRUE if a grid is associated to this telescope for the current run.
+//void KVFAZIAIDSiCsI::Initialize()
+//{
+//   // Initialisation of telescope before identification.
+//   // This method MUST be called once before any identification is attempted.
+//   // Initialisation of grid is performed here.
+//   // IsReadyForID() will return kTRUE if a grid is associated to this telescope for the current run.
 
-   ResetBit(kReadyForID);
-   TheGrid = (KVIDZAGrid*) GetIDGrid();
-   if (TheGrid) {
-      //printf("Grid Found\n");
-      SetHasMassID(TheGrid->HasMassIDCapability());
-      TheGrid->Initialize();
-      fBelowProton = (KVIDCutLine*)TheGrid->GetCut("PIEDESTAL");
-      fSiThreshold = (KVIDCutLine*)TheGrid->GetCut("threshold");
-      // make sure both x & y axes' signals are well set up
-      if (!fGraphCoords[TheGrid].fVarX || !fGraphCoords[TheGrid].fVarY) {
-         Warning("Initialize",
-                 "ID tel. %s: grid %s has undefined VarX(%s:%p) or VarY(%s:%p) - WILL NOT USE",
-                 GetName(), TheGrid->GetName(), TheGrid->GetVarX(), fGraphCoords[TheGrid].fVarX, TheGrid->GetVarY(), fGraphCoords[TheGrid].fVarY);
-      }
-      else
-         SetBit(kReadyForID);
-   }
-   else {
-      ResetBit(kReadyForID);
-   }
-   if (!gDataSet->HasCalibIdentInfos()) {// for filtering simulations
-      SetBit(kReadyForID);
-      SetHasMassID();// in principle mass identification always possible
-   }
-}
+//    KVIDTelescope::Initialize();
+
+//   ResetBit(kReadyForID);
+//   TheGrid = (KVIDZAGrid*) GetIDGrid();
+//   if (TheGrid) {
+//      //printf("Grid Found\n");
+//      SetHasMassID(TheGrid->HasMassIDCapability());
+//      TheGrid->Initialize();
+//      fBelowProton = (KVIDCutLine*)TheGrid->GetCut("PIEDESTAL");
+//      fSiThreshold = (KVIDCutLine*)TheGrid->GetCut("threshold");
+//      // make sure both x & y axes' signals are well set up
+//      if (!fGraphCoords[TheGrid].fVarX || !fGraphCoords[TheGrid].fVarY) {
+//         Warning("Initialize",
+//                 "ID tel. %s: grid %s has undefined VarX(%s:%p) or VarY(%s:%p) - WILL NOT USE",
+//                 GetName(), TheGrid->GetName(), TheGrid->GetVarX(), fGraphCoords[TheGrid].fVarX, TheGrid->GetVarY(), fGraphCoords[TheGrid].fVarY);
+//      }
+//      else
+//         SetBit(kReadyForID);
+//   }
+//   else {
+//      ResetBit(kReadyForID);
+//   }
+
+
+
+//   if (!gDataSet->HasCalibIdentInfos()) {// for filtering simulations
+//      SetBit(kReadyForID);
+//      SetHasMassID();// in principle mass identification always possible
+//   }
+//}
 

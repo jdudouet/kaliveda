@@ -27,7 +27,7 @@ public:
 
    virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
 
-   virtual void Initialize();
+//   virtual void Initialize();
 
    KVIDCutLine* GetBelowProtonLine() const
    {
