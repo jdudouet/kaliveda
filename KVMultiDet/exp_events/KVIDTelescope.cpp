@@ -93,6 +93,16 @@ void KVIDTelescope::Initialize(void)
    //~~~~~~~~~~~~~~~~
 
    ResetBit(kReadyForID);
+
+   // looping over detectors to check they are working
+   // if one of them is not -> set kReadyForID to false
+   TIter it(GetDetectors());
+   KVDetector* det = 0;
+   while ((det = (KVDetector*)it())) if (!det->IsOK()) {
+         ResetBit(kReadyForID);
+         return;
+      }
+
    if (GetIDGrid()) {
       KVIDGraph* gr;
       TIter it(GetListOfIDGrids());
