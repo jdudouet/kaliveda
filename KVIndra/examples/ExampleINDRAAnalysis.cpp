@@ -19,37 +19,31 @@ void ExampleINDRAAnalysis::InitAnalysis(void)
    /* These will be automatically calculated for each event before
       your Analysis() method will be called                        */
    auto ztot = AddGV("KVZtot", "ztot");                 // total charge
-#ifdef USING_ROOT6
    // complete event selection: total charge
    ztot->SetEventSelection([&](const KVVarGlob * var) {
       return var->GetValue() >= 0.8 * ztot_sys; // ztot_sys will be set in InitRun
    });
-#endif
+
    auto zvtot = AddGV("KVZVtot", "zvtot");              // total Z*vpar
    zvtot->SetMaxNumBranches(1);    // only write "Z" component in TTree
-#ifdef USING_ROOT6
    // complete event selection: total pseudo-momentum
    zvtot->SetEventSelection([&](const KVVarGlob * var) {
       return var->GetValue() >= 0.8 * zvtot_sys
              && var->GetValue() <= 1.1 * zvtot_sys; // zvtot_sys will be set in InitRun
    });
-#endif
    AddGV("KVMult", "mtot");                             // total multiplicity
    AddGV("KVEtransLCP", "et12");                        // total LCP transverse energy
    auto gv = AddGV("KVFlowTensor", "tensor");
    gv->SetOption("weight", "RKE");
    gv->SetFrame("CM");// optional - this is the default frame
-#ifdef USING_ROOT6
    gv->SetSelection({"Z>4", [](const KVNucleus * n)
    {
       return n->GetZ() > 4;
-   }
-                    });   // relativistic CM KE tensor for fragments
+   }});   // relativistic CM KE tensor for fragments
    // Define ellipsoid frame (wrt axes of flow tensor ellipsoid)
    gv->SetNewFrameDefinition([](KVEvent * e, const KVVarGlob * vg) {
       e->SetFrame("EL", "CM", ((KVFlowTensor*)vg)->GetFlowReacPlaneRotation());
    });
-#endif
 
    /*** DECLARING SOME HISTOGRAMS ***/
    AddHisto(new TH1F("zdist", "Charge distribution", 100, -.5, 99.5));
@@ -86,10 +80,9 @@ void ExampleINDRAAnalysis::InitRun(void)
    // set title of TTree with name of analysed system
    GetTree("myTree")->SetTitle(GetCurrentRun()->GetSystemName());
 
-#ifdef USING_ROOT6
    // Reject events with less identified particles than the acquisition multiplicity trigger
    SetTriggerConditionsForRun(GetCurrentRun()->GetNumber());
-#endif
+
    // retrieve system parameters for complete event selection
    const KV2Body* kin = gDataAnalyser->GetKinematics();
    zvtot_sys = kin->GetNucleus(1)->GetVpar() * kin->GetNucleus(1)->GetZ();
@@ -102,11 +95,6 @@ Bool_t ExampleINDRAAnalysis::Analysis(void)
    // Analysis method called event by event.
    // The current event can be accessed by a call to method GetEvent().
    // See KVINDRAReconEvent documentation for the available methods.
-
-#ifndef USING_ROOT6
-   // deprecated rejection of events based on DAQ trigger conditions
-   if (!GetEvent()->IsOK()) return kTRUE;
-#endif
 
    GetGVList()->FillBranches(); // update values of all global variable branches
 

@@ -5,7 +5,7 @@
 /*
    Generate and compile analysis classes for a given dataset & analysis task:
 
-   Usage: generate_compile_example_analysis [dataset] [task keywords] [classname]
+   Usage: generate_compile_example_analysis [module] [dataset] [task keywords] [classname]
 
       [module] :        name of module in sources
       [dataset] :       name of dataset
@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 {
    if (argc < 5) {
       std::cout << "Generate and compile analysis classes for a given dataset & analysis task:\n" << std::endl;
-      std::cout << "Usage: generate_compile_example_analysis [dataset] [task keywords] [classname]\n" << std::endl;
+      std::cout << "Usage: generate_compile_example_analysis [module] [dataset] [task keywords] [classname]\n" << std::endl;
       std::cout << "   [module] :        name of module in sources" << std::endl;
       std::cout << "   [dataset] :       name of dataset" << std::endl;
       std::cout << "   [task keywords] : type of analysis task (RawAnal;RawReconAnal;ReconAnal;SimAnal;FiltAnal)" << std::endl;

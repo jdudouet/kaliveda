@@ -8,7 +8,7 @@
  Write a detailed documentation for your class here, see doxygen manual for help.
 
  \author John Frankland
- \date Wed May 26 16:01:10 2021
+ \date Thu Sep 23 11:11:10 2021
 */
 
 #include "KVINDRAEventSelector.h"

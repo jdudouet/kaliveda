@@ -6,3 +6,4 @@ add_executable(generate_compile_example_analysis generate_compile_example_analys
 target_link_libraries(generate_compile_example_analysis ${KVMultiDet_LIB_LIST})
 
 install(TARGETS generate_compile_example_analysis RUNTIME DESTINATION bin)
+install(PROGRAMS make_all_examples_from_templates.sh DESTINATION bin)
