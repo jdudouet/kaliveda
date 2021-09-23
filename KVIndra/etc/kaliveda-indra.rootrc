@@ -49,6 +49,8 @@ INDRA_camp1.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_camp1.HasCalibIdentInfos:   no
 INDRA_camp1.DataSet.RunFile.DoNotDelete: raw dst
 INDRA_camp1.DataSet.RunFileClass.raw:    GANIL
+INDRA_camp1.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_camp1.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
 INDRA_camp1.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
 INDRA_camp1.DataQualityAuditPreparation.DataAnalysisTask.Prereq: root
 INDRA_camp1.DataQualityAuditPreparation.DataAnalysisTask.Analyser:     INDRAReconData
@@ -63,6 +65,8 @@ INDRA_camp2.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_camp2.HasCalibIdentInfos:   no
 INDRA_camp2.DataSet.RunFile.DoNotDelete: raw dst
 INDRA_camp2.DataSet.RunFileClass.raw:    GANIL
+INDRA_camp2.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_camp2.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
 INDRA_camp2.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
 INDRA_camp2.DataQualityAuditPreparation.DataAnalysisTask.Prereq: root
 
