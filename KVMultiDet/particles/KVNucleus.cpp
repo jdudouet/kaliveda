@@ -174,9 +174,9 @@ const Char_t* KVNucleus::GetSymbol(Option_t* opt) const
       if (Mpfx) symname.Form("%d%s", a, fElements[z]);
       else symname = fElements[z];
    }
-   else
-      symname = "";
-
+   else {
+      symname = Form("Z%dA%d", z, a);
+   }
    return symname.Data();
 }
 const Char_t* KVNucleus::GetLatexSymbol(Option_t* opt) const
@@ -228,20 +228,29 @@ Int_t KVNucleus::IsMassGiven(const Char_t* isotope)
 
 void KVNucleus::Set(const Char_t* isotope)
 {
-   //Set nucleus' Z & A using chemical symbol e.g. Set("12C") or Set("233U") etc.
+   //Set nucleus' Z & A using chemical symbol e.g. Set("12C") or Set("233U") or for unknown symbol Set("Z150A400") etc.
    Int_t A;
+   Int_t Z;
    Char_t name[5];
    TString tmp(isotope);
    if (tmp.BeginsWith("nat"))
       tmp.Remove(0, 3);
-   if (sscanf(tmp.Data(), "%d%s", &A, name) == 2) {
-      //name given in form "208Pb"
-      SetZFromSymbol(name);
-      SetA(A);
+
+   if (tmp.BeginsWith("Z")) {
+      if (sscanf(tmp.Data(), "Z%dA%d", &Z, &A) == 2) {
+         SetZandA(Z, A);
+      }
    }
-   else if (sscanf(tmp.Data(), "%s", name) == 1) {
-      //name given in form "Pb"
-      SetZFromSymbol(name);
+   else {
+      if (sscanf(tmp.Data(), "%d%s", &A, name) == 2) {
+         //name given in form "208Pb"
+         SetZFromSymbol(name);
+         SetA(A);
+      }
+      else if (sscanf(tmp.Data(), "%s", name) == 1) {
+         //name given in form "Pb"
+         SetZFromSymbol(name);
+      }
    }
 }
 
