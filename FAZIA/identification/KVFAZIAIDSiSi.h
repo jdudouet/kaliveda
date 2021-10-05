@@ -11,6 +11,8 @@ class KVFAZIAIDSiSi : public KVFAZIAIDTelescope {
 public:
    KVFAZIAIDSiSi();
    virtual ~KVFAZIAIDSiSi();
+//   virtual void SetIdentificationStatus(KVReconstructedNucleus* n);
+
 
    ClassDef(KVFAZIAIDSiSi, 1) //identification telescope for FAZIA Si-Si idcards
 };

@@ -14,6 +14,7 @@ class KVFAZIAIDTelescope : public KVIDTelescope {
 
 protected:
    static TF1* fMassIDProb;
+   double fMaxZ, fSigmaZ;
 
 public:
    enum {                       //determine identification code

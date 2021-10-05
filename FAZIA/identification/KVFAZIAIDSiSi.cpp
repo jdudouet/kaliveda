@@ -23,10 +23,18 @@ KVFAZIAIDSiSi::KVFAZIAIDSiSi()
    SetType("Si-Si");
    set_id_code(kSi1Si2);
    SetHasMassID(kTRUE);
+   fMaxZ = 22.5;
+   fSigmaZ = .5;
 }
 
 KVFAZIAIDSiSi::~KVFAZIAIDSiSi()
 {
    // Destructor
 }
+
+//void KVFAZIAIDSiSi::SetIdentificationStatus(KVReconstructedNucleus *n)
+//{
+//    fMassIDProb->SetParameters(22.5, .5);
+//    KVFAZIAIDTelescope::SetIdentificationStatus(n);
+//}
 

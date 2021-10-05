@@ -48,6 +48,9 @@ KVFAZIAIDSiPSA::KVFAZIAIDSiPSA()
    }
    SetType("SiPSA");
    set_id_code(kSi1);
+   fMaxZ = 18.5;
+   fSigmaZ = .4;
+
 }
 
 KVFAZIAIDSiPSA::~KVFAZIAIDSiPSA()
@@ -116,13 +119,18 @@ void KVFAZIAIDSiPSA::SetIdentificationStatus(KVReconstructedNucleus* n)
    // If A is not measured, we make sure the KE of the particle corresponds to the simulated one
 
    n->SetZMeasured();
-   fMassIDProb->SetParameters(18.5, .4);
+   fMassIDProb->SetParameters(fMaxZ, fSigmaZ);
    Bool_t okmass = (n->GetZ() < 17) || (n->GetZ() < 22 && gRandom->Uniform() < fMassIDProb->Eval(n->GetZ()));
    okmass = okmass && (n->GetEnergy() >= fAThreshold->Eval(n->GetZ()));
+
+//   Info("SetIdentificationStatus","%s : %lf %lf",ClassName(),fMassIDProb->GetParameter(0),fMassIDProb->GetParameter(1));
+
    if (okmass) {
+      if (n->GetParameters()->HasParameter("OriginalMass")) n->SetA(n->GetParameters()->GetIntValue("OriginalMass"));
       n->SetAMeasured();
    }
    else {
+      n->GetParameters()->SetValue("OriginalMass", n->GetA());
       double e = n->GetE();
       n->SetZ(n->GetZ());
       n->SetE(e);

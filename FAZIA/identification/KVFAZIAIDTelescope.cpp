@@ -22,7 +22,9 @@ KVFAZIAIDTelescope::KVFAZIAIDTelescope()
    // Default constructor
    if (!fMassIDProb) {
       fMassIDProb = new TF1("FAZIA-MassIDProb", "1./(exp((x-[0])/[1])+1)", 0, 100);
-      fMassIDProb->SetParameters(22.5, .5);
+      fMaxZ = 22.5;
+      fSigmaZ = .5;
+//      fMassIDProb->SetParameters(22.5, .5);
    }
 }
 
@@ -90,8 +92,13 @@ void KVFAZIAIDTelescope::SetIdentificationStatus(KVReconstructedNucleus* n)
    // Z-dependence of A identification:
    // fMassIDProb parameters has to set in the Initialize method
 
+
+   fMassIDProb->SetParameters(fMaxZ, fSigmaZ);
+
+//    Info("SetIdentificationStatus","%s : %lf %lf",ClassName(),fMassIDProb->GetParameter(0),fMassIDProb->GetParameter(1));
+
    n->SetZMeasured();
-   Bool_t okmass = (gRandom->Uniform() < fMassIDProb->Eval(n->GetZ()));
+   Bool_t okmass = (gRandom->Uniform() < fMassIDProb->Eval(n->GetZ())) && CanIdentify(n->GetZ(), n->GetA());
 
    if (okmass) {
       //reset A to the original mass in case of multiple call of this method

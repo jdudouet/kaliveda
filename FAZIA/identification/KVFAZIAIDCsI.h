@@ -22,7 +22,7 @@ public:
       // Returns kTRUE if this telescope is theoretically capable of identifying a given nucleus,
       // without considering thresholds etc.
       // For CsI Rapide-Lente detectors, identification is typically possible up to Z=4
-      return (Z < 5);
+      return (Z > 0) && (Z < 5);
    }
 
    ClassDef(KVFAZIAIDCsI, 1) //id telescope to manage FAZIA CsI identification

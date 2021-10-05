@@ -22,7 +22,9 @@ KVFAZIAIDSiCsI::KVFAZIAIDSiCsI()
    set_id_code(kSi2CsI);
    fBelowProton = 0;
    fSiThreshold = 0;
-   fMassIDProb->SetParameters(16.5, .4);
+   fMaxZ = 16.5;
+   fSigmaZ = .4;
+
 }
 
 KVFAZIAIDSiCsI::~KVFAZIAIDSiCsI()
@@ -35,7 +37,6 @@ KVFAZIAIDSiCsI::~KVFAZIAIDSiCsI()
 Bool_t KVFAZIAIDSiCsI::Identify(KVIdentificationResult* idr, Double_t x, Double_t y)
 {
    //Particle identification and code setting using identification grid (class KVIDZAGrid).
-
    Bool_t ok = KVFAZIAIDTelescope::Identify(idr, x, y);
 
    Double_t csi, si2;
