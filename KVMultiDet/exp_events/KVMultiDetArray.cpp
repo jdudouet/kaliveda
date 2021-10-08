@@ -3505,7 +3505,7 @@ void KVMultiDetArray::ReadOoODetectors(KVExpDB* db)
       if (srec.Contains(",")) {
          srec.Begin(",");
          while (!srec.End()) {
-            dbrec = new KVDBRecord(srec.Next(), "OoO Detector");
+            dbrec = new KVDBRecord(srec.Next(kTRUE), "OoO Detector");
             dbrec->AddKey("Runs", "List of Runs");
             fOoODet->AddRecord(dbrec);
             db->LinkRecordToRunRange(dbrec, nl);
