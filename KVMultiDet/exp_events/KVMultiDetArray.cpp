@@ -3529,7 +3529,7 @@ void KVMultiDetArray::CheckStatusOfDetectors(KVDBRun* kvrun, const TString& myna
          det->SetPresent();
       }
       else {
-         if (absdet->FindObject(det->GetName(), "Absent Detector")) {
+         if (absdet->FindObject(det->GetName())) {
             det->SetPresent(kFALSE);
             if (ndet_absent) absent_dets += ",";
             absent_dets += det->GetName();
@@ -3545,7 +3545,7 @@ void KVMultiDetArray::CheckStatusOfDetectors(KVDBRun* kvrun, const TString& myna
             det->SetDetecting();
          }
          else {
-            if (ooodet->FindObject(det->GetName(), "OoO Detector")) {
+            if (ooodet->FindObject(det->GetName())) {
                det->SetDetecting(kFALSE);
                if (ndet_ooo) ooo_dets += ",";
                ooo_dets += det->GetName();
