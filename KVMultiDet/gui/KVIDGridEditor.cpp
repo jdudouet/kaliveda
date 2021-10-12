@@ -1395,7 +1395,8 @@ void KVIDGridEditor::NewCut()
    else cut_class = cut_types;
 
    cut_class.Prepend("KVID");
-   TheGrid->DrawAndAdd("CUT", cut_class.Data());
+   if (!cut_class.Contains("ZoneContour")) TheGrid->DrawAndAdd("CUT", cut_class.Data());
+   else                                   TheGrid->DrawAndAdd("ID", cut_class.Data());
 
    label->SetFillColor(fBlackMode ? kBlack : kWhite);
    UpdateViewer();
