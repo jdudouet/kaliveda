@@ -28,6 +28,8 @@ void KVIDCsI::Initialize()
    // then it is ready to identify particles, after we initialise
    // the grid
 
+   KVIDTelescope::Initialize();
+
    if (GetDetectors()->GetEntries() == 1 && GetDetector(1)->IsType("CsI") && GetIDGrid()) {
       GetIDGrid()->Initialize();
       SetBit(kReadyForID);
