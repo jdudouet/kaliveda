@@ -1,6 +1,7 @@
 //Created by KVClassFactory on Wed Jul 18 11:55:11 2012
 //Author: John Frankland,,,
 
+#include "KVUnownedList.h"
 #include "KVSimDirGUI.h"
 #include "KVDataSetManager.h"
 #include "KVBatchSystemManager.h"
@@ -750,7 +751,7 @@ void KVSimDirGUI::SelectSystem(const char* sysname)
    if (sys) {
       fSystem = sysname;
       fRun = "";
-      KVList* runs = sys->GetRuns();
+      auto runs = sys->GetRuns();
       KVDBRun* dbr;
       TIter next(runs);
       int i = 1;

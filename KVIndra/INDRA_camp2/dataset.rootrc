@@ -1,0 +1,26 @@
++DataSet:    INDRA_camp2
+INDRA_camp2.DataSet.Title:    2nd INDRA campaign (1994)
+INDRA_camp2.DataSet.RepositoryDir:   campagne2
+INDRA_camp2.KVDataSet.DataTypes: raw dst root
+INDRA_camp2.Reconstruction.DataAnalysisTask.Prereq:     XXX
+INDRA_camp2.DataSet.RunFileName.raw:    run%R.raw
+INDRA_camp2.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_camp2.HasCalibIdentInfos:   no
+INDRA_camp2.DataSet.RunFile.DoNotDelete: raw dst
+INDRA_camp2.DataSet.RunFileClass.raw:    GANIL
+INDRA_camp2.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_camp2.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_camp2.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+INDRA_camp2.DataQualityAuditPreparation.DataAnalysisTask.Prereq: root
+
+INDRA_camp2.INDRADB.Runlist.Separator:       <TAB>
+
++Plugin.KVMultiDetArray:    INDRA_camp2    KVINDRA     KVIndraexp_events    "KVINDRA()"
++Plugin.KVExpDB:    INDRA_camp2    KVINDRADB2     KVIndradb    "KVINDRADB2(const Char_t*)"
+
+# FREQUENCY OF SELECTEUR GENE DIRECT
+# these functions give the mean frequency as a function of run number
+# frequencies were extracted from scaler buffers in the data
+INDRA_camp2.GDir.Freq: 170.614+(x-1005)*0.00345344
+
+INDRA_camp2.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI PHOS

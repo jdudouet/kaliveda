@@ -426,6 +426,8 @@ add_subdirectory(examples_builder)
 
 #---set up list of '.rootrc' config files to be read by KVBase::InitEnvironment
 get_property(KALIVEDA_CONF_FILES GLOBAL PROPERTY KALIVEDA_CONF_FILES)
+get_property(DATASET_ROOTRC_FILES GLOBAL PROPERTY DATASET_ROOTRC_FILES)
+list(APPEND KALIVEDA_CONF_FILES ${DATASET_ROOTRC_FILES})
 #-at IN2P3 Computing Centre, we need to tack on some infos for access
 #-to the batch system & data repositories
 if(CCIN2P3_BUILD)

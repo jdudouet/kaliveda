@@ -21,10 +21,10 @@ $Id: KVDBSystem.h,v 1.12 2008/03/07 15:01:34 ebonnet Exp $
 #include "KVDBRecord.h"
 #include "Riostream.h"
 #include "KVTarget.h"
-#include "KVList.h"
 
 class KV2Body;
 class KVNumberList;
+class KVUnownedList;
 
 /**
   \class  KVDBSystem
@@ -56,7 +56,7 @@ private:
 
    KVTarget* fTarget;           //-> physical target used for experiment run
 
-   KVList* fRunlist;             //!used to store pointer to sorted list of runs
+   KVUnownedList* fRunlist;             //!used to store pointer to sorted list of runs
    Int_t fRuns;                 //!temporary variable used to stock number of associated runs
 
 protected:
@@ -66,7 +66,7 @@ protected:
    UInt_t fAtarget;             // Mass of the target nucleus
    Float_t fEbeam;              // Energy of the beam in MeV/nucleon
 
-   KVList* _GetRuns();
+   KVUnownedList* _GetRuns();
 
    KVDBTable* GetRunsTable();
 
@@ -113,7 +113,7 @@ public:
    void SetBeam(UInt_t z, UInt_t a, Float_t energy);
 
    //Returns a sorted list of all the runs associated with this system
-   KVList* GetRuns() const
+   KVUnownedList* GetRuns() const
    {
       return const_cast <KVDBSystem* >(this)->_GetRuns();
    }

@@ -1,0 +1,27 @@
++DataSet:    INDRA_camp4
+INDRA_camp4.DataSet.Title:    4th INDRA campaign (1998/9)
+INDRA_camp4.DataSet.RepositoryDir:   campagne4
+INDRA_camp4.KVDataSet.DataTypes: raw dst root
+INDRA_camp4.Reconstruction.DataAnalysisTask.Prereq:     XXX
+INDRA_camp4.DataSet.RunFileName.raw:    run%R.raw
+INDRA_camp4.KVDataSet.DataType.Subdir.dst:  dst2
+INDRA_camp4.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_camp4.HasCalibIdentInfos:   no
+INDRA_camp4.DataSet.RunFile.DoNotDelete: raw dst
+INDRA_camp4.DataSet.RunFileClass.raw:    GANIL
+INDRA_camp4.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_camp4.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_camp4.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+INDRA_camp4.DataQualityAuditPreparation.DataAnalysisTask.Prereq:  root
+
+INDRA_camp4.INDRADB.Runlist.Separator:       <TAB>
+
++Plugin.KVMultiDetArray:    INDRA_camp4    KVINDRA     KVIndraexp_events    "KVINDRA()"
+
++Plugin.KVExpDB:    INDRA_camp4    KVINDRADB4     KVIndradb   "KVINDRADB4(const Char_t*)"
+INDRA_camp4.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI
+
+# FREQUENCY OF SELECTEUR GENE DIRECT
+# these functions give the mean frequency as a function of run number
+# frequencies were extracted from scaler buffers in the data
+INDRA_camp4.GDir.Freq: 185.6*(x<4500)+(184.462+(x-4500)*0.00331259)*(x>4500 && x<4900)+(189.346+0.00217762*(x-5000))*(x>4900)

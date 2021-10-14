@@ -14,6 +14,7 @@
 #include "TROOT.h"
 #include "KVDBKey.h"
 #include "KVDBTable.h"
+#include <KVUnownedList.h>
 
 using namespace std;
 
@@ -155,7 +156,7 @@ Int_t KVDBSystem::Compare(const TObject* obj) const
 
 //_____________________________________________________________________________
 
-KVList* KVDBSystem::_GetRuns()
+KVUnownedList* KVDBSystem::_GetRuns()
 {
    //"translate" the KVRList returned by GetLinks into a standard
    //TList which can then be sorted (Sort() is not implemented for TRefArray).
@@ -163,7 +164,7 @@ KVList* KVDBSystem::_GetRuns()
    TIter nxt(_rlist);
    KVDBRun* db;
    SafeDelete(fRunlist);
-   fRunlist = new KVList(kFALSE);        //will be deleted with object
+   fRunlist = new KVUnownedList;        //will be deleted with object
    while ((db = (KVDBRun*) nxt()))
       fRunlist->Add(db);
    fRunlist->Sort();

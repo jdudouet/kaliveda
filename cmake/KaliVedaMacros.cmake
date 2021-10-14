@@ -291,6 +291,15 @@ function(BUILD_KALIVEDA_SUBPROJECT)
 			install(DIRECTORY ${d} DESTINATION ${CMAKE_INSTALL_DATASETDIR})
 			#---write Makefile for automatic database updating
 			file(GLOB contents RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${d} ${d}/*)
+                        #---check if dataset has individual .rootrc environment config file
+                        list(FIND contents dataset.rootrc DATASET_HAS_ROOTRC_FILE)
+                        if(DATASET_HAS_ROOTRC_FILE GREATER -1)
+                            set_property(GLOBAL APPEND PROPERTY DATASET_ROOTRC_FILES ${d}.rootrc)
+                            #---install file in etc/ directory with all other config files
+                            install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${d}/dataset.rootrc
+                                DESTINATION ${CMAKE_INSTALL_SYSCONFROOTDIR}/etc
+                                RENAME ${d}.rootrc)
+                        endif()
 			CHANGE_LIST_TO_STRING(st_contents ${contents})
 			file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${d}_Makefile "$(KV_WORK_DIR)/db/${d}/DataBase.root : ${st_contents}\n")
 			file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${d}_Makefile "	@echo Database needs update\n")
