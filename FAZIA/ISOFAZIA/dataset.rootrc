@@ -1,0 +1,78 @@
++DataSet:   ISOFAZIA
+ISOFAZIA.DataSet.Title:    ISOFAZIA experiment at LNS (2015)
+ISOFAZIA.DataSet.RepositoryDir:   ISOFAZIA
+ISOFAZIA.DataSet.RunFileName.raw:    run%R.root.%D
+ISOFAZIA.ReconstructedEventClassName:	KVReconstructedEvent
+ISOFAZIA.DataSet.RunFileClass.raw:    TFile
+ISOFAZIA.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+ISOFAZIA.KVDataSet.DataType.Subdir.recon:  recon
+ISOFAZIA.KVDataSet.DataType.Subdir.root:  root
+ISOFAZIA.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVUpDater:    ISOFAZIA    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+ISOFAZIA.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+ISOFAZIA.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+ISOFAZIA.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+ISOFAZIA.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+ISOFAZIA.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+ISOFAZIA.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+ISOFAZIA.IdentificationParameterFile.CsI:       IDGrids_CSI.dat
+ISOFAZIA.IdentificationParameterFile.Si-Si:       IDGrids_SI1_SI2.dat
+ISOFAZIA.IdentificationParameterFile.Si-CsI:       IDGrids_SI2_CSI.dat
+ISOFAZIA.IdentificationParameterFile.Si:       IDGrids_SI1_ImaxE.dat
+ISOFAZIA.ActiveIdentifications:        CsI Si-Si Si-CsI Si
+
+###
+#	ISOFAZIA
+###
+
+# standard values
+ISOFAZIA.QL1.BaseLineLength:  	  100
+ISOFAZIA.QL1.TauRC:  		  250
+ISOFAZIA.QL1.ChannelWidth: 		  4
+ISOFAZIA.QL1.ShaperRiseTime:  	  2
+ISOFAZIA.QL1.ShaperFlatTop:	  2
+ISOFAZIA.QL1.PZCorrection: 		  0
+
+ISOFAZIA.QH1.BaseLineLength:  	  100
+ISOFAZIA.QH1.TauRC:  		  40
+ISOFAZIA.QH1.ChannelWidth: 		  10
+ISOFAZIA.QH1.ShaperRiseTime:  	  2
+ISOFAZIA.QH1.ShaperFlatTop:	  2
+ISOFAZIA.QH1.PZCorrection: 		  0
+
+ISOFAZIA.I1.BaseLineLength:	  50
+ISOFAZIA.I1.ChannelWidth:  		  4
+ISOFAZIA.I1.InterpolatedChannelWidth:  	  0.2
+ISOFAZIA.I1.Interpolation: 		  1
+#
+ISOFAZIA.Q2.BaseLineLength:	  100
+ISOFAZIA.Q2.TauRC:			  40
+ISOFAZIA.Q2.ChannelWidth:  		  10
+ISOFAZIA.Q2.ShaperRiseTime:	  2
+ISOFAZIA.Q2.ShaperFlatTop: 		  2
+ISOFAZIA.Q2.PZCorrection:  		  0
+
+ISOFAZIA.I2.BaseLineLength:	  50
+ISOFAZIA.I2.ChannelWidth:  		  4
+ISOFAZIA.I2.InterpolatedChannelWidth:  	  0.2
+ISOFAZIA.I2.Interpolation: 		  1
+#
+ISOFAZIA.Q3.BaseLineLength:	  100
+ISOFAZIA.Q3.TauRC:			  40
+ISOFAZIA.Q3.ChannelWidth:  		  10
+ISOFAZIA.Q3.FastShaperRiseTime:  	  0.7
+ISOFAZIA.Q3.FastShaperFlatTop:	  0.5
+ISOFAZIA.Q3.ShaperRiseTime:		0.7
+ISOFAZIA.Q3.ShaperFlatTop: 		10
+ISOFAZIA.Q3.PZCorrection:  		  0
+
+#specific parameters for some signals for some run ranges
+ISOFAZIA.FAZIADB.Exceptions:				ISOFAZIA-PSA-Params.dat
+
+
++Plugin.KVExpDB:    ISOFAZIA    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    ISOFAZIA    KVISOFAZIA    FAZIAgeometry    "KVISOFAZIA()"
+
+ISOFAZIA.FAZIADB.Runlist:     Runlist.csv

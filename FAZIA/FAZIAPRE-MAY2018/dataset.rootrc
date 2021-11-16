@@ -1,0 +1,80 @@
+FAZIAPRE-MAY2018.GeoType:        compact
+FAZIAPRE-MAY2018.DistanceFAZIA:   100
+FAZIAPRE-MAY2018.ThetaMinCompactGeo: 1
+
++DataSet:   FAZIAPRE-MAY2018
+FAZIAPRE-MAY2018.DataSet.Title:   FAZIAPRE-MAY2018 experiment at LNS (may. 2018)
+FAZIAPRE-MAY2018.DataSet.RepositoryDir:   FAZIAPRE-MAY2018
+FAZIAPRE-MAY2018.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIAPRE-MAY2018.DataSet.RunFileClass.raw:    FZDATA
+FAZIAPRE-MAY2018.DataSet.RunFile.DoNotDelete: raw
+FAZIAPRE-MAY2018.DataSet.RunFileName.raw:    run%R
+FAZIAPRE-MAY2018.KVDataSet.DataType.Subdir.raw:  bin
+FAZIAPRE-MAY2018.KVDataSet.DataType.Subdir.recon:  recon
+FAZIAPRE-MAY2018.EventReconstruction.DoCalibration: no
+FAZIAPRE-MAY2018.EventReconstruction.DoIdentification: no
+FAZIAPRE-MAY2018.ReconIdent.DataAnalysisTask.Prereq:     xxx
+FAZIAPRE-MAY2018.IdentRoot.DataAnalysisTask.Prereq:     xxx
+FAZIAPRE-MAY2018.ReconRoot.DataAnalysisTask.Prereq:     xxx
+FAZIAPRE-MAY2018.GeneAnalysis.DataAnalysisTask.Prereq:     xxx
+
++Plugin.KVExpDB:    FAZIAPRE-MAY2018    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIAPRE-MAY2018    KVFAZIALNS17    FAZIAgeometry    "KVFAZIALNS17()"
++Plugin.KVUpDater:    FAZIAPRE-MAY2018    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+#FAZIAPRE-MAY2018.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+#FAZIAPRE-MAY2018.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+#FAZIAPRE-MAY2018.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+#FAZIAPRE-MAY2018.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+#FAZIAPRE-MAY2018.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+#FAZIAPRE-MAY2018.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+#FAZIAPRE-MAY2018
+
+FAZIAPRE-MAY2018.QL1.BaseLineLength:  	  100
+FAZIAPRE-MAY2018.QL1.TauRC:  		  250
+FAZIAPRE-MAY2018.QL1.ChannelWidth:        4
+FAZIAPRE-MAY2018.QL1.ShaperRiseTime:  	  2
+FAZIAPRE-MAY2018.QL1.ShaperFlatTop:	  1
+FAZIAPRE-MAY2018.QL1.PZCorrection:        0
+
+FAZIAPRE-MAY2018.QH1.BaseLineLength:  	  80
+FAZIAPRE-MAY2018.QH1.TauRC:  		  40
+FAZIAPRE-MAY2018.QH1.ChannelWidth:        10
+FAZIAPRE-MAY2018.QH1.ShaperRiseTime:  	  2
+FAZIAPRE-MAY2018.QH1.ShaperFlatTop:	  1
+FAZIAPRE-MAY2018.QH1.PZCorrection: 	  0
+FAZIAPRE-MAY2018.QH1.FPGARiseTime:        2
+
+FAZIAPRE-MAY2018.I1.BaseLineLength:	          100
+FAZIAPRE-MAY2018.I1.ChannelWidth:  		  4
+FAZIAPRE-MAY2018.I1.InterpolatedChannelWidth:  	  0.2
+FAZIAPRE-MAY2018.I1.Interpolation: 		  1
+#
+FAZIAPRE-MAY2018.Q2.BaseLineLength:	  80
+FAZIAPRE-MAY2018.Q2.TauRC:		  40
+FAZIAPRE-MAY2018.Q2.ChannelWidth:  	  10
+FAZIAPRE-MAY2018.Q2.ShaperRiseTime:       2
+FAZIAPRE-MAY2018.Q2.ShaperFlatTop: 	  1
+FAZIAPRE-MAY2018.Q2.PZCorrection:  	  0
+FAZIAPRE-MAY2018.Q2.FPGARiseTime:          2
+
+FAZIAPRE-MAY2018.I2.BaseLineLength:               100
+FAZIAPRE-MAY2018.I2.ChannelWidth:  		  4
+FAZIAPRE-MAY2018.I2.InterpolatedChannelWidth:  	  0.2
+FAZIAPRE-MAY2018.I2.Interpolation: 		  1
+#
+FAZIAPRE-MAY2018.Q3.BaseLineLength:               80
+FAZIAPRE-MAY2018.Q3.TauRC:			  40
+FAZIAPRE-MAY2018.Q3.ChannelWidth:  		  10
+FAZIAPRE-MAY2018.Q3.FastShaperRiseTime:  	  3
+FAZIAPRE-MAY2018.Q3.FastShaperFlatTop:	          0.5
+FAZIAPRE-MAY2018.Q3.ShaperRiseTime:		  3
+FAZIAPRE-MAY2018.Q3.ShaperFlatTop: 		  10
+FAZIAPRE-MAY2018.Q3.PZCorrection:  		  0
+FAZIAPRE-MAY2018.Q3.fast.FPGARiseTime:      .7
+FAZIAPRE-MAY2018.Q3.slow.FPGARiseTime:      2.
+
+FAZIAPRE-MAY2018.SI1.IsFiredFromSignal:  1
+FAZIAPRE-MAY2018.SI2.IsFiredFromSignal:  1
+FAZIAPRE-MAY2018.CSI.IsFiredFromSignal:  1
+

@@ -1,0 +1,82 @@
++DataSet:   FAZIASYM
+FAZIASYM.DataSet.Title:    FAZIASYM experiment at LNS (2015)
+FAZIASYM.DataSet.RepositoryDir:   FAZIASYM
+FAZIASYM.DataSet.RunFileName.raw:    run%R.root.%D
+FAZIASYM.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIASYM.DataSet.RunFileClass.raw:    TFile
+FAZIASYM.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+FAZIASYM.KVDataSet.DataType.Subdir.recon:  recon
+FAZIASYM.KVDataSet.DataType.Subdir.root:  root
+FAZIASYM.DataSet.RunFile.DoNotDelete: bin
+
+FAZIASYM.GeoType:        compact
+FAZIASYM.DistanceFAZIA:   80.0
+FAZIASYM.ThetaMinCompactGeo: 2.1
+
++Plugin.KVExpDB:    FAZIASYM    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIASYM    KVFAZIASYM    FAZIAgeometry    "KVFAZIASYM()"
++Plugin.KVUpDater:    FAZIASYM    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+# DATASET-SPECIFIC IDTELESCOPE PLUGINS FOR FAZIA
++Plugin.KVIDTelescope:    ^FAZIASYM.FAZIA.Si-CsI$      KVFAZIAIDSiCsI_FAZIASYM      FAZIAidentification        "KVFAZIAIDSiCsI_FAZIASYM()"
++Plugin.KVIDTelescope:    ^FAZIAPRE.FAZIA.Si-CsI$      KVFAZIAIDSiCsI_FAZIASYM      FAZIAidentification        "KVFAZIAIDSiCsI_FAZIASYM()"
+
+FAZIASYM.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIASYM.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+FAZIASYM.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIASYM.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+FAZIASYM.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+FAZIASYM.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+FAZIASYM.IdentificationParameterFile.Si:	ID_SI1_Alberto.dat
+FAZIASYM.IdentificationParameterFile.Si-Si:	ID_SI1_SI2_Alberto.dat
+FAZIASYM.IdentificationParameterFile.CsI:	ID_CSI_Alberto.dat
+FAZIASYM.IdentificationParameterFile.Si-CsI:	ID_SI2_CSI_Alberto.dat
+FAZIASYM.ActiveIdentifications:	Si-Si CsI Si-CsI Si
+
+###
+#	FAZIASYM
+###
+
+# standard values
+FAZIASYM.QL1.BaseLineLength:  	  50
+FAZIASYM.QL1.TauRC:  		  250
+FAZIASYM.QL1.ChannelWidth:        4
+FAZIASYM.QL1.ShaperRiseTime:  	  2
+FAZIASYM.QL1.ShaperFlatTop:	  1
+FAZIASYM.QL1.PZCorrection: 		  0
+
+FAZIASYM.QH1.BaseLineLength:  	  50
+FAZIASYM.QH1.TauRC:  		  40
+FAZIASYM.QH1.ChannelWidth: 		  10
+FAZIASYM.QH1.ShaperRiseTime:  	  2
+FAZIASYM.QH1.ShaperFlatTop:	  1
+FAZIASYM.QH1.PZCorrection: 		  0
+
+FAZIASYM.I1.BaseLineLength:	  50
+FAZIASYM.I1.ChannelWidth:  		  4
+FAZIASYM.I1.InterpolatedChannelWidth:  	  0.2
+FAZIASYM.I1.Interpolation: 		  1
+#
+FAZIASYM.Q2.BaseLineLength:	  50
+FAZIASYM.Q2.TauRC:			  40
+FAZIASYM.Q2.ChannelWidth:  		  10
+FAZIASYM.Q2.ShaperRiseTime:               2
+FAZIASYM.Q2.ShaperFlatTop: 		  1
+FAZIASYM.Q2.PZCorrection:  		  0
+
+FAZIASYM.I2.BaseLineLength:	  50
+FAZIASYM.I2.ChannelWidth:  		  4
+FAZIASYM.I2.InterpolatedChannelWidth:  	  0.2
+FAZIASYM.I2.Interpolation: 		  1
+#
+FAZIASYM.Q3.BaseLineLength:	  50
+FAZIASYM.Q3.TauRC:			  40
+FAZIASYM.Q3.ChannelWidth:  		  10
+FAZIASYM.Q3.FastShaperRiseTime:  	  0.7
+FAZIASYM.Q3.FastShaperFlatTop:	  0.5
+FAZIASYM.Q3.ShaperRiseTime:		0.7
+FAZIASYM.Q3.ShaperFlatTop: 		10
+FAZIASYM.Q3.PZCorrection:  		  0
+
+

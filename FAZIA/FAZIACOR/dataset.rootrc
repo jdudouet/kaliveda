@@ -1,0 +1,78 @@
++DataSet:   FAZIACOR
+FAZIACOR.DataSet.Title:   FAZIA-COR experiment at LNS (2017)
+FAZIACOR.DataSet.RepositoryDir:   FAZIACOR
+FAZIACOR.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIACOR.DataSet.RunFileClass.raw:    FZDATA
+FAZIACOR.DataSet.RunFile.DoNotDelete: raw
+FAZIACOR.DataSet.RunFileName.raw:    run%R
+FAZIACOR.KVDataSet.DataType.Subdir.raw:  bin
+FAZIACOR.KVDataSet.DataType.Subdir.recon:  recon
+FAZIACOR.EventReconstruction.DoCalibration: yes
+FAZIACOR.EventReconstruction.DoIdentification: yes
+FAZIACOR.ReconIdent.DataAnalysisTask.Prereq:     xxx
+FAZIACOR.IdentRoot.DataAnalysisTask.Prereq:     xxx
+FAZIACOR.ReconRoot.DataAnalysisTask.Prereq:     xxx
+FAZIACOR.GeneAnalysis.DataAnalysisTask.Prereq:     xxx
+
++Plugin.KVExpDB:    FAZIACOR    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIACOR    KVFAZIACOR    FAZIAgeometry    "KVFAZIACOR()"
++Plugin.KVUpDater:    FAZIACOR    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+FAZIACOR.IdentificationParameterFile.FAZIA.Si-Si:    ID_SI1_SI2_FAZIACOR_AMI.dat
+FAZIACOR.IdentificationParameterFile.FAZIA.CsI:      ID_CSI_FAZIACOR.dat
+FAZIACOR.IdentificationParameterFile.FAZIA.Si:       ID_SI1PSA_ZandA.dat
+FAZIACOR.IdentificationParameterFile.FAZIA.Si-CsI:   ID_SI2_CSI_FAZIACOR.dat
+FAZIACOR.Si-CsI.GridOrder:                    Q2.Amplitude_Q3.Amplitude,Q2.FPGAEnergy_Q3.Amplitude
+FAZIACOR.ActiveIdentifications:                FAZIA.CsI FAZIA.Si-CsI FAZIA.Si-Si FAZIA.Si
+
+FAZIACOR.GeoType:        compact
+FAZIACOR.DistanceFAZIA:   80.3
+FAZIACOR.ThetaMinCompactGeo: 2.1
+
+###
+#	FAZIACOR
+###
+
+# standard values
+FAZIACOR.QL1.BaseLineLength:  	  100
+FAZIACOR.QL1.TauRC:  		  250
+FAZIACOR.QL1.ChannelWidth: 		  4
+FAZIACOR.QL1.ShaperRiseTime:  	  2
+FAZIACOR.QL1.ShaperFlatTop:	  2
+FAZIACOR.QL1.PZCorrection: 		  0
+
+FAZIACOR.QH1.BaseLineLength:  	  100
+FAZIACOR.QH1.TauRC:  		  40
+FAZIACOR.QH1.ChannelWidth: 		  10
+FAZIACOR.QH1.ShaperRiseTime:  	  2
+FAZIACOR.QH1.ShaperFlatTop:	  1
+FAZIACOR.QH1.PZCorrection: 		  0
+FAZIACOR.QH1.FPGARiseTime:        2
+
+FAZIACOR.I1.BaseLineLength:	  50
+FAZIACOR.I1.ChannelWidth:  		  4
+FAZIACOR.I1.InterpolatedChannelWidth:  	  0.2
+FAZIACOR.I1.Interpolation: 		  1
+#
+FAZIACOR.Q2.BaseLineLength:	  100
+FAZIACOR.Q2.TauRC:			  40
+FAZIACOR.Q2.ChannelWidth:  		  10
+FAZIACOR.Q2.ShaperRiseTime:	  2
+FAZIACOR.Q2.ShaperFlatTop: 		  1
+FAZIACOR.Q2.PZCorrection:  		  0
+FAZIACOR.Q2.FPGARiseTime:          2
+
+FAZIACOR.I2.BaseLineLength:	  50
+FAZIACOR.I2.ChannelWidth:  		  4
+FAZIACOR.I2.InterpolatedChannelWidth:  	  0.2
+FAZIACOR.I2.Interpolation: 		  1
+#
+FAZIACOR.Q3.BaseLineLength:	  100
+FAZIACOR.Q3.TauRC:			  40
+FAZIACOR.Q3.ChannelWidth:  		  10
+FAZIACOR.Q3.FastShaperRiseTime:  	  0.7
+FAZIACOR.Q3.FastShaperFlatTop:	  0.5
+FAZIACOR.Q3.ShaperRiseTime:		2.
+FAZIACOR.Q3.ShaperFlatTop: 		10
+FAZIACOR.Q3.PZCorrection:  		  0
+

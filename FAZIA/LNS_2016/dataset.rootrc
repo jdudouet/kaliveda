@@ -1,0 +1,28 @@
++DataSet:   LNS_2016
+LNS_2016.DataSet.Title:   Test done at LNS during July 2016
+LNS_2016.DataSet.RepositoryDir:   LNS_2016
+LNS_2016.DataSet.RunFileName.raw:    run%R.root.%D
+LNS_2016.ReconstructedEventClassName:	KVReconstructedEvent
+LNS_2016.DataSet.RunFileClass.raw:    TFile
+LNS_2016.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+LNS_2016.KVDataSet.DataType.Subdir.recon:  recon
+LNS_2016.KVDataSet.DataType.Subdir.root:  root
+LNS_2016.DataSet.RunFile.DoNotDelete: bin
+
+
++Plugin.KVExpDB:    LNS_2016    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    LNS_2016    KVFAZIALNS2016    FAZIAgeometry    "KVFAZIALNS2016()"
++Plugin.KVUpDater:    LNS_2016    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+LNS_2016.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+LNS_2016.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+LNS_2016.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+LNS_2016.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+LNS_2016.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+LNS_2016.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+LNS_2016.IdentificationParameterFile.Si-Si:       SI-SI-Grids.dat
+#LNS_2016.IdentificationParameterFile.CsI:      .dat
+LNS_2016.IdentificationParameterFile.Si-CsI:       SI-CSI-Grids.dat
+LNS_2016.ActiveIdentifications:         Si-CsI Si-Si
+

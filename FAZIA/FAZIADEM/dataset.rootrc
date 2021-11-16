@@ -1,0 +1,32 @@
+
++DataSet:   FAZIADEM
+FAZIADEM.DataSet.Title:   FAZIA Demonstrator 12 Blocks
+FAZIADEM.DataSet.RepositoryDir:   FAZIADEM
+FAZIADEM.DataSet.RunFileName.raw:    run%R.root.%D
+FAZIADEM.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIADEM.DataSet.RunFileClass.raw:    TFile
+FAZIADEM.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+FAZIADEM.KVDataSet.DataType.Subdir.recon:  recon
+FAZIADEM.KVDataSet.DataType.Subdir.root:  root
+FAZIADEM.DataSet.RunFile.DoNotDelete: bin
+FAZIADEM.HasCalibIdentInfos:   no
+FAZIADEM.ActiveIdentifications:      Si-Si Si-CsI Si CsI
+
+#DataBase
+
++Plugin.KVExpDB:    FAZIADEM    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
+
+#Array
+
++Plugin.KVMultiDetArray:    FAZIADEM    KVFAZIETO    FAZIAgeometry    "KVFAZIETO()"
+
++Plugin.KVUpDater:    FAZIADEM    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+############
+FAZIADEM.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIADEM.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+FAZIADEM.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIADEM.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+############
+FAZIADEM.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+FAZIADEM.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector

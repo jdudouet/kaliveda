@@ -1,0 +1,14 @@
++DataSet:   FAZIANFS
+FAZIANFS.DataSet.Title:    Neutron detection efficiency at NFS (2017-)
+FAZIANFS.DataSet.RepositoryDir:   FAZIANFS
+FAZIANFS.DataSet.RunFileName.raw:    run%R.root.%D
+FAZIANFS.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIANFS.DataSet.RunFileClass.raw:    TFile
+FAZIANFS.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+FAZIANFS.KVDataSet.DataType.Subdir.recon:  recon
+FAZIANFS.KVDataSet.DataType.Subdir.root:  root
+FAZIANFS.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVExpDB:    FAZIANFS    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIANFS    KVFAZIANFS    FAZIAgeometry    "KVFAZIANFS()"
++Plugin.KVUpDater:    FAZIANFS    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"

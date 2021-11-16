@@ -1,0 +1,24 @@
++DataSet:   LNS_2014
+LNS_2014.DataSet.Title:    FAZIA commissioning at LNS (2014)
+LNS_2014.DataSet.RepositoryDir:   LNS_2014
+LNS_2014.DataSet.RunFileName.raw:    run%R.root.%D
+LNS_2014.ReconstructedEventClassName:	KVReconstructedEvent
+LNS_2014.DataSet.RunFileClass.raw:    TFile
+LNS_2014.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+LNS_2014.KVDataSet.DataType.Subdir.recon:  recon
+LNS_2014.KVDataSet.DataType.Subdir.root:  root
+LNS_2014.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVExpDB:    LNS_2014    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    LNS_2014    KVFAZIA_2B    FAZIAgeometry    "KVFAZIA_2B()"
++Plugin.KVUpDater:    LNS_2014    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+LNS_2014.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+LNS_2014.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+LNS_2014.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+LNS_2014.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+LNS_2014.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+LNS_2014.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+LNS_2014.IdentificationParameterFile.Si-Si:       SiSiGrids.dat
+LNS_2014.ActiveIdentifications:        Si-Si
+

@@ -1,0 +1,78 @@
++DataSet:   FAZIAPRE
+FAZIAPRE.DataSet.Title:   FAZIA-PRE experiment at LNS (feb. 2018)
+FAZIAPRE.DataSet.RepositoryDir:   FAZIAPRE
+FAZIAPRE.DataSet.RunFileName.raw:    run%R.root.%D
+FAZIAPRE.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIAPRE.DataSet.RunFileClass.raw:    TFile
+FAZIAPRE.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+FAZIAPRE.KVDataSet.DataType.Subdir.recon:  recon
+FAZIAPRE.KVDataSet.DataType.Subdir.root:  root
+FAZIAPRE.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVExpDB:    FAZIAPRE    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIAPRE    KVFAZIALNS17    FAZIAgeometry    "KVFAZIALNS17()"
++Plugin.KVUpDater:    FAZIAPRE    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+FAZIAPRE.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIAPRE.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+FAZIAPRE.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIAPRE.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+FAZIAPRE.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+FAZIAPRE.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+FAZIAPRE.IdentificationParameterFile.Si-Si:    ID_SI1_SI2_FAZIAPRE_pietro.dat
+FAZIAPRE.IdentificationParameterFile.CsI:      ID_CSI_FAZIAPRE.dat
+FAZIAPRE.IdentificationParameterFile.Si:       ID_SI1_FAZIAPRE_pietro.dat
+FAZIAPRE.IdentificationParameterFile.Si-CsI:   ID_SI2_CSI_FAZIAPRE_pietro.dat
+FAZIAPRE.ActiveIdentifications:                CsI Si-CsI Si-Si Si
+
+FAZIAPRE.FAZIADB.CalibrationFiles:    CalibrationFiles.dat
+#FAZIAPRE.FAZIADB.Comments:            Comment.txt
+
+
+FAZIAPRE.GeoType:        compact
+FAZIAPRE.DistanceFAZIA:   100
+FAZIAPRE.ThetaMinCompactGeo: 1
+
+#FAZIAPRE
+
+FAZIAPRE.QL1.BaseLineLength:  	  100
+FAZIAPRE.QL1.TauRC:  		  250
+FAZIAPRE.QL1.ChannelWidth:        4
+FAZIAPRE.QL1.ShaperRiseTime:  	  2
+FAZIAPRE.QL1.ShaperFlatTop:	  1
+FAZIAPRE.QL1.PZCorrection:        0
+
+FAZIAPRE.QH1.BaseLineLength:  	  80
+FAZIAPRE.QH1.TauRC:  		  40
+FAZIAPRE.QH1.ChannelWidth:        10
+FAZIAPRE.QH1.ShaperRiseTime:  	  2
+FAZIAPRE.QH1.ShaperFlatTop:	  1
+FAZIAPRE.QH1.PZCorrection: 	  0
+
+FAZIAPRE.I1.BaseLineLength:	          100
+FAZIAPRE.I1.ChannelWidth:  		  4
+FAZIAPRE.I1.InterpolatedChannelWidth:  	  0.2
+FAZIAPRE.I1.Interpolation: 		  1
+#
+FAZIAPRE.Q2.BaseLineLength:	  80
+FAZIAPRE.Q2.TauRC:		  40
+FAZIAPRE.Q2.ChannelWidth:  	  10
+FAZIAPRE.Q2.ShaperRiseTime:       2
+FAZIAPRE.Q2.ShaperFlatTop: 	  1
+FAZIAPRE.Q2.PZCorrection:  	  0
+
+FAZIAPRE.I2.BaseLineLength:               100
+FAZIAPRE.I2.ChannelWidth:  		  4
+FAZIAPRE.I2.InterpolatedChannelWidth:  	  0.2
+FAZIAPRE.I2.Interpolation: 		  1
+#
+FAZIAPRE.Q3.BaseLineLength:               80
+FAZIAPRE.Q3.TauRC:			  40
+FAZIAPRE.Q3.ChannelWidth:  		  10
+FAZIAPRE.Q3.FastShaperRiseTime:  	  3
+FAZIAPRE.Q3.FastShaperFlatTop:	          0.5
+FAZIAPRE.Q3.ShaperRiseTime:		  3
+FAZIAPRE.Q3.ShaperFlatTop: 		  10
+FAZIAPRE.Q3.PZCorrection:  		  0
+

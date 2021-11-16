@@ -1,0 +1,27 @@
++DataSet:   FAZIAZERO
+FAZIAZERO.DataSet.Title:   FAZIAZERO experiment at LNS (may. 2018)
+FAZIAZERO.DataSet.RepositoryDir:   FAZIAZERO
+FAZIAZERO.DataSet.RunFileName.raw:    run%R.root.%D
+FAZIAZERO.ReconstructedEventClassName:	KVReconstructedEvent
+FAZIAZERO.DataSet.RunFileClass.raw:    TFile
+FAZIAZERO.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+FAZIAZERO.KVDataSet.DataType.Subdir.recon:  recon
+FAZIAZERO.KVDataSet.DataType.Subdir.root:  root
+FAZIAZERO.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVExpDB:    FAZIAZERO    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
++Plugin.KVMultiDetArray:    FAZIAZERO    KVFAZIAZERO    FAZIAgeometry    "KVFAZIAZERO()"
++Plugin.KVUpDater:    FAZIAZERO    KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
+
+FAZIAZERO.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIAZERO.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+FAZIAZERO.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+FAZIAZERO.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
+FAZIAZERO.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+FAZIAZERO.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+# Geometries
+FAZIAZERO.GeoType:        compact
+FAZIAZERO.DistanceFAZIA:   100
+FAZIAZERO.ThetaMinCompactGeo: 1
+

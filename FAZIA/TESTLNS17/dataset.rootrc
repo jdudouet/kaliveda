@@ -1,0 +1,24 @@
+
++DataSet:   TESTLNS17
+TESTLNS17.DataSet.Title:   Test done at LNS during July 2016
+TESTLNS17.DataSet.RepositoryDir:   TESTLNS17
+TESTLNS17.DataSet.RunFileName.raw:    run%R.root.%D
+TESTLNS17.ReconstructedEventClassName:	KVReconstructedEvent
+TESTLNS17.DataSet.RunFileClass.raw:    TFile
+TESTLNS17.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
+TESTLNS17.KVDataSet.DataType.Subdir.recon:  recon
+TESTLNS17.KVDataSet.DataType.Subdir.root:  root
+TESTLNS17.DataSet.RunFile.DoNotDelete: bin
+
++Plugin.KVMultiDetArray:    TESTLNS17    KVFAZIALNS17    FAZIAgeometry    "KVFAZIALNS17()"
++Plugin.KVUpDater:    TESTLNS17   KVFAZIAUpDater     FAZIAdb    "KVFAZIAUpDater()"
++Plugin.KVExpDB:    TESTLNS17    KVFAZIADB     FAZIAdb    "KVFAZIADB(const Char_t*)"
+
+############
+TESTLNS17.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+TESTLNS17.RawAnalysis.DataAnalysisTask.UserClass.Base:     FAZIAReader/TSelector
+TESTLNS17.ReconAnalysis.DataAnalysisTask.Analyser:     FAZIAReconData
+TESTLNS17.ReconAnalysis.DataAnalysisTask.UserClass.Base:     FAZIASelector/KVEventSelector
+
+TESTLNS17.Reconstruction.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
+TESTLNS17.Reconstruction.DataAnalysisTask.UserClass.Base:     FAZIARawDataRecon/TSelector
