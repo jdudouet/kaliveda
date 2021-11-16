@@ -24,10 +24,20 @@ INDRAFAZIA.E789.HasCalibIdentInfos:   yes
 INDRAFAZIA.E789.ActiveIdentifications:      INDRA.CSI INDRA.SI-CSI FAZIA.Si-Si FAZIA.Si-CsI FAZIA.Si FAZIA.CsI
 INDRAFAZIA.E789.SI-CSI.MassID: yes
 INDRAFAZIA.E789.SI-CSI.MassID.Validity:  Z<=6
-INDRAFAZIA.E789.FAZIA.ReconstructedNuclei.AcceptECodes: 1-2
+INDRAFAZIA.E789.FAZIA.ReconstructedNuclei.AcceptECodes: 1-3
+INDRAFAZIA.E789.ReconEventSelector.Template: E789ReconAnalysisTemplate
 INDRAFAZIA.E789.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
 INDRAFAZIA.E789.DataQualityAuditPreparation.DataAnalysisTask.UserClass.Base:     DataQualityAuditE789/TSelector
 
+# Trigger patterns used in FAZIA trigger box for experiment
++INDRAFAZIA.E789.FAZIA.TriggerPatterns: Mult1
+INDRAFAZIA.E789.FAZIA.TriggerPattern.Mult1: 1
++INDRAFAZIA.E789.FAZIA.TriggerPatterns: Mult2
+INDRAFAZIA.E789.FAZIA.TriggerPattern.Mult2: 2
++INDRAFAZIA.E789.FAZIA.TriggerPatterns: Mult1/100
+INDRAFAZIA.E789.FAZIA.TriggerPattern.Mult1/100: 4
+
++Plugin.KVTriggerConditions: INDRAFAZIA.E789  KVINDRAFAZIAE789TriggerConditions indrafaziaanalysis "KVINDRAFAZIAE789TriggerConditions()"
 
 +Plugin.KVMultiDetArray:    INDRAFAZIA.E789    KVExpSetUp    KVMultiDetexp_events    "KVExpSetUp()"
 +Plugin.KVExpDB:   INDRAFAZIA.E789    KVExpSetUpDB     KVMultiDetexp_events   "KVExpSetUpDB(const Char_t*)"
@@ -39,14 +49,13 @@ INDRAFAZIA.E789.INDRA.CSI.ExpectedDetectorSignals: R,L,T
 INDRAFAZIA.E789.INDRA.SI.ExpectedDetectorSignals: PG,GG,T
 
 INDRAFAZIA.E789.IdentificationParameterFile.INDRA.SI-CSI:       IDGridsINDRA_SI_CSI.dat
-#INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si-CsI:       IDGridsFAZIA_Si_CsI.dat
-INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si-Si:        IDGridsFAZIA_Si_Si.dat
+INDRAFAZIA.E789.IdentificationParameterList.FAZIA.Si-Si:          FAZIA.Si-Si.IdentificationFiles.dat
 INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si:           IDGridsFAZIA_Si.dat
-INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.CsI:          IDGridsFAZIA_CsI.dat
 # define order to use grids - first try low range (QL1), then high range (QH1)
 INDRAFAZIA.E789.FAZIA.Si-Si.GridOrder:                    QL1.Amplitude_Q2.FPGAEnergy,QH1.FPGAEnergy_Q2.FPGAEnergy
 INDRAFAZIA.E789.IdentificationParameterList.INDRA.CSI:          INDRA.CsI.IdentificationFiles.dat
 INDRAFAZIA.E789.IdentificationParameterList.FAZIA.Si-CsI:          FAZIA.Si-CsI.IdentificationFiles.dat
+INDRAFAZIA.E789.IdentificationParameterList.FAZIA.CsI:          FAZIA.CsI.IdentificationFiles.dat
 INDRAFAZIA.E789.FAZIA.Si-CsI.GridOrder:                    1*Q2.FPGAEnergy_Q3.FPGAEnergy,Q2.FPGAEnergy_Q3.FPGAEnergy
 
 INDRAFAZIA.E789.QL1.BaseLineLength:            100
