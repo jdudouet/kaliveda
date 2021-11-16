@@ -231,17 +231,24 @@ endfunction()
 
 
 #---------------------------------------------------------------------------------------------------
-#---BUILD_KALIVEDA_SUBPROJECT([DATASETS ds1 ds2 ...])
-#                             [IGNORE_DIRS dir1 dir2 ...])
+#---BUILD_KALIVEDA_SUBPROJECT([IGNORE_DIRS dir1 dir2 ...])
 #
-#---CMakeLists.txt for a KaliVeda subproject i.e. KVMultiDet, KVIndra, ...
-#---DATASETS = list of dataset subdirectories
-#---IGNORE_DIRS = subdirectories to ignore
+#---Called by CMakeLists.txt for a KaliVeda subproject i.e. KVMultiDet, KVIndra, ...
+#---  + any subdirectory with a CMakeLists.txt is treated as a source directory to be compiled
+#---  + any subdirectory with a dataset.rootrc is treated as a dataset directory to be installed
+#---
+#---IGNORE_DIRS = source or dataset subdirectories to ignore
+#---
+#---Special directories:
+#---etc/      : any *.rootrc files in etc/ are installed with all other configuration files in ${CMAKE_INSTALL_SYSCONFROOTDIR}
+#---data/     : everything in data/ is installed in ${CMAKE_INSTALL_DATADIR}
+#---examples/ : example classes & other code in examples/ is installed in ${CMAKE_INSTALL_TUTDIR}/${KVSUBPROJECT}
+#---factory/  : template files for plugin classes in factory/ are installed in ${CMAKE_INSTALL_TMPLDIR}
 #
 #---------------------------------------------------------------------------------------------------
 function(BUILD_KALIVEDA_SUBPROJECT)
 
-  CMAKE_PARSE_ARGUMENTS(ARG "" "" "DATASETS;IGNORE_DIRS" ${ARGN})
+  CMAKE_PARSE_ARGUMENTS(ARG "" "" "IGNORE_DIRS" ${ARGN})
 	
 	#---get name of directory = name of subproject
 	get_filename_component(KVSUBPROJECT ${CMAKE_CURRENT_SOURCE_DIR} NAME)
@@ -250,13 +257,20 @@ function(BUILD_KALIVEDA_SUBPROJECT)
 	#---add to list of subprojects
 	set_property(GLOBAL APPEND PROPERTY KALIVEDA_SUBPROJ_LIST ${KVSUBPROJECT})
 
-	#---get list of modules (=subdirectories)
-	file(GLOB module_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *)
-	
-	#---remove dataset dirs, etc.
-	set(to_be_removed CMakeLists.txt etc data factory examples doc tools)
-	list(REMOVE_ITEM module_list ${to_be_removed} ${ARG_DATASETS} ${ARG_IGNORE_DIRS})
-	
+        #---get list of modules (=subdirectories with CMakeLists.txt in them)
+        file(GLOB module_dirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} */CMakeLists.txt)
+        set(module_list)
+        if(module_dirs)
+            foreach(module_dir ${module_dirs})
+                get_filename_component(module ${module_dir} DIRECTORY)
+                list(APPEND module_list ${module})
+            endforeach()
+        endif(module_dirs)
+        #---remove ignored directories
+        if(ARG_IGNORE_DIRS)
+            list(REMOVE_ITEM module_list ${ARG_IGNORE_DIRS})
+        endif(ARG_IGNORE_DIRS)
+
 	#---configure modules
 	foreach(mod ${module_list})
 		add_subdirectory(${mod})
@@ -285,21 +299,33 @@ function(BUILD_KALIVEDA_SUBPROJECT)
 		install(DIRECTORY factory/ DESTINATION ${CMAKE_INSTALL_TMPLDIR})
 	endif()
 
-	#---install dataset directories in ${CMAKE_INSTALL_DATASETDIR}
-	if(ARG_DATASETS)
-		foreach(d ${ARG_DATASETS})
+        # look for dataset directories i.e. any directory which contains a file called dataset.rootrc.
+        # (the DATASETS argument is ignored)
+        file(GLOB dataset_dirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} */dataset.rootrc)
+        set(DATASETS)
+        if(dataset_dirs)
+            foreach(dataset ${dataset_dirs})
+                get_filename_component(dataset_dir ${dataset} DIRECTORY)
+                list(APPEND DATASETS ${dataset_dir})
+            endforeach()
+        endif(dataset_dirs)
+        #---install dataset directories in ${CMAKE_INSTALL_DATASETDIR}
+        if(DATASETS)
+            #---remove ignored directories
+            if(ARG_IGNORE_DIRS)
+                list(REMOVE_ITEM DATASETS ${ARG_IGNORE_DIRS})
+            endif(ARG_IGNORE_DIRS)
+            message(STATUS "   ...datasets: ${DATASETS}")
+                foreach(d ${DATASETS})
 			install(DIRECTORY ${d} DESTINATION ${CMAKE_INSTALL_DATASETDIR})
 			#---write Makefile for automatic database updating
 			file(GLOB contents RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/${d} ${d}/*)
-                        #---check if dataset has individual .rootrc environment config file
-                        list(FIND contents dataset.rootrc DATASET_HAS_ROOTRC_FILE)
-                        if(DATASET_HAS_ROOTRC_FILE GREATER -1)
-                            set_property(GLOBAL APPEND PROPERTY DATASET_ROOTRC_FILES ${d}.rootrc)
-                            #---install file in etc/ directory with all other config files
-                            install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${d}/dataset.rootrc
-                                DESTINATION ${CMAKE_INSTALL_SYSCONFROOTDIR}/etc
-                                RENAME ${d}.rootrc)
-                        endif()
+                        #---get dataset environment config file
+                        set_property(GLOBAL APPEND PROPERTY DATASET_ROOTRC_FILES ${d}.rootrc)
+                        #---install file in etc/ directory with all other config files
+                        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${d}/dataset.rootrc
+                            DESTINATION ${CMAKE_INSTALL_SYSCONFROOTDIR}/etc
+                            RENAME ${d}.rootrc)
 			CHANGE_LIST_TO_STRING(st_contents ${contents})
 			file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${d}_Makefile "$(KV_WORK_DIR)/db/${d}/DataBase.root : ${st_contents}\n")
 			file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${d}_Makefile "	@echo Database needs update\n")

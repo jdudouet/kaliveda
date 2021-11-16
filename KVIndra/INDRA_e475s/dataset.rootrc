@@ -1,0 +1,50 @@
++DataSet:    INDRA_e475s
+INDRA_e475s.DataSet.Title:    Isospin dependence of the emission of complex fragments (E475S) (2006)
+INDRA_e475s.DataSet.RepositoryDir:   e475s
+INDRA_e475s.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
+INDRA_e475s.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_e475s.KVDataSet.DataType.Subdir.recon:  recon
+INDRA_e475s.DataSet.RunFile.DoNotDelete: raw
+INDRA_e475s.DataSet.RunFileClass.raw:    GANIL
+INDRA_e475s.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e475s.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e475s.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
+# Dataset-specific parameter files
+# E475s
+INDRA_e475s.INDRADB.Pedestals:      E475s_pedestal_file.list
+INDRA_e475s.INDRADB.CalibFile:     E475s_calibration_file.list
+
++Plugin.KVMultiDetArray:    INDRA_e475s    KVINDRA     KVIndraexp_events    "KVINDRA()"
+
+INDRA_e475s.INDRA.ReconstructedNuclei.ParticleSeedCond: all
+INDRA_e475s.Reconstruction.DataAnalysisTask.ParticleSeedCond:     Pall
+
+INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.CI: PG,GG
+INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SI: PG,GG
+INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SILI: PG,GG
+INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SI75: PG,GG
+INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.CSI: R,L
+
++Plugin.KVExpDB:    INDRA_e475s    KVINDRADB_e475s     KVIndradb    "KVINDRADB_e475s(const Char_t*)"
++Plugin.KVUpDater:    INDRA_e475s    KVINDRAUpDater_e475s     KVIndradb    "KVINDRAUpDater_e475s()"
+
++Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CSI$        KVIDCsI_e475s        KVIndraidentification      "KVIDCsI_e475s()"
++Plugin.KVIDTelescope:  ^INDRA_e475s.INDRA.SI-CSI$     KVIDSiCsI_e475s      KVIndraidentification  "KVIDSiCsI_e475s()"
++Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CI-SI$      KVIDChIoSi_e475s     KVIndraidentification      "KVIDChIoSi_e475s()"
++Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CI-CSI$     KVIDChIoCsI_e475s    KVIndraidentification      "KVIDChIoCsI_e475s()"
+
+################################################
+INDRA_e475s.IdentificationParameterFile.CI-SI:        IDGridManager_E475s_CI_SI.dat
+INDRA_e475s.IdentificationParameterFile.CSI:          IDGridManager_E475s_CSI_RL.dat
+INDRA_e475s.IdentificationParameterFile.SI-CSI:       IDGridManager_E475s_SI_CSI.dat
+INDRA_e475s.IdentificationParameterFile.CI-CSI:       IDGridManager_E475s_CI_CSI.dat
+################################################
+
+INDRA_e475s.ActiveIdentifications:      CSI CI-CSI SI-CSI CI-SI
+
++Plugin.KVDetector:      ^INDRA_e475s.SI$      KVSilicon_e475s      KVIndrageometry      "KVSilicon_e475s(Float_t)"
++Plugin.KVDetector:	^INDRA_e475s.CI$   KVChIo_e475s    KVIndrageometry      "KVChIo_e475s(Float_t,Float_t)"
++Plugin.KVDetector: ^INDRA_e475s.CSI$ KVCsI_e475s KVIndrageometry  "KVCsI_e475s(Float_t)"
+
+INDRA_e475s.KVINDRAReconNuc.MassFormula:        3

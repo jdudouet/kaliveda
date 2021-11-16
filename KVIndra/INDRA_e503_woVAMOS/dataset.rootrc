@@ -1,0 +1,17 @@
++DataSet:    INDRA_e503_woVAMOS
+INDRA_e503_woVAMOS.DataSet.Title:   Symmetry energy of nuclear EOS (E503) (2007)
+INDRA_e503_woVAMOS.DataSet.RepositoryDir:   e503
+INDRA_e503_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
+INDRA_e503_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_e503_woVAMOS.HasCalibIdentInfos:   no
+INDRA_e503_woVAMOS.DataSet.RunFile.DoNotDelete: raw
+INDRA_e503_woVAMOS.DataSet.RunFileClass.raw:    GANIL
+INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e503_woVAMOS.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++Plugin.KVMultiDetArray:    INDRA_e503_woVAMOS    KVINDRA     KVIndraexp_events  "KVINDRA()"
++Plugin.KVExpDB:    INDRA_e503_woVAMOS    KVINDRADB     KVIndradb  "KVINDRADB(const Char_t*)"
++Plugin.KVUpDater:    INDRA_e503_woVAMOS    KVINDRAUpDater     KVIndradb  "KVINDRAUpDater()"
+
+INDRA_e503_woVAMOS.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI

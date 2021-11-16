@@ -1,0 +1,20 @@
++DataSet:   t10_02
+t10_02.DataSet.Title:    Test INDRA T10_02 (Nov.-Dec. 2010)
+t10_02.DataSet.RepositoryDir:   t10_02
+t10_02.DataSet.RunFileName.raw:    run_%R.dat.%D
+t10_02.ReconstructedEventClassName:   KVINDRAReconEvent
+t10_02.DataSet.RunFile.DoNotDelete: raw
+t10_02.DataSet.RunFileClass.raw:    GANIL
+t10_02.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+t10_02.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+t10_02.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
+t10_02.KVINDRADetector.Fired.ACQParameterList.CI: PG,GG
+t10_02.KVINDRADetector.Fired.ACQParameterList.SI: PG,GG
+t10_02.KVINDRADetector.Fired.ACQParameterList.SILI: PG,GG
+t10_02.KVINDRADetector.Fired.ACQParameterList.SI75: PG,GG
+t10_02.KVINDRADetector.Fired.ACQParameterList.CSI: R,L
+
++Plugin.KVExpDB:    t10_02   KVINDRADB     KVIndradb    "KVINDRADB(const Char_t*)"
++Plugin.KVUpDater:    t10_02    KVINDRAUpDater     KVIndradb    "KVINDRAUpDater()"
++Plugin.KVMultiDetArray:    t10_02    KVINDRA4     KVIndraexp_events    "KVINDRA4()"

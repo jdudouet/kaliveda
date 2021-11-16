@@ -375,6 +375,13 @@ KaliVeda.GUI.MimeTypes.TCutG.Icon:   cut_t.xpm
 +KaliVeda.GUI.MimeTypes:   TEntryList
 KaliVeda.GUI.MimeTypes.TEntryList.Icon:   rootdb_t.xpm
 
+# User-configurable options for KaliVedaGUI analysis launcher
+# Width & height of main window
+KaliVedaGUI.MainGUIWidth:       900
+KaliVedaGUI.MainGUIHeight:       700
+# Max width (number of characters) of runlist columns
+KaliVedaGUI.MaxColWidth:       500
+
 # Default max number of entries to show in a KVListView
 # Trying to display more than this number will cause a dialog box to open
 # asking whether to display all or only this number of entries.

@@ -1,0 +1,18 @@
++DataSet:    INDRA_e494s_woVAMOS
+INDRA_e494s_woVAMOS.DataSet.Title:   Isospin dependence of level density parameter (E494S) (2007)
+INDRA_e494s_woVAMOS.DataSet.RepositoryDir:   e494s
+INDRA_e494s_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
+INDRA_e494s_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_e494s_woVAMOS.HasCalibIdentInfos:   no
+INDRA_e494s_woVAMOS.DataSet.RunFile.DoNotDelete: raw
+INDRA_e494s_woVAMOS.DataSet.RunFileClass.raw:    GANIL
+INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e494s_woVAMOS.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++Plugin.KVMultiDetArray:    INDRA_e494s_woVAMOS    KVINDRA     KVIndraexp_events  "KVINDRA()"
++Plugin.KVExpDB:    INDRA_e494s_woVAMOS    KVINDRADB     KVIndradb  "KVINDRADB(const Char_t*)"
++Plugin.KVUpDater:    INDRA_e494s_woVAMOS    KVINDRAUpDater     KVIndradb  "KVINDRAUpDater()"
+
+INDRA_e494s_woVAMOS.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI
+

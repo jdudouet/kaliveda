@@ -1,0 +1,78 @@
++DataSet:   INDRA_e613
+INDRA_e613.DataSet.Title:    The Last Experiment (Ever)
+INDRA_e613.DataSet.RepositoryDir:   e613
+INDRA_e613.KVDataSet.DataTypes: raw recon ident root
+INDRA_e613.DataSet.RunFileName.raw:    run_%R.dat.%D
+INDRA_e613.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_e613.DataSet.RunFile.DoNotDelete: raw
+INDRA_e613.DataSet.RunFileClass.raw:    GANIL
+INDRA_e613.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e613.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e613.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++Plugin.KVMultiDetArray:    INDRA_e613    KVINDRA     KVIndraexp_events    "KVINDRA()"
++Plugin.KVExpDB:    INDRA_e613    KVINDRADB_e613     KVIndradb    "KVINDRADB_e613(const Char_t*)"
++Plugin.KVUpDater:    INDRA_e613    KVINDRAUpDater_e613     KVIndradb    "KVINDRAUpDater_e613()"
+
++Plugin.KVIDTelescope:  ^INDRA_e613.INDRA.SI-CSI$      KVIDSiCsI_e613       KVIndraidentification  "KVIDSiCsI_e613()"
++Plugin.KVIDTelescope:    ^INDRA_e613.INDRA.CI-SI$       KVIDChIoSi_e613      KVIndraidentification      "KVIDChIoSi_e613()"
+
+INDRA_e613.ActiveIdentifications:   CI-SI CSI SI-CSI
+
+INDRA_e613.IdentificationParameterFile.CI-SI:        ChIo_Si_MeVMeV_e613.dat
+INDRA_e613.IdentificationParameterFile.CSI:          CSI_R_L_e613.dat
+INDRA_e613.IdentificationParameterFile.SI-CSI:       SI_CSI_e613.dat
+################################################
+
+
+# Experience e613
+# The marqueuers de temps for silicon detectors from SI_0101 to SI_0324
+# are replaced by TDC modules, the parameter names are 'SI_0101_TOF' etc.
+INDRA_e613.KVACQParam.SI_0101.T:    TOF
+INDRA_e613.KVACQParam.SI_0102.T:    TOF
+INDRA_e613.KVACQParam.SI_0103.T:    TOF
+INDRA_e613.KVACQParam.SI_0104.T:    TOF
+INDRA_e613.KVACQParam.SI_0105.T:    TOF
+INDRA_e613.KVACQParam.SI_0106.T:    TOF
+INDRA_e613.KVACQParam.SI_0107.T:    TOF
+INDRA_e613.KVACQParam.SI_0108.T:    TOF
+INDRA_e613.KVACQParam.SI_0109.T:    TOF
+INDRA_e613.KVACQParam.SI_0110.T:    TOF
+INDRA_e613.KVACQParam.SI_0111.T:    TOF
+INDRA_e613.KVACQParam.SI_0112.T:    TOF
+INDRA_e613.KVACQParam.SI_0201.T:    TOF
+INDRA_e613.KVACQParam.SI_0203.T:    TOF
+INDRA_e613.KVACQParam.SI_0205.T:    TOF
+INDRA_e613.KVACQParam.SI_0207.T:    TOF
+INDRA_e613.KVACQParam.SI_0209.T:    TOF
+INDRA_e613.KVACQParam.SI_0211.T:    TOF
+INDRA_e613.KVACQParam.SI_0213.T:    TOF
+INDRA_e613.KVACQParam.SI_0215.T:    TOF
+INDRA_e613.KVACQParam.SI_0217.T:    TOF
+INDRA_e613.KVACQParam.SI_0219.T:    TOF
+INDRA_e613.KVACQParam.SI_0221.T:    TOF
+INDRA_e613.KVACQParam.SI_0223.T:    TOF
+INDRA_e613.KVACQParam.SI_0301.T:    TOF
+INDRA_e613.KVACQParam.SI_0302.T:    TOF
+INDRA_e613.KVACQParam.SI_0303.T:    TOF
+INDRA_e613.KVACQParam.SI_0304.T:    TOF
+INDRA_e613.KVACQParam.SI_0305.T:    TOF
+INDRA_e613.KVACQParam.SI_0306.T:    TOF
+INDRA_e613.KVACQParam.SI_0307.T:    TOF
+INDRA_e613.KVACQParam.SI_0308.T:    TOF
+INDRA_e613.KVACQParam.SI_0309.T:    TOF
+INDRA_e613.KVACQParam.SI_0310.T:    TOF
+INDRA_e613.KVACQParam.SI_0311.T:    TOF
+INDRA_e613.KVACQParam.SI_0312.T:    TOF
+INDRA_e613.KVACQParam.SI_0313.T:    TOF
+INDRA_e613.KVACQParam.SI_0314.T:    TOF
+INDRA_e613.KVACQParam.SI_0315.T:    TOF
+INDRA_e613.KVACQParam.SI_0316.T:    TOF
+INDRA_e613.KVACQParam.SI_0317.T:    TOF
+INDRA_e613.KVACQParam.SI_0318.T:    TOF
+INDRA_e613.KVACQParam.SI_0319.T:    TOF
+INDRA_e613.KVACQParam.SI_0320.T:    TOF
+INDRA_e613.KVACQParam.SI_0321.T:    TOF
+INDRA_e613.KVACQParam.SI_0322.T:    TOF
+INDRA_e613.KVACQParam.SI_0323.T:    TOF
+INDRA_e613.KVACQParam.SI_0324.T:    TOF

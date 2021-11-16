@@ -28,3 +28,5 @@ INDRA_camp1.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SIL
 # these functions give the mean frequency as a function of run number
 # frequencies were extracted from scaler buffers in the data
 INDRA_camp1.GDir.Freq: 165.854+(x-102)*0.00604222
+
++Plugin.KVDataPatch:   Camp1MassID  KVDataPatch_Camp1MassID  KVIndraanalysis  "KVDataPatch_Camp1MassID()"

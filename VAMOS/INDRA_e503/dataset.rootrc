@@ -1,0 +1,20 @@
+# DATASET DEPENDENT IDTELESCOPE PLUGINS FOR INDRA
+# csi
+
+# si-csi
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SI-CSI$      KVIDSiCorrCsI        KVIndraidentification  "KVIDSiCorrCsI()"
+
+# sili-csi
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SILI-CSI$      KVIDSiLiCsI_e494s     KVIndraidentification  "KVIDSiLiCsI_e494s()"
+
+# si75-sili
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SI75-SILI$     KVIDSi75SiLi_e494s    KVIndraidentification  "KVIDSi75SiLi_e494s()"
+
+# chio-si
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-SI$         KVIDChIoSiCorr        KVIndraidentification  "KVIDChIoSiCorr()"
+
+# chio-si75
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-SI75$       KVIDChIoSi75_e494s    KVIndraidentification  "KVIDChIoSi75_e494s()"
+
+# chio-csi
++Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-CSI$        KVIDChIoCorrCsI       KVIndraidentification  "KVIDChIoCorrCsI()"

@@ -1,0 +1,40 @@
++DataSet:    INDRA_e416a
+INDRA_e416a.DataSet.Title:    Fission lifetimes of SHE (E416a) (2005)
+INDRA_e416a.DataSet.RepositoryDir:   e416a
+INDRA_e416a.DataSet.UserGroup:   e416a
+INDRA_e416a.DataSet.RunFileName.raw:    Run%R_%D.dat
+INDRA_e416a.ReconstructedEventClassName:   KVINDRAReconEvent
+INDRA_e416a.DataSet.RunFile.DoNotDelete: raw
+INDRA_e416a.KVMultiDetArray.ROOTGeometry:  no
+INDRA_e416a.DataSet.RunFileClass.raw:    GANIL
+INDRA_e416a.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
+INDRA_e416a.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
+INDRA_e416a.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++UserGroup:      e416a
+e416a.Users:        eindra
++e416a.Users:       franklan
++e416a.Users:       morjean
++e416a.Users:       parlog
++e416a.Users:       chbihi
++e416a.Users:       djacquet
++e416a.Users:       dauvergn
++e416a.Users:       nalpas
++e416a.Users:       dayras
++e416a.Users:       tassan
++e416a.Users:       cschmitt
+
+# E416a
+INDRA_e416a.INDRADB.BICPressures:     BICPressures.dat
+
++Plugin.KVMultiDetArray:    INDRA_e416a    KVINDRAFNL     KVIndraexp_events    "KVINDRAFNL()"
++Plugin.KVExpDB:    INDRA_e416a    KVINDRADB_e416a     KVIndradb    "KVINDRADB_e416a(const Char_t*)"
++Plugin.KVUpDater:    INDRA_e416a    KVINDRAUpDater_e416a     KVIndradb    "KVINDRAUpDater_e416a()"
+
+# blocking telescope
++Plugin.KVIDTelescope:      ^INDRA.BIC-SIB$              KVIDBlocking         KVIndraidentification     "KVIDBlocking()"
+
++Plugin.KVDetector:      ^SIB$      KVSiB      KVIndrageometry      "KVSiB()"
++Plugin.KVDetector:   BIC     KVBIC                  KVIndrageometry          "KVBIC()"
+
+KVIDTelescope.DefaultGrid.BIC-SIB:      KVIDGChIoSi

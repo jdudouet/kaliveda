@@ -38,131 +38,6 @@
 #---------Definition of default data repository
 #DataRepository.Default:  myrepo
 #
-# Default list of datasets
-+DataSet:    INDRA_e416a
-INDRA_e416a.DataSet.Title:    Fission lifetimes of SHE (E416a) (2005)
-INDRA_e416a.DataSet.RepositoryDir:   e416a
-INDRA_e416a.DataSet.UserGroup:   e416a
-INDRA_e416a.DataSet.RunFileName.raw:    Run%R_%D.dat
-INDRA_e416a.ReconstructedEventClassName:   KVINDRAReconEvent
-INDRA_e416a.DataSet.RunFile.DoNotDelete: raw
-INDRA_e416a.KVMultiDetArray.ROOTGeometry:  no
-INDRA_e416a.DataSet.RunFileClass.raw:    GANIL
-INDRA_e416a.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e416a.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-INDRA_e416a.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-+DataSet:    INDRA_e475s
-INDRA_e475s.DataSet.Title:    Isospin dependence of the emission of complex fragments (E475S) (2006)
-INDRA_e475s.DataSet.RepositoryDir:   e475s
-INDRA_e475s.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e475s.ReconstructedEventClassName:   KVINDRAReconEvent
-INDRA_e475s.KVDataSet.DataType.Subdir.recon:  recon
-INDRA_e475s.DataSet.RunFile.DoNotDelete: raw
-INDRA_e475s.DataSet.RunFileClass.raw:    GANIL
-INDRA_e475s.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e475s.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-INDRA_e475s.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-+DataSet:   t10_02
-t10_02.DataSet.Title:    Test INDRA T10_02 (Nov.-Dec. 2010)
-t10_02.DataSet.RepositoryDir:   t10_02
-t10_02.DataSet.RunFileName.raw:    run_%R.dat.%D
-t10_02.ReconstructedEventClassName:   KVINDRAReconEvent
-t10_02.DataSet.RunFile.DoNotDelete: raw
-t10_02.DataSet.RunFileClass.raw:    GANIL
-t10_02.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-t10_02.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-t10_02.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-+DataSet:   INDRA_e613
-INDRA_e613.DataSet.Title:    The Last Experiment (Ever)
-INDRA_e613.DataSet.RepositoryDir:   e613
-INDRA_e613.KVDataSet.DataTypes: raw recon ident root
-INDRA_e613.DataSet.RunFileName.raw:    run_%R.dat.%D
-INDRA_e613.ReconstructedEventClassName:   KVINDRAReconEvent
-INDRA_e613.DataSet.RunFile.DoNotDelete: raw
-INDRA_e613.DataSet.RunFileClass.raw:    GANIL
-INDRA_e613.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e613.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-INDRA_e613.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-+DataSet:    INDRA_e494s_woVAMOS
-INDRA_e494s_woVAMOS.DataSet.Title:   Isospin dependence of level density parameter (E494S) (2007)
-INDRA_e494s_woVAMOS.DataSet.RepositoryDir:   e494s
-INDRA_e494s_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e494s_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
-INDRA_e494s_woVAMOS.HasCalibIdentInfos:   no
-INDRA_e494s_woVAMOS.DataSet.RunFile.DoNotDelete: raw
-INDRA_e494s_woVAMOS.DataSet.RunFileClass.raw:    GANIL
-INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e494s_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-INDRA_e494s_woVAMOS.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-+DataSet:    INDRA_e503_woVAMOS
-INDRA_e503_woVAMOS.DataSet.Title:   Symmetry energy of nuclear EOS (E503) (2007)
-INDRA_e503_woVAMOS.DataSet.RepositoryDir:   e503
-INDRA_e503_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e503_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
-INDRA_e503_woVAMOS.HasCalibIdentInfos:   no
-INDRA_e503_woVAMOS.DataSet.RunFile.DoNotDelete: raw
-INDRA_e503_woVAMOS.DataSet.RunFileClass.raw:    GANIL
-INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData
-INDRA_e503_woVAMOS.ReconAnalysis.DataAnalysisTask.UserClass.Base:     INDRASelector/TSelector
-INDRA_e503_woVAMOS.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
-
-# Experience e613
-# The marqueuers de temps for silicon detectors from SI_0101 to SI_0324
-# are replaced by TDC modules, the parameter names are 'SI_0101_TOF' etc.
-INDRA_e613.KVACQParam.SI_0101.T:    TOF
-INDRA_e613.KVACQParam.SI_0102.T:    TOF
-INDRA_e613.KVACQParam.SI_0103.T:    TOF
-INDRA_e613.KVACQParam.SI_0104.T:    TOF
-INDRA_e613.KVACQParam.SI_0105.T:    TOF
-INDRA_e613.KVACQParam.SI_0106.T:    TOF
-INDRA_e613.KVACQParam.SI_0107.T:    TOF
-INDRA_e613.KVACQParam.SI_0108.T:    TOF
-INDRA_e613.KVACQParam.SI_0109.T:    TOF
-INDRA_e613.KVACQParam.SI_0110.T:    TOF
-INDRA_e613.KVACQParam.SI_0111.T:    TOF
-INDRA_e613.KVACQParam.SI_0112.T:    TOF
-INDRA_e613.KVACQParam.SI_0201.T:    TOF
-INDRA_e613.KVACQParam.SI_0203.T:    TOF
-INDRA_e613.KVACQParam.SI_0205.T:    TOF
-INDRA_e613.KVACQParam.SI_0207.T:    TOF
-INDRA_e613.KVACQParam.SI_0209.T:    TOF
-INDRA_e613.KVACQParam.SI_0211.T:    TOF
-INDRA_e613.KVACQParam.SI_0213.T:    TOF
-INDRA_e613.KVACQParam.SI_0215.T:    TOF
-INDRA_e613.KVACQParam.SI_0217.T:    TOF
-INDRA_e613.KVACQParam.SI_0219.T:    TOF
-INDRA_e613.KVACQParam.SI_0221.T:    TOF
-INDRA_e613.KVACQParam.SI_0223.T:    TOF
-INDRA_e613.KVACQParam.SI_0301.T:    TOF
-INDRA_e613.KVACQParam.SI_0302.T:    TOF
-INDRA_e613.KVACQParam.SI_0303.T:    TOF
-INDRA_e613.KVACQParam.SI_0304.T:    TOF
-INDRA_e613.KVACQParam.SI_0305.T:    TOF
-INDRA_e613.KVACQParam.SI_0306.T:    TOF
-INDRA_e613.KVACQParam.SI_0307.T:    TOF
-INDRA_e613.KVACQParam.SI_0308.T:    TOF
-INDRA_e613.KVACQParam.SI_0309.T:    TOF
-INDRA_e613.KVACQParam.SI_0310.T:    TOF
-INDRA_e613.KVACQParam.SI_0311.T:    TOF
-INDRA_e613.KVACQParam.SI_0312.T:    TOF
-INDRA_e613.KVACQParam.SI_0313.T:    TOF
-INDRA_e613.KVACQParam.SI_0314.T:    TOF
-INDRA_e613.KVACQParam.SI_0315.T:    TOF
-INDRA_e613.KVACQParam.SI_0316.T:    TOF
-INDRA_e613.KVACQParam.SI_0317.T:    TOF
-INDRA_e613.KVACQParam.SI_0318.T:    TOF
-INDRA_e613.KVACQParam.SI_0319.T:    TOF
-INDRA_e613.KVACQParam.SI_0320.T:    TOF
-INDRA_e613.KVACQParam.SI_0321.T:    TOF
-INDRA_e613.KVACQParam.SI_0322.T:    TOF
-INDRA_e613.KVACQParam.SI_0323.T:    TOF
-INDRA_e613.KVACQParam.SI_0324.T:    TOF
-
 # By default the file containing reconstructed events will be written in the same data repository
 # as the raw data file from which it is created.
 # This can be changed by setting the environment variable(s):
@@ -225,18 +100,6 @@ DSTReader.DataAnalysisTask.Analyser:     INDRADSTReader
 #To add a user to a group:
 #+name_of_group.Users: name_of_users
 #Neither the group name nor the user names must contain spaces
-UserGroup:      e416a
-e416a.Users:        eindra
-+e416a.Users:       franklan
-+e416a.Users:       morjean
-+e416a.Users:       parlog
-+e416a.Users:       chbihi
-+e416a.Users:       djacquet
-+e416a.Users:       dauvergn
-+e416a.Users:       nalpas
-+e416a.Users:       dayras
-+e416a.Users:       tassan
-+e416a.Users:       cschmitt
 
 # Default values for names of files used to construct INDRA databases
 # Default name for file describing systems for each dataset.
@@ -286,13 +149,6 @@ KVINDRAPulserDataTree.GeneDetDir:   gene_detecteurs
 # Default dataset subdirectory containing files with pin diode & laser data for each run
 KVINDRAPulserDataTree.GenePinDir:   gene_pins
 
-# Dataset-specific parameter files
-# E416a
-INDRA_e416a.INDRADB.BICPressures:     BICPressures.dat
-# E475s
-INDRA_e475s.INDRADB.Pedestals:      E475s_pedestal_file.list
-INDRA_e475s.INDRADB.CalibFile:     E475s_calibration_file.list
-
 # Default headers for runlist columns
 INDRADB.Runlist.Run:    Run
 INDRADB.Runlist.Tape:    Tape
@@ -332,12 +188,6 @@ INDRADB.Runlist.Log:      Cahier
 # There must be an entry here for each dataset
 # Syntax:
 # Plugin.KVMultiDetArray:    name_of_dataset    name_of_class    name_of_plugin_library   constructor_to_call
-+Plugin.KVMultiDetArray:    INDRA_e475s    KVINDRA     KVIndraexp_events    "KVINDRA()"
-+Plugin.KVMultiDetArray:    INDRA_e416a    KVINDRAFNL     KVIndraexp_events    "KVINDRAFNL()"
-+Plugin.KVMultiDetArray:    t10_02    KVINDRA4     KVIndraexp_events    "KVINDRA4()"
-+Plugin.KVMultiDetArray:    INDRA_e613    KVINDRA     KVIndraexp_events    "KVINDRA()"
-+Plugin.KVMultiDetArray:    INDRA_e494s_woVAMOS    KVINDRA     KVIndraexp_events  "KVINDRA()"
-+Plugin.KVMultiDetArray:    INDRA_e503_woVAMOS    KVINDRA     KVIndraexp_events  "KVINDRA()"
 
 # Plugins for reconstruction of particles from data/simulation
 +Plugin.KVGroupReconstructor:   INDRA.forward KVINDRAForwardGroupReconstructor KVIndraexp_events "KVINDRAForwardGroupReconstructor()"
@@ -347,7 +197,6 @@ INDRADB.Runlist.Log:      Cahier
 # Conditions for seeding reconstructed particles in event reconstruction
 # Dataset-dependent values can be set with [Dataset].INDRA.ReconstructedNuclei.ParticleSeedCond
 INDRA.ReconstructedNuclei.ParticleSeedCond: all
-INDRA_e475s.INDRA.ReconstructedNuclei.ParticleSeedCond: all
 
 # The above variables control the way that particles are reconstructed from raw data
 # The explanation follows, including 2 variables which are kept for backwards-compatibility
@@ -368,7 +217,7 @@ Reconstruction.DataAnalysisTask.ParticleSeedCond:     all
 # kTRUE if the detector has at least one fired acquisition parameter, of any type), either
 # change the previous value (this will affect ALL datasets), or, to change behaviour for a
 # specific dataset, use a variable such as the following:
-INDRA_e475s.Reconstruction.DataAnalysisTask.ParticleSeedCond:     Pall
+#INDRA_e475s.Reconstruction.DataAnalysisTask.ParticleSeedCond:     Pall
 #
 # You can "fine-tune" what is meant by "all" acquisition parameters using the following
 # variables. For each detector type, give a comma-separated list of the acquisition
@@ -385,18 +234,6 @@ KVINDRADetector.Fired.ACQParameterList.SILI: PG,GG,T
 KVINDRADetector.Fired.ACQParameterList.SI75: PG,GG,T
 KVINDRADetector.Fired.ACQParameterList.CSI: R,L,T
 
-INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.CI: PG,GG
-INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SI: PG,GG
-INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SILI: PG,GG
-INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.SI75: PG,GG
-INDRA_e475s.KVINDRADetector.Fired.ACQParameterList.CSI: R,L
-
-t10_02.KVINDRADetector.Fired.ACQParameterList.CI: PG,GG
-t10_02.KVINDRADetector.Fired.ACQParameterList.SI: PG,GG
-t10_02.KVINDRADetector.Fired.ACQParameterList.SILI: PG,GG
-t10_02.KVINDRADetector.Fired.ACQParameterList.SI75: PG,GG
-t10_02.KVINDRADetector.Fired.ACQParameterList.CSI: R,L
-
 # Acceptable identification & energy codes for INDRA reconstructed particles
 # Dataset-dependent values can be set with [Dataset].INDRA.ReconstructedNuclei.Accept[ID/E]Codes
 INDRA.ReconstructedNuclei.AcceptIDCodes: 2-4,6
@@ -410,12 +247,6 @@ INDRA.ReconstructedNuclei.AcceptECodes: 1-3
 # There must be an entry here for each dataset
 # Syntax:
 # Plugin.KVExpDB:    name_of_dataset    name_of_class    name_of_plugin_library   constructor_to_call
-+Plugin.KVExpDB:    INDRA_e416a    KVINDRADB_e416a     KVIndradb    "KVINDRADB_e416a(const Char_t*)"
-+Plugin.KVExpDB:    INDRA_e475s    KVINDRADB_e475s     KVIndradb    "KVINDRADB_e475s(const Char_t*)"
-+Plugin.KVExpDB:    INDRA_e613    KVINDRADB_e613     KVIndradb    "KVINDRADB_e613(const Char_t*)"
-+Plugin.KVExpDB:    t10_02   KVINDRADB     KVIndradb    "KVINDRADB(const Char_t*)"
-+Plugin.KVExpDB:    INDRA_e494s_woVAMOS    KVINDRADB     KVIndradb  "KVINDRADB(const Char_t*)"
-+Plugin.KVExpDB:    INDRA_e503_woVAMOS    KVINDRADB     KVIndradb  "KVINDRADB(const Char_t*)"
 
 # file which gather all calibration files
 INDRADB.CalibrationFiles:     INDRA.CalibrationFiles.dat
@@ -425,13 +256,7 @@ INDRADB.CalibrationFiles:     INDRA.CalibrationFiles.dat
 # If there is no entry here for a dataset, an object of the default KVUpDater class will be used.
 # Syntax:
 # Plugin.KVUpDater:    name_of_dataset    name_of_class    name_of_plugin_library   constructor_to_call
-Plugin.KVUpDater:    INDRA_e416a    KVINDRAUpDater_e416a     KVIndradb    "KVINDRAUpDater_e416a()"
-+Plugin.KVUpDater:    INDRA_e475s    KVINDRAUpDater_e475s     KVIndradb    "KVINDRAUpDater_e475s()"
-+Plugin.KVUpDater:    INDRA_e613    KVINDRAUpDater_e613     KVIndradb    "KVINDRAUpDater_e613()"
 +Plugin.KVUpDater:    INDRA_camp*    KVINDRAUpDater     KVIndradb    "KVINDRAUpDater()"
-+Plugin.KVUpDater:    t10_02    KVINDRAUpDater     KVIndradb    "KVINDRAUpDater()"
-+Plugin.KVUpDater:    INDRA_e494s_woVAMOS    KVINDRAUpDater     KVIndradb  "KVINDRAUpDater()"
-+Plugin.KVUpDater:    INDRA_e503_woVAMOS    KVINDRAUpDater     KVIndradb  "KVINDRAUpDater()"
 
 #============================== Plugins for identification telescopes
 # The KVMultiDetArray::GetIDTelescopes(KVDetector*de, KVDetector*e) method uses these plugins to
@@ -457,43 +282,6 @@ Plugin.KVUpDater:    INDRA_e416a    KVINDRAUpDater_e416a     KVIndradb    "KVIND
 +Plugin.KVIDTelescope:    ^INDRA.CI-SI75$      KVIDChIoSi75         KVIndraidentification         "KVIDChIoSi75()"
 +Plugin.KVIDTelescope:    ^INDRA.CI-CSI$       KVIDChIoCsI          KVIndraidentification         "KVIDChIoCsI()"
 
-# DATASET DEPENDENT IDTELESCOPE PLUGINS FOR INDRA
-# csi
-+Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CSI$        KVIDCsI_e475s        KVIndraidentification      "KVIDCsI_e475s()"
-
-# si-csi
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SI-CSI$      KVIDSiCorrCsI        KVIndraidentification  "KVIDSiCorrCsI()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SI-CSI$     KVIDSiCorrCsI        KVIndraidentification  "KVIDSiCorrCsI()"
-+Plugin.KVIDTelescope:  ^INDRA_e475s.INDRA.SI-CSI$     KVIDSiCsI_e475s      KVIndraidentification  "KVIDSiCsI_e475s()"
-+Plugin.KVIDTelescope:  ^INDRA_e613.INDRA.SI-CSI$      KVIDSiCsI_e613       KVIndraidentification  "KVIDSiCsI_e613()"
-
-# sili-csi
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SILI-CSI$      KVIDSiLiCsI_e494s     KVIndraidentification  "KVIDSiLiCsI_e494s()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SILI-CSI$     KVIDSiLiCsI_e494s      KVIndraidentification  "KVIDSiLiCsI_e494s()"
-
-# si75-sili
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.SI75-SILI$     KVIDSi75SiLi_e494s    KVIndraidentification  "KVIDSi75SiLi_e494s()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SI75-SILI$    KVIDSi75SiLi_e494s     KVIndraidentification  "KVIDSi75SiLi_e494s()"
-
-# chio-si
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-SI$         KVIDChIoSiCorr        KVIndraidentification  "KVIDChIoSiCorr()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-SI$         KVIDChIoSiCorr         KVIndraidentification  "KVIDChIoSiCorr()"
-+Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CI-SI$      KVIDChIoSi_e475s     KVIndraidentification      "KVIDChIoSi_e475s()"
-+Plugin.KVIDTelescope:    ^INDRA_e613.INDRA.CI-SI$       KVIDChIoSi_e613      KVIndraidentification      "KVIDChIoSi_e613()"
-
-# chio-si75
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-SI75$       KVIDChIoSi75_e494s    KVIndraidentification  "KVIDChIoSi75_e494s()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-SI75$       KVIDChIoSi75_e494s     KVIndraidentification  "KVIDChIoSi75_e494s()"
-
-# chio-csi
-+Plugin.KVIDTelescope:  ^INDRA_e503.INDRA.CI-CSI$        KVIDChIoCorrCsI       KVIndraidentification  "KVIDChIoCorrCsI()"
-+Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-CSI$        KVIDChIoCorrCsI_e494s  KVIndraidentification  "KVIDChIoCorrCsI_e494s()"
-+Plugin.KVIDTelescope:    ^INDRA_e475s.INDRA.CI-CSI$     KVIDChIoCsI_e475s    KVIndraidentification      "KVIDChIoCsI_e475s()"
-
-# blocking telescope
-+Plugin.KVIDTelescope:      ^INDRA.BIC-SIB$              KVIDBlocking         KVIndraidentification     "KVIDBlocking()"
-
-
 #======================= Identification parameter files for different datasets
 # Format is
 #
@@ -503,17 +291,6 @@ Plugin.KVUpDater:    INDRA_e416a    KVINDRAUpDater_e416a     KVIndradb    "KVIND
 # e.g. 'PHOS', 'CSI', 'SI-CSI', etc. etc.
 # If an absolute pathname is not given, the file must be in $KVROOT/KVFiles/[dataset name]
 #
-################################################
-INDRA_e475s.IdentificationParameterFile.CI-SI:        IDGridManager_E475s_CI_SI.dat
-INDRA_e475s.IdentificationParameterFile.CSI:          IDGridManager_E475s_CSI_RL.dat
-INDRA_e475s.IdentificationParameterFile.SI-CSI:       IDGridManager_E475s_SI_CSI.dat
-INDRA_e475s.IdentificationParameterFile.CI-CSI:       IDGridManager_E475s_CI_CSI.dat
-################################################
-INDRA_e613.IdentificationParameterFile.CI-SI:        ChIo_Si_MeVMeV_e613.dat
-INDRA_e613.IdentificationParameterFile.CSI:          CSI_R_L_e613.dat
-INDRA_e613.IdentificationParameterFile.SI-CSI:       SI_CSI_e613.dat
-################################################
-
 
 #====================== Active identifications for each dataset
 # Only the identifications whose labels are given here will be initialised & capable of identifying particles
@@ -521,24 +298,15 @@ INDRA_e613.IdentificationParameterFile.SI-CSI:       SI_CSI_e613.dat
 # Format:
 #
 # [dataset name].ActiveIdentifications:    [type1]  [type2] ...
-INDRA_e475s.ActiveIdentifications:      CSI CI-CSI SI-CSI CI-SI
-INDRA_e494s_woVAMOS.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI
-INDRA_e503_woVAMOS.ActiveIdentifications:      CSI SI-CSI CI-SI CI-CSI CI-SI75 SI75-SILI SILI-CSI
-INDRA_e613.ActiveIdentifications:   CI-SI CSI SI-CSI
 
 #================================ Plugins for detectors
-Plugin.KVDetector:     INDRA      KVINDRADetector      KVIndrageometry      "KVINDRADetector()"
++Plugin.KVDetector:     INDRA      KVINDRADetector      KVIndrageometry      "KVINDRADetector()"
 +Plugin.KVDetector:      PHOS      KVPhoswich      KVIndrageometry      "KVPhoswich(Float_t)"
 +Plugin.KVDetector:      ^SI$      KVSilicon      KVIndrageometry      "KVSilicon(Float_t)"
-+Plugin.KVDetector:      ^INDRA_e475s.SI$      KVSilicon_e475s      KVIndrageometry      "KVSilicon_e475s(Float_t)"
 +Plugin.KVDetector:      ^SILI$      KVSiLi      KVIndrageometry      "KVSiLi(Float_t)"
 +Plugin.KVDetector:      ^SI75$      KVSi75      KVIndrageometry      "KVSi75(Float_t)"
-#+Plugin.KVDetector:      ^SIB$      KVSiB      KVIndrageometry      "KVSiB()"
 +Plugin.KVDetector:	CI             KVChIo      KVIndrageometry      "KVChIo(Float_t,Float_t)"
-+Plugin.KVDetector:	^INDRA_e475s.CI$   KVChIo_e475s    KVIndrageometry      "KVChIo_e475s(Float_t,Float_t)"
-#+Plugin.KVDetector:   BIC                                      KVBIC                  KVIndrageometry          "KVBIC()"
 +Plugin.KVDetector: CSI             KVCsI       KVIndrageometry  "KVCsI(Float_t)"
-+Plugin.KVDetector: ^INDRA_e475s.CSI$ KVCsI_e475s KVIndrageometry  "KVCsI_e475s(Float_t)"
 
 # Environment variables for the Data Selectors. They define the filename and
 # the directory of the file where the TEventList are stored. The default
@@ -554,7 +322,6 @@ Plugin.KVDetector:     INDRA      KVINDRADetector      KVIndrageometry      "KVI
 # if DataSet is specified like DataSet.KVINDRAReconNuc.MassFormula
 # the chosen mass formula is only available for KVINDRAReconNuc for this dataset
 KVINDRAReconNuc.MassFormula:        2
-INDRA_e475s.KVINDRAReconNuc.MassFormula:        3
 
 # Default identification grid classes for ID telescopes
 # Used by KVIDGridManagerGUI when creating new grids
@@ -562,7 +329,6 @@ INDRA_e475s.KVINDRAReconNuc.MassFormula:        3
 # The following are specific grids for specific telescopes
 KVIDTelescope.DefaultGrid.CI-SI:        KVIDGChIoSi
 KVIDTelescope.DefaultGrid.CI-SI75:      KVIDGChIoSi
-KVIDTelescope.DefaultGrid.BIC-SIB:      KVIDGChIoSi
 
 # Default identification/cut classes for different ID graphs
 # Used by KVIDGridManagerGUI when creating new grids
@@ -583,20 +349,11 @@ KaliVeda.GUI.MimeTypes.KVIDGChIoSi.Icon:   draw_t.xpm
 +KaliVeda.GUI.MimeTypes:   KVINDRADBRun
 KaliVeda.GUI.MimeTypes.KVINDRADBRun.Icon:   tree_t.xpm
 
-# User-configurable options for KaliVedaGUI analysis launcher
-# Width & height of main window
-KaliVedaGUI.MainGUIWidth:       900
-KaliVedaGUI.MainGUIHeight:       700
-# Max width (number of characters) of runlist columns
-KaliVedaGUI.MaxColWidth:       500
-
 # RUSTINES
 # Plugin classes which implement patches to correct reconstructed/calibrated data
 # written on disk with previous (bugged) versions. See KVDataPatch & KVDataPatchList.
 Plugin.KVDataPatch:   INDRA_SanityChecks  KVDataPatch_INDRA_SanityChecks  KVIndraanalysis  "KVDataPatch_INDRA_SanityChecks()"
 #+Plugin.KVDataPatch:   CorrectEtalonModuleIDCode  KVDataPatch_CorrectEtalonModuleIDCode  KVIndraanalysis  "KVDataPatch_CorrectEtalonModuleIDCode()"
-+Plugin.KVDataPatch:   Camp2MassID  KVDataPatch_Camp2MassID  KVIndraanalysis  "KVDataPatch_Camp2MassID()"
-+Plugin.KVDataPatch:   Camp1MassID  KVDataPatch_Camp1MassID  KVIndraanalysis  "KVDataPatch_Camp1MassID()"
 +Plugin.KVDataPatch:   CorrectEtalonTrajectories  KVDataPatch_INDRA_CorrectEtalonTrajectories  KVIndraanalysis  "KVDataPatch_INDRA_CorrectEtalonTrajectories()"
 
 
@@ -607,29 +364,3 @@ Plugin.KVDataPatch:   INDRA_SanityChecks  KVDataPatch_INDRA_SanityChecks  KVIndr
 
 +Plugin.KVCalibrator: ^LightEnergyCsITabacaruCamp21017$  KVLightEnergyCsI_Tabacaru_Camp2_10_17   KVIndracalibration "KVLightEnergyCsI_Tabacaru_Camp2_10_17()"
 
-###############################################################################
-### Test T21-03
-###
-+DataSet:	  INDRA.T21-03
-INDRA.T21-03.DataSet.Title:  T21-03 (April 2021)
-INDRA.T21-03.DataSet.RepositoryDir:	INDRA/T21-03
-INDRA.T21-03.DataSet.RunFileName.raw:    run_%R.dat.%D.%I
-INDRA.T21-03.DataSet.RunFileIndexMultiplier.raw:    1000
-INDRA.T21-03.DataSet.RunFile.DoNotDelete: raw
-INDRA.T21-03.DataSet.RunFileClass.raw:    MFM
-INDRA.T21-03.MesytecCrateConf:   mesytec_crate.conf
-INDRA.T21-03.MesytecChannelsConf:   mesytec_voies_conf.dat
-INDRA.T21-03.EventReconstruction.DoCalibration: yes
-INDRA.T21-03.EventReconstruction.DoIdentification: yes
-
-+Plugin.KVMultiDetArray:    INDRA.T21-03    KVINDRA    KVIndraexp_events    "KVINDRA()"
-+Plugin.KVExpDB:   INDRA.T21-03    KVExpSetUpDB     KVMultiDetexp_events   "KVExpSetUpDB(const Char_t*)"
-
-INDRA.T21-03.INDRA.CSI.ExpectedDetectorSignals: TotLight,R,T
-INDRA.T21-03.INDRA.SI.ExpectedDetectorSignals: ADC,T
-
-INDRA.T21-03.HasCalibIdentInfos:   yes
-INDRA.T21-03.ActiveIdentifications:      INDRA.CSI INDRA.SI-CSI
-
-INDRA.T21-03.IdentificationParameterFile.INDRA.CSI:       IDGridsINDRA_CSI.dat
-INDRA.T21-03.IdentificationParameterFile.INDRA.SI-CSI:    IDGridsINDRA_SI_CSI.dat

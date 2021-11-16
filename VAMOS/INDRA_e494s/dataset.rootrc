@@ -1,0 +1,16 @@
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SI-CSI$     KVIDSiCorrCsI        KVIndraidentification  "KVIDSiCorrCsI()"
+
+# sili-csi
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SILI-CSI$     KVIDSiLiCsI_e494s      KVIndraidentification  "KVIDSiLiCsI_e494s()"
+
+# si75-sili
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.SI75-SILI$    KVIDSi75SiLi_e494s     KVIndraidentification  "KVIDSi75SiLi_e494s()"
+
+# chio-si
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-SI$         KVIDChIoSiCorr         KVIndraidentification  "KVIDChIoSiCorr()"
+
+# chio-si75
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-SI75$       KVIDChIoSi75_e494s     KVIndraidentification  "KVIDChIoSi75_e494s()"
+
+# chio-csi
++Plugin.KVIDTelescope:  ^INDRA_e494s.INDRA.CI-CSI$        KVIDChIoCorrCsI_e494s  KVIndraidentification  "KVIDChIoCorrCsI_e494s()"
