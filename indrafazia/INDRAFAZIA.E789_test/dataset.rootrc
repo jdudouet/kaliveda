@@ -1,0 +1,95 @@
+###############################################################################
+# Beam test E789 3/4 April 2019
+#
++DataSet:	  INDRAFAZIA.E789_test
+INDRAFAZIA.E789_test.DataSet.Title:  E789 Test (3/4 April 2019)
+INDRAFAZIA.E789_test.DataSet.RepositoryDir:	INDRAFAZIA/E789_test
+INDRAFAZIA.E789_test.DataSet.RunFileName.raw:    run_%R.dat.%D.%I
+INDRAFAZIA.E789_test.DataSet.RunFileIndexMultiplier.raw:    100
+INDRAFAZIA.E789_test.DataSet.RunFile.DoNotDelete: raw
+INDRAFAZIA.E789_test.DataSet.RunFileClass.raw:    MFM
+INDRAFAZIA.E789_test.MFM.WithEbyedat:  yes
+INDRAFAZIA.E789_test.ReconstructedEventClassName:	KVReconstructedEvent
+INDRAFAZIA.E789_test.KVDataSet.DataType.Subdir.recon:  recon
+INDRAFAZIA.E789_test.DataSet.ExpSetUp.ClassList: KVFAZIA KVINDRA
+INDRAFAZIA.E789_test.EventReconstruction.DoCalibration: yes
+INDRAFAZIA.E789_test.EventReconstruction.DoIdentification: yes
+INDRAFAZIA.E789_test.ReconIdent.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.E789_test.IdentRoot.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.E789_test.ReconRoot.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.E789_test.GeneAnalysis.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.E789_test.ActiveIdentifications:      CSI SI-CSI Si-Si Si-CsI Si CsI
+INDRAFAZIA.E789_test.SI-CSI.MassID: yes
+INDRAFAZIA.E789_test.SI-CSI.MassID.Validity:  Z<=6
+INDRAFAZIA.E789_test.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++Plugin.KVMultiDetArray:    INDRAFAZIA.E789_test    KVExpSetUp    KVMultiDetexp_events    "KVExpSetUp()"
++Plugin.KVExpDB:   INDRAFAZIA.E789_test    KVExpSetUpDB     KVMultiDetexp_events   "KVExpSetUpDB(const Char_t*)"
++Plugin.KVFAZIA:    INDRAFAZIA.E789_test    KVFAZIETO    FAZIAgeometry    "KVFAZIETO()"
++Plugin.KVINDRA:    INDRAFAZIA.E789_test    KVINDRA    KVIndraexp_events    "KVINDRA()"
+
++Plugin.KVDetector:      ^INDRAFAZIA.E789_test.SI$      KVSilicon_GG_Energy      KVIndrageometry      "KVSilicon_GG_Energy(Float_t)"
+
+INDRAFAZIA.E789_test.IdentificationParameterFile.Si-Si:        ID_SI1_SI2_B0_3.dat
+INDRAFAZIA.E789_test.IdentificationParameterFile.Si-CsI:       ID_SI2_CSI_B0_3.dat
+
+INDRAFAZIA.E789_test.QL1.BaseLineLength:            100
+INDRAFAZIA.E789_test.QL1.TauRC:                     250
+INDRAFAZIA.E789_test.I2.ChannelWidth:               4
+INDRAFAZIA.E789_test.QL1.ShaperRiseTime:            2
+INDRAFAZIA.E789_test.QL1.ShaperFlatTop:             2
+INDRAFAZIA.E789_test.QL1.PZCorrection:              0
+
+INDRAFAZIA.E789_test.QH1.BaseLineLength:            100
+INDRAFAZIA.E789_test.QH1.TauRC:                     40
+INDRAFAZIA.E789_test.I2.ChannelWidth:               10
+INDRAFAZIA.E789_test.QH1.ShaperRiseTime:            2
+INDRAFAZIA.E789_test.QH1.ShaperFlatTop:             2
+INDRAFAZIA.E789_test.QH1.PZCorrection:              0
+
+INDRAFAZIA.E789_test.I1.BaseLineLength:             30
+INDRAFAZIA.E789_test.I1.ChannelWidth:               4
+INDRAFAZIA.E789_test.I1.Interpolation:              1
+INDRAFAZIA.E789_test.I1.InterpolatedChannelWidth:   0.5
+
+INDRAFAZIA.E789_test.Q2.BaseLineLength:             100
+INDRAFAZIA.E789_test.Q2.TauRC:                      40
+INDRAFAZIA.E789_test.Q2.ChannelWidth:               10
+INDRAFAZIA.E789_test.Q2.ShaperRiseTime:             2
+INDRAFAZIA.E789_test.Q2.ShaperFlatTop:              2
+INDRAFAZIA.E789_test.Q2.PZCorrection:               0
+
+INDRAFAZIA.E789_test.I2.BaseLineLength:             30
+INDRAFAZIA.E789_test.I2.ChannelWidth:               4
+INDRAFAZIA.E789_test.I2.Interpolation:              1
+INDRAFAZIA.E789_test.I2.InterpolatedChannelWidth:   0.5
+
+INDRAFAZIA.E789_test.Q3.BaseLineLength:             100
+INDRAFAZIA.E789_test.Q3.TauRC:                      40
+INDRAFAZIA.E789_test.Q3.ChannelWidth:               10
+INDRAFAZIA.E789_test.Q3.ShaperRiseTime:             2
+INDRAFAZIA.E789_test.Q3.ShaperFlatTop:              10
+INDRAFAZIA.E789_test.Q3.PZCorrection:               0
+INDRAFAZIA.E789_test.Q3.FastShaperRiseTime:         2
+INDRAFAZIA.E789_test.Q3.FastShaperFlatTop:          0.5
+
+INDRAFAZIA.E789_test.QL1.MinimumAmplitude:          2
+INDRAFAZIA.E789_test.Q2.MinimumAmplitude:           2
+INDRAFAZIA.E789_test.QH1.MinimumAmplitude:          2
+INDRAFAZIA.E789_test.Q3.MinimumAmplitude:           3
+
+INDRAFAZIA.E789_test.QL1.MinimumAmplitude:          2
+INDRAFAZIA.E789_test.QH1.MinimumAmplitude:          2
+INDRAFAZIA.E789_test.Q2.MinimumAmplitude:           2
+INDRAFAZIA.E789_test.Q3.MinimumAmplitude:           3
+
+INDRAFAZIA.E789_test.SI1.IsFiredFromSignal:  0
+INDRAFAZIA.E789_test.SI2.IsFiredFromSignal:  0
+INDRAFAZIA.E789_test.CSI.IsFiredFromSignal:  0
+
+
+INDRAFAZIA.E789_test.QH1.FPGARiseTime:          2.
+INDRAFAZIA.E789_test.Q2.FPGARiseTime:           2.
+INDRAFAZIA.E789_test.Q3.fast.FPGARiseTime:      2.
+INDRAFAZIA.E789_test.Q3.slow.FPGARiseTime:      2.
+

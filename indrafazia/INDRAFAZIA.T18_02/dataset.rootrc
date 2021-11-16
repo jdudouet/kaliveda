@@ -1,0 +1,45 @@
+###############################################################################
+# Beam test T18_02 2 blocks June/July 2018
+#
++DataSet:	  INDRAFAZIA.T18_02
+INDRAFAZIA.T18_02.DataSet.Title:    Test T18-02 (June/July 2018)
+INDRAFAZIA.T18_02.DataSet.RepositoryDir:	INDRAFAZIA/T18_02
+INDRAFAZIA.T18_02.DataSet.RunFileName.raw:    run_%R.dat.%D.%I
+INDRAFAZIA.T18_02.DataSet.RunFile.DoNotDelete: raw
+INDRAFAZIA.T18_02.DataSet.RunFileClass.raw:    MFM
+INDRAFAZIA.T18_02.ReconstructedEventClassName:	KVReconstructedEvent
+INDRAFAZIA.T18_02.KVDataSet.DataType.Subdir.recon:  recon
+INDRAFAZIA.T18_02.KVDataSet.DataType.Subdir.root:  root
+INDRAFAZIA.T18_02.DataSet.ExpSetUp.ClassList: KVFAZIA KVINDRA
+INDRAFAZIA.T18_02.ActiveIdentifications:      SI-CSI CSI Si-Si Si-CsI CsI
+#INDRAFAZIA.T18_02.EventReconstruction.DoCalibration: no
+INDRAFAZIA.T18_02.ReconIdent.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.T18_02.IdentRoot.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.T18_02.ReconRoot.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.T18_02.GeneAnalysis.DataAnalysisTask.Prereq:     xxx
+INDRAFAZIA.T18_02.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
+
++Plugin.KVMultiDetArray:    INDRAFAZIA.T18_02    KVExpSetUp    KVMultiDetexp_events    "KVExpSetUp()"
++Plugin.KVExpDB:   INDRAFAZIA.T18_02    KVExpSetUpDB     KVMultiDetexp_events   "KVExpSetUpDB(const Char_t*)"
++Plugin.KVFAZIA:    INDRAFAZIA.T18_02    KVFAZIETO    FAZIAgeometry    "KVFAZIETO()"
++Plugin.KVINDRA:    INDRAFAZIA.T18_02    KVINDRA    KVIndraexp_events    "KVINDRA()"
+
++Plugin.KVDetector:      ^INDRAFAZIA.T18_02.SI$      KVSilicon_GG_Energy      KVIndrageometry      "KVSilicon_GG_Energy(Float_t)"
+
+INDRAFAZIA.T18_02.FAZIETO.NBlocks: 2
+INDRAFAZIA.T18_02.FAZIETO.BlockPositions: 5,9
+
+INDRAFAZIA.T18_02.IdentificationParameterFile.SI-CSI:       INDRA_SICSI.dat
+INDRAFAZIA.T18_02.IdentificationParameterFile.CSI:          INDRA_CSI.dat
+INDRAFAZIA.T18_02.IdentificationParameterFile.Si-Si:        FAZIA_SiSi.dat
+INDRAFAZIA.T18_02.IdentificationParameterFile.Si-CsI:       FAZIA_SiCsI.dat
+INDRAFAZIA.T18_02.IdentificationParameterFile.CsI:          FAZIA_CsI.dat
+
+FAZIADetector.Calib.Channel-Energy: pol2
+
+INDRAFAZIA.T18_02.Q3.FastShaperFlatTop:    0.5
+INDRAFAZIA.T18_02.Q3.ShaperFlatTop:        10.
+INDRAFAZIA.T18_02.Q3.BaseLineLength:       100
+INDRAFAZIA.T18_02.Q3.FastShaperRiseTime:   .5
+INDRAFAZIA.T18_02.Q3.ShaperRiseTime:       .5
+
