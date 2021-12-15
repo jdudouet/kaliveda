@@ -200,12 +200,12 @@ void KVDetector::DetectParticle(KVNucleus* kvp, TVector3* norm)
    if (!kvp->GetPInitial())
       kvp->SetE0();
 
-   Double_t* thickness = 0;
+   std::vector<Double_t> thickness;
    if (norm) {
       // modify thicknesses of all layers according to orientation,
       // and store original thicknesses in array
       TVector3 p = kvp->GetMomentum();
-      thickness = new Double_t[fAbsorbers->GetEntries()];
+      thickness.reserve(fAbsorbers->GetEntries());
       KVMaterial* abs;
       int i = 0;
       TIter next(fAbsorbers);
@@ -225,7 +225,6 @@ void KVDetector::DetectParticle(KVNucleus* kvp, TVector3* norm)
       while ((abs = (KVMaterial*) next())) {
          abs->SetThickness(thickness[i++]);
       }
-      delete [] thickness;
    }
    Double_t epart = kvp->GetEnergy() - eloss;
    if (epart < 1e-3) {
@@ -250,12 +249,12 @@ Double_t KVDetector::GetELostByParticle(KVNucleus* kvp, TVector3* norm)
    //In this case the effective thicknesses of the detector's absorbers 'seen' by the particle
    //depending on its direction of motion is used for the calculation.
 
-   Double_t* thickness = 0;
+   std::vector<Double_t> thickness;
    if (norm) {
       // modify thicknesses of all layers according to orientation,
       // and store original thicknesses in array
       TVector3 p = kvp->GetMomentum();
-      thickness = new Double_t[fAbsorbers->GetEntries()];
+      thickness.reserve(fAbsorbers->GetEntries());
       KVMaterial* abs;
       int i = 0;
       TIter next(fAbsorbers);
@@ -274,7 +273,6 @@ Double_t KVDetector::GetELostByParticle(KVNucleus* kvp, TVector3* norm)
       while ((abs = (KVMaterial*) next())) {
          abs->SetThickness(thickness[i++]);
       }
-      delete [] thickness;
    }
    return eloss;
 }
@@ -294,21 +292,19 @@ Double_t KVDetector::GetParticleEIncFromERes(KVNucleus* kvp, TVector3* norm)
 
    Double_t Einc = 0.0;
    //make 'clone' of particle
-   KVNucleus* clone_part = new KVNucleus(kvp->GetZ(), kvp->GetA());
-   clone_part->SetMomentum(kvp->GetMomentum());
+   KVNucleus clone_part(kvp->GetZ(), kvp->GetA());
+   clone_part.SetMomentum(kvp->GetMomentum());
    //composite detector - calculate losses in all layers
    KVMaterial* abs;
    TIter next(fAbsorbers, kIterBackward); //work through list backwards
    while ((abs = (KVMaterial*) next())) {
 
       //calculate energy of particle before current absorber
-      Einc = abs->GetParticleEIncFromERes(clone_part, norm);
+      Einc = abs->GetParticleEIncFromERes(&clone_part, norm);
 
       //set new energy of particle
-      clone_part->SetKE(Einc);
+      clone_part.SetKE(Einc);
    }
-   //delete clone
-   delete clone_part;
    return Einc;
 }
 
