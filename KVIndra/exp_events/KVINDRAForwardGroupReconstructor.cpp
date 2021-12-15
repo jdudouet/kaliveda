@@ -486,6 +486,12 @@ Bool_t KVINDRAForwardGroupReconstructor::CoherencySiCsI(KVReconstructedNucleus& 
          if (IDsicsi->Z < Zref) fCoherent = kFALSE;
          else fPileup = kTRUE;
       }
+      else if (IDsicsi->IDattempted && IDsicsi->IDquality == 7) {
+         // Point to identify in Si-CsI matrix is above the last line in the grid
+         // Z given to identification result is Zmin = lastZ + 1
+         // if this is > Z from CsI identification, pileup in Si
+         if (IDsicsi->Z > Zref) fPileup = kTRUE;
+      }
       PART.SetParameter("Coherent", fCoherent);
       PART.SetParameter("Pileup", fPileup);
       return kTRUE;
