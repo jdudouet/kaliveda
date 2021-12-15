@@ -10,6 +10,7 @@
 */
 
 class KVFAZIAGroupReconstructor : public KVGroupReconstructor {
+
 protected:
 
    void CalibrateParticle(KVReconstructedNucleus* PART);

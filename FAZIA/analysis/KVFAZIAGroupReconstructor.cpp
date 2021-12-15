@@ -89,8 +89,8 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       }
    }
 
-   // particle identified in Si2-CsI or CsI
-   if (PART->GetIDCode() == 23 || PART->GetIDCode() == 33) {
+   // particle identified in Si2-CsI
+   if (PART->GetIDCode() == 23) {
       KVFAZIADetector* si2 = (KVFAZIADetector*)PART->GetReconstructionTrajectory()->GetDetector("SI2");
       KVFAZIADetector* csi = (KVFAZIADetector*)PART->GetStoppingDetector();
       KVFAZIADetector* si1 = (KVFAZIADetector*)PART->GetReconstructionTrajectory()->GetDetector("SI1");
@@ -133,6 +133,65 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
             //PART->ls();
          }
       }
+   }
+   // particle identified in CsI
+   if (PART->GetIDCode() == 33) {
+      KVFAZIADetector* si2 = (KVFAZIADetector*)PART->GetReconstructionTrajectory()->GetDetector("SI2");
+      KVFAZIADetector* csi = (KVFAZIADetector*)PART->GetStoppingDetector();
+      KVFAZIADetector* si1 = (KVFAZIADetector*)PART->GetReconstructionTrajectory()->GetDetector("SI1");
+
+      bool si1_pileup = PART->GetParameters()->GetBoolValue("si1_pileup");
+      bool si2_pileup = PART->GetParameters()->GetBoolValue("si2_pileup");
+
+      KVNameValueList part_id(Form("Z=%d,A=%d", PART->GetZ(), PART->GetA()));
+
+      if (!(si1 && si2 && csi)) {
+         Error("CalibrateParticle",
+               "IDCODE=23 si1=%s si2=%s csi=%s",
+               (si1 ? si1->GetName() : "?"), (si2 ? si2->GetName() : "?"), (csi ? csi->GetName() : "?"));
+      }
+      double esi1 = -1;
+      double esi2 = -1;
+      double ecsi = -1;
+      std::map<std::string, bool> is_calculated;
+      is_calculated["csi"] = is_calculated["si2"] = is_calculated["si1"] = false;
+      if (csi->IsCalibrated(part_id)) ecsi = csi->GetDetectorSignalValue("Energy", part_id);
+      if (!si2_pileup && si2->IsCalibrated()) esi2 = si2->GetEnergy();
+      if (!si1_pileup && si1->IsCalibrated()) esi1 = si1->GetEnergy();
+      // pile-up in Si2 with calibrated CsI: calculate esi1 & esi2
+      if (si2_pileup && csi->IsCalibrated(part_id) && ecsi > 0) {
+         esi2 = si2->GetDeltaEFromERes(PART->GetZ(), PART->GetA(), ecsi);
+         is_calculated["si2"] = true;
+         esi1 = si1->GetDeltaEFromERes(PART->GetZ(), PART->GetA(), esi2 + ecsi);
+         is_calculated["si1"] = true;
+      }
+      // pile-up in Si1 with calibrated CsI & calibrated Si2: calculate esi1
+      else if (si1_pileup && csi->IsCalibrated(part_id) && si2->IsCalibrated() && ecsi > 0 && esi2 > 0) {
+         esi1 = si1->GetDeltaEFromERes(PART->GetZ(), PART->GetA(), esi2 + ecsi);
+         is_calculated["si1"] = true;
+      }
+      // treat case of uncalibrated CsI detector
+      // case where SI1 && SI2 are calibrated & present in event & no pileup detected in Si1/Si2
+      if (!csi->IsCalibrated(part_id) && (si1->IsCalibrated() && si1->GetEnergy() && si2->IsCalibrated() && si2->GetEnergy())
+            && !si1_pileup && !si2_pileup) {
+         // calculate total delta-E in (SI1+SI2) then use to calculate CsI energy
+         double deltaE = esi1 + esi2;
+         KVDetector si1si2("Si", si1->GetThickness() + si2->GetThickness());
+         ecsi = si1si2.GetEResFromDeltaE(PART->GetZ(), PART->GetA(), deltaE);
+         is_calculated["csi"] = true;
+      }
+
+      if (ecsi > 0 && esi1 > 0 && esi2 > 0) {
+         PART->SetIsCalibrated();
+         if (is_calculated["si1"] || is_calculated["si2"] || is_calculated["csi"]) PART->SetECode(2);
+         else PART->SetECode(1);
+         PART->SetEnergy(esi1 + esi2 + ecsi);
+         PART->SetParameter("FAZIA.ESI1", is_calculated["si1"] ? -esi1 : esi1);
+         PART->SetParameter("FAZIA.ESI2", is_calculated["si2"] ? -esi2 : esi2);
+         PART->SetParameter("FAZIA.ECSI", is_calculated["csi"] ? -ecsi : ecsi);
+      }
+      else
+         PART->SetECode(0); // aucune calibration effectuee
    }
 
    if (PART->IsCalibrated()) {
@@ -221,6 +280,8 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
    // 3 Si-CsI id -> Si-Si id because Z(sicsi)<Z(sisi)
    // 4 stopped in CsI (no id) + good id Si-Si -> Si-Si
 
+   bool si1_pileup(false), si2_pileup(false);
+
    // check for failed PSA identification for particles stopped in Si1
    // change status => KVReconstructedNucleus::kStatusStopFirstStage
    // estimation of minimum Z from energy loss (if Si1 calibrated)
@@ -229,8 +290,11 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       PART.SetStatus(KVReconstructedNucleus::kStatusStopFirstStage);
       TreatStatusStopFirstStage(PART);
       PART.SetIDCode(5);
+      PART.SetParameter("si1_pileup", si1_pileup);
+      PART.SetParameter("si2_pileup", si2_pileup);
       return;
    }
+
 
    // Coherency checks for identifications
    if (PART.IsIdentified()) {
@@ -257,36 +321,59 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                }
             }
          }
-         // remove the following case : now CsI grids starts only when the particle identification
-         // is good (high energy). Low energy particles will automatically be identified in Si-CsI.
-         // -> to be tested
-//         else {
-         // As a general rule, we prefer Si-CsI identification to CsI identification, if both
-         // are available and both were successful
-         // THIS SHOULD ONLY BE DONE IF WE ARE SURE THAT A 2ND PARTICLE DID NOT STOP IN SI2
-         // I.E. AFTER CHECKING THAT CSI & SI-CSI IDENTIFICATIONS ARE COHERENT
-         // BUT IF THIS IS THE CASE, WHY CHANGE ?
-//#ifndef WITH_CPP11
-//            std::map<std::string, KVIdentificationResult*>::iterator si2csi = id_by_type.find("Si-CsI");
-//#else
-//            auto si2csi = id_by_type.find("Si-CsI");
-//#endif
-//            if (si2csi != id_by_type.end()) {
-//               if (si2csi->second->IDOK && si2csi->second->IDquality < KVIDZAGrid::kICODE4) {
+         else if (partID.IDOK) {
+            // good identification in CsI (light charged particle)
+            // check for pile-up in Si2 (and beyond) - in this case, measured energy loss in Si2+Si1
+            // should not be attributed to this particle
+#ifndef WITH_CPP11
+            std::map<std::string, KVIdentificationResult*>::iterator si2csi = id_by_type.find("Si-CsI");
+#else
+            auto si2csi = id_by_type.find("Si-CsI");
+#endif
+            if (si2csi != id_by_type.end()) {
+               // detect a pile-up in Si2 in coincidence with particule detected in CsI
+               // the following covers the following cases:
+               //   - good ID Si-CsI (IDquality < kICODE4) with Z>Zcsi
+               //   - ID "between the lines" in Si-CsI (IDquality=kICODE4,kICODE5) with Z>Zcsi
+               //   - point above last Z line in Si-CsI grid (kICODE7) with Z>Zcsi
+               // In these cases, there is a second particle stopped in Si2: and
+               // hence the measured Si1 energy loss is not to be used either
+               if ((si2csi->second->Z > partID.Z)) {
+                  si2_pileup = true;
+                  si1_pileup = true;
+               }
+            }
+#ifndef WITH_CPP11
+            std::map<std::string, KVIdentificationResult*>::iterator si1si2 = id_by_type.find("Si-Si");
+#else
+            auto si1si2 = id_by_type.find("Si-Si");
+#endif
+            if (si1si2 != id_by_type.end()) {
+               // detect a pile-up in Si2 in coincidence with particule detected in CsI
+               // the following covers the following cases:
+               //   - good ID Si1-Si2 (IDquality < kICODE4) with Z>Zcsi
+               //   - ID "between the lines" in Si1-Si2 (IDquality=kICODE4,kICODE5) with Z>Zcsi
+               //   - point above last Z line in Si1-Si2 grid (kICODE7) with Z>Zcsi
+               // In these cases, there is a second particle stopped in Si2: and
+               // hence the measured Si1 energy loss is not to be used either
+               if ((si1si2->second->Z > partID.Z)) {
+                  si2_pileup = true;
+                  si1_pileup = true;
+               }
+            }
+#ifndef WITH_CPP11
+            std::map<std::string, KVIdentificationResult*>::iterator sipsa = id_by_type.find("SiPSA");
+#else
+            auto sipsa = id_by_type.find("SiPSA");
+#endif
+            if (sipsa != id_by_type.end()) {
+               // detect a pile-up in Si1 in coincidence with particule detected in CsI
+               if ((sipsa->second->Z > partID.Z)) {
+                  si1_pileup = true;
+               }
+            }
 
-//                  // To be coherent, Si-CsI identification should not give
-//                  //    1) same Z but larger A
-//                  //    2) larger Z
-//                  //Info("IdentifyParticle","Prefer SiCsI identification over CSI [Z=%d A=%d]",PART.GetZ(),PART.GetA());
-//                  partID = *(si2csi->second);
-//                  identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("Si-CsI");
-//                  PART.SetIdentifyingTelescope(identifying_telescope);
-//                  PART.SetIdentification(&partID, identifying_telescope);
-//                  PART.GetParameters()->SetValue("CCode", 2);
-//                  //PART.Print();
-//               }
-//            }
-//         }
+         }
       }
       else if (partID.IsType("Si-CsI")) {
          // ions correctly identified in Si2-CsI should have coherent identification in Si1-Si2: as the particle punches
@@ -342,6 +429,8 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
          }
       }
    }
+   PART.SetParameter("si1_pileup", si1_pileup);
+   PART.SetParameter("si2_pileup", si2_pileup);
 }
 
 void KVFAZIAGroupReconstructor::ChangeReconstructedTrajectory(KVReconstructedNucleus& PART)
