@@ -258,7 +258,7 @@ RANGE.PredefMaterials:          rangeyanez_compounds.data
 
 # KVDetector: TF1::fNpx parameter for TF1 energy loss, range & residual energy
 KVDetector.EnergyLoss.Npx:         20
-KVDetector.ResidualEnergy.Npx:         50
+KVDetector.ResidualEnergy.Npx:         100
 KVDetector.Range.Npx:        20
 
 # LifeTime tables used by KVNDTManager
