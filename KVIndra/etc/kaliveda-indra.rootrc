@@ -452,7 +452,7 @@ t10_02.KVINDRADetector.Fired.ACQParameterList.CSI: R,L
 # Acceptable identification & energy codes for INDRA reconstructed particles
 # Dataset-dependent values can be set with [Dataset].INDRA.ReconstructedNuclei.Accept[ID/E]Codes
 INDRA.ReconstructedNuclei.AcceptIDCodes: 2-4,6
-INDRA.ReconstructedNuclei.AcceptECodes: 1-2
+INDRA.ReconstructedNuclei.AcceptECodes: 1-3
 
 # Plugins for different datasets
 # Each dataset has an associated database of informations on runs, calibration parameters, etc.
