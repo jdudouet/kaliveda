@@ -8,7 +8,7 @@ class ROOT_Fortran_Interface {
    int run_number;
    int npart_traite;
    int icou[500], imod[500], z[500], a[500], code[500], ecode[500], mt[500];
-   float ener[500];
+   float ener[500], de1[500], de2[500], de3[500], de4[500], de5[500];
    mutable int ipart;
 
 public:
@@ -26,6 +26,11 @@ public:
       t.Branch("a", a, "a[npart_traite]/I");
       t.Branch("mt", mt, "mt[npart_traite]/I");
       t.Branch("ener", ener, "ener[npart_traite]/F");
+      t.Branch("de1", de1, "de1[npart_traite]/F");
+      t.Branch("de2", de2, "de2[npart_traite]/F");
+      t.Branch("de3", de3, "de3[npart_traite]/F");
+      t.Branch("de4", de4, "de4[npart_traite]/F");
+      t.Branch("de5", de5, "de5[npart_traite]/F");
    }
    ~ROOT_Fortran_Interface()
    {
@@ -37,7 +42,8 @@ public:
       npart_traite = M;
       ipart = 0;
    }
-   void new_particle(int cod, int ecod, int cou, int mod, int Z, int A, float E, int MT)
+   void new_particle(int cod, int ecod, int cou, int mod, int Z, int A, float E, float DE1,
+                     float DE2, float DE3, float DE4, float DE5, int MT)
    {
       code[ipart] = cod;
       ecode[ipart] = ecod;
@@ -47,6 +53,11 @@ public:
       a[ipart] = A;
       mt[ipart] = MT;
       ener[ipart] = E;
+      de1[ipart] = DE1;
+      de2[ipart] = DE2;
+      de3[ipart] = DE3;
+      de4[ipart] = DE4;
+      de5[ipart] = DE5;
 
       ++ipart;
    }
@@ -80,9 +91,10 @@ extern "C"
    }
 
    void FC_GLOBAL_(new_particle, NEW_PARTICLE)(int* code, int* ecode, int* cou, int* mod,
-         int* z, int* a, float* ener, int* mt)
+         int* z, int* a, float* ener, float* DE1,
+         float* DE2, float* DE3, float* DE4, float* DE5, int* mt)
    {
-      RFI->new_particle(*code, *ecode, *cou, *mod, *z, *a, *ener, *mt);
+      RFI->new_particle(*code, *ecode, *cou, *mod, *z, *a, *ener, *DE1, *DE2, *DE3, *DE4, *DE5, *mt);
    }
 
    void FC_GLOBAL_(fill_tree, FILL_TREE)()

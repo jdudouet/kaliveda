@@ -161,7 +161,8 @@ c      call initevt()
 	  				endif
 				endif
             
-            call new_particle(code(j),ecode(j),icou(j),imod(j),z(j),a(j),ener(j),mt(j))
+            call new_particle(code(j),ecode(j),icou(j),imod(j),z(j),a(j),ener(j),
+     &       de1(j),de2(j),de3(j),de4(j),de5(j),mt(j))
 				
 			enddo
          
