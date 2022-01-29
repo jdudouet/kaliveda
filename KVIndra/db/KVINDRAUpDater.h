@@ -27,7 +27,7 @@ public:
    {
    }
 
-   virtual void SetParameters(UInt_t run);
+   virtual void SetParameters(UInt_t run, Bool_t physics_parameters_only = kFALSE);
    virtual void SetCalibrationParameters(UInt_t);
 
    virtual void SetTrigger(KVDBRun*);

@@ -72,8 +72,9 @@ Double_t KVIDChIoCsI_camp5::GetIDMapX(Option_t*)
    //'opt' has no effect.
    Double_t rapide = (Double_t)fCsI->GetR() + fCsIRPedestal;
    Double_t lente = (Double_t)fCsI->GetL() + fCsILPedestal;
-   Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
-   return h;
+//   Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
+//   return h;
+   return -1;
 }
 
 //__________________________________________________________________________//

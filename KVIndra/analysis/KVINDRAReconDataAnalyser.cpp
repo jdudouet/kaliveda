@@ -275,13 +275,15 @@ void KVINDRAReconDataAnalyser::SetSelectorCurrentRun(KVINDRADBRun* CurrentRun)
 void KVINDRAReconDataAnalyser::preInitRun()
 {
    // Called by currently-processed TSelector when a new file in the TChain is opened.
-   // We call gIndra->SetParameters for the current run.
+   // We call gIndra->SetParameters for the current run: only physics parameters will be set,
+   // not the full set of identification/calibration parameters.
+   //
    // We connect the acquisition parameter objects to the branches of the raw data tree.
    // Infos on currently read file/tree are printed.
    // Any required data patches ("rustines") are initialized.
 
    Int_t run = GetRunNumberFromFileName(theChain->GetCurrentFile()->GetName());
-   gIndra->SetParameters(run);
+   gIndra->SetParameters(run, kTRUE);
    KVINDRADBRun* CurrentRun = gIndraDB->GetRun(run);
    SetCurrentRun(CurrentRun);
    SetSelectorCurrentRun(CurrentRun);

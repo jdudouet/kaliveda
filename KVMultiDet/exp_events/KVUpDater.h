@@ -32,7 +32,7 @@ public:
    virtual ~ KVUpDater();
    void SetArray(KVMultiDetArray*);
 
-   virtual void SetParameters(UInt_t);
+   virtual void SetParameters(UInt_t, Bool_t physics_parameters_only = kFALSE);
    virtual void SetIdentificationParameters(UInt_t) ;
    virtual void SetCalibrationParameters(UInt_t);
    virtual void CheckStatusOfDetectors(KVDBRun*);

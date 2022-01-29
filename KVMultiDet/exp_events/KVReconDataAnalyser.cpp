@@ -183,11 +183,12 @@ void KVReconDataAnalyser::preInitAnalysis()
 void KVReconDataAnalyser::preInitRun()
 {
    // Called by currently-processed TSelector when a new file in the TChain is opened.
-   // We call gMultiDetArray->SetParameters for the current run.
+   // We call gMultiDetArray->SetParameters for the current run, but only physics parameters
+   // are set, not the full calibrations and identifications.
    // Infos on currently read file/tree are printed.
 
    Int_t run = GetRunNumberFromFileName(theChain->GetCurrentFile()->GetName());
-   gMultiDetArray->SetParameters(run);
+   gMultiDetArray->SetParameters(run, kTRUE);
    KVDBRun* CurrentRun = gExpDB->GetDBRun(run);
    SetCurrentRun(CurrentRun);
    fSelector->SetCurrentRun(CurrentRun);

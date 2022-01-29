@@ -36,7 +36,6 @@ void KVFAZIAUpDater::SetCalibParameters(KVDBRun* dbrun)
    KVUpDater::SetCalibParameters(dbrun);
 
    SetPSAParameters(dbrun);
-   CheckStatusOfDetectors(dbrun);
 }
 
 void KVFAZIAUpDater::SetPSAParameters(KVDBRun* dbrun)
@@ -116,6 +115,6 @@ void KVFAZIAUpDater::CheckStatusOfDetectors(KVDBRun* kvrun)
       }
    }
 
-   Info("CheckStatusOfDetectors", "%d detectors does not work", ndet_ooo);
+   Info("CheckStatusOfDetectors", "%d detectors do not work", ndet_ooo);
 
 }

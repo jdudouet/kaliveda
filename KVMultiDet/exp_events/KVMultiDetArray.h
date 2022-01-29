@@ -300,7 +300,7 @@ public:
       return TestBit(kIsBeingDeleted);
    }
    KVUpDater* GetUpDater();
-   virtual void SetParameters(UInt_t n);
+   virtual void SetParameters(UInt_t n, Bool_t physics_parameters_only = kFALSE);
    virtual void SetRunIdentificationParameters(UShort_t n);
    virtual void SetRunCalibrationParameters(UShort_t n);
 

@@ -258,8 +258,9 @@ Double_t KVIDSiCsI5::GetIDMapX(Option_t*)
 
    Double_t rapide = (Double_t)fCsI->GetR() + fCsIRPedestal;
    Double_t lente = (Double_t)fCsI->GetL() + fCsILPedestal;
-   Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
-   return h;
+   //Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
+   //return h;
+   return -1;
 }
 //__________________________________________________________________________//
 
@@ -273,8 +274,9 @@ Double_t KVIDSiCsI5::GetPedestalX(Option_t*)
 
    Double_t rapide = fCsIRPedestal;
    Double_t lente = fCsILPedestal;
-   Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
-   return h;
+   //Double_t h = (Double_t)fCsI->GetLumiereTotale(rapide, lente);
+   //return h;
+   return -1;
 }
 
 //____________________________________________________________________________________

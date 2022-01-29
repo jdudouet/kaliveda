@@ -56,12 +56,14 @@ KVUpDater* KVUpDater::MakeUpDater(const Char_t* uri, KVMultiDetArray* a)
    return upd;
 }
 
-void KVUpDater::SetParameters(UInt_t run)
+void KVUpDater::SetParameters(UInt_t run, Bool_t physics_parameters_only)
 {
    // Set parameters of multidetector for this run
+   //
    //This will:
    //      set the target corresponding to the run
    //      set detector statuses (present/working) for the run
+   //If physics_parameters_only==false:
    //      set calibration parameters for the run
    //      set identification parameters for the run
 
@@ -75,8 +77,10 @@ void KVUpDater::SetParameters(UInt_t run)
    }
    SetTarget(kvrun);
    CheckStatusOfDetectors(kvrun);
-   SetCalibrationParameters(run);
-   SetIdentificationParameters(run);
+   if (!physics_parameters_only) {
+      SetCalibrationParameters(run);
+      SetIdentificationParameters(run);
+   }
 }
 
 //_______________________________________________________________//

@@ -61,7 +61,8 @@ void KVIDSi150CsI_camp5::Initialize()
 Double_t KVIDSi150CsI_camp5::GetIDMapX(Option_t*)
 {
    //X-coordinate for Si150-CsI identification map is corrected light output of CsI
-   return fCsI->GetCorrectedLumiereTotale();
+   //return fCsI->GetCorrectedLumiereTotale();
+   return -1;
 }
 
 //____________________________________________________________________________________

@@ -4,6 +4,6 @@ endif()
 
 BUILD_KALIVEDA_MODULE(identification_camp5
 	PARENT ${KVSUBPROJECT}
-        KVMOD_DEPENDS identification
+        KVMOD_DEPENDS identification geometry
         LIB_EXCLUDE ${do_not_compile}
 )

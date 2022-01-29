@@ -29,14 +29,15 @@ KVINDRAUpDater::KVINDRAUpDater()
 
 //_______________________________________________________________//
 
-void KVINDRAUpDater::SetParameters(UInt_t run)
+void KVINDRAUpDater::SetParameters(UInt_t run, Bool_t physics_parameters_only)
 {
    //Set the parameters of INDRA for this run
    //This will:
    //      set the multiplicity trigger of fArray using the database value for the run
-   //      set special detector gains for run (if any)
    //      set the target corresponding to the run
    //      set the ChIo pressures for the run
+   //If physics_parameters_only==kFALSE:
+   //      set special detector gains for run (if any)
    //      set calibration parameters for the run
    //      set identification parameters for the run
    //
@@ -52,12 +53,13 @@ void KVINDRAUpDater::SetParameters(UInt_t run)
    SetTarget(kvrun);
 
    CheckStatusOfDetectors(kvrun);
-
-   SetGains(kvrun);
    SetChIoPressures(kvrun);
-   SetCalibrationParameters(run);
-   SetIdentificationParameters(run);
 
+   if (!physics_parameters_only) {
+      SetGains(kvrun);
+      SetCalibrationParameters(run);
+      SetIdentificationParameters(run);
+   }
 }
 
 //_______________________________________________________________//

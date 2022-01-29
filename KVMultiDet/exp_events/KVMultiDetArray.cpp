@@ -1751,11 +1751,15 @@ KVUpDater* KVMultiDetArray::GetUpDater()
 
 //_________________________________________________________________________________
 
-void KVMultiDetArray::SetParameters(UInt_t run)
+void KVMultiDetArray::SetParameters(UInt_t run, Bool_t physics_parameters_only)
 {
-   //Set identification and calibration parameters for run.
-   //This can only be done if gDataSet has been set i.e. a dataset has been chosen
-   //Otherwise this just has the effect of setting the current run number
+   // Set run-dependent parameters of the array.
+   //
+   // if physics_parameters_only==false, identification and calibration parameters are set.
+   // if physics_parameters_only==true, just the minimum necessary for physics analysis of reduced data are set.
+   //
+   // This can only be done if gDataSet has been set i.e. a dataset has been chosen,
+   // otherwise this just has the effect of setting the current run number
 
    fCurrentRun = run;
    KVDataSet* ds = gDataSet;
@@ -1764,7 +1768,7 @@ void KVMultiDetArray::SetParameters(UInt_t run)
          ds = gDataSetManager->GetDataSet(fDataSet.Data());
    }
    if (ds) {
-      GetUpDater()->SetParameters(run);
+      GetUpDater()->SetParameters(run, physics_parameters_only);
       SetBit(kParamsSet);
    }
 }
