@@ -9,7 +9,7 @@
 #pragma link C++ class KVINDRAe503+;
 //#pragma link C++ class KVINDRAFNL+;
 #pragma link C++ class INDRAGeometryBuilder+;
-#pragma link C++ class KVINDRAReconEvent-;//customized streamer
+#pragma link C++ class KVINDRAReconEvent+;
 #pragma link C++ class KVINDRAReconNuc+;
 #pragma link C++ class KVINDRAGroupReconstructor+;
 #pragma link C++ class KVINDRAForwardGroupReconstructor+;

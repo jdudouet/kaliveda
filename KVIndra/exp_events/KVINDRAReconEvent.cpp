@@ -81,31 +81,6 @@ KVINDRAReconNuc* KVINDRAReconEvent::AddParticle()
    return tmp;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-void KVINDRAReconEvent::Streamer(TBuffer& R__b)
-{
-   // Stream an object of class KVINDRAReconEvent.
-   // If acceptable ID/E codes have been set with methods AcceptIDCodes()/
-   // AcceptECodes(), we loop over the newly-read particles in order to set
-   // their IsOK() status according to these choices.
-   // If not, it will have already been set according to the default code
-   // selection (defined by [DataSet].INDRA.ReconstructedNuclei.AcceptID/ECodes)
-   // in KVReconstructedNucleus::Streamer
-
-   if (R__b.IsReading()) {
-      R__b.ReadClassBuffer(KVINDRAReconEvent::Class(), this);
-      if (fCodeMask && !fCodeMask->IsNull()) {
-         KVINDRAReconNuc* par;
-         while ((par = GetNextParticle())) {
-            par->SetIsOK(CheckCodes(par->GetCodes()));
-         }
-      }
-   }
-   else {
-      R__b.WriteClassBuffer(KVINDRAReconEvent::Class(), this);
-   }
-}
-
 //______________________________________________________________________________
 void KVINDRAReconEvent::Print(Option_t* option) const
 {
@@ -141,62 +116,6 @@ KVINDRAReconNuc* KVINDRAReconEvent::GetNextParticle(Option_t* opt)
    //      }
 
    return (KVINDRAReconNuc*) KVEvent::GetNextParticle(opt);
-}
-
-//______________________________________________________________________________________________
-
-void KVINDRAReconEvent::AcceptIDCodes(UShort_t code)
-{
-   //Define the identification codes that you want to include in your analysis.
-   //Example: to keep only (VEDA) codes 2 and 3, use
-   //        event.AcceptIDCodes( kIDCode2 | kIDCode3 );
-   //Particles which have the correct ID codes will have IsOK() = kTRUE
-   //i.e.  if( particle.IsOK() ) { // ... analysis ... }
-   //although it is easier to loop over all 'correct' particles using:
-   //   while ( particle = GetNextParticle("ok") ){ // ... analysis ... }
-   //
-   //To remove any previously defined acceptable identification codes,
-   // use AcceptIDCodes(0)
-   //
-   //N.B. : this method is preferable to using directly the KVINDRACodeMask pointer
-   //as the 'IsOK' status of all particles of the current event are automatically updated
-   //when the code mask is changed using this method.
-   GetCodeMask()->SetIDMask(code);
-   KVINDRAReconNuc* par = 0;
-   while ((par = GetNextParticle())) {
-      if (CheckCodes(par->GetCodes()))
-         par->SetIsOK();
-      else
-         par->SetIsOK(kFALSE);
-   }
-}
-
-//______________________________________________________________________________________________
-
-void KVINDRAReconEvent::AcceptECodes(UChar_t code)
-{
-   //Define the calibration codes that you want to include in your analysis.
-   //Example: to keep only ecodes 1 and 2, use
-   //        event.AcceptECodes( kECode2 | kECode3 );
-   //Particles which have the correct E codes will have IsOK() = kTRUE
-   //i.e.  if( particle.IsOK() ) { // ... analysis ... }
-   //although it is easier to loop over all 'correct' particles using:
-   //   while ( particle = GetNextParticle("ok") ){ // ... analysis ... }
-   //
-   //To remove any previously defined acceptable identification codes,
-   // use AcceptECodes(0)
-   //
-   //N.B. : this method is preferable to using directly the KVINDRACodeMask pointer
-   //as the 'IsOK' status of all particles of the current event are automatically updated
-   //when the code mask is changed using this method.
-   GetCodeMask()->SetEMask(code);
-   KVINDRAReconNuc* par = 0;
-   while ((par = GetNextParticle())) {
-      if (CheckCodes(par->GetCodes()))
-         par->SetIsOK();
-      else
-         par->SetIsOK(kFALSE);
-   }
 }
 
 //______________________________________________________________________________________________

@@ -75,7 +75,7 @@ void KVDataPatch_CorrectEtalonModuleIDCode::ApplyToParticle(KVNucleus* n)
             }
          }
          // update particle's 'OK' status
-         N->SetIsOK(fEvent->CheckCodes(N->GetCodes()));
+         gMultiDetArray->AcceptParticleForAnalysis(N);
       }
    }
 }

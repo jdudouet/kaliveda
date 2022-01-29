@@ -89,9 +89,6 @@ public:
       return ((*fCodeMask) & code);
    };
 
-   void AcceptIDCodes(UShort_t code);
-   void AcceptECodes(UChar_t code);
-
    void IdentifyEvent();
    void ChangeFragmentMasses(UChar_t mass_formula);
 

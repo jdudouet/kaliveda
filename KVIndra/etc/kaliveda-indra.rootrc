@@ -674,7 +674,7 @@ KaliVedaGUI.MaxColWidth:       500
 # written on disk with previous (bugged) versions. See KVDataPatch & KVDataPatchList.
 Plugin.KVDataPatch:   INDRA_SanityChecks  KVDataPatch_INDRA_SanityChecks  KVIndraanalysis  "KVDataPatch_INDRA_SanityChecks()"
 +Plugin.KVDataPatch:   INDRA_camp5_PHDcorrection  KVDataPatch_INDRA_camp5_PHDcorrection  KVIndraanalysis  "KVDataPatch_INDRA_camp5_PHDcorrection()"
-+Plugin.KVDataPatch:   CorrectEtalonModuleIDCode  KVDataPatch_CorrectEtalonModuleIDCode  KVIndraanalysis  "KVDataPatch_CorrectEtalonModuleIDCode()"
+#+Plugin.KVDataPatch:   CorrectEtalonModuleIDCode  KVDataPatch_CorrectEtalonModuleIDCode  KVIndraanalysis  "KVDataPatch_CorrectEtalonModuleIDCode()"
 +Plugin.KVDataPatch:   Camp2MassID  KVDataPatch_Camp2MassID  KVIndraanalysis  "KVDataPatch_Camp2MassID()"
 +Plugin.KVDataPatch:   Camp1MassID  KVDataPatch_Camp1MassID  KVIndraanalysis  "KVDataPatch_Camp1MassID()"
 +Plugin.KVDataPatch:   CorrectEtalonTrajectories  KVDataPatch_INDRA_CorrectEtalonTrajectories  KVIndraanalysis  "KVDataPatch_INDRA_CorrectEtalonTrajectories()"
