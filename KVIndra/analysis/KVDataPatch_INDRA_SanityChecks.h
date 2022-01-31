@@ -33,7 +33,7 @@ public:
    virtual Bool_t IsRequired(TString dataset, TString datatype, Int_t,
                              TString, Int_t, const TList*)
    {
-      return ((dataset == "INDRA_camp1" || dataset == "INDRA_camp2" || dataset == "INDRA_camp4") && datatype == "root");
+      return ((dataset == "INDRA_camp1" || dataset == "INDRA_camp2" || dataset == "INDRA_camp4" || dataset == "INDRA_camp5") && datatype == "root");
    }
    virtual Bool_t IsEventPatch()
    {
