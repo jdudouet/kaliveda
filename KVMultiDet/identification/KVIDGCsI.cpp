@@ -88,6 +88,9 @@ void KVIDGCsI::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) con
       idr->SetComment("gamma");
       return;
    }
+
+   SetInfos(x, y, idr);
+
    if (!const_cast<KVIDGCsI*>(this)->FindFourEmbracingLines(x, y, "above")) {
       //no lines corresponding to point were found
       const_cast < KVIDGCsI* >(this)->fICode = kICODE8;         // Z indetermine ou (x,y) hors limites

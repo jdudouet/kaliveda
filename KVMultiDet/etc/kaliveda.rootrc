@@ -332,6 +332,13 @@ KVIDZAFromZGrid.CutClass:  KVIDCutLine
 KVIDZAFromZGrid.DefaultCutClass:  KVIDCutLine
 KVIDZAFromZGrid.IDClass:  KVIDZALine
 
+# Default info classes for different ID graphs
+# Used by KVIDGridManagerGUI when creating new grids
+#
+KVIDGraph.InfoClass: KVIDCutContour
++KVIDGraph.InfoClass: KVIDCutLine
+KVIDGraph.DefaultInfoClass:  KVIDCutLine
+
 
 # Plugins for identification graphs/grids
 # User can extend identification possibilities by adding plugins to list

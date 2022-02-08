@@ -38,6 +38,7 @@ protected:
    Bool_t         fOnlyZId;         //set to kTRUE when only to be used to give Z identification of nuclei, no mass info
    KVList*         fIdentifiers;    //-> list of identification objects
    KVList*         fCuts;           //-> cuts used to define area in which identification is possible
+   KVList*         fInfoZones;      //-> contours/lines used to add info to particles (ex: punch-through)
    Axis_t         fXmin, fXmax;     //!min/max X coordinates of graph
    Axis_t         fYmin, fYmax;     //!min/max Y coordinates of graph
    KVNameValueList*   fPar;            //-> parameters associated to grid
@@ -94,6 +95,7 @@ public:
    virtual void Identify(Double_t /*x*/, Double_t /*y*/, KVIdentificationResult*) const = 0;
    virtual void Initialize() = 0;
    virtual Bool_t IsIdentifiable(Double_t /*x*/, Double_t /*y*/, TString* rejected_by = nullptr) const;
+   virtual void SetInfos(Double_t /*x*/, Double_t /*y*/, KVIdentificationResult* /*idr*/) const;
 
    static void SetAutoAdd(Bool_t yes = kTRUE)
    {
@@ -120,6 +122,7 @@ public:
    KVIDentifier* GetIdentifier(Int_t Z, Int_t A) const;
    void RemoveIdentifier(KVIDentifier*);
    void RemoveCut(KVIDentifier*);
+   void RemoveInfo(KVIDentifier*);
 
    TVirtualPad* GetPad() const
    {
@@ -180,6 +183,7 @@ public:
       //Set line colour of all objects in grid
       fIdentifiers->Execute("SetLineColor", Form("%d", (Int_t) lcolor));
       fCuts->Execute("SetLineColor", Form("%d", (Int_t) lcolor));
+      fInfoZones->Execute("SetLineColor", Form("%d", (Int_t) lcolor));
       Modified();
    } // *MENU={Hierarchy="View.../SetLinecolor"}*
    void SetLineStyle(Style_t lstyle)
@@ -187,6 +191,7 @@ public:
       //Set line style of all objects in grid
       fIdentifiers->Execute("SetLineStyle", Form("%d", (Int_t) lstyle));
       fCuts->Execute("SetLineStyle", Form("%d", (Int_t) lstyle));
+      fInfoZones->Execute("SetLineStyle", Form("%d", (Int_t) lstyle));
       Modified();
    } // *MENU={Hierarchy="View.../SetLineStyle"}*
    void SetLineWidth(Width_t lwidth)
@@ -194,6 +199,7 @@ public:
       //Set line width of all objects in grid
       fIdentifiers->Execute("SetLineWidth", Form("%d", (Int_t) lwidth));
       fCuts->Execute("SetLineWidth", Form("%d", (Int_t) lwidth));
+      fInfoZones->Execute("SetLineWidth", Form("%d", (Int_t) lwidth));
       Modified();
    } // *MENU={Hierarchy="View.../SetLineWidth"}*
 
@@ -267,6 +273,10 @@ public:
    {
       return (KVIDentifier*)fCuts->FindObject(name);
    }
+   KVIDentifier* GetInfo(const Char_t* name) const
+   {
+      return (KVIDentifier*)fInfoZones->FindObject(name);
+   }
    KVNameValueList* GetParameters() const
    {
       // Return pointer to list of parameters associated to grid
@@ -282,6 +292,11 @@ public:
       // Returns list of cuts (derived from KVIDentifier)
       return fCuts;
    }
+   KVList* GetInfos() const
+   {
+      // Returns list of cuts (derived from KVIDentifier)
+      return fInfoZones;
+   }
    Int_t GetNumberOfIdentifiers() const
    {
       return fIdentifiers->GetSize();
@@ -289,6 +304,10 @@ public:
    Int_t GetNumberOfCuts() const
    {
       return fCuts->GetSize();
+   }
+   Int_t GetNumberOfInfos() const
+   {
+      return fInfoZones->GetSize();
    }
    virtual void AddIdentifier(KVIDentifier* id)
    {
@@ -312,6 +331,17 @@ public:
       cut->SetVarX(GetVarX());
       cut->SetVarY(GetVarY());
       cut->SetBit(kMustCleanup);
+      //Modified();
+   }
+   virtual void AddInfo(KVIDentifier* info)
+   {
+      // Add info lines/cuts to the graph. It will be deleted by the graph.
+      info->SetLineColor(kBlue);
+      info->SetParent(this);
+      fInfoZones->Add(info);
+      info->SetVarX(GetVarX());
+      info->SetVarY(GetVarY());
+      info->SetBit(kMustCleanup);
       //Modified();
    }
    void SortIdentifiers()

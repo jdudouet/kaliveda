@@ -58,8 +58,10 @@ void KVIDGraph::init()
 
    fIdentifiers = new KVList;
    fCuts = new KVList;
+   fInfoZones = new KVList;
    fIdentifiers->SetCleanup();
    fCuts->SetCleanup();
+   fInfoZones->SetCleanup();
    fXmin = fYmin = fXmax = fYmax = 0;
    fPar = new KVNameValueList;
    fLastScaleX = 1.0;
@@ -124,6 +126,7 @@ void KVIDGraph::Copy(TObject& obj)
 
    fIdentifiers->Copy((TObject&)(*grid.GetIdentifiers()));
    fCuts->Copy((TObject&)(*grid.GetCuts()));
+   fInfoZones->Copy((TObject&)(*grid.GetInfos()));
    // set mass formula of grid (and identifiers)
    grid.SetMassFormula(GetMassFormula());
    //copy all parameters EXCEPT scaling parameters
@@ -172,6 +175,8 @@ KVIDGraph::~KVIDGraph()
    delete fIdentifiers;
    fCuts->Delete();
    delete fCuts;
+   fInfoZones->Delete();
+   delete fInfoZones;
    delete fPar;
 }
 
@@ -185,6 +190,7 @@ void KVIDGraph::Clear(Option_t*)
 
    fIdentifiers->Delete();
    fCuts->Delete();
+   fInfoZones->Delete();
    fXmin = fYmin = fXmax = fYmax = 0;
    SetXScaleFactor();
    SetYScaleFactor();
@@ -291,6 +297,14 @@ void KVIDGraph::RemoveCut(KVIDentifier* cut)
    Modified();
 }
 
+void KVIDGraph::RemoveInfo(KVIDentifier* info)
+{
+   // Remove and destroy cut
+   fInfoZones->Remove(info);
+   delete info;
+   Modified();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void KVIDGraph::WriteParameterListOfIDTelescopes()
@@ -388,6 +402,16 @@ void KVIDGraph::WriteToAsciiFile(ofstream& gridfile)
    while ((line = (KVIDentifier*) next_OKline())) {
       line->WriteAsciiFile(gridfile, "OK");
    }
+   //Write cuts
+   TIter next_INFOline(fInfoZones);
+   while ((line = (KVIDentifier*) next_INFOline())) {
+      line->WriteAsciiFile(gridfile, "INFO");
+   }
+//   //Write info zones
+//   TIter next_OKline(fInfoZones);
+//   while ((line = (KVIDentifier*) next_OKline())) {
+//      line->WriteAsciiFile(gridfile, "INFO");
+//   }
    gridfile << "!" << endl;
 
    //restore scaling if there is one
@@ -656,6 +680,7 @@ void KVIDGraph::Add(TString type, KVIDentifier* id)
    type.ToUpper();
    if (type == "ID") AddIdentifier(id);
    else if (type == "OK" || type == "CUT") AddCut(id);
+   else if (type == "INFO") AddInfo(id);
 }
 
 //_______________________________________________________________________________________________//
@@ -671,6 +696,7 @@ KVIDentifier* KVIDGraph::Add(TString type, TString classname)
    if (!id) return 0;
    if (type == "ID") AddIdentifier(id);
    else if (type == "OK" || type == "CUT") AddCut(id);
+   else if (type == "INFO") AddInfo(id);
    return id;
 }
 
@@ -712,6 +738,9 @@ void KVIDGraph::Draw(Option_t*)
    }
    {
       fCuts->R__FOR_EACH(KVIDentifier, Draw)("PL");
+   }
+   {
+      fInfoZones->R__FOR_EACH(KVIDentifier, Draw)("PL");
    }
    gPad->Modified();
    gPad->Update();
@@ -780,6 +809,9 @@ void KVIDGraph::Print(Option_t*) const
    TIter nextID(fIdentifiers);
    while ((line = (KVIDentifier*) nextID()))
       line->ls();
+   TIter nextInfo(fInfoZones);
+   while ((line = (KVIDentifier*) nextInfo()))
+      line->ls();
 }
 
 //_______________________________________________________________________________________________//
@@ -837,6 +869,9 @@ void KVIDGraph::Scale(TF1* sx, TF1* sy)
    if (GetNumberOfCuts() > 0) {
       fCuts->R__FOR_EACH(KVIDentifier, Scale)(sx, sy);
    }
+   if (GetNumberOfInfos() > 0) {
+      fInfoZones->R__FOR_EACH(KVIDentifier, Scale)(sx, sy);
+   }
    Modified();
 }
 
@@ -853,6 +888,9 @@ void KVIDGraph::Scale(Double_t sx, Double_t sy)
    }
    if (GetNumberOfCuts() > 0) {
       fCuts->R__FOR_EACH(KVIDentifier, Scale)(sx, sy);
+   }
+   if (GetNumberOfInfos() > 0) {
+      fInfoZones->R__FOR_EACH(KVIDentifier, Scale)(sx, sy);
    }
 }
 
@@ -955,6 +993,19 @@ Bool_t KVIDGraph::IsIdentifiable(Double_t x, Double_t y, TString* rejected_by) c
       }
    }
    return kTRUE;
+}
+
+void KVIDGraph::SetInfos(Double_t x, Double_t y, KVIdentificationResult* idr) const
+{
+   // loop over KVIDGraph::fInfoZones to set flags in KVIdentificationResult
+
+   TIter next(fInfoZones);
+   KVIDentifier* id = 0;
+   while ((id = (KVIDentifier*)next())) {
+      if (id->TestPoint(x, y)) {
+         idr->AddFlag(id->GetName());
+      }
+   }
 }
 
 //___________________________________________________________________________________
@@ -1177,6 +1228,9 @@ void KVIDGraph::SetEditable(Bool_t editable)
    if (GetNumberOfCuts() > 0) {
       fCuts->R__FOR_EACH(KVIDentifier, SetEditable)(editable);
    }
+   if (GetNumberOfInfos() > 0) {
+      fInfoZones->R__FOR_EACH(KVIDentifier, SetEditable)(editable);
+   }
 }
 
 //___________________________________________________________________________________
@@ -1216,6 +1270,8 @@ void KVIDGraph::Streamer(TBuffer& R__b)
       while ((id = (KVIDentifier*)nxt_id())) id->fParent = this;
       TIter nxt_cut(fCuts);
       while ((id = (KVIDentifier*)nxt_cut())) id->fParent = this;
+      TIter nxt_info(fInfoZones);
+      while ((id = (KVIDentifier*)nxt_info())) id->fParent = this;
    }
    else {
       R__b.WriteClassBuffer(KVIDGraph::Class(), this);

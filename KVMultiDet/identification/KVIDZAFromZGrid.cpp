@@ -19,7 +19,6 @@ KVIDZAFromZGrid::KVIDZAFromZGrid()
    init();
    fTables.SetOwner(kTRUE);
    SetOnlyZId();
-   fMassCut = nullptr;
    fIgnoreMassID = false;
 }
 
@@ -215,8 +214,6 @@ void KVIDZAFromZGrid::Initialize()
       int zz = ((KVIDZALine*)id)->GetZ();
       if (zz > fZMax) fZMax = zz;
    }
-
-   fMassCut = GetIdentifier("MassID");
 }
 
 void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) const
@@ -241,7 +238,7 @@ void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* i
    bool have_pid_range_for_Z = fPIDRange && (idr->Z <= fZmaxInt) && (idr->Z > fZminInt - 1);
    bool mass_id_success = false;
 
-   if (have_pid_range_for_Z && (!fMassCut || fMassCut->IsInside(x, y))) {
+   if (have_pid_range_for_Z && idr->HasFlag("MassID")) {
       // try mass identification
       mass_id_success = (DeduceAfromPID(idr) > 0);
       if (mass_id_success) {

@@ -86,7 +86,6 @@ protected:
    Int_t  fZmaxInt;
    Bool_t fPIDRange;
    Int_t  fZminInt;
-   KVIDentifier* fMassCut;//!
    KVList fTables;
 
    Bool_t fIgnoreMassID;

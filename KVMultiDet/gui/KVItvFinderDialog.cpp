@@ -364,8 +364,8 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
             x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
             y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
             if (fGrid->IsIdentifiable(x, y)) {
-               if (!fGrid->GetIdentifier("MassID") || (fGrid->GetIdentifier("MassID") && fGrid->GetIdentifier("MassID")->IsInside(x, y))) {
-                  fGrid->KVIDZAGrid::Identify(x, y, idr);
+               fGrid->KVIDZAGrid::Identify(x, y, idr);
+               if (idr->HasFlag("MassID")) {
                   Float_t PID = idr->PID;
                   fLinearHisto->Fill(PID, weight);
                }

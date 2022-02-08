@@ -174,16 +174,15 @@ protected:
    void SetPiedestal(Double_t ppdx, Double_t ppdy); // set piedestal position (shift click on the histo)
 
    void SetEditable(TPaveLabel* label);
-//   void SelectLines(TPaveLabel* label);
    void SelectLines(const Char_t* label);
 
    void NewLine();                  //'Line'
    void NewCut();                   //'Cut'
+   void NewInfo();                  //'Info'
    void FitGrid();                  //'Fit' avec fonctionnelle de T.G
    void TestGrid();                 //'Test' linearisation de l'histo avec la grille courante
 
-   void DeleteLine(KVIDentifier* line);            //'Delete'
-   void DeleteCut(KVIDentifier* cut);           //'Delete'
+   void DeleteObject(KVIDentifier* obj);           //'Delete'
 
    void UpdateViewer();                //rafraichit l'interface
    void DrawAtt(Bool_t piv);              //affiche les bouton sur le canvas

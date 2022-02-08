@@ -3,6 +3,7 @@
 
 #include "KVBase.h"
 #include "TString.h"
+#include <vector>
 
 /**
 \class KVIdentificationResult
@@ -47,6 +48,8 @@ public:
    Double_t PID; // = "real" Z if Zident==kTRUE and Aident==kFALSE, "real" A if Zident==Aident==kTRUE
    Int_t deltaEpedestal; // special code for handling particles which give no signal in deltaE
    TString Rejecting_Cut; // name of cut in grid which rejected particle for identification
+
+   std::vector<TString> flags;
 
    enum {
       deltaEpedestal_UNKNOWN, // status unknown, case not treated
@@ -105,7 +108,17 @@ public:
       return GetName();
    }
 
-   ClassDef(KVIdentificationResult, 3) //Full result of one attempted particle identification
+   void AddFlag(TString flag)
+   {
+      flags.push_back(flag);
+   }
+
+   Bool_t HasFlag(TString flag)
+   {
+      return std::find(flags.begin(), flags.end(), flag) != flags.end();
+   }
+
+   ClassDef(KVIdentificationResult, 4) //Full result of one attempted particle identification
 };
 
 #endif

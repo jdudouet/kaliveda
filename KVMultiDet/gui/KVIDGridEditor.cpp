@@ -60,6 +60,7 @@ KVIDGridEditor::KVIDGridEditor()
    fDefaultMethod = "";
 
    AddMethod("SaveCurrentGrid");
+   AddMethod("SpiderIdentification");
    AddMethod("ChangeMasses");
    AddMethod("ChangeCharges");
    AddMethod("SelectLinesByZ");
@@ -339,10 +340,10 @@ void KVIDGridEditor::init()
    AddGridOption("Delete", lplabel4);
    AddGridOption("Line", lplabel4);
    AddGridOption("Cut", lplabel4);
+   AddGridOption("Info", lplabel4);
    AddGridOption("Fit", lplabel4);
    AddGridOption("Test", lplabel4);
    AddGridOption("Mass", lplabel4);
-   AddGridOption("Spider", lplabel4);
    AddGridOption("More", lplabel4);
 
    ConstructModulator();
@@ -1017,15 +1018,18 @@ void KVIDGridEditor::MakeTransformation()
    }
 
    if ((event == kButton1Up) && (dlmode) && (select)) {
-//      Info("MakeTransformation","coucou 1 %s %s",select->GetName(),select->ClassName());
-      if (select->InheritsFrom("KVIDCutLine") || select->InheritsFrom("KVIDCutContour")) {
-         DeleteCut((KVIDentifier*)select);
-//         Info("MakeTransformation","coucou %s",select->GetName());
-      }
-      else if (select->InheritsFrom("KVIDQAMarker")) select->Delete();
-      else if (select->InheritsFrom("KVIDentifier")) {
-         DeleteLine((KVIDentifier*)select);
-      }
+
+      if (select->InheritsFrom("KVIDentifier")) DeleteObject((KVIDentifier*)select);
+
+////      Info("MakeTransformation","coucou 1 %s %s",select->GetName(),select->ClassName());
+//      if (select->InheritsFrom("KVIDCutLine") || select->InheritsFrom("KVIDCutContour")) {
+//         DeleteObject((KVIDentifier*)select);
+////         Info("MakeTransformation","coucou %s",select->GetName());
+//      }
+//      else if (select->InheritsFrom("KVIDQAMarker")) select->Delete();
+//      else if (select->InheritsFrom("KVIDentifier")) {
+//         DeleteLine((KVIDentifier*)select);
+//      }
    }
    if ((event == kButton1Up) && (select) && (!dlmode)) {
       if (select->InheritsFrom("KVIDentifier")) {
@@ -1228,12 +1232,13 @@ void KVIDGridEditor::DispatchOrder(TPaveLabel* label)
       label->SetFillColor(fBlackMode ? kBlack : kWhite);
       UpdateViewer();
    }
-   else if (commande.Contains("Spider")) {
+   else if (commande.Contains("Info")) {
       label->SetFillColor(kRed);
-      UpdateViewer();
-      SpiderIdentification();
-      label->SetFillColor(fBlackMode ? kBlack : kWhite);
-      UpdateViewer();
+      NewInfo();
+//      UpdateViewer();
+//      SpiderIdentification();
+//      label->SetFillColor(fBlackMode ? kBlack : kWhite);
+//      UpdateViewer();
    }
    else if (commande.Contains("More")) {
       label->SetFillColor(kRed);
@@ -1292,6 +1297,7 @@ void KVIDGridEditor::SelectLines(const Char_t* label)
       //       {
       ListOfLines->AddAll(TheGrid->GetIdentifiers());
       ListOfLines->AddAll(TheGrid->GetCuts());
+      ListOfLines->AddAll(TheGrid->GetInfos());
       ListOfLines->R__FOR_EACH(KVIDentifier, SetLineColor)(SelectedColor);
       ListOfLines->R__FOR_EACH(KVIDentifier, SetMarkerColor)(SelectedColor);
       //      }
@@ -1402,6 +1408,61 @@ void KVIDGridEditor::NewCut()
    UpdateViewer();
 
    if (fDebug) cout << "INFO: KVIDGridEditor::NewCut(): New Cut has been added to the current grid..." << endl;
+   return;
+}
+
+void KVIDGridEditor::NewInfo()
+{
+
+   if (!TheGrid) return;
+   TPaveLabel* label = (TPaveLabel*)lplabel4->FindObject("Info");
+   label->SetFillColor(kRed);
+   UpdateViewer();
+
+   drawmode = true;
+
+   TString info_choices = gEnv->GetValue(Form("%s.InfoClass", TheGrid->ClassName()), "");
+   if (info_choices == "") info_choices = gEnv->GetValue(Form("%s.InfoClass", "KVIDGraph"), "");
+
+   TString info_default = gEnv->GetValue(Form("%s.DefaultInfoClass", TheGrid->ClassName()), "");
+   if (info_choices == "") info_choices = gEnv->GetValue(Form("%s.DefaultInfoClass", "KVIDGraph"), "");
+
+   info_default.ReplaceAll(" ", "");
+   info_default.ReplaceAll("KVID", "");
+   TString info_class;
+   KVString info_types = info_choices;
+   info_types.ReplaceAll("KVID", "");
+   Bool_t okpressed;
+
+   if (info_choices.Contains(" ")) {
+      if (!strcmp(info_default, "")) {
+         info_types.Begin(" ");
+         info_default = info_types.Next();
+      }
+      new KVDropDownDialog(gClient->GetDefaultRoot(),
+                           "Choose class of new info :",
+                           info_types.Data(),
+                           info_default.Data(),
+                           &info_class,
+                           &okpressed);
+      if (!okpressed) {
+         label->SetFillColor(kWhite);
+         UpdateViewer();
+         drawmode = false;
+         return;
+      }
+   }
+   else info_class = info_types;
+
+   info_class.Prepend("KVID");
+   TheGrid->DrawAndAdd("INFO", info_class.Data());
+
+   Info("NewInfo", "Adding new info contour or line of class '%s'", info_class.Data());
+
+   label->SetFillColor(fBlackMode ? kBlack : kWhite);
+   UpdateViewer();
+
+   if (fDebug) cout << "INFO: KVIDGridEditor::NewInfo(): New info has been added to the current grid..." << endl;
    return;
 }
 
@@ -1730,26 +1791,22 @@ void KVIDGridEditor::ChooseSelectedColor()
 }
 
 //________________________________________________________________
-void KVIDGridEditor::DeleteLine(KVIDentifier* line)
+void KVIDGridEditor::DeleteObject(KVIDentifier* obj)
 {
    if (!TheGrid) return;
-   if (!line) return;
-   if (!TheGrid->GetIdentifiers()->Contains(line)) return;
+   if (TheGrid->GetCuts()->Contains(obj)) {
+      if (ListOfLines->Contains(obj)) ListOfLines->Remove(obj);
+      TheGrid->RemoveCut(obj);
+   }
+   else if (TheGrid->GetIdentifiers()->Contains(obj)) {
+      if (ListOfLines->Contains(obj)) ListOfLines->Remove(obj);
+      TheGrid->RemoveIdentifier(obj);
+   }
+   else if (TheGrid->GetInfos()->Contains(obj)) {
+      if (ListOfLines->Contains(obj)) ListOfLines->Remove(obj);
+      TheGrid->RemoveInfo(obj);
 
-   if (ListOfLines->Contains(line)) ListOfLines->Remove(line);
-   TheGrid->RemoveIdentifier(line);
-   return;
-}
-
-//________________________________________________________________
-void KVIDGridEditor::DeleteCut(KVIDentifier* cut)
-{
-   if (!TheGrid) return;
-   if (!TheGrid->GetCuts()->Contains(cut)) return;
-
-   if (ListOfLines->Contains(cut)) ListOfLines->Remove(cut);
-   TheGrid->RemoveCut(cut);
-   return;
+   }
 }
 
 //________________________________________________________________
@@ -2104,13 +2161,17 @@ void KVIDGridEditor::ScaleCurvature(Int_t Sign)
 void KVIDGridEditor::ResetColor(KVIDentifier* Ident)
 {
    if (!TheGrid) return;
-   if (!(TheGrid->GetCuts()->Contains(Ident))) {
+   if (TheGrid->GetIdentifiers()->Contains(Ident)) {
       Ident->SetLineColor(fBlackMode ? kBlue : kBlack);
       Ident->SetMarkerColor(fBlackMode ? kRed : kBlack);
    }
-   else {
+   else if (TheGrid->GetCuts()->Contains(Ident)) {
       Ident->SetLineColor(kRed);
       Ident->SetMarkerColor(kRed);
+   }
+   else if (TheGrid->GetInfos()->Contains(Ident)) {
+      Ident->SetLineColor(kBlue);
+      Ident->SetMarkerColor(kBlue);
    }
    return;
 }
@@ -2399,8 +2460,10 @@ Bool_t KVIDGridEditor::HandleKey(Int_t, Int_t py)
          }
          TheGrid->GetIdentifiers()->Execute("SetMarkerStyle", Form("%d", fPointStyle));
          TheGrid->GetCuts()->Execute("SetMarkerStyle", Form("%d", fPointStyle));
+         TheGrid->GetInfos()->Execute("SetMarkerStyle", Form("%d", fPointStyle));
          TheGrid->GetIdentifiers()->Execute("SetMarkerSize", Form("%lf", fPointSize));
          TheGrid->GetCuts()->Execute("SetMarkerSize", Form("%lf", fPointSize));
+         TheGrid->GetInfos()->Execute("SetMarkerSize", Form("%lf", fPointSize));
          UpdateViewer();
          break;
 
