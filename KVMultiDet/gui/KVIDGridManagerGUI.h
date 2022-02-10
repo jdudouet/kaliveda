@@ -56,8 +56,8 @@ class KVIDGridManagerGUI: public TGMainFrame {
    TGTab* fGridListTabs;//tabs with lists of grids
    KVListView* fIDGridList;//list of grids in current tab
    KVListView* fIDLineList;//list of lines in currently selected grid
-   KVListView* fCUTLineList;//list of lines in currently selected grid
-   KVListView* fCUTContourList;//list of lines in currently selected grid
+   KVListView* fCUTList;//list of lines in currently selected grid
+   KVListView* fCUTInfoList;//list of lines in currently selected grid
 
    KVIDGridEditor* fIDGridEditor; // ID grid editor
 

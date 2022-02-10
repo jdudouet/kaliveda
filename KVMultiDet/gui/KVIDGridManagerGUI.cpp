@@ -232,34 +232,36 @@ KVIDGridManagerGUI::KVIDGridManagerGUI(): TGMainFrame(gClient->GetRoot(), 500, 3
    //                    "SelectionChanged()");
    line_frame->AddFrame(fIDLineList, new TGLayoutHints(kLHintsTop | kLHintsExpandY | kLHintsExpandX, 2, 2, 2, 10));
 
-   lab1 = new TGLabel(line_frame, "CUT LINES");
+   lab1 = new TGLabel(line_frame, "Cuts");
    line_frame->AddFrame(lab1, new TGLayoutHints(kLHintsTop | kLHintsCenterX | kLHintsExpandX, 2, 2, 2, 2));
 
-   fCUTLineList = new KVListView(KVIDCutLine::Class(), line_frame, 350, 150);
-   fCUTLineList->SetDataColumns(3);
-   fCUTLineList->SetDataColumn(0, "Name", "", kTextLeft);
-   fCUTLineList->SetDataColumn(1, "# Points", "GetN", kTextCenterX);
-   fCUTLineList->SetDataColumn(2, "Direction", "GetAcceptedDirection", kTextCenterX);
-   fCUTLineList->ActivateSortButtons();
-   fCUTLineList->AllowBrowse(kFALSE);
+   fCUTList = new KVListView(KVIDentifier::Class(), line_frame, 350, 150);
+   fCUTList->SetDataColumns(3);
+   fCUTList->SetDataColumn(0, "Name", "", kTextLeft);
+   fCUTList->SetDataColumn(1, "# Points", "GetN", kTextCenterX);
+   fCUTList->SetDataColumn(2, "Class", "ClassName", kTextCenterX);
+//   fCUTLineList->SetDataColumn(2, "Direction", "GetAcceptedDirection", kTextCenterX);
+   fCUTList->ActivateSortButtons();
+   fCUTList->AllowBrowse(kFALSE);
    //fIDLineList->Connect("SelectionChanged()", "KVIDGridManagerGUI", this,
    //                    "SelectionChanged()");
-   line_frame->AddFrame(fCUTLineList, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 2));
+   line_frame->AddFrame(fCUTList, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 2));
 
-   lab1 = new TGLabel(line_frame, "CUT CONTOURS");
+   lab1 = new TGLabel(line_frame, "Infos");
    line_frame->AddFrame(lab1, new TGLayoutHints(kLHintsTop | kLHintsCenterX | kLHintsExpandX, 2, 2, 2, 2));
 
-   fCUTContourList = new KVListView(KVIDCutContour::Class(), line_frame, 350, 150);
-   fCUTContourList->SetDataColumns(3);
-   fCUTContourList->SetDataColumn(0, "Name", "", kTextLeft);
-   fCUTContourList->SetDataColumn(1, "# Points", "GetN", kTextCenterX);
-   fCUTContourList->SetDataColumn(2, "Exclusive", "IsExclusive", kTextCenterX);
-   fCUTContourList->GetDataColumn(2)->SetIsBoolean();
-   fCUTContourList->ActivateSortButtons();
-   fCUTContourList->AllowBrowse(kFALSE);
+   fCUTInfoList = new KVListView(KVIDentifier::Class(), line_frame, 350, 150);
+   fCUTInfoList->SetDataColumns(3);
+   fCUTInfoList->SetDataColumn(0, "Name", "", kTextLeft);
+   fCUTInfoList->SetDataColumn(1, "# Points", "GetN", kTextCenterX);
+   fCUTInfoList->SetDataColumn(2, "Class", "ClassName", kTextCenterX);
+//   fCUTContourList->SetDataColumn(2, "Exclusive", "IsExclusive", kTextCenterX);
+//   fCUTContourList->GetDataColumn(2)->SetIsBoolean();
+   fCUTInfoList->ActivateSortButtons();
+   fCUTInfoList->AllowBrowse(kFALSE);
    //fIDLineList->Connect("SelectionChanged()", "KVIDGridManagerGUI", this,
    //                    "SelectionChanged()");
-   line_frame->AddFrame(fCUTContourList, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 10));
+   line_frame->AddFrame(fCUTInfoList, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 10));
 
    fHframe->AddFrame(line_frame, new TGLayoutHints(kLHintsLeft | kLHintsTop | kLHintsExpandY, 20, 20, 20, 20));
 
@@ -999,12 +1001,14 @@ void KVIDGridManagerGUI::UpdateListOfLines()
    // sort lines in order of increasing Z
    ids->Sort();
    fIDLineList->Display(ids);
-   KVSeqCollection* cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutLine");
-   fCUTLineList->Display(cutlines);
-   delete cutlines;
-   cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutContour");
-   fCUTContourList->Display(cutlines);
-   delete cutlines;
+//   KVSeqCollection* cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutLine");
+   fCUTList->Display(fSelectedGrid->GetCuts());
+//   fCUTLineList->Display(cutlines);
+//   delete cutlines;
+//   cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutContour");
+   fCUTInfoList->Display(fSelectedGrid->GetInfos());
+//   fCUTContourList->Display(cutlines);
+//   delete cutlines;
 }
 
 void KVIDGridManagerGUI::ShowListOfLines()
@@ -1019,12 +1023,12 @@ void KVIDGridManagerGUI::ShowListOfLines()
       // sort lines in order of increasing Z
       ids->Sort();
       fIDLineList->Display(ids);
-      KVSeqCollection* cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutLine");
-      fCUTLineList->Display(cutlines);
-      delete cutlines;
-      cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutContour");
-      fCUTContourList->Display(cutlines);
-      delete cutlines;
+//      KVSeqCollection* cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutLine");
+      fCUTList->Display(fSelectedGrid->GetCuts());
+//      delete cutlines;
+//      cutlines = fSelectedGrid->GetCuts()->GetSubListWithClass("KVIDCutContour");
+      fCUTInfoList->Display(fSelectedGrid->GetInfos());
+//      delete cutlines;
       if (fLastSelectedGrid) {
          fLastSelectedGrid->Disconnect("Modified()", this, "UpdateListOfLines()");
       }
@@ -1033,8 +1037,8 @@ void KVIDGridManagerGUI::ShowListOfLines()
    }
    else {
       fIDLineList->RemoveAll();
-      fCUTLineList->RemoveAll();
-      fCUTContourList->RemoveAll();
+      fCUTList->RemoveAll();
+      fCUTInfoList->RemoveAll();
       if (fLastSelectedGrid) {
          fLastSelectedGrid->Disconnect("Modified()", this, "UpdateListOfLines()");
          fLastSelectedGrid = 0;
