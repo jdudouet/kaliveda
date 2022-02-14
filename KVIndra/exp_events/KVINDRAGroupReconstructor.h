@@ -51,6 +51,10 @@ protected:
    }
 
    void CalculateChIoDEFromResidualEnergy(KVReconstructedNucleus* n, Double_t ERES);
+
+   /// TO BE IMPLEMENTED!!!
+   void CalibrateCoherencyParticle(KVReconstructedNucleus*, KVReconstructedNucleus*) {}
+
 public:
    KVINDRAGroupReconstructor() {}
    virtual ~KVINDRAGroupReconstructor() {}

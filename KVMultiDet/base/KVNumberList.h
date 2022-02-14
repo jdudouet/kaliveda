@@ -99,6 +99,7 @@ class KVNumberList : public TObject {
    TString   fName;//name of the list
 
    mutable Bool_t fIsParsed;//!
+   mutable IntArray fRandomFastArray;//! used by GetRandomFast()
 
    void init_numberlist();
    void clear();
@@ -186,6 +187,8 @@ public:
    const Char_t* AsHumanReadableString() const;
 
    Int_t GetRandom() const;
+   Int_t GetRandomFast() const;
+   Bool_t PrepareRandomFast() const;
 
    /* LIST ITERATORS */
    Int_t Next(void) const;

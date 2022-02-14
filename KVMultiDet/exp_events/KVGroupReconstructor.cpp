@@ -79,12 +79,16 @@ void KVGroupReconstructor::Process()
    //   - calibration can be inhibited (for all groups) by calling KVGroupReconstructor::SetDoCalibration(false);
 
    nfireddets = 0;
+   coherency_particles.clear();
    Reconstruct();
    if (GetEventFragment()->GetMult() == 0) {
       return;
    }
    if (fDoIdentification) Identify();
-   if (fDoCalibration) Calibrate();
+   if (fDoCalibration) {
+      Calibrate();
+      if (!coherency_particles.empty()) AddCoherencyParticles();
+   }
 }
 
 void KVGroupReconstructor::Reconstruct()
@@ -327,42 +331,6 @@ void KVGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
 //_________________________________________________________________________________
 
-void KVGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
-{
-   //Calculate and set the energy of a (previously identified) reconstructed particle,
-   //including an estimate of the energy loss in the target.
-   //
-   //Starting from the detector in which the particle stopped, we add up the
-   //'corrected' energy losses in all of the detectors through which it passed.
-   //Whenever possible, for detectors which are not calibrated or not working,
-   //we calculate the energy loss. Measured & calculated energy losses are also
-   //compared for each detector, and may lead to new particles being seeded for
-   //subsequent identification. This is done by KVIDTelescope::CalculateParticleEnergy().
-   //
-   //For particles whose energy before hitting the first detector in their path has been
-   //calculated after this step we then add the calculated energy loss in the target,
-   //using gMultiDetArray->GetTargetEnergyLossCorrection().
-
-   KVIDTelescope* idt = PART->GetIdentifyingTelescope();
-   if (!idt) return;
-   idt->CalculateParticleEnergy(PART);
-   if (idt->GetCalibStatus() != KVIDTelescope::kCalibStatus_NoCalibrations) {
-      PART->SetIsCalibrated();
-      //add correction for target energy loss - moving charged particles only!
-      Double_t E_targ = 0.;
-      if (PART->GetZ() && PART->GetEnergy() > 0) {
-         E_targ = GetTargetEnergyLossCorrection(PART);
-         PART->SetTargetEnergyLoss(E_targ);
-      }
-      Double_t E_tot = PART->GetEnergy() + E_targ;
-      PART->SetEnergy(E_tot);
-      // set particle momentum from telescope dimensions (random)
-      PART->GetAnglesFromReconstructionTrajectory();
-   }
-}
-
-//_________________________________________________________________________________
-
 void KVGroupReconstructor::TreatStatusStopFirstStage(KVReconstructedNucleus& d)
 {
    // particles stopped in first member of a telescope
@@ -416,6 +384,126 @@ void KVGroupReconstructor::Calibrate()
 
    }
 
+}
+
+void KVGroupReconstructor::AddCoherencyParticles()
+{
+   // Called to add any nuclei not included in the initial reconstruction, but "revealed"
+   // by consistency checks between identifications and calibrations of other nuclei
+
+   std::cout << "===========================================================================================\n" << std::endl;
+   Info("AddCoherencyParticles", "There are %d particles to add to this event\n", (int)coherency_particles.size());
+   for (auto& part : coherency_particles) {
+      auto rnuc = GetEventFragment()->AddParticle();
+      Info("AddCoherencyParticle", "Adding particle in pile-up with Z=%d A=%d E=%f in %s",
+           part.original_particle->GetZ(), part.original_particle->GetA(), part.original_particle->GetE(), part.original_particle->GetStoppingDetector()->GetName());
+      auto ESI1_parent = part.original_particle->GetParameters()->HasDoubleParameter("FAZIA.ESI1") ?
+                         TMath::Abs(part.original_particle->GetParameters()->GetDoubleValue("FAZIA.ESI1"))
+                         : 0;
+      auto ESI2_parent = part.original_particle->GetParameters()->HasDoubleParameter("FAZIA.ESI2") ?
+                         TMath::Abs(part.original_particle->GetParameters()->GetDoubleValue("FAZIA.ESI2"))
+                         : 0;
+      std::cout << "ESI1 = " << ESI1_parent << " ESI2 = " << ESI2_parent << std::endl;
+
+      // reconstruction
+      auto Rtraj = (const KVReconNucTrajectory*)GetGroup()->GetTrajectoryForReconstruction(part.stopping_trajectory, part.stopping_detector_node);
+
+      std::cout << "SI1: " << (Rtraj->GetDetector("SI1")->IsCalibrated() ? "CALIB." : "NOT CALIB.")
+                << "   SI2: " << (Rtraj->GetDetector("SI2")->IsCalibrated() ? "CALIB." : "NOT CALIB.")
+                << "   CSI: " << (part.original_particle->GetStoppingDetector()->IsCalibrated(
+                                     Form("Z=%d,A=%d", part.original_particle->GetZ(), part.original_particle->GetA())
+                                  ) ? "CALIB." : "NOT CALIB.")  << std::endl;
+
+      rnuc->SetReconstructionTrajectory(Rtraj);
+      rnuc->SetParameter("ARRAY", GetGroup()->GetArray()->GetName());
+      rnuc->SetParameter("CoherencyParticle",
+                         "Particle added to event after consistency checks between identifications and calibrations of other nuclei");
+      // identification
+      Int_t idnumber = 1;
+      for (int i = part.first_id_result_to_copy; i <= part.max_id_result_index; ++i) {
+         auto IDR = rnuc->GetIdentificationResult(idnumber++);
+         // copy existing identification results from "parent" particle
+         part.original_particle->GetIdentificationResult(i)->Copy(*IDR);
+      }
+      rnuc->SetIsIdentified();
+      rnuc->SetIdentifyingTelescope(part.identifying_telescope);
+      rnuc->SetIdentification(rnuc->GetIdentificationResult(1), part.identifying_telescope);
+      Info("AddCoherencyParticle", "Initial ident of particle to add: Z=%d A=%d identified in %s",
+           rnuc->GetZ(), rnuc->GetA(), rnuc->GetIdentifyingTelescope()->GetType());
+      rnuc->GetIdentificationResult(1)->Print();
+      // with both silicons calibrated, we can try to subtract the contributions of the parent
+      // particle (using inverse calibrations and calculated energy losses of parent),
+      // then try a new identification.
+      // as E789 Si1-Si2 identifications are implemented with 2 grids, first a low range
+      // QL1.Amplitude vs. Q2.FPGAEnergy grid (upto Z=8), then full range QH1.FPGAEnergy vs.
+      // Q2.FPGAEnergy, and calibrations for SI1 & SI2 use QH1.FPGAEnergy and Q2.FPGAEnergy
+      // respectively, we set QL1.Amplitude=0 in order to force the use of the recalculated
+      // QH1.FPGAEnergy and Q2.FPGAEnergy in the full range grid.
+      // *actually, SI1 may have also an "Energy-QL1" calibration from QL1.Amplitude,
+      // in which case we can modify this as well
+      auto SI1 = rnuc->GetReconstructionTrajectory()->GetDetector("SI1");
+      auto SI2 = rnuc->GetReconstructionTrajectory()->GetDetector("SI2");
+      if (SI1->IsCalibrated() && SI2->IsCalibrated()) {
+         // calculate new values of raw parameters
+         double new_q2{0}, new_qh1{0}, new_ql1{0};
+         auto ESI1_qh1 = SI1->GetDetectorSignalValue("Energy");
+         auto ESI1_ql1 = SI1->GetDetectorSignalValue("Energy-QL1");
+         auto ESI2 = SI2->GetEnergy();
+         new_qh1 = SI1->GetInverseDetectorSignalValue("Energy", TMath::Max(0., ESI1_qh1 - ESI1_parent), "QH1.FPGAEnergy");
+         new_q2 = SI2->GetInverseDetectorSignalValue("Energy", TMath::Max(0., ESI2 - ESI2_parent), "Q2.FPGAEnergy");
+         if (SI1->HasDetectorSignalValue("Energy-QL1")) {
+            new_ql1 = SI1->GetInverseDetectorSignalValue("Energy-QL1", TMath::Max(0., ESI1_ql1 - ESI1_parent), "QL1.Amplitude");
+         }
+         Info("AddCoherencyParticle", "Changing raw data parameters:");
+         std::cout << "  QH1:  " << SI1->GetDetectorSignalValue("QH1.FPGAEnergy") << "  ==>  " << new_qh1 << std::endl;
+         std::cout << "  QL1:  " << SI1->GetDetectorSignalValue("QL1.Amplitude") << "  ==>  " << new_ql1 << std::endl;
+         std::cout << "   Q2:  " << SI2->GetDetectorSignalValue("Q2.FPGAEnergy") << "  ==>  " << new_q2 << std::endl;
+         SI1->SetDetectorSignalValue("QH1.FPGAEnergy", new_qh1);
+         SI1->SetDetectorSignalValue("QL1.Amplitude", new_ql1);
+         SI2->SetDetectorSignalValue("Q2.FPGAEnergy", new_q2);
+         // now retry the identification
+         rnuc->GetIdentificationResult(1)->IDOK = kFALSE;
+         part.identifying_telescope->Identify(rnuc->GetIdentificationResult(1));
+         rnuc->GetIdentificationResult(1)->Print();
+         if (rnuc->GetIdentificationResult(1)->IDOK) {
+            Info("AddCoherencyParticle", "Achieved new identification for particle:");
+            rnuc->SetIdentification(rnuc->GetIdentificationResult(1), part.identifying_telescope);
+         }
+         else {
+            Info("AddCoherencyParticle", "Identification has failed for particle");
+            if (new_q2 < 1) {
+               Info("AddCoherencyParticle", "Try SI1-PSA identification?");
+               part.original_particle->GetIdentificationResult(5)->Print();
+               // subtraction of original particle leaves nothing in SI2: try SI1-PSA ?
+               if (part.original_particle->GetIdentificationResult(5)->IDOK) {
+                  // modify reconstruction trajectory: now starts on SI1 not SI2
+                  Rtraj = (const KVReconNucTrajectory*)GetGroup()->GetTrajectoryForReconstruction(part.stopping_trajectory,
+                          SI1->GetNode());
+                  rnuc->ModifyReconstructionTrajectory(Rtraj);
+                  part.original_particle->GetIdentificationResult(5)->Copy(*rnuc->GetIdentificationResult(1));
+                  auto idt = (KVIDTelescope*)Rtraj->GetIDTelescopes()->First();
+                  rnuc->SetIdentification(rnuc->GetIdentificationResult(1), idt);
+               }
+               else {
+                  // Q2 = 0 & Si1-PSA has failed: particle remains unidentified
+                  //rnuc->SetU
+               }
+            }
+         }
+         // calibration
+         if (rnuc->IsIdentified()) {
+            CalibrateCoherencyParticle(rnuc);
+            Info("AddCoherencyParticle", "Added particle with Z=%d A=%d E=%f identified in %s",
+                 rnuc->GetZ(), rnuc->GetA(), rnuc->GetE(), rnuc->GetIdentifyingTelescope()->GetType());
+            std::cout << "ESI1 = " << rnuc->GetParameters()->GetDoubleValue("FAZIA.ESI1")
+                      << " [" << rnuc->GetParameters()->GetDoubleValue("FAZIA.avatar.ESI1") << "]"
+                      << " ESI2 = " << rnuc->GetParameters()->GetDoubleValue("FAZIA.ESI2")
+                      << " [" << rnuc->GetParameters()->GetDoubleValue("FAZIA.avatar.ESI2") << "]"
+                      << std::endl << std::endl;
+         }
+      }
+   }
+   std::cout << "===========================================================================================\n\n" << std::endl;
 }
 
 Double_t KVGroupReconstructor::GetTargetEnergyLossCorrection(KVReconstructedNucleus* ion)

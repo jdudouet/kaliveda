@@ -638,9 +638,12 @@ void KVIDGraph::ReadAsciiFile(const Char_t* filename)
 
    ifstream gridfile(filename);
 
-   if (gridfile.good())
+   if (gridfile.good()) {
       ReadFromAsciiFile(gridfile);
-
+   }
+   else {
+      Warning("ReadAsciiFile", "Could not find file %s. Check filename.", filename);
+   }
    gridfile.close();
 }
 

@@ -40,6 +40,10 @@ public:
 
    Double_t GetValue(const KVNameValueList& params = "") const;
    Double_t GetInverseValue(Double_t out_val, const TString& in_sig, const KVNameValueList& params = "") const;
+   KVDetectorSignal* GetInputSignal() const
+   {
+      return fInputSignal;
+   }
 
    KVCalibrator* GetCalibrator() const
    {

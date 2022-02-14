@@ -50,7 +50,14 @@ protected:
    void ReconstructParticle(KVReconstructedNucleus* part, const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);
    virtual void PostReconstructionProcessing();
    virtual void IdentifyParticle(KVReconstructedNucleus& PART);
-   virtual void CalibrateParticle(KVReconstructedNucleus* PART);
+   virtual void CalibrateParticle(KVReconstructedNucleus*)
+   {
+      AbstractMethod("CalibrateParticle(KVReconstructedNucleus*)");
+   }
+   virtual void CalibrateCoherencyParticle(KVReconstructedNucleus*)
+   {
+      AbstractMethod("CalibrateCoherencyParticle(KVReconstructedNucleus*)");
+   }
 
    Double_t GetTargetEnergyLossCorrection(KVReconstructedNucleus* ion);
    TString GetPartSeedCond() const
@@ -58,6 +65,16 @@ protected:
       return fPartSeedCond;
    }
    void TreatStatusStopFirstStage(KVReconstructedNucleus&);
+
+   struct particle_to_add_from_coherency_analysis {
+      KVReconstructedNucleus* original_particle;  //! particle whose identification/calibration revealed presence of pile-up
+      KVGeoDetectorNode* stopping_detector_node;  //! detector node in which new particle stopped
+      KVGeoDNTrajectory* stopping_trajectory;     //! trajectory on which new particle stopped
+      KVIDTelescope* identifying_telescope;       //! the identification telescope used to identify the particle
+      Int_t first_id_result_to_copy;              //! number of KVIdentificationResult (in original_particle's list) corresponding to identification of the particle
+      Int_t max_id_result_index;                  //! last KVIdentificationResult in original_particle's list
+   };
+   std::vector<particle_to_add_from_coherency_analysis> coherency_particles;
 
 public:
    KVGroupReconstructor();
@@ -86,6 +103,7 @@ public:
    void Reconstruct();
    virtual void Identify();
    void Calibrate();
+   virtual void AddCoherencyParticles();
 
    void AnalyseParticles();
    Int_t GetNIdentifiedInGroup()

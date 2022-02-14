@@ -777,7 +777,35 @@ const Char_t* KVNumberList::AsHumanReadableString() const
 Int_t KVNumberList::GetRandom() const
 {
    // Draw number at random from list
+   //
+   // Warning: this method is slow as each time it is called the number list will be sorted.
+   //
+   // For a more efficient method, see GetRandomFast().
    return At(gRandom->Integer(GetEntries()));
+}
+
+Int_t KVNumberList::GetRandomFast() const
+{
+   // Draw number at random from list
+   //
+   // Unlike GetRandom(), the list is not sorted every time the method is called.
+   // Rather, this must be done once by calling PrepareRandomFast() first before calling
+   // this method.
+   //
+   // Check that PrepareRandomFast() returns kTRUE: if not, the list is empty and
+   // calling GetRandomFast() will lead to segmentation violation...
+   return fRandomFastArray.at(gRandom->Integer(fNValues));
+}
+
+Bool_t KVNumberList::PrepareRandomFast() const
+{
+   // Call once before using GetRandomFast() in order to generate random numbers from the list.
+   //
+   // If this method returns kFALSE, do not use GetRandomFast() as the list is empty
+   // (seg fault will occur).
+   fRandomFastArray = GetArray();
+   assert((IntArray::size_type)fNValues == fRandomFastArray.size());
+   return fRandomFastArray.size() > 0;
 }
 
 //____________________________________________________________________________________________//

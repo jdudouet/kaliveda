@@ -65,7 +65,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       KVFAZIADetector* si1 = (KVFAZIADetector*)PART->GetIdentifyingTelescope()->GetDetector(1);
       KVFAZIADetector* si2 = (KVFAZIADetector*)PART->GetIdentifyingTelescope()->GetDetector(2);
       if (si1->IsCalibrated() && si2->IsCalibrated()) { //  with both detectors calibrated
-         double e1(-1), e2(-1);
+         double e1(0), e2(0);
          bool calc_e1(false), calc_e2(false);
          if ((e2 = si2->GetEnergy()) > 0) {
             if (!((e1 = si1->GetEnergy()) > 0)) { // if SI1 not fired, we calculate from SI2 energy
@@ -117,9 +117,13 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       else {
          // treat case of uncalibrated CsI detector
          // case where SI1 && SI2 are calibrated & present in event
-         // (STRICTLY SPEAKING, FIRST NEED TO CHECK THAT NOTHING ELSE STOPPED IN SI1 (for Si2-CsI id) or SI2 (for CsI id)):
-         // THIS SHOULD BE DONE IN IDENTIFICATION COHERENCY CHECKS
-         if (si1->IsCalibrated() && si1->GetEnergy() && si2->IsCalibrated() && si2->GetEnergy()) {
+         // and if NOTHING ELSE STOPPED IN SI1
+         // and only for Z>2 (because silicon energy losses are too small to give correct
+         // estimation for Z=1 and Z=2):
+         bool si1_pileup = PART->GetParameters()->GetBoolValue("si1_pileup");
+
+         if (si1->IsCalibrated() && si1->GetEnergy() && si2->IsCalibrated() && si2->GetEnergy()
+               && !si1_pileup && PART->GetZ() > 2) {
             // calculate total delta-E in (SI1+SI2) then use to calculate CsI energy
             double deltaE = si1->GetEnergy() + si2->GetEnergy();
             KVDetector si1si2("Si", si1->GetThickness() + si2->GetThickness());
@@ -172,8 +176,11 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       }
       // treat case of uncalibrated CsI detector
       // case where SI1 && SI2 are calibrated & present in event & no pileup detected in Si1/Si2
-      if (!csi->IsCalibrated(part_id) && (si1->IsCalibrated() && si1->GetEnergy() && si2->IsCalibrated() && si2->GetEnergy())
-            && !si1_pileup && !si2_pileup) {
+      // and only for Z>2 (because silicon energy losses are too small to give correct
+      // estimation for Z=1 and Z=2):
+      if (!csi->IsCalibrated(part_id) &&
+            (si1->IsCalibrated() && si1->GetEnergy() && si2->IsCalibrated() && si2->GetEnergy())
+            && !si1_pileup && !si2_pileup && PART->GetZ() > 2) {
          // calculate total delta-E in (SI1+SI2) then use to calculate CsI energy
          double deltaE = esi1 + esi2;
          KVDetector si1si2("Si", si1->GetThickness() + si2->GetThickness());
@@ -195,6 +202,19 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
    }
 
    if (PART->IsCalibrated()) {
+
+      //add correction for target energy loss - moving charged particles only!
+      Double_t E_targ = 0.;
+      if (PART->GetZ() && PART->GetEnergy() > 0) {
+         E_targ = GetTargetEnergyLossCorrection(PART);
+         PART->SetTargetEnergyLoss(E_targ);
+      }
+      Double_t E_tot = PART->GetEnergy() + E_targ;
+      PART->SetEnergy(E_tot);
+
+      // set particle momentum from telescope dimensions (random)
+      PART->GetAnglesFromReconstructionTrajectory();
+
       // check for energy loss coherency
       KVNucleus avatar;
       avatar.SetZAandE(PART->GetZ(), PART->GetA(), PART->GetKE());
@@ -214,6 +234,68 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
          avatar.SetKE(avatar.GetKE() - temp);
          ndet++;
       }
+   }
+   else
+      PART->SetECode(0);// all uncalibrated particles must have ECode=0
+}
+
+void KVFAZIAGroupReconstructor::CalibrateCoherencyParticle(KVReconstructedNucleus* PART)
+{
+   // Calibration routine for particles added in AddCoherencyParticles() method.
+   //
+   // Only particles identified in Si1-Si2 or Si1-PSA are treated.
+   //
+   // We take into account, where possible, the calculated energy losses in SI1 and SI2
+   // of the "parent" nucleus (i.e. the one which stopped in the CSI).
+
+   // particle identified in Si1 PSA, detector is calibrated
+   if (PART->GetIDCode() == 11) {
+      KVFAZIADetector* si1 = (KVFAZIADetector*)PART->GetIdentifyingTelescope()->GetDetector(1);
+      if (si1->IsCalibrated()) {
+         double e1 = si1->GetCalibratedEnergy();
+         if (e1 <= 0) {
+            Warning("CalibrateParticle",
+                    "IDCODE=11 Z=%d A=%d calibrated SI1 E=%f",
+                    PART->GetZ(), PART->GetA(), e1);
+            return;
+         }
+         PART->SetParameter("FAZIA.ESI1", e1);
+         PART->SetEnergy(-e1); // energy loss is calculated in this case
+         PART->SetIsCalibrated();
+         PART->SetECode(2); // energy loss is calculated in this case
+      }
+   }
+
+   // particle identified in Si1-Si2
+   if (PART->GetIDCode() == 12) {
+      KVFAZIADetector* si1 = (KVFAZIADetector*)PART->GetIdentifyingTelescope()->GetDetector(1);
+      KVFAZIADetector* si2 = (KVFAZIADetector*)PART->GetIdentifyingTelescope()->GetDetector(2);
+      if (si1->IsCalibrated() && si2->IsCalibrated()) { //  with both detectors calibrated
+         double e1(0), e2(0);
+         bool calc_e1(false), calc_e2(false);
+         if ((e2 = si2->GetCalibratedEnergy()) > 0) {
+            if (!((e1 = si1->GetCalibratedEnergy()) > 0)) { // if SI1 not fired, we calculate from SI2 energy
+               e1 = si1->GetDeltaEFromERes(PART->GetZ(), PART->GetA(), e2);
+               calc_e1 = true;
+            }
+         }
+         else if ((e1 = si1->GetCalibratedEnergy()) > 0) {
+            // if SI2 not fired, we calculate from SI1 energy
+            e2 = si1->GetEResFromDeltaE(PART->GetZ(), PART->GetA(), e1);
+            calc_e2 = true;
+         }
+
+         PART->SetParameter("FAZIA.ESI1", -e1); // always calculated
+         PART->SetParameter("FAZIA.ESI2", -e2); // always calculated
+         if (e1 > 0 && e2 > 0) {
+            PART->SetEnergy(e1 + e2);
+            PART->SetIsCalibrated();
+            PART->SetECode(2); // always calculated
+         }
+      }
+   }
+
+   if (PART->IsCalibrated()) {
 
       //add correction for target energy loss - moving charged particles only!
       Double_t E_targ = 0.;
@@ -223,9 +305,29 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       }
       Double_t E_tot = PART->GetEnergy() + E_targ;
       PART->SetEnergy(E_tot);
+
       // set particle momentum from telescope dimensions (random)
       PART->GetAnglesFromReconstructionTrajectory();
-      //PART->ls();
+
+      // check for energy loss coherency
+      KVNucleus avatar;
+      avatar.SetZAandE(PART->GetZ(), PART->GetA(), PART->GetKE());
+
+      int ndet = 0;
+      const char* detnames[] = {"SI1", "SI2", "CSI"};
+      KVGeoDetectorNode* node = 0;
+      // iterating over detectors starting from the target
+      // compute the theoretical energy loss of the avatar
+      // compare to the calibrated/calculated energy
+      // remove this energy from the avatar energy
+      PART->GetReconstructionTrajectory()->IterateBackFrom();
+      while ((node = PART->GetReconstructionTrajectory()->GetNextNode())) {
+         auto det = (KVFAZIADetector*)node->GetDetector();
+         Double_t temp = det->GetELostByParticle(&avatar);
+         PART->SetParameter(Form("FAZIA.avatar.E%s", detnames[det->GetIdentifier()]), temp);
+         avatar.SetKE(avatar.GetKE() - temp);
+         ndet++;
+      }
    }
 }
 
@@ -290,8 +392,6 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       PART.SetStatus(KVReconstructedNucleus::kStatusStopFirstStage);
       TreatStatusStopFirstStage(PART);
       PART.SetIDCode(5);
-      PART.SetParameter("si1_pileup", si1_pileup);
-      PART.SetParameter("si2_pileup", si2_pileup);
       return;
    }
 
@@ -356,9 +456,21 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                //   - point above last Z line in Si1-Si2 grid (kICODE7) with Z>Zcsi
                // In these cases, there is a second particle stopped in Si2: and
                // hence the measured Si1 energy loss is not to be used either
-               if ((si1si2->second->Z > partID.Z)) {
+               if (si1si2->second->Z > partID.Z) {
                   si2_pileup = true;
                   si1_pileup = true;
+                  if (si1si2->second->IDOK) {
+                     // if in addition the si1si2 identification is OK, we need to add a new particle
+                     // to the event corresponding to this fragment stopped in SI2 in coincidence with
+                     // the LCP in the CsI
+                     auto dsi2 = PART.GetDetector("SI2");
+                     coherency_particles.push_back( {
+                        &PART, dsi2->GetNode(), theTrajectory,
+                        (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("Si-Si"),
+                        (Int_t)si1si2->second->GetNumber(), PART.GetNumberOfIdentificationResults()
+                     }
+                                                  );
+                  }
                }
             }
 #ifndef WITH_CPP11

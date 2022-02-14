@@ -106,7 +106,7 @@ public:
    virtual void ParseOptions();
 
    KVPROOFSelector(TTree* /*tree*/ = 0) :
-      fEventsRead(0), fEventsReadInterval(100), fDisableCreateTreeFile(kFALSE)
+      fEventsRead(0), fEventsReadInterval(50000), fDisableCreateTreeFile(kFALSE)
    {
       lhisto = new KVHashList();
       ltree = new KVHashList();
