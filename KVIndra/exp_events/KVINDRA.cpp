@@ -1262,7 +1262,8 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPP
             add_and_set_detector_signal(GetDetector(detname), detname, sig_data, sig_type);
          }
       }
-   }
+   },
+   f.GetRevision()
    );
    return kTRUE;
 }
