@@ -191,7 +191,8 @@ INDRAFAZIA.E789.FAZIA.ReconstructedNuclei.AcceptECodes: 1-2
 
 INDRAFAZIA.E789.IdentificationParameterFile.INDRA.SI-CSI:       IDGridsINDRA_SI_CSI.dat
 #INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si-CsI:       IDGridsFAZIA_Si_CsI.dat
-INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si-Si:        IDGridsFAZIA_Si_Si.dat
+#INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si-Si:        IDGridsFAZIA_Si_Si.dat
+INDRAFAZIA.E789.IdentificationParameterList.FAZIA.Si-Si:          FAZIA.Si-Si.IdentificationFiles.dat
 INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.Si:           IDGridsFAZIA_Si.dat
 #INDRAFAZIA.E789.IdentificationParameterFile.FAZIA.CsI:          IDGridsFAZIA_CsI.dat
 # define order to use grids - first try low range (QL1), then high range (QH1)
