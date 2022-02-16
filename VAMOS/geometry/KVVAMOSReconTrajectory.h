@@ -40,6 +40,7 @@ public:
    KVVAMOSReconTrajectory(const KVVAMOSReconTrajectory&) ;
    virtual ~KVVAMOSReconTrajectory();
    virtual void Copy(TObject&) const;
+   KVVAMOSReconTrajectory& operator=(const KVVAMOSReconTrajectory&);
 
 
    virtual void Reset();

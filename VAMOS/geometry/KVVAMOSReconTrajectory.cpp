@@ -169,6 +169,14 @@ void KVVAMOSReconTrajectory::Copy(TObject& obj) const
    CastedObj.Brho = Brho;
    CastedObj.path = path;
 }
+
+KVVAMOSReconTrajectory& KVVAMOSReconTrajectory::operator=(const KVVAMOSReconTrajectory& other)
+{
+   if (&other != this) {
+      other.Copy(*this);
+   }
+   return *this;
+}
 //________________________________________________________________
 
 void KVVAMOSReconTrajectory::Reset()
