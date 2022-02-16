@@ -583,12 +583,12 @@ TObject* KVSeqCollection::FindObjectAny(const Char_t* att, const Char_t* keys, B
    TIter next(fCollection);
    TString _att;
    TObject* obj(nullptr);
-   KVBase* kvobj(nullptr);
    while ((obj = next())) {
 
       if (char_test > kClass && !obj->TestBit(KVBase::kIsKaliVedaObject)) {
          continue;
       }
+      KVBase* kvobj = dynamic_cast<KVBase*>(obj);
       switch (char_test) {
          case kName:
             _att = obj->GetName();
