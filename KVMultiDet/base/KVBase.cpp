@@ -359,6 +359,14 @@ KVBase::KVBase(const KVBase& obj) : TNamed()
 #endif
 }
 
+KVBase& KVBase::operator=(const KVBase& other)
+{
+   if (&other != this) {
+      other.Copy(*this);
+   }
+   return *this;
+}
+
 //_______________________________________________________________________________
 KVBase::~KVBase()
 {
@@ -417,7 +425,8 @@ void KVBase::Streamer(TBuffer& R__b)
             R__b >> fLabel;
             if (R__v < 3) SetBit(kIsKaliVedaObject);
             R__b.CheckByteCount(R__s, R__c, KVBase::IsA());
-         } else {
+         }
+         else {
             //AUTOMATIC STREAMER EVOLUTION FOR CLASS VERSION > 3
             KVBase::Class()->ReadBuffer(R__b, this, R__v, R__s, R__c);
          }
@@ -436,7 +445,8 @@ void KVBase::Streamer(TBuffer& R__b)
       }
       SetBit(kIsKaliVedaObject);
       R__b.CheckByteCount(R__s, R__c, KVBase::IsA());
-   } else {
+   }
+   else {
       KVBase::Class()->WriteBuffer(R__b, this);
    }
 }
@@ -502,7 +512,8 @@ Bool_t KVBase::SearchKVFile(const Char_t* name, TString& fullpath,
    if (strcmp(kvsubdir, "")) {
       //subdirectory name given
       kvfile_dir = GetDATADIRFilePath(kvsubdir);
-   } else
+   }
+   else
       kvfile_dir = GetDATADIRFilePath();
    return SearchFile(name, fullpath, 3, kvfile_dir.Data(),
                      gSystem->HomeDirectory(), gSystem->pwd());
@@ -567,14 +578,17 @@ Bool_t KVBase::SearchAndOpenKVFile(const Char_t* name, ofstream& file, const Cha
    KVString fullpath;
    if (gSystem->IsAbsoluteFileName(name)) {
       fullpath = name;
-   } else if (gSystem->IsAbsoluteFileName(kvsubdir)) {
+   }
+   else if (gSystem->IsAbsoluteFileName(kvsubdir)) {
       AssignAndDelete(fullpath,
                       gSystem->ConcatFileName(kvsubdir, name));
-   } else if (strcmp(kvsubdir, "")) {
+   }
+   else if (strcmp(kvsubdir, "")) {
       KVString path = GetDATADIRFilePath(kvsubdir);
       AssignAndDelete(fullpath,
                       gSystem->ConcatFileName(path.Data(), name));
-   } else {
+   }
+   else {
       fullpath = GetDATADIRFilePath(name);
    }
    //Backup file if necessary
@@ -821,7 +835,8 @@ Bool_t KVBase::FindExecutable(TString& exec, const Char_t* path)
       if (!gSystem->AccessPathName(expandexec)) {
          exec = expandexec;
          return kTRUE;
-      } else {
+      }
+      else {
          //try with ".exe" in case of Windows system
          if (!expandexec.EndsWith(".exe")) {
             expandexec += ".exe";
@@ -859,7 +874,8 @@ const Char_t* KVBase::FindFile(const Char_t* search, TString& wfil)
    if (result) {
       wfil = result;
       delete[]result;
-   } else {
+   }
+   else {
       wfil = "";
    }
    return wfil.Data();
