@@ -2816,6 +2816,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1021
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -3505,7 +3507,7 @@ right
 0.51232   13234.7
 0.578262   13509.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 8
 1.70386   55.3934
@@ -3527,6 +3529,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1022
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -4216,7 +4220,7 @@ right
 0.512283   13155.3
 0.578221   13428.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.10949   103.033
@@ -4935,6 +4939,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1031
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -5624,7 +5630,7 @@ right
 0.490196   12843
 0.553292   13110.1
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.64581   53.3291
@@ -6344,6 +6350,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1034
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -7033,7 +7041,7 @@ right
 0.485263   12768.1
 0.547723   13033.6
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.31439   64.3648
@@ -7054,6 +7062,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1041
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -7743,7 +7753,7 @@ right
 0.495621   2333.46
 0.559414   2381.99
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 5
 6.69833   19.7054
@@ -7762,6 +7772,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1042
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -8451,7 +8463,7 @@ right
 0.489216   4767.7
 0.552186   4866.85
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.95134   39.0576
@@ -8471,6 +8483,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1043
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -9160,7 +9174,7 @@ right
 0.491176   12819.2
 0.554398   13085.8
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.85645   75.6254
@@ -9891,6 +9905,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1111
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -10580,7 +10596,7 @@ right
 0.496093   12641.4
 0.559947   12904.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.38147   88.9406
@@ -10600,6 +10616,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1112
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -11289,7 +11307,7 @@ right
 0.496946   12870.6
 0.56091   13138.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.98071   121.007
@@ -11310,6 +11328,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1113
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -11999,7 +12019,7 @@ right
 0.499083   12666.8
 0.563323   12930.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.67362   116.314
@@ -20444,6 +20464,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1141
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -21133,7 +21155,7 @@ right
 0.485316   12269.2
 0.547784   12524.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.27285   59.434
@@ -21153,6 +21175,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1142
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -21842,7 +21866,7 @@ right
 0.484345   12540.3
 0.546687   12801.1
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 1.99948   80.6541
@@ -21863,6 +21887,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_1144
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -22552,7 +22578,7 @@ right
 0.483364   12768.5
 0.545579   13034
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.75912   93.9228
@@ -26068,6 +26094,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_12
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -26757,7 +26785,7 @@ right
 0.507183   12891.8
 0.572465   13159.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.80211   69.5876
@@ -28874,6 +28902,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_134
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -29563,7 +29593,7 @@ right
 0.482382   11955.1
 0.544471   12203.8
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.63445   128.063
@@ -29583,6 +29613,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_13
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -30272,7 +30304,7 @@ right
 0.522679   10439.1
 0.589955   10656.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.11322   86.368
@@ -30292,6 +30324,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_141
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -30981,7 +31015,7 @@ right
 0.477477   12641.5
 0.538935   12904.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.66766   42.2897
@@ -31002,6 +31036,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_142
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -31691,7 +31727,7 @@ right
 0.481418   12027
 0.543384   12277.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.74281   72.8817
@@ -31712,6 +31748,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_143
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -32401,7 +32439,7 @@ right
 0.485264   12566.2
 0.547724   12827.6
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.74529   62.5826
@@ -32422,6 +32460,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_144
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -33111,7 +33151,7 @@ right
 0.48244   12440.2
 0.544537   12699
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 1.89682   56.0245
@@ -35951,6 +35991,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_21
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -36640,7 +36682,7 @@ right
 0.515932   9858.89
 0.58234   10063.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.90128   46.5884
@@ -39456,6 +39498,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_22
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -40145,7 +40189,7 @@ right
 0.514915   10283
 0.581192   10496.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.33055   68.2891
@@ -40165,6 +40209,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_232
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -40854,7 +40900,7 @@ right
 0.511295   9575.74
 0.577106   9774.88
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.48036   122.707
@@ -40874,6 +40920,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_233
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -41563,7 +41611,7 @@ right
 0.510792   9877.66
 0.576538   10083.1
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.25706   118.774
@@ -41583,6 +41631,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_234
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -42272,7 +42322,7 @@ right
 0.50619   10026.8
 0.571344   10235.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.26034   125.486
@@ -42292,6 +42342,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_23
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -42981,7 +43033,7 @@ right
 0.313771   10160.1
 0.354158   10371.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 1.90511   63.1223
@@ -45798,6 +45850,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_24
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -46487,7 +46541,7 @@ right
 0.510786   10129
 0.576531   10339.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.93377   50.097
@@ -46507,6 +46561,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_311
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -47196,7 +47252,7 @@ right
 0.507192   9807.94
 0.572475   10011.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.01512   92.5066
@@ -47216,6 +47272,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_312
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -47905,7 +47963,7 @@ right
 0.493797   4548.69
 0.557355   4643.31
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.88811   27.8031
@@ -47925,6 +47983,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_313
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -48614,7 +48674,7 @@ right
 0.524802   10272.3
 0.592351   10485.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.31265   87.9989
@@ -48634,6 +48694,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_314
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -49323,7 +49385,7 @@ right
 0.502122   10087.6
 0.566752   10297.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.98436   72.1315
@@ -54946,6 +55008,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_334
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -55635,7 +55699,7 @@ right
 0.498121   9927.04
 0.562236   10133.5
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.43517   85.706
@@ -59172,6 +59236,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_412
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -59861,7 +59927,7 @@ right
 0.482878   12642.3
 0.545031   12905.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.71132   71.9271
@@ -61989,6 +62055,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_422
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -62678,7 +62746,7 @@ right
 0.49016   12453.7
 0.553251   12712.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.62739   64.0126
@@ -62698,6 +62766,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_424
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -63387,7 +63457,7 @@ right
 0.497102   12756.2
 0.561086   13021.5
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.61905   50.7855
@@ -64116,6 +64186,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_431
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -64805,7 +64877,7 @@ right
 0.47903   12342.4
 0.540688   12599.1
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.78571   58.4361
@@ -64825,6 +64897,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_432
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -65514,7 +65588,7 @@ right
 0.481953   12282
 0.543988   12537.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.10984   76.923
@@ -65534,6 +65608,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_433
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -66223,7 +66299,7 @@ right
 0.481358   12380.3
 0.543315   12637.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.38147   91.4843
@@ -69070,6 +69146,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_443
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -69759,7 +69837,7 @@ right
 0.480402   12049
 0.542237   12299.6
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.49253   72.99
@@ -70479,6 +70557,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_44
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -71168,7 +71248,7 @@ right
 0.490205   12504.3
 0.553302   12764.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.73479   128.333
@@ -76082,6 +76162,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_531
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -76771,7 +76853,7 @@ right
 0.475673   12392
 0.536899   12649.8
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.72371   61.8491
@@ -76791,6 +76873,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_532
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -77480,7 +77564,7 @@ right
 0.483292   12793.6
 0.545498   13059.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.82292   148.267
@@ -77500,6 +77584,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_533
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -78189,7 +78275,7 @@ right
 0.473735   12440
 0.534712   12698.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.27728   85.2662
@@ -78210,6 +78296,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_534
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -78899,7 +78987,7 @@ right
 0.481398   12516.1
 0.543361   12776.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 3.08432   70.5646
@@ -78919,6 +79007,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_541
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -79608,7 +79698,7 @@ right
 0.462493   12269.5
 0.522023   12524.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 1.69541   87.1405
@@ -79629,6 +79719,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_543
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -80318,7 +80410,7 @@ right
 0.48533   12590.5
 0.547799   12852.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 3.77257   148.365
@@ -80339,6 +80431,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_544
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -81028,7 +81122,7 @@ right
 0.470952   12026.2
 0.53157   12276.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.33055   98.7117
@@ -83857,6 +83951,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_621
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -84546,7 +84642,7 @@ right
 0.501083   13103.5
 0.565579   13376
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.17084   55.3298
@@ -85277,6 +85373,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_624
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -85966,7 +86064,7 @@ right
 0.504169   12973.5
 0.569062   13243.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.36774   62.5793
@@ -85987,6 +86085,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_631
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -86676,7 +86776,7 @@ right
 0.482426   12666.3
 0.544521   12929.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.56135   68.4298
@@ -89517,6 +89617,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_642
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -90206,7 +90308,7 @@ right
 0.215767   12806.1
 0.243538   13072.4
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.31952   133.119
@@ -90227,6 +90329,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_643
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -90916,7 +91020,7 @@ right
 0.483327   12844.9
 0.545538   13112
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.92457   99.1446
@@ -90937,6 +91041,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_644
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -91626,7 +91732,7 @@ right
 0.479427   12791.8
 0.541136   13057.8
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.14372   113.673
@@ -94443,6 +94549,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_721
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -95132,7 +95240,7 @@ right
 0.511803   10136.1
 0.57768   10346.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.72384   52.0328
@@ -95153,6 +95261,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_722
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -95842,7 +95952,7 @@ right
 0.49514   9633.35
 0.558872   9833.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.55978   63.2482
@@ -95862,6 +95972,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_724
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -96551,7 +96663,7 @@ right
 0.505163   10208.3
 0.570185   10420.6
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.88095   55.0625
@@ -96571,6 +96683,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_733
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -97260,7 +97374,7 @@ right
 0.483364   9749.3
 0.545579   9952.05
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.44404   76.649
@@ -97280,6 +97394,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_734
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -97969,7 +98085,7 @@ right
 0.50619   9966.89
 0.571344   10174.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.67675   88.8097
@@ -97990,6 +98106,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_741
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -98679,7 +98797,7 @@ right
 0.497103   9671.62
 0.561087   9872.76
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.67866   86.0765
@@ -98700,6 +98818,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_742
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -99389,7 +99509,7 @@ right
 0.495088   9594.23
 0.558813   9793.75
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.43517   76.0314
@@ -99410,6 +99530,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_743
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -100099,7 +100221,7 @@ right
 0.138517   9619.13
 0.156347   9819.18
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.14181   113.438
@@ -100119,6 +100241,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_744
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -100808,7 +100932,7 @@ right
 0.467119   12074.4
 0.527244   12325.5
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.10984   103.684
@@ -102250,6 +102374,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_813
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -102939,7 +103065,7 @@ right
 0.509243   5468.08
 0.57479   5581.79
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 5
 15.7637   81.7891
@@ -102958,6 +103084,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_814
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -103647,7 +103775,7 @@ right
 0.490158   12768.1
 0.553248   13033.6
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.5   115.83
@@ -103668,6 +103796,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_821
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -104357,7 +104487,7 @@ right
 0.509238   12541.2
 0.574784   12802
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.50365   73.6785
@@ -105088,6 +105218,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_823
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -105777,7 +105909,7 @@ right
 0.501136   12921.8
 0.565639   13190.5
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 3.34706   130.006
@@ -105798,6 +105930,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_824
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -106487,7 +106621,7 @@ right
 0.51131   12870.1
 0.577123   13137.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.38095   75.914
@@ -106508,6 +106642,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_832
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -107197,7 +107333,7 @@ right
 0.496126   12590.5
 0.559985   12852.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.18839   160.902
@@ -107217,6 +107353,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_833
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -107906,7 +108044,7 @@ right
 0.493162   12674.4
 0.556639   12938
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 -185.667   8253
@@ -107926,6 +108064,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_834
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -108615,7 +108755,7 @@ right
 0.501098   12491.2
 0.565596   12750.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.44404   82.8945
@@ -111432,6 +111572,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_911
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -112121,7 +112263,7 @@ right
 0.531156   10397
 0.599523   10613.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.79753   125.508
@@ -112141,6 +112283,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_913
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -112830,7 +112974,7 @@ right
 0.505194   12466.6
 0.570219   12725.8
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.52282   158.141
@@ -112850,6 +112994,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_914
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -113539,7 +113685,7 @@ right
 0.496108   13103.7
 0.559964   13376.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.67866   127.096
@@ -113559,6 +113705,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_921
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -114248,7 +114396,7 @@ right
 0.493163   12590.5
 0.55664   12852.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.75426   58.4165
@@ -114268,6 +114416,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_922
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -114957,7 +115107,7 @@ right
 0.492162   12415
 0.55551   12673.2
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.7334   75.6254
@@ -114978,6 +115128,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_924
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -115667,7 +115819,7 @@ right
 0.0850417   13005.5
 0.0959878   13275.9
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.60493   166.721
@@ -115687,6 +115839,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_931
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -116376,7 +116530,7 @@ right
 0.0816645   12465.4
 0.0921759   12724.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 1.49374   157.922
@@ -117105,6 +117259,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_933
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -117794,7 +117950,7 @@ right
 0.478537   12367.3
 0.540132   12624.5
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.65989   122.06
@@ -117814,6 +117970,8 @@ below
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_934
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -118503,7 +118661,7 @@ right
 0.478537   12244.7
 0.540132   12499.3
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 2.36687   116.414
@@ -119223,6 +119381,8 @@ right
 <VARY> QL1.Amplitude
 <PARAMETER> Runlist=133000-137008 139000-141106
 <PARAMETER> IDTelescopes=ID_SI1_SI2_942
+<PARAMETER> ManualWidth=0.300000
+<PARAMETER> ManualWidthScaling=0.050000
 +KVIDZALine
 ID:Z=1 A=1
 1	1
@@ -119912,7 +120072,7 @@ right
 0.489655   12603.6
 0.552681   12865.7
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 6
 2.8688   56.2134

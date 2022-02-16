@@ -901,7 +901,7 @@ void KVIDGridManagerGUI::UpdateTabs()
          TGCompositeFrame* cf = fGridListTabs->AddTab(lab.Data());
          cf->ChangeOptions(kVerticalFrame);
          fIDGridList = new KVListView(KVIDGraph::Class(), cf, 600, 400);
-         fIDGridList->SetDataColumns(10);
+         fIDGridList->SetDataColumns(11);
          fIDGridList->SetDataColumn(0, "Name", "", kTextLeft);
          fIDGridList->SetDataColumn(2, "VarX", "", kTextLeft);
          fIDGridList->SetDataColumn(1, "VarY", "", kTextLeft);
@@ -911,8 +911,9 @@ void KVIDGridManagerGUI::UpdateTabs()
          fIDGridList->GetDataColumn(5)->SetIsBoolean();
          fIDGridList->SetDataColumn(6, "# Ident.", "GetNumberOfIdentifiers", kTextRight);
          fIDGridList->SetDataColumn(7, "# Cuts", "GetNumberOfCuts", kTextRight);
-         fIDGridList->SetDataColumn(8, "X scaling", "GetXScaleFactor", kTextRight);
-         fIDGridList->SetDataColumn(9, "Y scaling", "GetYScaleFactor", kTextRight);
+         fIDGridList->SetDataColumn(8, "# Infos", "GetNumberOfInfos", kTextRight);
+         fIDGridList->SetDataColumn(9, "X scaling", "GetXScaleFactor", kTextRight);
+         fIDGridList->SetDataColumn(10, "Y scaling", "GetYScaleFactor", kTextRight);
          fIDGridList->ActivateSortButtons();
          fIDGridList->Connect("SelectionChanged()", "KVIDGridManagerGUI", this,
                               "SelectionChanged()");
