@@ -29656,7 +29656,7 @@ right
 0.189002   504.415
 0.224134   519.099
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 7
 4.46544   7.4471
@@ -30381,7 +30381,7 @@ right
 0.186276   492.213
 0.220902   506.541
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 8
 3.60172   5.5008
@@ -56074,7 +56074,7 @@ right
 0.199997   519.37
 0.237173   534.491
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 9
 2.67003   5.74301
@@ -58211,7 +58211,7 @@ right
 0.190543   504.465
 0.227537   519.151
 +KVIDCutLine
-INFO:punch_through|Z=1-2
+INFO:punch_through|Z=1
 below
 9
 4.0683   5.92226
