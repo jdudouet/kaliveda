@@ -165,7 +165,7 @@ void KVRangeYanezMaterial::PrepareRangeLibVariables(Int_t Z, Int_t A)
    is_gas = (int)IsGas(); // special treatment for effective charge in gases (M.F. Rivet, R. Bimbot et al)
    if (iabso < 0) {
       //cout << "nelem="<<nelem<<endl;
-      for (register int k = 0; k < fNelem; k++) {
+      for (int k = 0; k < fNelem; k++) {
          absorb[k].z = fAbsorb[k].z;
          absorb[k].a = fAbsorb[k].a;
          absorb[k].w = fAbsorb[k].w;
