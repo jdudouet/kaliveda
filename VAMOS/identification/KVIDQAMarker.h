@@ -4,6 +4,7 @@
 #ifndef __KVIDQAMARKER_H
 #define __KVIDQAMARKER_H
 
+#include "TString.h"
 #include "TMarker.h"
 #include "TMath.h"
 #include "KVMacros.h" // 'UNUSED' macro
