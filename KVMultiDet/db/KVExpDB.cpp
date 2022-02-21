@@ -213,7 +213,7 @@ void KVExpDB::ReadSystemList()
    }
    else {
       Error("ReadSystemList()", "Could not open file %s",
-            GetCalibFileName("Systems"));
+            GetCalibFileName("Systems").Data());
    }
    // if any runs are not associated with any system
    // we create an 'unknown' system and associate it to all runs
@@ -451,15 +451,15 @@ ULong64_t KVExpDB::GetTotalEvents(const KVString& system) const
 
 //__________________________________________________________________________________________________________________
 
-const Char_t* KVExpDB::GetDBEnv(const Char_t* type) const
+TString KVExpDB::GetDBEnv(const Char_t* type) const
 {
    //Will look for gEnv->GetValue name "name_of_dataset.fDBType.type",
    //then "fDBType.type" if no dataset-specific value is found,
    //then "EXPDB.type" if no database-specific value is found
 
    if (fDataSet == "") return "";
-   const char* p = KVBase::GetDataSetEnv(fDataSet, Form("%s.%s", fDBType.Data(), type), "");
-   if (!strcmp(p, "")) return KVBase::GetDataSetEnv(fDataSet, Form("EXPDB.%s", type), "");
+   TString p = KVBase::GetDataSetEnv(fDataSet, Form("%s.%s", fDBType.Data(), type), "");
+   if (!p.Length()) return KVBase::GetDataSetEnv(fDataSet, Form("EXPDB.%s", type), "");
    return p;
 }
 

@@ -21,6 +21,8 @@ KVRunListLine::KVRunListLine()
    fFields = new TObjArray(fMaxNFields);
    fFields->SetOwner();
    fFieldsSet = kFALSE;
+   calling_field_keys = false;
+   calling_run_keys = false;
 }
 
 KVRunListLine::~KVRunListLine()
@@ -265,52 +267,11 @@ Int_t KVRunListLine::GetTrigger(const Char_t* field_name,
 
 //_____________________________________________________________________________________
 
-void KVRunListLine::SetFieldKeys(Int_t nkeys, const Char_t* key1, ...)
-{
-   //Set keywords used to identify lines in the file which define the column headings, i.e. the field names.
-   //Give the number of keywords (nkeys>=1) and then the list of keywords (at least one).
-   //
-   //Each and every keyword given as argument here (at least one word must be given) must appear in a line for it to be considered
-   //a column heading. Lines identified as such (by IsFieldHeader()) are used to set indices for each column (SetFields()).
 
-   //clear out list of keywords
-   fFieldKeys.Clear();
-
-   fFieldKeys.Add(new TObjString(key1));
-
-   Int_t narg = 1;
-   va_list ap;
-   va_start(ap, key1);
-   while (narg < nkeys) {
-
-      fFieldKeys.Add(new TObjString(va_arg(ap, const Char_t*)));
-      narg++;
-   }
-   va_end(ap);
-}
 
 //_____________________________________________________________________________________
 
-void KVRunListLine::SetRunKeys(Int_t nkeys, const Char_t* key1, ...)
-{
-   //Set list of fields which must have values for a line to be considered a "good" run line
-   //Give the number of fields (nkeys>=1) and then the list of field names (at least one).
 
-   //clear out list of keywords
-   fRunKeys.Clear();
-
-   fRunKeys.Add(new TObjString(key1));
-
-   Int_t narg = 1;
-   va_list ap;
-   va_start(ap, key1);
-   while (narg < nkeys) {
-
-      fRunKeys.Add(new TObjString(va_arg(ap, const Char_t*)));
-      narg++;
-   }
-   va_end(ap);
-}
 
 //_____________________________________________________________________________________
 

@@ -37,8 +37,8 @@ void KVINDRADB1::Build()
       SetRLSeparatorChar('\t');
    else
       SetRLSeparatorChar(GetDBEnv("Runlist.Separator")[0]);
-   GetLineReader()->SetFieldKeys(3, "tape", "run", "events");
-   GetLineReader()->SetRunKeys(2, "run", "events");
+   GetLineReader()->SetFieldKeys("tape", "run", "events");
+   GetLineReader()->SetRunKeys("run", "events");
    ReadRunList(runlist_fullpath.Data());
 
    ReadSystemList();

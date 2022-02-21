@@ -106,7 +106,7 @@ void KVFAZIADB::ReadNewRunList()
    std::ifstream fin;
    if (!OpenCalibFile("Runlist", fin)) {
       Error("ReadNewRunList()", "Could not open file %s",
-            GetCalibFileName("Runlist"));
+            GetCalibFileName("Runlist").Data());
       return;
    }
    Info("ReadNewRunList()", "Reading run list ...");
@@ -194,7 +194,7 @@ void KVFAZIADB::ReadNewRunList()
    std::ifstream ffin;
    if (!OpenCalibFile("Runsheets", ffin)) {
       Error("ReadNewRunList()", "Could not open file %s",
-            GetCalibFileName("Runsheets"));
+            GetCalibFileName("Runsheets").Data());
       return;
    }
    Info("ReadNewRunList()", "Reading run sheets ...");

@@ -48,8 +48,8 @@ void KVINDRADB2::Build()
                         fDataSet);
    SetRLCommentChar('#');
    SetRLSeparatorChar('\t');
-   GetLineReader()->SetFieldKeys(3, "Tape", "Run", "Events");
-   GetLineReader()->SetRunKeys(2, "Run", "Events");
+   GetLineReader()->SetFieldKeys("Tape", "Run", "Events");
+   GetLineReader()->SetRunKeys("Run", "Events");
    ReadRunList(runlist_fullpath.Data());
    ReadSystemList();
    ReadChIoPressures();

@@ -400,6 +400,8 @@ FAZIADB.RutherfordCounting:				stat_rutherford.env
 FAZIADB.RutherfordCrossSection:			crosssection_rutherford.env
 # liste des detecteurs ne marchant pas ou eteints (out of order)
 FAZIADB.OoODet:    FAZIA.OoODetectors.dat
+# triggers used during experiment
+FAZIADB.Triggers: FAZIA.TriggerPatterns.dat
 
 FAZIAPRE.FAZIADB.CalibrationFiles:    CalibrationFiles.dat
 #FAZIAPRE.FAZIADB.Comments:            Comment.txt

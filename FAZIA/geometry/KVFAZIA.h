@@ -9,6 +9,7 @@
 #include <KVGeoImport.h>
 #include <KVEnv.h>
 #include <KVSignal.h>
+#include "KVFAZIATrigger.h"
 
 #if ROOT_VERSION_CODE <= ROOT_VERSION(5,32,0)
 #include "TGeoMatrix.h"
@@ -57,6 +58,15 @@ protected:
    Double_t fQ3slowrisetime;
    Double_t fQ3fastrisetime;
 
+   // trigger pattern read from data for each event
+   KVFAZIATrigger fTrigger;
+
+   void SetTriggerPatternsForDataSet(const TString& dataset);
+   void SetTriggerPattern(uint16_t fp)
+   {
+      fTrigger.SetTriggerPattern(fp);
+   }
+
    //methods to be implemented in child classes
    virtual void BuildFAZIA();
    virtual void GetGeometryParameters();
@@ -83,6 +93,15 @@ protected:
    Double_t TreatEnergy(Int_t sigid, Int_t eid, UInt_t val);
 #endif
    TString GetSignalName(Int_t bb, Int_t qq, Int_t tt, Int_t idsig);
+
+   void ReadTriggerPatterns(KVExpDB* db);
+
+   void prepare_to_handle_new_raw_data()
+   {
+      // Override base method to reset trigger pattern before reading new raw event
+      KVMultiDetArray::prepare_to_handle_new_raw_data();
+      SetTriggerPattern(0);
+   }
 public:
 
    KVFAZIA(const Char_t* title = "");
@@ -129,6 +148,15 @@ public:
 
    KVGroupReconstructor* GetReconstructorForGroup(const KVGroup*) const;
    Double_t GetSetupParameter(const Char_t* parname);
+
+   const KVFAZIATrigger& GetTrigger() const
+   {
+      return fTrigger;
+   }
+   virtual void SetRawDataFromReconEvent(KVNameValueList&);
+   virtual void MakeCalibrationTables(KVExpDB*);
+
+   std::string GetTriggerForCurrentRun() const;
 
    ClassDef(KVFAZIA, 1) //Base class for description of the FAZIA set up
 };

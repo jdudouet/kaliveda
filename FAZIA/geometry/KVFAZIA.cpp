@@ -73,6 +73,50 @@ Double_t KVFAZIA::GetSetupParameter(const Char_t* parname)
    return lval;
 }
 
+void KVFAZIA::SetRawDataFromReconEvent(KVNameValueList& l)
+{
+   // Overrides base method in order to set the value of the trigger bit pattern for the event
+   KVMultiDetArray::SetRawDataFromReconEvent(l);
+   if (l.HasIntParameter("FAZIA.TRIGPAT")) SetTriggerPattern(l.GetIntValue("FAZIA.TRIGPAT"));
+   else SetTriggerPattern(0);// FAZIA absent from event
+}
+
+void KVFAZIA::MakeCalibrationTables(KVExpDB* db)
+{
+   // Override base method in order to read FAZIA trigger for each run
+
+   KVMultiDetArray::MakeCalibrationTables(db);
+   ReadTriggerPatterns(db);
+}
+
+std::string KVFAZIA::GetTriggerForCurrentRun() const
+{
+   // Returns the symbolic name for the principal DAQ trigger used for the current run
+   // e.g. 'Mult2', 'Mult1/100', etc. (see SetTriggerPatternsForDataSet()).
+   //
+   // This can be used to test if the actual DAQ trigger for an event was consistent
+   // with the principal trigger by doing:
+   //
+   //~~~~{.cpp}
+   // if( gFazia->GetTrigger().IsTrigger( gFazia->GetTriggerForCurrentRun() ) )
+   // {
+   //     ===ok in this case trigger is consistent==
+   // }
+   //~~~~
+
+   if (gExpDB) {
+      if (gExpDB->GetTable("FAZIA.Triggers")) {
+         auto rundb = gExpDB->GetDBRun(GetCurrentRunNumber());
+         if (rundb) {
+            auto links = rundb->GetLinks("FAZIA.Triggers");
+            if (links && links->GetEntries())
+               return links->First()->GetName();
+         }
+      }
+   }
+   return "";
+}
+
 
 KVFAZIA::~KVFAZIA()
 {
@@ -172,6 +216,34 @@ void KVFAZIA::GetGeometryParameters()
    AbstractMethod("GetGeometryParameters");
 }
 
+void KVFAZIA::SetTriggerPatternsForDataSet(const TString& dataset)
+{
+   // Read and set up definitions of trigger patterns for this dataset.
+   // These should be given by variables such as:
+   //
+   // +[dataset].FAZIA.TriggerPatterns: [name1]
+   // [dataset].FAZIA.TriggerPattern.[name1]: [value1]
+   // +[dataset].FAZIA.TriggerPatterns: [name2]
+   // [dataset].FAZIA.TriggerPattern.[name2]: [value2]
+   //
+   // where [name*]='Mult1','Mult1/100','Mult2', etc. (see KVFAZIATrigger for known trigger patterns).
+   //
+   // and [value*] is the value of the corresponding bit pattern, e.g. if bit '3' (0b100) corresponds to
+   // 'Mult2' (i.e. multiplicity >= 2) then this would give
+   //
+   // [dataset].FAZIA.TriggerPattern.Mult2: 4
+
+   KVString patterns = GetDataSetEnv(dataset, "FAZIA.TriggerPatterns", "");
+   if (patterns.Length()) {
+      patterns.Begin(" ");
+      while (!patterns.End()) {
+         auto pattern = patterns.Next(kTRUE);
+         uint16_t val = (uint16_t)GetDataSetEnv(dataset, Form("FAZIA.TriggerPattern.%s", pattern.Data()), 0.);
+         fTrigger.SetTriggerPattern(pattern, val);
+      }
+   }
+}
+
 void KVFAZIA::BuildFAZIA()
 {
    //Called by the Build method
@@ -214,6 +286,8 @@ void KVFAZIA::Build(Int_t)
       gGeoManager->CloseGeometry();
       PerformClosedROOTGeometryOperations();
    }
+
+   SetTriggerPatternsForDataSet(GetDataSet());
 }
 
 void KVFAZIA::GetDetectorEvent(KVDetectorEvent* detev, const TSeqCollection* dets)
@@ -379,7 +453,10 @@ Bool_t KVFAZIA::treat_event(const DAQ::FzEvent& e)
    for (Int_t tr = ts - 1; tr >= 0; tr--) {
       const DAQ::FzTrigInfo& rdtrinfo = e.trinfo(tr);
       uint64_t triggervalue = rdtrinfo.value();
-      if (tr == ts - 5)       fReconParameters.SetValue("FAZIA.TRIGPAT", (int)triggervalue);
+      if (tr == ts - 5)  {
+         fReconParameters.SetValue("FAZIA.TRIGPAT", (int)triggervalue);
+         SetTriggerPattern((uint16_t)triggervalue);
+      }
       else if (tr == ts - 6)  fReconParameters.SetValue64bit("FAZIA.EC", ((triggervalue << 12) + e.ec()));
       else if (tr == ts - 8)  dt = triggervalue;
       else if (tr == ts - 9)  fReconParameters.SetValue("FAZIA.TRIGRATE.EXT", 1.*triggervalue / dt);
@@ -567,3 +644,40 @@ void KVFAZIA::CreateCorrespondence()
    }
 }
 
+void KVFAZIA::ReadTriggerPatterns(KVExpDB* db)
+{
+   // Read a file containing runlists for each principal trigger used during an experiment
+   //
+   // The file should be in TEnv format like so:
+   //
+   //~~~~
+   // Mult1: 100-122,541-1938
+   // Mult2: 91-765
+   //~~~~
+   //
+   // where each trigger pattern name must be known and declared to occur during the dataset
+   // (see SetTriggerPatternsForDataSet()) and the list of runs are given using KVNumberList syntax.
+   //
+   // The data is added to the database in a table 'FAZIA.Triggers'.
+
+   TString fullpath;
+   if (!db->FindCalibFile("Triggers", fullpath)) return;
+
+   Info("ReadTriggerPatterns()", "Reading FAZIA triggers used during runs...");
+   auto trigs = db->AddTable("FAZIA.Triggers", "Principal triggers used by FAZIA");
+
+   KVDBRecord* dbrec = 0;
+   TEnv env;
+   TEnvRec* rec = 0;
+   env.ReadFile(fullpath.Data(), kEnvAll);
+   TIter it(env.GetTable());
+
+   while ((rec = (TEnvRec*)it.Next())) {
+      KVString srec(rec->GetName());
+      KVNumberList nl(rec->GetValue());
+      dbrec = new KVDBRecord(rec->GetName(), "FAZIA Trigger");
+      dbrec->AddKey("Runs", "List of Runs");
+      trigs->AddRecord(dbrec);
+      db->LinkRecordToRunRange(dbrec, nl);
+   }
+}

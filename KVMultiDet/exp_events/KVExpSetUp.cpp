@@ -251,6 +251,7 @@ void KVExpSetUp::CheckStatusOfDetectors(KVDBRun* r, const TString&)
    TIter next_array(&fMDAList);
    KVMultiDetArray* mda;
    while ((mda = (KVMultiDetArray*)next_array())) {
+      mda->SetCurrentRunNumber(r->GetNumber());
       mda->CheckStatusOfDetectors(r, mda->GetName());
    }
 }

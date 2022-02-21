@@ -320,6 +320,10 @@ public:
    {
       return fCurrentRun;
    }
+   void SetCurrentRunNumber(UInt_t r)
+   {
+      fCurrentRun = r;
+   }
 
    virtual void SetIdentifications();
    virtual void InitializeIDTelescopes();

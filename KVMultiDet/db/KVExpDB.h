@@ -103,8 +103,8 @@ public:
 
    virtual void Save(const Char_t*);
 
-   virtual const Char_t* GetDBEnv(const Char_t*) const;
-   const Char_t* GetCalibFileName(const Char_t* type) const
+   virtual TString GetDBEnv(const Char_t*) const;
+   TString GetCalibFileName(const Char_t* type) const
    {
       return GetDBEnv(type);
    }

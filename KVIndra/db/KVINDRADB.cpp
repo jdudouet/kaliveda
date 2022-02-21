@@ -377,7 +377,7 @@ void KVINDRADB::ReadGainList()
    ifstream fin;
    if (!OpenCalibFile("Gains", fin)) {
       Error("ReadGainList()", "Could not open file %s",
-            GetCalibFileName("Gains"));
+            GetCalibFileName("Gains").Data());
       return;
    }
    Info("ReadGainList()", "Reading gains ...");
@@ -473,7 +473,7 @@ void KVINDRADB::ReadChIoPressures()
    ifstream fin;
    if (!OpenCalibFile("Pressures", fin)) {
       Error("ReadChIoPressures()", "Could not open file %s",
-            GetCalibFileName("Pressures"));
+            GetCalibFileName("Pressures").Data());
       return;
    }
    Info("ReadChIoPressures()", "Reading ChIo pressures parameters...");
@@ -777,10 +777,8 @@ void KVINDRADB::Build()
 
    //by default we set two keys for both recognising the 'header' lines and deciding
    //if we have a good run line: the "Run" and "Events" fields must be present
-   GetLineReader()->SetFieldKeys(2, GetDBEnv("Runlist.Run"),
-                                 GetDBEnv("Runlist.Events"));
-   GetLineReader()->SetRunKeys(2, GetDBEnv("Runlist.Run"),
-                               GetDBEnv("Runlist.Events"));
+   GetLineReader()->SetFieldKeys(GetDBEnv("Runlist.Run"), GetDBEnv("Runlist.Events"));
+   GetLineReader()->SetRunKeys(GetDBEnv("Runlist.Run"), GetDBEnv("Runlist.Events"));
 
    ReadRunList(runlist_fullpath.Data());
    //new style runlist
@@ -816,7 +814,7 @@ void KVINDRADB::ReadNewRunList()
    ifstream fin;
    if (!OpenCalibFile("Runlist", fin)) {
       Error("ReadNewRunList()", "Could not open file %s",
-            GetCalibFileName("Runlist"));
+            GetCalibFileName("Runlist").Data());
       return;
    }
 
@@ -1154,7 +1152,7 @@ void KVINDRADB::ReadChannelVolt()
    ifstream fin;
    if (!OpenCalibFile("ElectronicCalibration", fin)) {
       Error("ReadChannelVolt()", "Could not open file %s",
-            GetCalibFileName("ElectronicCalibration"));
+            GetCalibFileName("ElectronicCalibration").Data());
       return;
    }
    Info("ReadChannelVolt()",
@@ -1251,7 +1249,7 @@ void KVINDRADB::ReadChannelVolt()
    ifstream fin2;
    if (!OpenCalibFile("ElectronicCalibration.Etalons", fin2)) {
       Error("ReadChannelVolt()", "Could not open file %s",
-            GetCalibFileName("ElectronicCalibration.Etalons"));
+            GetCalibFileName("ElectronicCalibration.Etalons").Data());
       return;
    }
    Info("ReadChannelVolt()",
@@ -1330,7 +1328,7 @@ void KVINDRADB::ReadVoltEnergyChIoSi()
    ifstream fin;
    if (!OpenCalibFile("ChIoSiVoltMeVCalib", fin)) {
       Error("ReadVoltEnergyChIoSi()", "Could not open file %s",
-            GetCalibFileName("ChIoSiVoltMevCalib"));
+            GetCalibFileName("ChIoSiVoltMevCalib").Data());
       return;
    }
    Info("ReadVoltEnergyChIoSi()",
@@ -1413,7 +1411,7 @@ void KVINDRADB::ReadPedestalList()
    ifstream fin;
    if (!OpenCalibFile("Pedestals", fin)) {
       Error("ReadPedestalList()", "Could not open file %s",
-            GetCalibFileName("Pedestals"));
+            GetCalibFileName("Pedestals").Data());
       return;
    }
    Info("ReadPedestalList()", "Reading pedestal file list...");
@@ -1489,7 +1487,7 @@ void KVINDRADB::ReadLightEnergyCsI(const Char_t* zrange, KVDBTable* table)
    filename.Form("CalibCsI.%s", zrange);
    if (!OpenCalibFile(filename.Data(), fin)) {
       Error("ReadLightEnergyCsI()", "Could not open file %s",
-            GetCalibFileName(filename.Data()));
+            GetCalibFileName(filename.Data()).Data());
       return;
    }
    Info("ReadLightEnergyCsI()",
@@ -1615,7 +1613,7 @@ void KVINDRADB::ReadAbsentDetectors()
    //de la manip
    TString fp;
    if (!KVBase::SearchKVFile(GetCalibFileName("AbsentDet"), fp, fDataSet.Data())) {
-      Error("ReadAbsentDetectors", "Fichier %s, inconnu au bataillon", GetCalibFileName("AbsentDet"));
+      Error("ReadAbsentDetectors", "Fichier %s, inconnu au bataillon", GetCalibFileName("AbsentDet").Data());
       return;
    }
    Info("ReadAbsentDetectors()", "Lecture des detecteurs absents...");
@@ -1658,7 +1656,7 @@ void KVINDRADB::ReadOoODetectors()
    //de la manip
    TString fp;
    if (!KVBase::SearchKVFile(GetCalibFileName("OoODet"), fp, fDataSet.Data())) {
-      Error("ReadOoODetectors", "Fichier %s, inconnu au bataillon", GetCalibFileName("OoODet"));
+      Error("ReadOoODetectors", "Fichier %s, inconnu au bataillon", GetCalibFileName("OoODet").Data());
       return;
    }
    Info("ReadOoODetectors()", "Lecture des detecteurs hors service ...");
@@ -1701,7 +1699,7 @@ void KVINDRADB::ReadOoOACQParams()
    //de la manip
    TString fp;
    if (!KVBase::SearchKVFile(GetCalibFileName("OoOACQPar"), fp, fDataSet.Data())) {
-      Error("ReadNotWorkingACQParams", "Fichier %s, inconnu au bataillon", GetCalibFileName("OoOACQPar"));
+      Error("ReadNotWorkingACQParams", "Fichier %s, inconnu au bataillon", GetCalibFileName("OoOACQPar").Data());
       return;
    }
    Info("ReadNotWorkingACQParams()", "Lecture des parametres d acq hors service ...");

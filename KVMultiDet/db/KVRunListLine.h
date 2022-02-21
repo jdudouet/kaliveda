@@ -34,6 +34,17 @@ private:
 
    inline Int_t GetFieldIndex(const Char_t*) const;
 
+   bool calling_field_keys;//!
+   bool calling_run_keys;//!
+   void SetFieldKeys()
+   {
+      calling_field_keys = false;   // just to terminate recursion of parameter pack
+   }
+   void SetRunKeys()
+   {
+      calling_run_keys = false;   // just to terminate recursion of parameter pack
+   }
+
 protected:
    KVNameValueList fIndexList;       //list of integer indexes corresponding to field names
 
@@ -66,8 +77,38 @@ public:
    virtual Int_t GetTrigger(const Char_t* field_name =
                                "Trigger", const Char_t* fmt = "M>=%d");
 
-   void SetFieldKeys(Int_t nkeys, const Char_t* key1, ...);
-   void SetRunKeys(Int_t nkeys, const Char_t* key1, ...);
+   template<typename T, typename... Args>
+   void SetFieldKeys(T key0, Args... keys)
+   {
+      //Set keywords used to identify lines in the file which define the column headings, i.e. the field names.
+      //Give the list of keywords (at least one).
+      //
+      //Each and every keyword given as argument here (at least one word must be given) must appear in a line for it to be considered
+      //a column heading. Lines identified as such (by IsFieldHeader()) are used to set indices for each column (SetFields()).
+
+      if (!calling_field_keys) {
+         // at beginning of call, clear out list of keywords
+         fFieldKeys.Clear();
+         calling_field_keys = true; // to avoid clearing in every recursion
+      }
+      fFieldKeys.Add(new TObjString(key0));
+      SetFieldKeys(keys...);
+   }
+   template<typename T, typename... Args>
+   void SetRunKeys(T key0, Args... keys)
+   {
+      //Set list of fields which must have values for a line to be considered a "good" run line
+      //Give the list of field names (at least one).
+
+      if (!calling_run_keys) {
+         // at beginning of call, clear out list of keywords
+         fRunKeys.Clear();
+         calling_run_keys = true; // to avoid clearing in every recursion
+      }
+
+      fRunKeys.Add(new TObjString(key0));
+      SetRunKeys(keys...);
+   }
 
    virtual Bool_t IsFieldHeader();
    virtual Bool_t GoodRunLine();
