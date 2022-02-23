@@ -425,7 +425,7 @@ TH1* KVEventSelector::GetHisto(const Char_t* histo_name) const
 
 //____________________________________________________________________________
 
-void KVEventSelector::AddHisto(TH1* histo)
+void KVEventSelector::add_histo(TH1* histo)
 {
    // Declare a histogram to be used in analysis.
    // This method must be called when using PROOF.
@@ -437,14 +437,13 @@ void KVEventSelector::AddHisto(TH1* histo)
    if (!fOutput->FindObject("ThereAreHistos")) fOutput->Add(new TNamed("ThereAreHistos", "...so save them!"));
 }
 
-void KVEventSelector::AddTree(TTree* tree)
+TTree* KVEventSelector::AddTree(const TString& name, const TString& title, Int_t splitLevel, TDirectory* dir)
 {
-   // Declare a TTree to be used in analysis.
-   // This method must be called when using PROOF.
+   // Add TTree with given name and title to list of TTree to be filled by user's analysis
 
-   if (fDisableCreateTreeFile) return;
-
-   ltree->Add(tree);
+   auto t = new TTree(name, title, splitLevel, dir);
+   add_tree(t);
+   return t;
 }
 
 //____________________________________________________________________________

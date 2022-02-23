@@ -1,4 +1,5 @@
 #include "KVDataAnalyser.h"
+#include "KVMultiDetArray.h"
 
 void ROOT6ReconDataSelectorTemplate::InitAnalysis(void)
 {
@@ -17,7 +18,7 @@ void ROOT6ReconDataSelectorTemplate::InitAnalysis(void)
    AddGV("KVMult", "mtot"); // total multiplicity
    // total multiplicity in forward CM hemisphere
    auto gv = AddGV("KVMult", "mtot_av");
-   gv->SetSelection( {
+   gv->SetSelection({
       "Vcm>0", [](const KVNucleus * n)
       {
          return n->GetVpar() > 0;
@@ -26,13 +27,12 @@ void ROOT6ReconDataSelectorTemplate::InitAnalysis(void)
    gv->SetFrame("CM");
 
    /*** DECLARING SOME HISTOGRAMS ***/
-   AddHisto(new TH1F("zdist", "Charge distribution", 100, -.5, 99.5));
-   AddHisto(new TH2F("zvpar", "Z vs V_{par} in CM", 100, -15., 15., 75, .5, 75.5));
+   AddHisto<TH1F>("zdist", "Charge distribution", 100, -.5, 99.5);
+   AddHisto<TH2F>("zvpar", "Z vs V_{par} in CM", 100, -15., 15., 75, .5, 75.5);
 
    /*** USING A TREE ***/
    CreateTreeFile();//<--- essential
-   TTree* t = new TTree("myTree", "");
-   AddTree(t);
+   auto t = AddTree("myTree");
    GetGVList()->MakeBranches(t); // store global variable values in branches
 
    /*** DEFINE WHERE TO SAVE THE RESULTS ***/

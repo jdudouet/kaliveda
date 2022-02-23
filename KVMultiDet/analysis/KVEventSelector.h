@@ -188,6 +188,15 @@ protected :
 
    Bool_t fDisableCreateTreeFile;//used with PROOF
 
+   void add_histo(TH1* histo);
+   void add_tree(TTree* tree)
+   {
+      // Declare a TTree to be used in analysis.
+      // This method must be called when using PROOF.
+
+      if (fDisableCreateTreeFile) return;
+      ltree->Add(tree);
+   }
    void FillTH1(TH1* h1, Double_t one, Double_t two);
    void FillTProfile(TProfile* h1, Double_t one, Double_t two, Double_t three);
    void FillTH2(TH2* h2, Double_t one, Double_t two, Double_t three);
@@ -375,8 +384,38 @@ public:
       fPartName = t;
    }
 
-   void AddHisto(TH1* histo);
-   void AddTree(TTree* tree);
+   void AddHisto(TH1* histo)
+   {
+      Obsolete("AddHisto", "1.12/05", "1.13/00");
+      add_histo(histo);
+   }
+
+   template<typename HistoType, typename... Args>
+   HistoType* AddHisto(Args&& ... args)
+   {
+      // Add a user histogram to the analysis. The name of the histogram can later be used in calls to FillHisto().
+      //
+      // To use, supply a specific histogram type, HistoType, and all necessary arguments for the appropriate constructor.
+      // The method returns the address of the newly-created histogram as a pointer of type HistoType*:
+      //
+      //~~~~{.cpp}
+      //   // th1 is a pointer to TH1F
+      //   auto th1 = AddHisto<TH1F>("h1", "A 1-D histogram", 100, -50., 50.);
+      //
+      //   // th2 is a pointer to TH2F
+      //   auto th2 = AddHisto<TH2F>("h2", "A 2-D histogram", 100, -50., 50., 100, -10., 10.);
+      //~~~~
+
+      auto h = new HistoType(std::forward<Args>(args)...);
+      add_histo(h);
+      return h;
+   }
+
+   void AddTree(TTree* tree)
+   {
+      Obsolete("AddTree", "1.12/05", "1.13/00");
+   }
+   TTree* AddTree(const TString& name, const TString& title = "", Int_t splitLevel = 99, TDirectory* = gDirectory);
 
    void FillHisto(const Char_t* sname, Double_t one, Double_t two = 1, Double_t three = 1, Double_t four = 1);
    void FillHisto(const Char_t* sname, const Char_t* label, Double_t weight = 1);
