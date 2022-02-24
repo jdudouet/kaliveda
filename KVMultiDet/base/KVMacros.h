@@ -8,4 +8,5 @@
 
 #define IGNORE_UNUSED(x) (void)(x)
 
+#define Deprecate(x) KVBase::Deprecated(__PRETTY_FUNCTION__,x)
 #endif

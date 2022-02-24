@@ -1,3 +1,5 @@
+#ifndef __KV_VERSION_H
+#define __KV_VERSION_H
 /* 
       C++ preprocessor directives set when project is configured
 */
@@ -52,3 +54,4 @@
 
 /* Directory containing dataset files */
 #define DATASETDIR ${CMAKE_INSTALL_FULL_DATASETDIR}
+#endif

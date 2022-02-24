@@ -28,7 +28,6 @@ $Id: KVBase.cpp,v 1.57 2009/04/22 09:38:39 franklan Exp $
 #include "TPluginManager.h"
 #include "KVNameValueList.h"
 #include "TSystemDirectory.h"
-#include "KVVersion.h"
 #ifdef WITH_GIT_INFOS
 #include "KVGitInfo.h"
 #endif
@@ -39,6 +38,10 @@ $Id: KVBase.cpp,v 1.57 2009/04/22 09:38:39 franklan Exp $
 #include "TGMimeTypes.h"
 #include "TGClient.h"
 #include "TContextMenu.h"
+#include <TEntryList.h>
+#include <TEventList.h>
+#include <TFileMerger.h>
+#include <TGraph2D.h>
 #include <TH1.h>
 #include <TKey.h>
 #include "TTree.h"
@@ -1094,65 +1097,14 @@ void KVBase::CombineFiles(const Char_t* file1, const Char_t* file2, const Char_t
    // if keep=kFALSE, the two files will be deleted after the operation
 
    ::Info("KVBase::CombineFiles", "Copying all objects from %s and %s ===> into new file %s", file1, file2, newfilename);
-   TFile* f1 = TFile::Open(file1);
-   TList objL1;//list of objects in file 1
-   TList treeL1;//list of trees in file 1
-   TIter next(f1->GetListOfKeys());
-   TKey* key;
-   while ((key = (TKey*)next())) {
-      if (!TClass::GetClass(key->GetClassName(), kFALSE, kTRUE)->InheritsFrom("TDirectory")) {//avoid subdirectories!
-         if (!TClass::GetClass(key->GetClassName(), kFALSE, kTRUE)->InheritsFrom("TTree"))
-            objL1.Add(f1->Get(key->GetName()));
-         else
-            treeL1.Add(f1->Get(key->GetName()));
-      }
-   }
-   TFile* f2 = TFile::Open(file2);
-   TList objL2;//list of objects in file 2
-   TList treeL2;//list of trees in file 2
-   TIter next2(f2->GetListOfKeys());
-   while ((key = (TKey*)next2())) {
-      if (!TClass::GetClass(key->GetClassName(), kFALSE, kTRUE)->InheritsFrom("TDirectory")) {//avoid subdirectories!
-         if (!TClass::GetClass(key->GetClassName(), kFALSE, kTRUE)->InheritsFrom("TTree"))
-            objL2.Add(f2->Get(key->GetName()));
-         else
-            treeL2.Add(f2->Get(key->GetName()));
-      }
-   }
-   TFile* newfile = new TFile(newfilename, "recreate");
-   {
-      TIter next(&objL1);
-      TObject* obj;
-      while ((obj = next())) {
-         if (obj->InheritsFrom("TH1")) {
-            dynamic_cast<TH1*>(obj)->SetDirectory(newfile);
-         }
-         obj->Write();
-      }
-   }
-   {
-      TIter next(&objL2);
-      TObject* obj;
-      while ((obj = next())) {
-         if (obj->InheritsFrom("TH1")) {
-            dynamic_cast<TH1*>(obj)->SetDirectory(newfile);
-         }
-         obj->Write();
-      }
-   }
-   if (treeL1.GetEntries()) {
-      TIter nxtT(&treeL1);
-      TTree* t;
-      while ((t = (TTree*)nxtT())) t->CloneTree(-1, "fast")->Write();
-   }
-   if (treeL2.GetEntries()) {
-      TIter nxtT(&treeL2);
-      TTree* t;
-      while ((t = (TTree*)nxtT())) t->CloneTree(-1, "fast")->Write();
-   }
-   newfile->Close();
-   f1->Close();
-   f2->Close();
+
+   TFileMerger file_merge;
+   file_merge.AddFile(file1, kFALSE);
+   file_merge.AddFile(file2, kFALSE);
+   file_merge.OutputFile(newfilename);
+   file_merge.Merge();
+
+   // remove physical files from disk if required
    if (!keep) {
       gSystem->Unlink(file1);
       gSystem->Unlink(file2);
@@ -1271,6 +1223,17 @@ Double_t KVBase::ProtectedGetX(const TF1* func, Double_t val, int& status, Doubl
    status = 0;
    return func->GetX(val, xmin, xmax);
 #endif
+}
+
+void KVBase::Deprecated(const char* where, const char* advice)
+{
+   // Print a message to indicate when the called method is deprecated and give advice how to do better
+   //
+   // Don't call directly: use the macro Deprecate(advice) which will automatically fill in the method name
+   // (see KVMacros.h)
+
+   printf("Warning in <%s>: Method is deprecated in v%s and will be removed in future.\n%s\n",
+          where, KVBase::GetKVVersion(), advice);
 }
 
 

@@ -150,6 +150,8 @@ private:
 
 public:
 
+   static void Deprecated(const char* method, const char* advice);
+
    enum EKaliVedaBits {
       kIsKaliVedaObject = BIT(23)   //all KVBase-derived objects have this bit set in TObject::fBits
    };

@@ -32,6 +32,8 @@ void KVParticleCondition::Set(const KVString& cond)
    //passed to Test() will be used to cast the base (KVNucleus) pointer up to the
    //required pointer type at execution.
 
+   Deprecate("Prefer to use lambda functions to define KVParticleCondition objects.");
+
    fCondition = cond;
    Ssiz_t ind = fCondition.Index(";");
    if (ind < 0) {

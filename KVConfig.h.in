@@ -1,6 +1,8 @@
 #ifndef KV_CONFIG__H
 #define KV_CONFIG__H
 
+#include "KVMacros.h"
+
 // Configuration flags for current build set by options or
 // depending on available external software
 #cmakedefine WITH_GIT_INFOS
@@ -19,6 +21,8 @@
 #cmakedefine WITH_MULTICORE_CPU ${WITH_MULTICORE_CPU}
 #cmakedefine WITH_BOOST
 #cmakedefine CCIN2P3_BUILD
+
+#include "KVVersion.h"
 
 // Info on C++ standard used to compile code
 #if __cplusplus > 199711L

@@ -386,7 +386,8 @@ public:
 
    void AddHisto(TH1* histo)
    {
-      Obsolete("AddHisto", "1.12/05", "1.13/00");
+      Deprecate(Form("You should use e.g. 'auto h = AddHisto<%s>(\"%s\",\"%s\",%d,...);' to add histograms to your analysis.",
+                     histo->ClassName(), histo->GetName(), histo->GetTitle(), histo->GetNbinsX()));
       add_histo(histo);
    }
 
@@ -413,7 +414,9 @@ public:
 
    void AddTree(TTree* tree)
    {
-      Obsolete("AddTree", "1.12/05", "1.13/00");
+      Deprecate(Form("You should use e.g. 'auto t = AddTree(\"%s\", \"%s\");' to add a TTree to your analysis",
+                     tree->GetName(), tree->GetTitle()));
+      add_tree(tree);
    }
    TTree* AddTree(const TString& name, const TString& title = "", Int_t splitLevel = 99, TDirectory* = gDirectory);
 
