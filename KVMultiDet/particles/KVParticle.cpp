@@ -174,8 +174,6 @@ void KVParticle::SetKE(Double_t ecin)
    //If momentum is zero (i.e. no direction defined) the particle will be given
    //a velocity in the positive z-direction
 
-   assert(!(ecin < 0));
-
    if (ecin > 0.) {
       Double_t et = M() + ecin; // new total energy = KE + m
       Double_t pmod = 0;
@@ -184,18 +182,15 @@ void KVParticle::SetKE(Double_t ecin)
          TVector3 newp(Px(), Py(), Pz());
          if (pmod && newp.Mag()) {
             newp.SetMag(pmod);
-         }
-         else {
+         } else {
             newp.SetXYZ(0, 0, 1);
             newp.SetMag(pmod);
          }
          SetMomentum(newp);
-      }
-      else {
+      } else {
          SetMomentum(0., 0., 0.);
       }
-   }
-   else
+   } else
       SetMomentum(0., 0., 0.);
 }
 
@@ -491,8 +486,7 @@ void KVParticle::ListGroups(void) const
    if (!fGroups.GetEntries()) {
       cout << "Cette particle n appartient a aucun groupe" << endl;
       return;
-   }
-   else {
+   } else {
       cout << "--------------------------------------------------" << endl;
       cout << "Liste des groupes auxquels la particule appartient" << endl;
    }
@@ -543,8 +537,7 @@ void KVParticle::ChangeDefaultFrame(const Char_t* newdef, const Char_t* defname)
          parents.Add(f);
          ff = f->GetName();
       }
-   }
-   while (f);
+   } while (f);
    // modify tree structure
    TIter it(&parents);
    KVKinematicalFrame* newdframe = get_frame(newdef);
@@ -645,8 +638,7 @@ void KVParticle::SetFrame(const Char_t* frame, const KVFrameTransform& ft)
       //if this frame has not already been defined, create a new one
       tmp = new KVKinematicalFrame(frame, this, ft);
       fBoosted.Add(tmp);
-   }
-   else
+   } else
       tmp->ApplyTransform(this, ft);
 }
 
@@ -784,8 +776,7 @@ TVector3 KVParticle::GetVelocity() const
    TVector3 beta;
    if (E()) {
       beta = GetMomentum() * (1. / E());
-   }
-   else {
+   } else {
       beta.SetXYZ(0, 0, 0);
    }
    return (kSpeedOfLight * beta);
@@ -815,8 +806,7 @@ void KVParticle::SetMomentum(Double_t px, Double_t py, Double_t pz,
       pvec.SetTheta(TMath::Pi() * py / 180.);
       pvec.SetPhi(TMath::Pi() * pz / 180.);
       SetVectM(pvec, M());
-   }
-   else {
+   } else {
       if (strcmp("cart", opt) && strcmp("cartesian", opt)) {
          Warning("SetMomentum(Double_t,Double_t,Double_t,Option_t*)",
                  "Unkown coordinate system\n known system are :\n\t\"cartesian\" or \"cart\" (default)\n\t\"spherical\" or \"spher\"");
@@ -845,8 +835,7 @@ void KVParticle::Streamer(TBuffer& R__b)
    if (R__b.IsReading()) {
       R__b.ReadClassBuffer(KVParticle::Class(), this);
       if (GetParameters()->HasStringParameter("frameName")) fFrameName = GetParameters()->GetStringValue("frameName");
-   }
-   else {
+   } else {
       R__b.WriteClassBuffer(KVParticle::Class(), this);
    }
 }
