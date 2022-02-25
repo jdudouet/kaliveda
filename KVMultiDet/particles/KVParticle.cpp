@@ -174,6 +174,8 @@ void KVParticle::SetKE(Double_t ecin)
    //If momentum is zero (i.e. no direction defined) the particle will be given
    //a velocity in the positive z-direction
 
+   assert(!(ecin < 0));
+
    if (ecin > 0.) {
       Double_t et = M() + ecin; // new total energy = KE + m
       Double_t pmod = 0;
