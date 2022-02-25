@@ -2,16 +2,20 @@
 #define KVFAZIAGROUPRECONSTRUCTOR_H
 
 #include "KVGroupReconstructor.h"
+#include "KVFAZIADetector.h"
 
 /**
 \class KVFAZIAGroupReconstructor
 \brief Reconstruction of particles detected in FAZIA telescopes
 \ingroup FAZIARecon
+
 */
 
 class KVFAZIAGroupReconstructor : public KVGroupReconstructor {
 
    KVGeoDNTrajectory* theTrajectory;//! 1 FAZIA group = 1 telescope with 1 unique trajectory SI1 - SI2 - CSI
+   KVFAZIADetector* si1, *si2, *csi;
+   KVIDTelescope* fSi1Si2IDTelescope;//! SI1-SI2 ID Telescope
 
 protected:
 
@@ -22,16 +26,11 @@ protected:
 
    void  ChangeReconstructedTrajectory(KVReconstructedNucleus& PART);
 
-public:
-   KVFAZIAGroupReconstructor() {}
-   virtual ~KVFAZIAGroupReconstructor() {}
+   void HandleSI1SI2PunchThrough(KVIdentificationResult*, KVReconstructedNucleus&);
 
-   void SetGroup(KVGroup* g)
-   {
-      KVGroupReconstructor::SetGroup(g);
-      // set unique trajectory for group
-      theTrajectory = (KVGeoDNTrajectory*)g->GetDetectorByType("CsI")->GetNode()->GetForwardTrajectories()->First();
-   }
+   void AddCoherencyParticles();
+public:
+   void SetGroup(KVGroup* g);
 
    ClassDef(KVFAZIAGroupReconstructor, 1) // Reconstruct particles in FAZIA telescopes
 };

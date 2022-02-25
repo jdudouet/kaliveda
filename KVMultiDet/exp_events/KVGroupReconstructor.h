@@ -17,9 +17,9 @@
 /**
   \class KVGroupReconstructor
   \ingroup Reconstruction
-  \brief Base class for particle reconstruction in the one group of a detector array
+  \brief Base class for particle reconstruction in one group of a detector array
 
-Recalling that a group of detectors (KVGroup) is the largest part of an array which can be trated
+Recalling that a group of detectors (KVGroup) is the largest part of an array which can be treated
 independently of all other detectors, KVGroupReconstructor is the basic working unit of event
 reconstruction. A KVEventReconstructor will use many KVGroupReconstructor objects in order to
 reconstruct an event from data detected by the array.
@@ -41,11 +41,8 @@ protected:
    mutable int nfireddets;//! number of fired detectors in group for current event
    KVIdentificationResult partID;//! identification to be applied to current particle
    KVIDTelescope* identifying_telescope;//! telescope which identified current particle
-#ifdef WITH_CPP11
    std::unordered_map<std::string, KVIdentificationResult*> id_by_type; //! identification results by type for current particle
-#else
-   std::map<std::string, KVIdentificationResult*> id_by_type; //! identification results by type for current particle
-#endif
+
    virtual KVReconstructedNucleus* ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);
    void ReconstructParticle(KVReconstructedNucleus* part, const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);
    virtual void PostReconstructionProcessing();
@@ -75,6 +72,7 @@ protected:
       Int_t max_id_result_index;                  //! last KVIdentificationResult in original_particle's list
    };
    std::vector<particle_to_add_from_coherency_analysis> coherency_particles;
+   virtual void AddCoherencyParticles() {};
 
 public:
    KVGroupReconstructor();
@@ -103,7 +101,6 @@ public:
    void Reconstruct();
    virtual void Identify();
    void Calibrate();
-   virtual void AddCoherencyParticles();
 
    void AnalyseParticles();
    Int_t GetNIdentifiedInGroup()
