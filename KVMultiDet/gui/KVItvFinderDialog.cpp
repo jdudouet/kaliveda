@@ -342,7 +342,7 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
 
    fLinearHisto = new TH1F("fLinearHisto", "fLinearHisto", zbins, zmin, zmax);
 
-   KVIdentificationResult* idr = new KVIdentificationResult;
+   KVIdentificationResult idr;
    fGrid->SetOnlyZId(1);
 
    for (int i = 1; i <= fHisto->GetNbinsX(); i++) {
@@ -364,16 +364,15 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
             x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
             y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
             if (fGrid->IsIdentifiable(x, y)) {
-               fGrid->KVIDZAGrid::Identify(x, y, idr);
-               if (idr->HasFlag("MassID")) {
-                  Float_t PID = idr->PID;
+               fGrid->KVIDZAGrid::Identify(x, y, &idr);
+               if (idr.HasFlag(fGrid->GetName(), "MassID")) {
+                  Float_t PID = idr.PID;
                   fLinearHisto->Fill(PID, weight);
                }
             }
          }
       }
    }
-   delete idr;
 }
 
 void KVItvFinderDialog::Identify()

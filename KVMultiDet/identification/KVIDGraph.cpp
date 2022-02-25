@@ -1006,7 +1006,7 @@ void KVIDGraph::SetInfos(Double_t x, Double_t y, KVIdentificationResult* idr) co
    KVIDentifier* id = 0;
    while ((id = (KVIDentifier*)next())) {
       if (id->TestPoint(x, y)) {
-         idr->AddFlag(id->GetName());
+         idr->AddFlag(GetName(), id->GetName());
       }
    }
 }

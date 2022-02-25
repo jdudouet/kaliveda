@@ -21,6 +21,7 @@ void KVIdentificationResult::Copy(TObject& obj) const
    id.PID = PID;
    id.deltaEpedestal = deltaEpedestal;
    id.Rejecting_Cut = Rejecting_Cut;
+   id.flags = flags;
 }
 
 void KVIdentificationResult::Clear(Option_t*)
@@ -40,6 +41,7 @@ void KVIdentificationResult::Clear(Option_t*)
    PID = -1.0;
    deltaEpedestal = deltaEpedestal_UNKNOWN;
    Rejecting_Cut = "";
+   flags.clear();
 }
 
 void KVIdentificationResult::Print(Option_t*) const
@@ -53,7 +55,7 @@ void KVIdentificationResult::Print(Option_t*) const
    else printf("   => FAILURE\n");
    printf("  Grid used: %s\n", GetGridName());
    if (Rejecting_Cut != "") printf("   rejected by cut : %s", Rejecting_Cut.Data());
-   printf("  Quality code = %d (%s)\n", IDquality, GetLabel());
+   printf("  ID code = %d  Quality code = %d (%s)\n", IDcode, IDquality, GetComment());
    if (Zident) printf("  Z identified = %d", Z);
    else printf("  Z returned = %d", Z);
    if (Aident) printf("    A identified = %d", A);
@@ -73,5 +75,18 @@ void KVIdentificationResult::Print(Option_t*) const
       default:
       case deltaEpedestal_UNKNOWN:
          break;
+   }
+   if (auto nflags = flags.size()) {
+      printf("  Info flags:\n");
+      for (auto& fv : flags) {
+         printf("  %s : ", fv.first.c_str());
+         TString fmt_flags;
+         auto nflags = fv.second.size();
+         for (uint i = 0; i < nflags; ++i) {
+            if (i) fmt_flags += "|";
+            fmt_flags += fv.second[i];
+         }
+         printf("%s\n", fmt_flags.Data());
+      }
    }
 }

@@ -238,7 +238,7 @@ void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* i
    bool have_pid_range_for_Z = fPIDRange && (idr->Z <= fZmaxInt) && (idr->Z > fZminInt - 1);
    bool mass_id_success = false;
 
-   if (have_pid_range_for_Z && idr->HasFlag("MassID")) {
+   if (have_pid_range_for_Z && idr->IdentifyingGridHasFlag("MassID")) {
       // try mass identification
       mass_id_success = (DeduceAfromPID(idr) > 0);
       if (mass_id_success) {

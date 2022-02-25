@@ -49,7 +49,8 @@ public:
    Int_t deltaEpedestal; // special code for handling particles which give no signal in deltaE
    TString Rejecting_Cut; // name of cut in grid which rejected particle for identification
 
-   std::vector<TString> flags;
+   using grid_infos = std::unordered_map<std::string, std::vector<TString>>; //infos from each grid used to identify particle
+   grid_infos flags;
 
    enum {
       deltaEpedestal_UNKNOWN, // status unknown, case not treated
@@ -61,7 +62,6 @@ public:
       IDattempted(0), IDOK(0), IDcode(-1),
       Zident(0), Aident(0), IDquality(-1), Z(-1), A(-1), PID(-1.0), deltaEpedestal(deltaEpedestal_UNKNOWN)
    {};
-   virtual ~KVIdentificationResult() {}
 
    KVIdentificationResult(const KVIdentificationResult& id) : KVBase()
    {
@@ -108,14 +108,98 @@ public:
       return GetName();
    }
 
-   void AddFlag(TString flag)
+   void AddFlag(std::string grid_name, TString flag)
    {
-      flags.push_back(flag);
+      // add informational flag for the given grid
+      flags[grid_name].push_back(flag);
    }
 
-   Bool_t HasFlag(TString flag)
+   Bool_t HasFlag(std::string grid_name, TString flag)
    {
-      return std::find(flags.begin(), flags.end(), flag) != flags.end();
+      // return true if informational flag with exact name set for the given grid
+      auto fv = flags.find(grid_name);
+      if (fv != flags.end()) return (std::find(fv->second.begin(), fv->second.end(), flag) != fv->second.end());
+      return kFALSE;
+   }
+
+   Bool_t HasFlagWhichBegins(std::string grid_name, TString flag_beginning)
+   {
+      // return true if informational flag with name beginning with flag_beginning set for the given grid
+      auto fv = flags.find(grid_name);
+      if (fv != flags.end()) {
+         for (auto& f : fv->second) {
+            if (f.BeginsWith(flag_beginning)) return kTRUE;
+         }
+      }
+      return kFALSE;
+   }
+
+   TString GetFlagWhichBegins(std::string grid_name, TString flag_beginning)
+   {
+      // return the informational flag with name beginning with flag_beginning set for the given grid
+      auto fv = flags.find(grid_name);
+      if (fv != flags.end()) {
+         for (auto& f : fv->second) {
+            if (f.BeginsWith(flag_beginning)) return f;
+         }
+      }
+      return "";
+   }
+
+   Bool_t IdentifyingGridHasFlag(TString flag)
+   {
+      // return true if informational flag with exact name set for last grid used for identification
+      // (the one whose name is returned by GetGridName())
+      return HasFlag(GetGridName(), flag);
+   }
+
+   Bool_t IdentifyingGridHasFlagWhichBegins(TString flag_beginning)
+   {
+      // return true if informational flag with name beginning with flag_beginning set for last grid used for identification
+      // (the one whose name is returned by GetGridName())
+      return HasFlagWhichBegins(GetGridName(), flag_beginning);
+   }
+
+   TString IdentifyingGridGetFlagWhichBegins(TString flag_beginning)
+   {
+      // return the informational flag with name beginning with flag_beginning set for last grid used for identification
+      // (the one whose name is returned by GetGridName())
+      return GetFlagWhichBegins(GetGridName(), flag_beginning);
+   }
+
+   Bool_t HasFlag_AnyGrid(TString flag, std::string& grid_name)
+   {
+      // return true if informational flag with exact name set for any grid
+      // if true, grid_name contains name of grid info was set for
+
+      for (auto& fv : flags) {
+         grid_name = fv.first;
+         if (HasFlag(grid_name, flag)) return kTRUE;
+      }
+      return kFALSE;
+   }
+
+   Bool_t HasFlagWhichBegins_AnyGrid(TString flag_beginning, std::string& grid_name)
+   {
+      // return true if informational flag with name beginning with flag_beginning set for any grid
+      // if true, grid_name contains name of grid info was set for
+      for (auto& fv : flags) {
+         grid_name = fv.first;
+         if (HasFlagWhichBegins(grid_name, flag_beginning)) return kTRUE;
+      }
+      return kFALSE;
+   }
+
+   TString GetFlagWhichBegins_AnyGrid(TString flag_beginning, std::string& grid_name)
+   {
+      // return the informational flag with name beginning with flag_beginning set for the any grid
+      // if found, grid_name contains name of grid info was set for
+      for (auto& fv : flags) {
+         grid_name = fv.first;
+         auto f = GetFlagWhichBegins(grid_name, flag_beginning);
+         if (f.Length()) return f;
+      }
+      return "";
    }
 
    ClassDef(KVIdentificationResult, 4) //Full result of one attempted particle identification
