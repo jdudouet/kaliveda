@@ -6,6 +6,7 @@
 #include "KVIdentificationResult.h"
 #include "KVFAZIADetector.h"
 #include "KVDataSet.h"
+#include "KVFAZIA.h"
 
 ClassImp(KVFAZIAIDCsI)
 
@@ -43,7 +44,7 @@ Bool_t KVFAZIAIDCsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t 
    if (IDR->IDquality == KVIDGCsI::kICODE10
          || (IDR->IDquality == KVIDZAGrid::kICODE8 && IDR->Rejecting_Cut == "gamma_line")) {
       IDR->IDOK = true;
-      IDR->IDcode = 0;
+      IDR->IDcode = KVFAZIA::IDCodes::ID_GAMMA;
       ok = kTRUE;
       IDR->IDquality = KVIDGCsI::kICODE10;
       IDR->Z = 0;
