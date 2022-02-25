@@ -221,17 +221,21 @@ void KVFAZIA::SetTriggerPatternsForDataSet(const TString& dataset)
    // Read and set up definitions of trigger patterns for this dataset.
    // These should be given by variables such as:
    //
+   //~~~~
    // +[dataset].FAZIA.TriggerPatterns: [name1]
    // [dataset].FAZIA.TriggerPattern.[name1]: [value1]
    // +[dataset].FAZIA.TriggerPatterns: [name2]
    // [dataset].FAZIA.TriggerPattern.[name2]: [value2]
+   //~~~~
    //
    // where [name*]='Mult1','Mult1/100','Mult2', etc. (see KVFAZIATrigger for known trigger patterns).
    //
    // and [value*] is the value of the corresponding bit pattern, e.g. if bit '3' (0b100) corresponds to
    // 'Mult2' (i.e. multiplicity >= 2) then this would give
    //
+   //~~~~
    // [dataset].FAZIA.TriggerPattern.Mult2: 4
+   //~~~~
 
    KVString patterns = GetDataSetEnv(dataset, "FAZIA.TriggerPatterns", "");
    if (patterns.Length()) {
@@ -239,7 +243,7 @@ void KVFAZIA::SetTriggerPatternsForDataSet(const TString& dataset)
       while (!patterns.End()) {
          auto pattern = patterns.Next(kTRUE);
          uint16_t val = (uint16_t)GetDataSetEnv(dataset, Form("FAZIA.TriggerPattern.%s", pattern.Data()), 0.);
-         fTrigger.SetTriggerPattern(pattern, val);
+         fTrigger.AddTriggerPattern(pattern, val);
       }
    }
 }

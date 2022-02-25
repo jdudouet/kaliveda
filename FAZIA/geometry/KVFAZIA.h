@@ -103,6 +103,28 @@ protected:
       SetTriggerPattern(0);
    }
 public:
+   enum IDCodes {
+      /** \enum KVFAZIA::IDCodes
+          \brief Identification quality codes attributed to particles reconstructed from data
+       */
+      ID_GAMMA = 0,    ///< 'gamma' particle identified by pulse shape analysis in CSI
+      ID_SI1_PSA = 11, ///< particle identified by pulse shape analysis in SI1
+      ID_SI1_SI2 = 12, ///< particle identified in SI1-SI2 telescope
+      ID_SI2_CSI = 23, ///< particle identified in SI2-CSI telescope
+      ID_CSI_PSA = 33, ///< particle identified by pulse shape analysis in CSI
+      ID_STOPPED_IN_FIRST_STAGE = 5, ///< particle stopped in SI1, no identification possible better than estimation of minimum Z
+      ID_SI1_SI2_MAYBE_PUNCH_THROUGH = 120, ///< possible ambiguity of particle identification in SI1-SI2 due to unvetoed punch-through
+      ID_SI1_SI2_PUNCH_THROUGH = 121 ///< particle punching through SI2, identified Z is a minimum value
+   };
+   enum ECodes {
+      /** \enum KVFAZIA::ECodes
+          \brief Calibration quality codes attributed to particles reconstructed from data
+       */
+      NO_CALIBRATION_ATTEMPTED = 0, ///< particle stopped in detectors with no available calibration
+      NORMAL_CALIBRATION = 1,       ///< normal well-calibrated particle with no problems
+      SOME_ENERGY_LOSSES_CALCULATED = 2, ///< particle calibration OK, with some detector energies calculated
+      WARNING_CSI_MAX_ENERGY = 3    ///< particle calibration OK, although apparent energy would mean punching through the CsI
+   };
 
    KVFAZIA(const Char_t* title = "");
    virtual ~KVFAZIA();
