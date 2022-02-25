@@ -16,7 +16,7 @@ if(XROOTD_XrdPosix_LIBRARY AND XROOTD_INCLUDE_DIR)
   set(XROOTD_FIND_QUIETLY TRUE)
 endif()
 
-set(searchpath ${XROOTD_ROOT_DIR} $ENV{XRDSYS} /opt/xrootd)
+set(searchpath ${XROOTD_ROOT_DIR} $ENV{XROOTD_DIR} $ENV{XRDSYS} /opt/xrootd)
 
 find_path(XROOTD_INCLUDE_DIR NAMES XrdVersion.hh
   HINTS ${searchpath}
