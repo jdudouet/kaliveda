@@ -7,17 +7,14 @@ run=11000 | PG ramp
 run=12000 | GG ramp
 run=13000 | new alpha source 150 Hz FAZIA (Only Si1) 1800Hz INDRA (Si ring 6-7 and 8-9)
 run=16001 | INDRA trigger M>=2 & FAZIA trigger M>=1
-run=17001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100
-300 ns delay TrigOut FAZIA, AVL 1400ns
+run=17001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100 300 ns delay TrigOut FAZIA, AVL 1400ns
 run=20001 | HT on target 20kV, Dead time < 20%
-run=22000 | Few FAZIA card over 60°
+run=22000 | Few FAZIA card over 60 degrees
 run=31001 | INDRA solo. Trigger M>=1
 run=32001 | INDRA solo. Trigger M>=1
-run=33001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100
-300 ns delay TrigOut FAZIA, AVL 1400ns
+run=33001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100 300 ns delay TrigOut FAZIA, AVL 1400ns
 run=34001 | Gold target. Trigger INDRA M>=2; Trigger FAZIA M>=1
-run=35001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100
-300 ns delay TrigOut FAZIA, AVL 1400ns; target 64Ni[750ug/cm^2]
+run=35001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + FAZIA trigger M>=1 downscale 100 300 ns delay TrigOut FAZIA, AVL 1400ns; target 64Ni[750ug/cm^2]
 run=38001 | Change target thickness
 run=41001 | Poubelle
 run=47001 | Empty frame
@@ -29,7 +26,7 @@ run=64001 | Poubelle; Gain too high
 run=65001 | Gain on INDRA Silicons rings 6-7 are now good, before the gains were to big, the heavier Z were outside the Si-CsI range... 
 run=77001 | Bullshit, Fazia still in physics trigger while on gold target
 run=78001 | Gold target. INDRA trigger M>=1; FAZIA trigger M>=1
-run=79001 | Rampe géné INDRA
+run=79001 | Pulser ramp INDRA
 run=80001 | Run alpha for new INDRA Si gain
 run=82001 | Alpha for INDRA & FAZIA
 run=83001 | INDRA trigger M>=1 & FAZIA trigger M>=2 + M>=1 downscale 100

@@ -26,8 +26,8 @@
 #define CALCULATION_NOT_CONVERGED 12
 
 class KVINDRACsITotLightReconstructor : public KVDetectorSignal {
-   KVDetectorSignal* fFast;//! pedestal corrected fast component, "R_PedCor"
-   KVDetectorSignal* fSlow;//! pedestal corrected slow component, "L_PedCor"
+   KVDetectorSignal* fFast = nullptr;//! pedestal corrected fast component, "R_PedCor"
+   KVDetectorSignal* fSlow = nullptr;//! pedestal corrected slow component, "L_PedCor"
 
    mutable UInt_t fLumTotStatus;        //status of light calculation
    Double_t tau;// ring/module-dependent 'tau' of PM base in ns
@@ -49,10 +49,11 @@ class KVINDRACsITotLightReconstructor : public KVDetectorSignal {
    Bool_t LightIsGood() const;
 
 public:
-   KVINDRACsITotLightReconstructor(const KVINDRADetector* det = nullptr)
+   KVINDRACsITotLightReconstructor() = default;
+   KVINDRACsITotLightReconstructor(const KVINDRADetector* det)
       : KVDetectorSignal("TotLight", det),
-        fFast(det ? det->GetDetectorSignal("R_PedCor") : nullptr),
-        fSlow(det ? det->GetDetectorSignal("L_PedCor") : nullptr),
+        fFast(det->GetDetectorSignal("R_PedCor")),
+        fSlow(det->GetDetectorSignal("L_PedCor")),
         fLumTotStatus(NOT_CALCULATED), tau(20)
    {
       p0 = 400;
@@ -90,8 +91,6 @@ public:
       }
       if (det) SetTitle(Form("Signal %s calculated from signals %s and %s of detector %s", GetName(), fFast->GetName(), fSlow->GetName(), GetDetector()->GetName()));
    }
-
-   virtual ~KVINDRACsITotLightReconstructor() {}
 
    Double_t GetValue(const KVNameValueList& = "") const
    {
