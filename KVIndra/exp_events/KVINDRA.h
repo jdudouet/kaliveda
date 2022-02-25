@@ -114,6 +114,31 @@ protected:
    Bool_t handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatFrame&);
 #endif
 public:
+   enum IDCodes {
+      /** \enum KVINDRA::IDCodes
+          \brief Identification quality codes attributed to particles reconstructed from data
+       */
+      ID_STOPPED_IN_FIRST_STAGE = 5, ///< particle stopped in first detector of telescope, only minimum Z can be estimated
+      ID_GAMMA = 0, ///< 'gamma' particle detected in CsI
+      ID_NEUTRON = 1, ///< 'neutron' discriminated by coherency between CsI and Si-CsI identifications
+      ID_CSI_PSA = 2, ///< particle identified in CsI detector by pulse shape analysis
+      ID_SI_CSI = 3, ///< particle identified in Si-CsI telescope
+      ID_CI_SI = 4, ///< particle identified in ChIo-Si telescope
+      ID_CI_CSI = 4, ///< particle identified in ChIo-CsI telescope
+      ID_CI_SI_COHERENCY = 6, ///< particle identified in ChIo-Si telescope in coincidence with light particle identified in CsI
+      ID_CSI_FRAGMENT = 9, ///< particle partially identified in CsI detector, with Z greater than identifiable
+      ID_CSI_MASS_OUT_OF_RANGE = 10 ///< particle partially identified in CsI detector, mass out of range of apparent Z (pile-up?)
+   };
+   enum ECodes {
+      /** \enum KVINDRA::ECodes
+          \brief Calibration quality codes attributed to particles reconstructed from data
+       */
+      NO_CALIBRATION_ATTEMPTED = 0, ///< particle stopped in detectors with no available calibration
+      NORMAL_CALIBRATION = 1,       ///< normal well-calibrated particle with no problems
+      SOME_ENERGY_LOSSES_CALCULATED = 2, ///< particle calibration OK, with some detector energies calculated
+      WARNING_CSI_MAX_ENERGY = 3    ///< particle calibration OK, although apparent energy would mean punching through the CsI
+   };
+
    KVINDRA();
    virtual ~ KVINDRA();
 
