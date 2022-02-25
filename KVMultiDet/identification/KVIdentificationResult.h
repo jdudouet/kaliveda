@@ -3,7 +3,7 @@
 
 #include "KVBase.h"
 #include "TString.h"
-#include <vector>
+#include <unordered_map>
 
 /**
 \class KVIdentificationResult

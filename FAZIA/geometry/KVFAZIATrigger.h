@@ -3,6 +3,7 @@
 
 #include "KVBase.h"
 #include "KVNameValueList.h"
+#include <unordered_map>
 
 /**
  \class KVFAZIATrigger
