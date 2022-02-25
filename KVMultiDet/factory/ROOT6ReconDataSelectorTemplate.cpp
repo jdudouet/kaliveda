@@ -47,13 +47,18 @@ void ROOT6ReconDataSelectorTemplate::InitRun(void)
    // Initialisations for each run
    // Called at the beginning of each run
 
-   // You no longer need to define the correct identification/calibration codes for particles
-   // which will be used in your analysis, they are automatically selected using the default
-   // values in variables *.ReconstructedNuclei.AcceptID/ECodes.
+   // This is the place to define the correct identification/calibration codes for particles
+   // which will be used in your analysis. These particles will be labelled 'OK'
+   // (i.e. the method IsOK() for these particles returns kTRUE).
    //
-   // You can change the selection (or deactivate it) here by doing:
-   // gMultiDetArray->AcceptECodes(""); => accept all calibration codes
+   // If no explicit selection is indicated here, an automatic selection for each multidetector
+   // array will be made using the default accepted values which are defined in variables
+   // [array].ReconstructedNuclei.AcceptID/ECodes.
+   //
+   // You can change the selection (or deactivate it) here by doing any of the following:
+   //
    // gMultiDetArray->AcceptIDCodes("12,33"); => accept only ID codes in list
+   // gMultiDetArray->AcceptAllIDCodes();     => accept particles with any ID code
    //
    // If the experiment used a combination of arrays, codes have to be set for
    // each array individually:

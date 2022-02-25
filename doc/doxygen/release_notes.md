@@ -1,6 +1,64 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 4th May 2021
+Last update: 25th February 2022
+
+## Version 1.12/05 (Released: xx/xx/2022)
+
+__Changes in Build System__
+
+Starting from v1.12/05, we require a minimum ROOT version of 6.18, minimum cmake version 3.5,
+and a compiler (the same as that used to compile ROOT) with at least support for C++11, or possibly even C++14.
+
+__Changes in__ \ref INDRAnalysis / \ref FAZIAnal / \ref INDRAFAZIAnalysis : __New methods and symbols to handle identification/calibration codes__
+
+New symbolic names (enumerations) have been added to clarify the meanings of the different identification and calibration
+codes for reconstructed particles detected in different arrays. See KVINDRA::IDCodes and KVFAZIA::IDCodes.
+
+There are also some new methods to facilitate selection of appropriate codes for analysis of data in user's
+KVEventSelector::InitRun() method:
+
+ + Calling one or both of
+   ~~~~{.cpp}
+   gMultiDetArray->AcceptAllIDCodes();
+   gMultiDetArray->AcceptAllECodes();
+   ~~~~
+   will remove any selection of particles according to one or the other codes. Note that these methods are overridden in KVExpSetUp
+   in order to apply to *ALL* multidetectors in the setup, thus for E789 data this will apply to both INDRA *AND* FAZIA.
+
+ + Previously, to select the codes the user had to pass a string containing the (explicit) numerical values of the codes,
+   like so:
+   ~~~~{.cpp}
+   gMultiDetArray->GetArray("INDRA")->AcceptIDCodes("2,3,5");
+   ~~~~
+   It is now possible, and highly preferable, to use the newly-defined numeric constants, like so:
+   ~~~~{.cpp}
+   gMultiDetArray->GetArray("INDRA")->AcceptIDCodes( {KVINDRA::IDCodes::ID_CSI_PSA,
+                                                      KVINDRA::IDCodes::ID_SI_CSI,
+                                                      KVINDRA::IDCodes::ID_STOPPED_IN_FIRST_STAGE} );
+   ~~~~
+   which makes the selection criteria far more human-compatible. Note the use of `{}` to enclose the list of values.
+   
+__Change in__ \ref INDRAFAZIAnalysis : __Rejecting events based on DAQ trigger conditions (E789)__
+
+FAZIA trigger conditions for each run of E789 have now been implemented. Calling SetTriggerConditionsForRun() in the
+InitRun() method of an analysis class used on E789 data will now reject any event which does not have a FAZIA trigger
+bit pattern compatible with that which is expected for the data.
+
+In concrete terms, this means that for analysis of physics runs (for which FAZIA trigger conditions were "M>=2" and
+"M>=1" downscaled by 100), only events for which the "M>=2" trigger pattern fired are accepted. Note that for the FAZIA
+trigger pattern to be acceptable, FAZIA must be part of the event, i.e. we also reject the (very rare) spurious cases
+where only INDRA is present.
+
+See KVFAZIATrigger, KVINDRAFAZIAE789TriggerConditions, KVFAZIA::SetTriggerPatternsForDataSet(), KVFAZIA::GetTriggerForCurrentRun(), KVFAZIA::ReadTriggerPatterns.
+
+__Changes in__ \ref GlobalVariables : __Dummy global variables__
+
+A KVDummyGV can be added to a KVGVList of global variables, not to calculate anything,
+but just to perform a selection of events with the KVVarGlob::TestEventSelection() mechanism.
+
+To use, simply add a KVDummyGV to the list of global variables in your analysis,
+and define the required event selection by calling method KVVarGlob::SetEventSelection()
+with a lambda function having the required 'bool (const KVVarGlob*)' signature.
 
 ## Version 1.12/03 (Released: 04/5/2021)
 

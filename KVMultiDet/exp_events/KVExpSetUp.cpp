@@ -256,6 +256,30 @@ void KVExpSetUp::CheckStatusOfDetectors(KVDBRun* r, const TString&)
    }
 }
 
+void KVExpSetUp::AcceptAllIDCodes()
+{
+   // Calling this method disables any selection of "OK" reconstructed particles according
+   // to their identification code status, for all arrays in the setup.
+
+   TIter next_array(&fMDAList);
+   KVMultiDetArray* mda;
+   while ((mda = (KVMultiDetArray*)next_array())) {
+      mda->AcceptAllIDCodes();
+   }
+}
+
+void KVExpSetUp::AcceptAllECodes()
+{
+   // Calling this method disables any selection of "OK" reconstructed particles according
+   // to their calibration code status, for all arrays in the setup.
+
+   TIter next_array(&fMDAList);
+   KVMultiDetArray* mda;
+   while ((mda = (KVMultiDetArray*)next_array())) {
+      mda->AcceptAllECodes();
+   }
+}
+
 #ifdef WITH_MFM
 Bool_t KVExpSetUp::handle_raw_data_event_mfmframe(const MFMCommonFrame& mfmframe)
 {

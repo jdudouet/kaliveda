@@ -424,8 +424,18 @@ public:
    void AcceptIDCodes(const KVNumberList& codelist)
    {
       // Set list of (numeric) identification codes which are acceptable for
-      // analysis of reconstructed particles with this array. Multiple values
-      // should be separated with a comma, e.g. : "1,3,22"
+      // analysis of reconstructed particles with this array.
+      //
+      // The argument may be given either as a list of explicit numerical values in a string,
+      // using the KVNumberList formatting rules:
+      //~~~~{.cpp}
+      // AcceptIDCodes( "1-3, 12, 14-21" );
+      //~~~~
+      // or as a set of symbolic values, variables etc.:
+      //~~~~{.cpp}
+      // int code1(3), code2(6), code3(12);
+      // AcceptIDCodes( {code1, code2, code3} );
+      //~~~~
       //
       // Default list may be set with variable:
       //
@@ -437,12 +447,31 @@ public:
 
       fAcceptIDCodes = codelist;
    }
+   virtual void AcceptAllIDCodes()
+   {
+      // Calling this method disables any selection of "OK" reconstructed particles according
+      // to their identification code status.
+      //
+      // \sa AcceptIDCodes()
+
+      AcceptIDCodes("");
+   }
    void AcceptECodes(const KVNumberList& codelist)
    {
       // Set list of (numeric) calibration codes which are acceptable for
-      // analysis of reconstructed particles with this array. Multiple values
-      // should be separated with a comma, e.g. : "1,3,22"
+      // analysis of reconstructed particles with this array.
       //
+      // The argument may be given either as a list of explicit numerical values in a string,
+      // using the KVNumberList formatting rules:
+      //~~~~{.cpp}
+      // AcceptECodes( "1-3, 12, 14-21" );
+      //~~~~
+      // or as a set of symbolic values, variables etc.:
+      //~~~~{.cpp}
+      // int code1(3), code2(6), code3(12);
+      // AcceptECodes( {code1, code2, code3} );
+      //~~~~
+
       // Default list may be set with variable:
       //
       //~~~~~~~~~~~~
@@ -452,6 +481,15 @@ public:
       // If called several times, only the last list of values will be taken into account.
 
       fAcceptECodes = codelist;
+   }
+   virtual void AcceptAllECodes()
+   {
+      // Calling this method disables any selection of "OK" reconstructed particles according
+      // to their calibration code status.
+      //
+      // \sa AcceptECodes()
+
+      AcceptECodes("");
    }
 
    virtual KVMultiDetArray* GetArray(const Char_t*) const

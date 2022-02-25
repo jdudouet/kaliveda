@@ -35,20 +35,24 @@ private:
 public:
    void SetTriggerPattern(uint16_t tp)
    {
+      // Set the actual value of the trigger pattern read from data
       fTriggerPattern = tp;
    }
-   void SetTriggerPattern(const TString& name, uint16_t value)
+   void AddTriggerPattern(const TString& name, uint16_t value)
    {
+      // Add a trigger pattern to the list of all known trigger patterns for the experiment
       fTriggerNameToBitPattern[name.Data()] = value;
       fTriggerEnumToBitPattern[fTriggerPatterns[name.Data()]] = value;
    }
    std::vector<std::string> GetTriggerPatterns() const;
    bool IsTrigger(TriggerPattern tp) const
    {
+      // \returns true if the given trigger pattern is compatible with the current value
       return fTriggerPattern & fTriggerEnumToBitPattern[tp];
    }
    bool IsTrigger(const std::string& tp) const
    {
+      // \returns true if the given trigger pattern is compatible with the current value
       return IsTrigger(fTriggerPatterns[tp]);
    }
    void Print(Option_t* = "") const;

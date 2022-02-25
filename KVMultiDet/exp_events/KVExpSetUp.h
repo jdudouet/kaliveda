@@ -60,6 +60,9 @@ public:
    void SetCalibratorParameters(KVDBRun*, const TString& = "");
    void CheckStatusOfDetectors(KVDBRun*, const TString& = "");
 
+   virtual void AcceptAllIDCodes();
+   virtual void AcceptAllECodes();
+
    ClassDef(KVExpSetUp, 1) //Describe an experimental set-up made of several KVMultiDetArray objects
 };
 

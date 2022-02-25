@@ -11,7 +11,9 @@
  A KVDummyGV can be added to a KVGVList of global variables, not to calculate anything,
  but just to perform a selection of events with the KVVarGlob::TestEventSelection() mechanism.
 
- To use, simply define the required event selection with method SetEventSelection().
+ To use, simply add a KVDummyGV to the list of global variables in your analysis,
+ and define the required event selection by calling method KVVarGlob::SetEventSelection()
+ with a lambda function having the required 'bool (const KVVarGlob*)' signature.
 
  \author John Frankland
  \date Mon Feb 21 10:10:57 2022
