@@ -22,8 +22,6 @@
 #cmakedefine WITH_BOOST
 #cmakedefine CCIN2P3_BUILD
 
-#include "KVVersion.h"
-
 // Info on C++ standard used to compile code
 #if __cplusplus > 199711L
 #define WITH_CPP11

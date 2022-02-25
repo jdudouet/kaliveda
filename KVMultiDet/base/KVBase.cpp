@@ -31,6 +31,7 @@ $Id: KVBase.cpp,v 1.57 2009/04/22 09:38:39 franklan Exp $
 #ifdef WITH_GIT_INFOS
 #include "KVGitInfo.h"
 #endif
+#include "KVVersion.h"
 #include "TROOT.h"
 #include "TDatime.h"
 #include "THashList.h"

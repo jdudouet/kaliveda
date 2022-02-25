@@ -19,6 +19,20 @@ KVNameValueList::KVNameValueList()
    fList.SetOwner(kTRUE);
 }
 
+KVNameValueList::KVNameValueList(std::initializer_list<KVNamedParameter> l)
+{
+   // Constructor using an initializer list for a given set of KVNamedParameter objects,
+   // i.e. this contructor makes it possible to do:
+   //
+   //~~~~{.cpp}
+   //KVNameValueList list{{"A",1.234},{"B",false},{"C","hello"}};
+   //
+   //KVNameValueList list2 = {{"A",1.234},{"B",false},{"C","hello"}};
+   //~~~~
+
+   for (auto& p : l) SetValue(p);
+}
+
 //______________________________________________
 KVNameValueList::KVNameValueList(const Char_t* name, const Char_t* title)
    : TNamed(name, title), fList(), fIgnoreBool(kFALSE)

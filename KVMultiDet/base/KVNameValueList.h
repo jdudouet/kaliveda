@@ -119,6 +119,7 @@ protected:
 
 public:
    KVNameValueList();
+   KVNameValueList(std::initializer_list<KVNamedParameter>);
    KVNameValueList(const Char_t* name, const Char_t* title = "");
    KVNameValueList(const KVNameValueList&);
    virtual ~KVNameValueList();
