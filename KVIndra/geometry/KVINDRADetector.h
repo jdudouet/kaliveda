@@ -83,6 +83,11 @@ public:
       if (type == "SILI" || type == "SI75") return 0; //no idea
       return index.Atoi() % 100;
    }
+   Int_t GetIndex() const
+   {
+      // Return numerical identifier of detector, i.e. 601 for SI_0601 (or CSI_0601)
+      return 100 * GetRingNumber() + GetModuleNumber();
+   }
 
    void AddACQParamType(const Char_t* type);
    virtual KVACQParam* GetACQParam(const Char_t* /*type*/) const;
