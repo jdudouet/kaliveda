@@ -1141,7 +1141,7 @@ void KVBase::PrintSplashScreen()
 
    cout << "/----------------------------------------------------------------------\\" << endl;
    cout << "| Welcome to KaliVeda " << GetKVVersion() << "             github:kaliveda-dev/kaliveda |" << endl;
-   cout << "| (c) 2002-2021, The KaliVeda development team                         |" << endl;
+   cout << "| (c) 2002-2022, The KaliVeda development team                         |" << endl;
    cout << "|                                                                      |" << endl;
    cout << "| Built with ROOT " << KV_ROOT_VERSION << " on " << KVBase::GetKVBuildDate() << ", " << KVBase::GetKVBuildTime() << "                      |" << endl;
 #ifdef WITH_GIT_INFOS
