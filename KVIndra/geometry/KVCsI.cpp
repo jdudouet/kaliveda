@@ -117,7 +117,7 @@ Double_t KVCsI::GetCorrectedEnergy(KVNucleus* nuc, Double_t lum, Bool_t)
       return -1;
    }
 
-   if (GetDetectorSignal("TotLight")->GetStatus("LightIsGood")) {
+   if ((eloss > 0) && GetDetectorSignal("TotLight")->GetStatus("LightIsGood")) {
       SetEnergy(eloss);
       return eloss;
    }
