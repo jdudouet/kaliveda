@@ -14,7 +14,6 @@
 #pragma link C++ class KVBatchJob;
 #pragma link C++ class KVGEBatchJob;
 #pragma link C++ class KV_CCIN2P3_GE;
-#pragma link C++ class KV_CCIN2P3_Slurm;
 #pragma link C++ class KVRootBatch;
 #pragma link C++ class KVLinuxBatch;
 #pragma link C++ class KVPROOFLiteBatch;

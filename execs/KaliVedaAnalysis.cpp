@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
    }
 
    //without this, the plugins don't work for user classes
-   TApplication myapp("myapp", &argc, argv);
+   TApplication* myapp = new TApplication("myapp", &argc, argv);
 
    new KVDataRepositoryManager();
    gDataRepositoryManager->Init();
@@ -69,7 +69,8 @@ int main(int argc, char* argv[])
          printf("Unknown inheritance of analyser class: abort\n");
          return 0;
       }
-   } else
+   }
+   else
       ia = new KVDataAnalyser;
    ia->SetBatchMode();
    ia->SetBatchName(batchName.Data());
@@ -87,9 +88,13 @@ int main(int argc, char* argv[])
                                            Form(".%s.bak", batchName.Data())));
    gSystem->Unlink(path.Data());
 
+   delete myapp;
    delete gDataRepositoryManager;
 
-   std::cout << "End of analysis in <KaliVedaAnalysis.cpp>" << std::endl;
+// avoid batch jobs running long after analysis has completed
+// the only way to do it is to kill the process
+   int pid = gSystem->GetPid();
+   gSystem->Exec(Form("kill -9 %d", pid));
 
    return 0;
 }

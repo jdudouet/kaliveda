@@ -1,7 +1,5 @@
-#!/bin/bash -f
+#!/bin/csh -f
 #
-#KaliVedaAnalysis batch script for SLURM
-cd $TMPDIR
-$KVROOT/bin/KaliVedaAnalysis -b -n -q
-echo 'End of analysis in KVA script'
+#KaliVedaAnalysis batch script for BQS
+$KVROOT/bin/KaliVedaAnalysis -b -n
 exit
