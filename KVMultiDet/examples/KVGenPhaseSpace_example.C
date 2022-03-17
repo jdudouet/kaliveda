@@ -48,7 +48,15 @@ void example(double E0 = 50, int nevents = 100000)
 
    while (nevents--) {
       wgt = gps.Generate();
-      decay.FillArraysEThetaPhi(mult, Z, A, E, Theta, Phi);
+      mult = 0;
+      for (auto& nuc : decay) {
+         Z[mult] = nuc.GetZ();
+         A[mult] = nuc.GetA();
+         E[mult] = nuc.GetE();
+         Theta[mult] = nuc.GetTheta();
+         Phi[mult] = nuc.GetPhi();
+         ++mult;
+      }
       tri->Fill();
    }
 

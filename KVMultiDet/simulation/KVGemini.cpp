@@ -165,49 +165,6 @@ void KVGemini::FillTreeWithEvents(KVSimNucleus& toDecay, bool addRotationalEnerg
 
 }
 
-void KVGemini::FillTreeWithArrays(KVSimNucleus& toDecay, bool addRotationalEnergy, Int_t nDecays, TTree* theTree, TString mode)
-{
-   // Perform nDecays decays of nucleus toDecay and write the events
-   // containing all decay products of each decay in theTree
-   // in the form of simple arrays.
-   // mode = "EThetaPhi" (default) or "V" and decides what informations are
-   // in the arrays (see KVEvent::FillArraysV and KVEvent::FillArraysEThetaPhi)
-
-   Bool_t ethetaphi = (mode == "EThetaPhi");
-#define MAX_GEMINI_ARRAY_SIZE 200
-   Int_t mult, Z[MAX_GEMINI_ARRAY_SIZE], A[MAX_GEMINI_ARRAY_SIZE];
-   Double_t x[MAX_GEMINI_ARRAY_SIZE], y[MAX_GEMINI_ARRAY_SIZE], z[MAX_GEMINI_ARRAY_SIZE];
-   KVSimEvent* decayProducts = new KVSimEvent;
-
-   theTree->Branch("Multiplicity", &mult, "mult/I");
-   theTree->Branch("Z", Z, "Z[mult]/I");
-   theTree->Branch("A", A, "A[mult]/I");
-   if (ethetaphi) {
-      theTree->Branch("Energy", x, "Energy[mult]/D");
-      theTree->Branch("Theta", y, "Theta[mult]/D");
-      theTree->Branch("Phi", z, "Phi[mult]/D");
-   }
-   else {
-      theTree->Branch("Vx", x, "Vx[mult]/D");
-      theTree->Branch("Vy", y, "Vy[mult]/D");
-      theTree->Branch("Vz", z, "Vz[mult]/D");
-   }
-   while (nDecays--) {
-      decayProducts->Clear();
-      try {
-         DecaySingleNucleus(toDecay, decayProducts, addRotationalEnergy);
-      }
-      catch (exception& e) {
-         continue;
-      }
-      if (ethetaphi) decayProducts->FillArraysEThetaPhi(mult, Z, A, x, y, z);
-      else decayProducts->FillArraysV(mult, Z, A, x, y, z);
-      theTree->Fill();
-      std::cout << "\xd" << "Gemini++ processing, " << nDecays << " decays left ..." << std::flush;
-   }
-   std::cout << std::endl;
-}
-
 Float_t KVGemini::GetMaxSpinWithFissionBarrier(int z, int a)
 {
    // Maximum angular momentum with non-zero fission barrier (Sierk model)
