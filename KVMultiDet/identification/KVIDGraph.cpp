@@ -989,6 +989,7 @@ Bool_t KVIDGraph::IsIdentifiable(Double_t x, Double_t y, TString* rejected_by) c
 
    TIter next(fCuts);
    KVIDentifier* id = 0;
+   if (rejected_by) *rejected_by = "";
    while ((id = (KVIDentifier*)next())) {
       if (!id->TestPoint(x, y)) {
          if (rejected_by) *rejected_by = id->GetName();
