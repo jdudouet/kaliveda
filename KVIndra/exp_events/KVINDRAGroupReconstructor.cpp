@@ -10,33 +10,38 @@ ClassImp(KVINDRAGroupReconstructor)
 
 KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node)
 {
-   // Specialised event reconstruction for INDRA data
-   // Triggered CsI detectors are checked: if it is a gamma, we count it (parameter "INDRA_GAMMA_MULT")
+   // \param traj trajectory currently being scanned
+   // \param node current detector on trajectory to test
+   // \returns pointer to a new reconstructed particle added to this group's event; nullptr if nothing is to be done
+   //
+   // Specialised particle reconstruction for INDRA data.
+   //
+   // If the fired detector in question is a CsI we check, if identification is available, whether
+   // this corresponds to a 'gamma'. If so we count it (event parameter "INDRA_GAMMA_MULT")
    // and add the name of the detector to the parameter "INDRA_GAMMA_DETS"
-   // but do not reconstruct a particle.
+   // but do not begin the reconstruction of a particle. This allows to continue along the trajectory and
+   // directly reconstruct any charged particle which may stop in the Si detector in coincidence with
+   // a 'gamma' in the CsI.
 
    if (node->GetDetector()->IsType("CSI")) {
-      ///Info("ReconstructTrajectory","Checking %s...", node->GetName());
+
       if (node->GetDetector()->Fired(GetPartSeedCond())) {
-         //Info("ReconstructTrajectory","...fired");
+
          ++nfireddets;
          KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType("CSI_R_L");
          if (idt) {
-            //Info("ReconstructTrajectory","...found CSI_R_L id");
+
             KVIdentificationResult idr;
             if (idt->IsReadyForID()) {
-               //Info("ReconstructTrajectory","...it is ready");
+
                idt->Identify(&idr);
-               if (idr.IDOK && idr.IDquality == KVIDGCsI::kICODE10) { // gamma in CsI
-                  //Info("ReconstructTrajectory","...GAMMA REJECTION");
+               if (idr.IDOK && (idr.IDcode == KVINDRA::IDCodes::ID_GAMMA || idr.IDquality == KVIDGCsI::kICODE10)) { // gamma in CsI
                   GetEventFragment()->GetParameters()->IncrementValue("INDRA_GAMMA_MULT", 1);
                   GetEventFragment()->GetParameters()->IncrementValue("INDRA_GAMMA_DETS", node->GetName());
                   node->GetDetector()->SetAnalysed();
                   return nullptr;
                }
-               //Info("ReconstructTrajectory","ID result: IDOK:%d IDquality:%d IDcode:%d Z:%d A:%d",
-               //     idr.IDOK, idr.IDquality, idr.IDcode, idr.Z, idr.A);
-               //node->GetDetector()->Print("data");
+
                // if we arrive here, CSI_R_L identification for the particle has been performed and
                // the result is not a gamma (which are rejected; no particle is reconstructed).
                // as the coordinates in the identification map are randomized (KVACQParamSignal),
@@ -48,8 +53,8 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
                // therefore in this case we add a new particle to the event, and copy the results of this
                // first identification into the particle, with IDR->IDattempted=true, so that in
                // KVINDRAGroupReconstructor::IdentifyParticle the CSI identification will not be redone.
+
                auto new_part = GetEventFragment()->AddParticle();
-               //idr.IDattempted=true;
                *(new_part->GetIdentificationResult(1)) = idr;
                return new_part;
             }

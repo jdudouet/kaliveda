@@ -1,6 +1,3 @@
-//Created by KVClassFactory on Mon Oct 19 14:11:26 2015
-//Author: John Frankland,,,
-
 #include "KVGroupReconstructor.h"
 #include "KVMultiDetArray.h"
 #include "KVTarget.h"
@@ -29,24 +26,11 @@ KVGroupReconstructor::~KVGroupReconstructor()
    SafeDelete(fGrpEvent);
 }
 
-//________________________________________________________________
-
-void KVGroupReconstructor::Copy(TObject& obj) const
-{
-   // This method copies the current state of 'this' object into 'obj'
-   // You should add here any member variables, for example:
-   //    (supposing a member variable KVGroupReconstructor::fToto)
-   //    CastedObj.fToto = fToto;
-   // or
-   //    CastedObj.SetToto( GetToto() );
-
-   KVBase::Copy(obj);
-   //KVGroupReconstructor& CastedObj = (KVGroupReconstructor&)obj;
-}
-
 void KVGroupReconstructor::SetGroup(KVGroup* g)
 {
-   // set the group to be reconstructed
+   // Set the group to be reconstructed
+   //
+   // Set condition for seeding reconstructed particles
    fGroup = g;
    fPartSeedCond = dynamic_cast<KVMultiDetArray*>(fGroup->GetArray())->GetPartSeedCond();
 }
@@ -54,14 +38,14 @@ void KVGroupReconstructor::SetGroup(KVGroup* g)
 void KVGroupReconstructor::SetReconEventClass(TClass* c)
 {
    // Instantiate event fragment object
-   // Set condition for seeding reconstructed particles
 
    if (!fGrpEvent) fGrpEvent = (KVReconstructedEvent*)c->New();
 }
 
 KVGroupReconstructor* KVGroupReconstructor::Factory(const TString& plugin)
 {
-   // Create a new object of a class derived from KVGroupReconstructor defined by a plugin.
+   // Create a new object of a class derived from KVGroupReconstructor defined by a plugin
+   //
    // If plugin="" this is just a new KVGroupReconstructor instance
 
    if (plugin == "") return new KVGroupReconstructor;
@@ -74,7 +58,10 @@ KVGroupReconstructor* KVGroupReconstructor::Factory(const TString& plugin)
 
 void KVGroupReconstructor::Process()
 {
-   // Perform full reconstruction for group: reconstruct, identify, calibrate
+   // Perform full reconstruction of particles detected in group.
+   //
+   // This will call in order Reconstruct(), Identify(), Calibrate() and AddCoherencyParticles()
+   //
    //   - identification can be inhibited (for all groups) by calling KVGroupReconstructor::SetDoIdentification(false);
    //   - calibration can be inhibited (for all groups) by calling KVGroupReconstructor::SetDoCalibration(false);
 
@@ -94,8 +81,12 @@ void KVGroupReconstructor::Process()
 void KVGroupReconstructor::Reconstruct()
 {
    // Reconstruct the particles in the group from hit trajectories
-   // The condition for seeding particles is determined by the
-   // multidetector to which the group belongs and the current dataset
+   //
+   // We work our way along each trajectory, starting from the furthest detector from the target,
+   // and start reconstruction of a new detected particle depending on decision made in ReconstructTrajectory()
+   // for each detector we try (normally just the first fired detector we find).
+   //
+   // The reconstruction is then handled by ReconstructParticle().
 
    TIter nxt_traj(GetGroup()->GetTrajectories());
    KVGeoDNTrajectory* traj;
@@ -134,6 +125,15 @@ void KVGroupReconstructor::PostReconstructionProcessing()
 
 KVReconstructedNucleus* KVGroupReconstructor::ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node)
 {
+   // \param traj trajectory currently being scanned
+   // \param node current detector on trajectory to test
+   // \returns pointer to a new reconstructed particle added to this group's event; nullptr if nothing is to be done
+   //
+   // The condition which must be fulfilled for us to begin the reconstruction of a new particle starting from
+   // a fired detector on the trajectory is either:
+   //   - the trajectory is the only one which passes through this detector; or
+   //   - the detector directly in front of this one on this trajectory also fired.
+
    KVDetector* d = node->GetDetector();
    nfireddets += d->Fired();
    // if d has fired and is either independent (only one trajectory passes through it)
@@ -151,7 +151,15 @@ KVReconstructedNucleus* KVGroupReconstructor::ReconstructTrajectory(const KVGeoD
 void KVGroupReconstructor::ReconstructParticle(KVReconstructedNucleus* part, const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node)
 {
    // Reconstruction of a detected nucleus from the successive energy losses
-   // measured in a series of detectors/telescopes along a given trajectory
+   // measured in a series of detectors/telescopes along a given trajectory.
+   //
+   // The particle is associated with a reconstruction trajectory which starts from the detector in
+   // which the particle stopped and leads up through the detection layers towards the target.
+   // These can be accessed in later analysis using the two methods
+   //    - KVReconstructedNucleus::GetStoppingDetector()
+   //    - KVReconstructedNucleus::GetReconstructionTrajectory()
+   //
+   // \sa KVReconNucTrajectory
 
    const KVReconNucTrajectory* Rtraj = (const KVReconNucTrajectory*)GetGroup()->GetTrajectoryForReconstruction(traj, node);
    part->SetReconstructionTrajectory(Rtraj);
@@ -170,6 +178,14 @@ void KVGroupReconstructor::ReconstructParticle(KVReconstructedNucleus* part, con
 
 void KVGroupReconstructor::AnalyseParticles()
 {
+   // Analyse and set status of reconstructed particles in group, to decide whether they can be identified
+   // and further treated straight away.
+   //
+   // If there is more than one reconstructed particle in the group on different trajectories which
+   // have a detector in common, then it may be necessary to identify one of the particles before the
+   // others in order to try to subtract its contribution from the common detector and allow the
+   // identification of the other particles.
+
    if (GetNUnidentifiedInGroup() > 1) { //if there is more than one unidentified particle in the group
 
       Int_t n_nseg_1 = 0;
@@ -249,14 +265,21 @@ void KVGroupReconstructor::AnalyseParticles()
 
 void KVGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 {
-   // Try to identify this nucleus by calling the Identify() function of each
-   // ID telescope crossed by it, starting with the telescope where the particle stopped, in order
-   //   -  only telescopes which have been correctly initialised for the current run are used,
-   //      i.e. those for which KVIDTelescope::IsReadyForID() returns kTRUE.
+   // Try to identify this nucleus by calling the KVIDTelescope::Identify() method of each
+   // identification telescope on its reconstruction trajectory, starting with the telescope
+   // where the particle stopped (i.e. containing its stopping detector), in order.
    //
-   // This continues until a successful identification is achieved or there are no more ID telescopes to try.
+   // Only identifications which have been correctly initialised for the current run are used,
+   // i.e. those for which KVIDTelescope::IsReadyForID() returns kTRUE.
    //
-   // The identification code corresponding to the identifying telescope is set as the identification code of the particle.
+   // Note that *all* identifications along the trajectory are tried, even those far in front
+   // of the detector where the particle stopped. The results of all identifications (KVIdentificationResult)
+   // are stored with the particle (they can be retrieved later using KVReconstructedNucleus::GetIdentificationResult() ).
+   // They are later used for consistency checks ("coherency") between the identifications in the different
+   // stages.
+   //
+   // The first successful identification obtained in this way, if one exists, for a KVIDTelescope which includes
+   // the detector where the particle stopped is then attributed to the particle (see KVReconstructedNucleus::SetIdentification()).
 
    const KVSeqCollection* idt_list = PART.GetReconstructionTrajectory()->GetIDTelescopes();
    identifying_telescope = nullptr;
@@ -351,11 +374,14 @@ void KVGroupReconstructor::TreatStatusStopFirstStage(KVReconstructedNucleus& d)
 
 void KVGroupReconstructor::Identify()
 {
-   // All particles which have not been previously identified (IsIdentified=kFALSE), and which
-   // may be identified independently of all other particles in their group according to the 1st
-   // order coherency analysis (KVReconstructedNucleus::GetStatus=0), will be identified.
-   // Particles stopping in first member of a telescope (KVReconstructedNucleus::GetStatus=3) will
-   // have their Z estimated from the energy loss in the detector (if calibrated).
+   // Identify all particles reconstructed so far in this group which
+   // may be identified independently of all other particles in the group according to the 1st
+   // order coherency analysis (see AnalyseParticles() ). This is done by calling the method
+   // IdentifyParticle() for each particle in turn.
+   //
+   // Particles stopping in the first member of a telescope will
+   // have their Z estimated from the energy loss in the detector (if calibrated):
+   // in this case the Z is a minimum value.
 
    for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
       KVReconstructedNucleus& d = it.get_reference<KVReconstructedNucleus>();

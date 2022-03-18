@@ -12,19 +12,14 @@ The 'kaliveda' command launches a ROOT session with dynamic shared library paths
 
     $ kaliveda
     
-    ***********************************************************
-    *                    HI COQUINE !!!                       *
-    *                                                         *
-    *         W E L C O M E     to     K A L I V E D A        *
-    *                                                         *
-    * Version: 1.11/00                      Built: 2019-02-14 *
-    * git: heads/master@release-1.10.15-379-g3f87b236         *
-    *                                                         *
-    *               For help, see the website :               *
-    *             http://indra.in2p3.fr/kaliveda              *
-    *                                                         *
-    *                          ENJOY !!!                      *
-    ***********************************************************
+    /----------------------------------------------------------------------\
+    | Welcome to KaliVeda 1.12/05             github:kaliveda-dev/kaliveda |
+    | (c) 2002-2022, The KaliVeda development team                         |
+    |                                                                      |
+    | Built with ROOT 6.24.06 on 2022-03-18, 10:11:25                      |
+    | From heads/master@release-1.12.05-g209ab9c0                          |
+    | See http://indra.in2p3.fr/kaliveda for help                          |
+    \----------------------------------------------------------------------/
 
     kaliveda [0] 
 
@@ -46,7 +41,7 @@ Given a C++ file using KaliVeda classes such as toto.cpp:
 
 You can compile and link this executable with the following CMakeLists.txt file:
 
-    cmake_minimum_required(VERSION 2.8.11)
+    cmake_minimum_required(VERSION 3.5)
     project(toto)
     find_package(KaliVeda REQUIRED)
     include(${KALIVEDA_USE_FILE})

@@ -1,6 +1,3 @@
-//Created by KVClassFactory on Mon Oct 19 09:33:44 2015
-//Author: John Frankland,,,
-
 #ifndef __KVEVENTRECONSTRUCTOR_H
 #define __KVEVENTRECONSTRUCTOR_H
 
@@ -22,11 +19,15 @@
  KVReconstructedNucleus objects corresponding to the reconstructed
  (and possibly identfied & calibrated) particles.
 
- -# Get list of hit groups (KVDetectorEvent)
+ The actual reconstruction is done by KVGroupReconstructor objects. Each group in a detector
+ array is attributed a reconstructor at initialisation, which may be a specific implementation
+ depending on the array (see classes derived from KVGroupReconstructor).
+
+ The reconstruction of each event proceeds as follows:
+
+ -# Get list of hit groups in the array
  -# For each hit group, perform reconstruction/identification/ etc. in the group
-    using a KVGroupReconstructor-derived object (uses plugins)
- -# Merge together the different event fragments into the output reconstructed
-    event object
+ -# Merge together the different event fragments into the output reconstructed event object
 */
 class KVEventReconstructor : public KVBase {
 

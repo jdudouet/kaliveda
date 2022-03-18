@@ -14,15 +14,21 @@ ClassImp(KVINDRAEtalonGroupReconstructor)
 
 KVReconstructedNucleus* KVINDRAEtalonGroupReconstructor::ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node)
 {
-   // if node is a CsI detector with more than one trajectory, we are behind the etalons
-   // if not, standard treatment
+   // \param traj trajectory currently being scanned
+   // \param node current detector on trajectory to test
+   // \returns pointer to a new reconstructed particle added to this group's event; nullptr if nothing is to be done
    //
-   // as the sili & si75 coders are opened by every firing of the csi directly behind them,
-   // their acq params are present in the event whether the particle went through them
-   // or passed directly from chio to csi.
+   // Specialised particle reconstruction for INDRA groups with etalon telescopes (Rings 10-17).
    //
-   // the best way to choose the right reconstruction trajectory is to see if sili-csi
-   // provides an identification, and if so is it coherent with that of the csi.
+   // If node is a CsI detector with more than one trajectory passing through it (in front of it),
+   // we are behind the etalons Si(75)-Si(Li).
+   //
+   // As the Si(75)-Si(Li) coders are opened by every firing of the CsI directly behind them,
+   // their acquisition parameters are present in the event whether the particle went through them
+   // or passed directly from ChIo to CsI.
+   //
+   // The best way to choose the right reconstruction trajectory is to see if Si(Li)-CsI
+   // provides an identification, and if so is it coherent with that of the CsI.
 
    if (!node->GetDetector()->IsAnalysed() &&
          node->GetDetector()->Fired(GetPartSeedCond()) &&
@@ -37,11 +43,8 @@ KVReconstructedNucleus* KVINDRAEtalonGroupReconstructor::ReconstructTrajectory(c
       std::unordered_map<std::string, KVIdentificationResult> IDR;
       while ((idt = (KVIDTelescope*)next_idt())) {
          if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
-            IDR[idt->GetType()].IDattempted = kTRUE;
             idt->Identify(&IDR[idt->GetType()]);
          }
-         else
-            IDR[idt->GetType()].IDattempted = kFALSE;
       }
       // cases:
       //  gamma in CsI: * same as general INDRA reconstruction: count the gammmas, do not

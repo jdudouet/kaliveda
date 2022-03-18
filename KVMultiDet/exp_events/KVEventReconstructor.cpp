@@ -1,6 +1,3 @@
-//Created by KVClassFactory on Mon Oct 19 09:33:44 2015
-//Author: John Frankland,,,
-
 #include "KVEventReconstructor.h"
 #include "KVDetectorEvent.h"
 #include "KVGroupReconstructor.h"

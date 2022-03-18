@@ -300,13 +300,15 @@ void KVFAZIA::Build(Int_t)
 void KVFAZIA::GetDetectorEvent(KVDetectorEvent* detev, const TSeqCollection* dets)
 {
    // First step in event reconstruction based on current status of detectors in array.
+   //
    // Fills the given KVDetectorEvent with the list of all groups which have fired.
    // i.e. loop over all groups of the array and test whether KVGroup::Fired() returns true or false.
    //
-   // If the list of fired acquisition parameters 'sigs' is not given,
-   // KVMultiDetArray::GetDetectorEvent is called. We check also if the internal fFiredACQParams
-   // list contains data.
+   // This can be made more efficient if the detectors which were hit in the event are already known:
+   // then their list should be given to argument dets
    //
+   // If the list of fired detectors dets is not given, we use the internal fFiredACQParams list
+   // which is filled with all hit detectors when raw data is treated in treat_event()
 
    if (!fHandledRawData) {
       //Info("GetDetectorEvent","i didnt handle any data...");

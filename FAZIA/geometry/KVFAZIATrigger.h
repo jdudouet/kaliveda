@@ -20,9 +20,9 @@
 class KVFAZIATrigger : public KVBase {
 public:
    enum class TriggerPattern : uint8_t {
-      Mult1,
-      Mult1Downscale100,
-      Mult2
+      Mult1,                ///< Minimum bias M>=1 multiplicity trigger
+      Mult1Downscale100,    ///< Downscaled (1/100) minimum bias M>=1 multiplicity trigger
+      Mult2                 ///< M>=2 multiplicity trigger
    };
 private:
    uint16_t fTriggerPattern;

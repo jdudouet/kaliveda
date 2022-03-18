@@ -1,6 +1,3 @@
-//Created by KVClassFactory on Mon Oct 19 14:11:26 2015
-//Author: John Frankland,,,
-
 #ifndef __KVGROUPRECONSTRUCTOR_H
 #define __KVGROUPRECONSTRUCTOR_H
 
@@ -19,10 +16,10 @@
   \ingroup Reconstruction
   \brief Base class for particle reconstruction in one group of a detector array
 
-Recalling that a group of detectors (KVGroup) is the largest part of an array which can be treated
-independently of all other detectors, KVGroupReconstructor is the basic working unit of event
+KVGroupReconstructor is the basic working unit of event
 reconstruction. A KVEventReconstructor will use many KVGroupReconstructor objects in order to
-reconstruct an event from data detected by the array.
+reconstruct an event from data detected by the array (let us recall that a group of detectors
+is the largest part of any array which can be treated independently of all other detectors).
 
 Daughter classes of KVGroupReconstructor can be specialised for event reconstruction in
 specific arrays (or even specific parts of specific arrays).
@@ -69,13 +66,17 @@ protected:
    }
    void TreatStatusStopFirstStage(KVReconstructedNucleus&);
 
+   /**
+     \struct particle_to_add_from_coherency_analysis
+     \brief informations required to add a particle to the event which is revealed by an inconsistency between the different identifications for an existing particle
+    */
    struct particle_to_add_from_coherency_analysis {
-      KVReconstructedNucleus* original_particle;  //! particle whose identification/calibration revealed presence of pile-up
-      KVGeoDetectorNode* stopping_detector_node;  //! detector node in which new particle stopped
-      KVGeoDNTrajectory* stopping_trajectory;     //! trajectory on which new particle stopped
-      KVIDTelescope* identifying_telescope;       //! the identification telescope used to identify the particle
-      Int_t first_id_result_to_copy;              //! number of KVIdentificationResult (in original_particle's list) corresponding to identification of the particle
-      Int_t max_id_result_index;                  //! last KVIdentificationResult in original_particle's list
+      KVReconstructedNucleus* original_particle;  ///< particle whose identification/calibration revealed presence of pile-up
+      KVGeoDetectorNode* stopping_detector_node;  ///< detector node in which new particle stopped
+      KVGeoDNTrajectory* stopping_trajectory;     ///< trajectory on which new particle stopped
+      KVIDTelescope* identifying_telescope;       ///< the identification telescope used to identify the particle
+      Int_t first_id_result_to_copy;              ///< number of KVIdentificationResult (in original_particle's list) corresponding to identification of the particle
+      Int_t max_id_result_index;                  ///< last KVIdentificationResult in original_particle's list
    };
    std::vector<particle_to_add_from_coherency_analysis> coherency_particles;
    virtual void AddCoherencyParticles() {};
@@ -85,7 +86,6 @@ public:
    virtual ~KVGroupReconstructor();
 
    void SetReconEventClass(TClass* c);
-   void Copy(TObject& obj) const;
    int GetNFiredDets() const
    {
       return nfireddets;
