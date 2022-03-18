@@ -119,12 +119,6 @@ protected:
 #endif
 #endif
 
-   void set_id_code(UShort_t c)
-   {
-      // used by child class constructors to set the id code for their type of identification
-      fIDCode = c;
-   }
-
 public:
 
    // status of particle calibration after Calibrate(KVReconstructedNucleus*) is called
@@ -264,49 +258,18 @@ public:
       kMeanDE_NoIdentifier   // No identifier found for Z or (Z,A)
    };
    virtual Double_t GetMeanDEFromID(Int_t& status, Int_t Z, Int_t A = -1, Double_t Eres = -1.0);
-   virtual UShort_t GetBadIDCode()
-   {
-      // return a general identification code (can be a bitmask) for particles badly identified
-      // with this type of ID telescope
-      // redefine in child classes; default returns 14.
-      return 14;
-   };
-   virtual UShort_t GetCoherencyIDCode()
-   {
-      // return a general identification code (can be a bitmask) for particles identified
-      // with this type of ID telescope after coherency analysis
-      // redefine in child classes; default returns 6.
-      return 6;
-   };
-   virtual UShort_t GetMultiHitFirstStageIDCode()
-   {
-      // return a general identification code (can be a bitmask) for particles which cannot
-      // be identified correctly due to pile-up in a delta-E detector
-      // redefine in child classes; default returns 8.
-      return 8;
-   };
    virtual UShort_t GetIDCode()
    {
       // return the general identification code (can be a bitmask) for particles correctly identified
       // with this type of ID telescope
       return fIDCode;
    }
-   virtual UShort_t GetZminCode()
-   {
-      // return a general identification code (can be a bitmask) for particles partially identified
-      // with an estimated lower-limit for their charge with this type of ID telescope
-      // redefine in child classes; default returns 5.
-      return 5;
-   };
-   virtual UChar_t GetECode()
-   {
-      // return a general calibration code (can be a bitmask) for particles correctly identified
-      // and calibrated with this type of ID telescope
-      // redefine in child classes; default returns 1.
-      return 1;
-   };
 
-   virtual void SetIDCode(KVReconstructedNucleus*, UShort_t);
+   virtual void SetIDCode(UShort_t c)
+   {
+      // used by KVMultiDetArray to set the id code for each type of identification telescope
+      fIDCode = c;
+   }
 
    virtual Bool_t CheckTheoreticalIdentificationThreshold(KVNucleus* /*ION*/, Double_t /*EINC*/ = 0.0);
    virtual Bool_t CanIdentify(Int_t Z, Int_t /*A*/)

@@ -270,12 +270,13 @@ void KVGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       Int_t n_success_id = 0;//number of successful identifications
       while ((idt = (KVIDTelescope*) next())) {
          KVIdentificationResult* IDR = PART.GetIdentificationResult(idnumber++);
-         IDR->SetIDType(idt->GetType());// without this, the identification type is never set!
-         if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
-            id_by_type[IDR->GetIDType()] = IDR;// map contains only attempted identifications
-            IDR->IDattempted = kTRUE;
-            idt->Identify(IDR);
 
+         if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
+            id_by_type[idt->GetType()] = IDR;// map contains only attempted identifications
+            if (!IDR->IDattempted) { // the identification may already have been attempted, e.g. in gamma particle
+               // rejection in CSI: see KVINDRAGroupReconstructor::ReconstructTrajectory
+               idt->Identify(IDR);
+            }
             if (IDR->IDOK) n_success_id++;
          }
          else
@@ -321,7 +322,6 @@ void KVGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       }
       if (ok) {
          PART.SetIsIdentified();
-         PART.SetIdentifyingTelescope(identifying_telescope);
          PART.SetIdentification(&partID, identifying_telescope);
       }
 
@@ -337,10 +337,15 @@ void KVGroupReconstructor::TreatStatusStopFirstStage(KVReconstructedNucleus& d)
    // estimation of Z (minimum) from energy loss (if detector is calibrated)
    Int_t zmin = d.GetStoppingDetector()->FindZmin(-1., d.GetMassFormula());
    if (zmin) {
-      d.SetZ(zmin);
+      KVIdentificationResult idr;
+      idr.Z = zmin;
+      idr.IDcode = ((KVMultiDetArray*)GetGroup()->GetArray())->GetIDCodeForParticlesStoppingInFirstStageOfTelescopes();
+      idr.Zident = false;
+      idr.Aident = false;
+      idr.PID = zmin;
       d.SetIsIdentified();
       KVGeoDNTrajectory* t = (KVGeoDNTrajectory*)d.GetStoppingDetector()->GetNode()->GetTrajectories()->First();
-      d.SetIdentifyingTelescope((KVIDTelescope*) t->GetIDTelescopes()->Last());
+      d.SetIdentification(&idr, (KVIDTelescope*) t->GetIDTelescopes()->Last());
    }
 }
 

@@ -344,6 +344,14 @@ Bool_t KVIDTelescope::Identify(KVIdentificationResult* idr, Double_t x, Double_t
    //where the name of each grid is given as "VARY_VARX". If no variable defining the order is found,
    //the grids will be tried in the order they were found in the file containing the grids for this
    //telescope.
+   //
+   // The KVIdentificationResult is first Clear()ed; then it is filled with IDtype = GetType()
+   // of this identification telescope, IDattempted = true, and the results of the identification
+   // procedure.
+
+   idr->Clear();
+   idr->IDattempted = true;
+   idr->SetIDType(GetType());
 
    KVIDGraph* grid;
    TIter it(GetListOfIDGrids());
@@ -351,7 +359,6 @@ Bool_t KVIDTelescope::Identify(KVIdentificationResult* idr, Double_t x, Double_t
       Double_t de, e;
       GetIDGridCoords(e, de, grid, x, y);
       idr->SetGridName(grid->GetName());
-      TString reject_cut;
       if (grid->IsIdentifiable(e, de, &idr->Rejecting_Cut)) {
          grid->Identify(e, de, idr);
          if (idr->IDOK) break; // stop on first successful identification
@@ -1344,11 +1351,6 @@ Double_t KVIDTelescope::GetMeanDEFromID(Int_t& status, Int_t Z, Int_t A, Double_
       return -1.;
    }
    return idline->Eval(x);
-}
-
-void KVIDTelescope::SetIDCode(KVReconstructedNucleus* n, UShort_t c)
-{
-   n->SetIDCode(c);
 }
 
 //_________________________________________________________________________________________
