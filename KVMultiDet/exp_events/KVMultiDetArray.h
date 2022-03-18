@@ -118,6 +118,13 @@ protected:
 
    virtual Int_t GetIDTelescopes(KVDetector*, KVDetector*, TCollection* list);
 
+   virtual void SetIDCodeForIDTelescope(KVIDTelescope*) const
+   {
+      // Set the general identification code for particles identified in a given identification telescope.
+      //
+      // As these codes are mostly array-specific, this method should be overridden in specific implementations.
+   }
+
    int try_all_doubleID_telescopes(KVDetector* de, KVDetector* e, TCollection* l);
    bool try_a_doubleIDtelescope(TString uri, KVDetector* de, KVDetector* e, TCollection* l);
    bool try_upper_and_lower_doubleIDtelescope(TString uri, KVDetector* de, KVDetector* e, TCollection* l);
@@ -165,7 +172,45 @@ protected:
    void ReadCalibrationFiles(KVExpDB* db);
    void ReadCalibFile(const Char_t* filename, KVExpDB* db, KVDBTable* calib_table);
    void ReadOoODetectors(KVExpDB* db);
+
+   // The following methods are used by the current implementation of the filter.
+   // They should be removed in future implementations.
+   virtual UShort_t GetBadIDCode()
+   {
+      // return a general identification code for particles badly identified
+      // with this type of ID telescope
+      // redefine in child classes; default returns 14.
+      return 14;
+   }
+   virtual UShort_t GetCoherencyIDCode()
+   {
+      // return a general identification code for particles identified
+      // with this type of ID telescope after coherency analysis
+      // redefine in child classes; default returns 6.
+      return 6;
+   }
+   virtual UShort_t GetMultiHitFirstStageIDCode()
+   {
+      // return a general identification code for particles which cannot
+      // be identified correctly due to pile-up in a delta-E detector
+      // redefine in child classes; default returns 8.
+      return 8;
+   }
+   UShort_t GetZminCode()
+   {
+      // return a general identification code for particles partially identified
+      // with an estimated lower-limit for their charge
+      return GetIDCodeForParticlesStoppingInFirstStageOfTelescopes();
+   }
+   virtual UChar_t GetNormalCalibrationCode()
+   {
+      // return a general calibration code for correctly calibrated particles
+      // redefine in child classes; default returns 1.
+      return 1;
+   }
+
 public:
+
    KVNameValueList& GetReconParameters()
    {
       // any information placed in this list during event reconstruction will be
@@ -535,6 +580,13 @@ public:
    virtual void MakeCalibrationTables(KVExpDB*);
    virtual void SetCalibratorParameters(KVDBRun*, const TString& = "");
    virtual void CheckStatusOfDetectors(KVDBRun*, const TString& = "");
+
+   virtual Int_t GetIDCodeForParticlesStoppingInFirstStageOfTelescopes() const
+   {
+      // By default, for historical reasons, this returns 5
+      return 5;
+   }
+
 
    ClassDef(KVMultiDetArray, 7) //Base class for multidetector arrays
 };

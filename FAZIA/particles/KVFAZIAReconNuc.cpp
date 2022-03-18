@@ -235,92 +235,94 @@ void KVFAZIAReconNuc::Identify()
 
    //cout << "Dentro il mio Identify" << endl;
 
-   KVList* idt_list = GetStoppingDetector()->GetIDTelescopes();
+   Obsolete("Identify", "1.13", "1.15");
 
-   // GetStoppingDetector()->Print();
-   int STOPID = ((KVFAZIADetector*)GetStoppingDetector())->GetIdentifier();
+//   KVList* idt_list = GetStoppingDetector()->GetIDTelescopes();
 
-   //idt_list->Print();
+//   // GetStoppingDetector()->Print();
+//   int STOPID = ((KVFAZIADetector*)GetStoppingDetector())->GetIdentifier();
 
-   KVIdentificationResult* IDR = 0;
-   Int_t idnumber = 1;
+//   //idt_list->Print();
 
-   if (idt_list && idt_list->GetSize() > 0) {
-      // cout << "LOOP over telescopes\n";
-      KVIDTelescope* idt;
-      TIter next(idt_list);
+//   KVIdentificationResult* IDR = 0;
+//   Int_t idnumber = 1;
 
-      while ((idt = (KVIDTelescope*) next())) { // && !IsIdentified()) {
-         //cout << "NExt Telescope\n";
-         //idt->Print();
-         //printf("Checking stopped detector %s\n", idt->GetType());
-         if (STOPID == KVFAZIADetector::kSI1 && !strcmp(idt->GetType(), "Si-Si")) continue; // why ?
-         if (STOPID == KVFAZIADetector::kSI2 && !strcmp(idt->GetType(), "Si-CsI")) continue; // why ?
+//   if (idt_list && idt_list->GetSize() > 0) {
+//      // cout << "LOOP over telescopes\n";
+//      KVIDTelescope* idt;
+//      TIter next(idt_list);
 
-         //printf("Initializing IDR\n");
-         IDR = GetIdentificationResult(idnumber);
-         //printf("Initialized IDR=%p\n", IDR);
-         IDR->SetName(idt->GetName());
-         IDR->SetType(idt->GetType());
-         /* if(!strcmp(idt->GetType(), "Si-CsI")){
-             printf("Attempting id with %s tel\n",idt->GetType());
-             if(!idt->IsReadyForID()) printf("iDT not ready\n");
-          }*/
-         if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
-            // printf("Attempting id with telescope:\n");
-            // idt->Print();
-            IDR->IDattempted = kTRUE;
-            IDR->IDOK = kFALSE;
-            idt->Identify(IDR);
-            //  if (!strcmp(idt->GetType(), "Si-CsI")) IDR->Print();
-            if (IDR->IDOK && !(IDR->Z >= 3 && IDR->IDcode == 33)) { //Correspond to Quality code <=3 !!!!!Condizione rigetto Z>3 da CSI
-               SetIdentification(IDR);
-               SetIdentifyingTelescope(idt);
-               SetIsIdentified();
-               //return;
-            }
-            else {
-               SetIdentification(IDR);
-               SetIdentifyingTelescope(idt);
-               //SetIDCode(0);
-               //SetZandA(0, 0);
-               //SetIsIdentified();
-            }
-         }
-         else {
-            IDR->IDattempted = kFALSE;
-         }
-         idnumber += 1;
-      }
+//      while ((idt = (KVIDTelescope*) next())) { // && !IsIdentified()) {
+//         //cout << "NExt Telescope\n";
+//         //idt->Print();
+//         //printf("Checking stopped detector %s\n", idt->GetType());
+//         if (STOPID == KVFAZIADetector::kSI1 && !strcmp(idt->GetType(), "Si-Si")) continue; // why ?
+//         if (STOPID == KVFAZIADetector::kSI2 && !strcmp(idt->GetType(), "Si-CsI")) continue; // why ?
 
-      KVIdentificationResult partID;
-      Bool_t ok = kFALSE;
-      //printf("Beginning Coherency check\n");
-      if (STOPID == KVFAZIADetector::kSI1) {
-         ok = CoherencySi(partID);
-      }
-      else if (STOPID == KVFAZIADetector::kSI2) {
-         ok = CoherencySiSi(partID);
-      }
-      else if (STOPID == KVFAZIADetector::kCSI) {
-         ok = CoherencySiCsI(partID);
-      }
-      if (ok) {
-         SetIsIdentified();
-         KVIDTelescope* idt = (KVIDTelescope*)GetIDTelescopes()->FindObjectByType(partID.GetType());
-         // if (!idt) {
-         //    Warning("Identify", "cannot find ID telescope with type %s", partID.GetType());
-         //    GetIDTelescopes()->ls();
-         //    partID.Print();
-         // }
-         SetIdentifyingTelescope(idt);
-         SetIdentification(&partID);
-         //if(GetZ()==3 && IDCode==33) cout << "fine " << GetZ() << endl;
-      }
+//         //printf("Initializing IDR\n");
+//         IDR = GetIdentificationResult(idnumber);
+//         //printf("Initialized IDR=%p\n", IDR);
+//         IDR->SetName(idt->GetName());
+//         IDR->SetType(idt->GetType());
+//         /* if(!strcmp(idt->GetType(), "Si-CsI")){
+//             printf("Attempting id with %s tel\n",idt->GetType());
+//             if(!idt->IsReadyForID()) printf("iDT not ready\n");
+//          }*/
+//         if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
+//            // printf("Attempting id with telescope:\n");
+//            // idt->Print();
+//            IDR->IDattempted = kTRUE;
+//            IDR->IDOK = kFALSE;
+//            idt->Identify(IDR);
+//            //  if (!strcmp(idt->GetType(), "Si-CsI")) IDR->Print();
+//            if (IDR->IDOK && !(IDR->Z >= 3 && IDR->IDcode == 33)) { //Correspond to Quality code <=3 !!!!!Condizione rigetto Z>3 da CSI
+//               SetIdentification(IDR);
+//               SetIdentifyingTelescope(idt);
+//               SetIsIdentified();
+//               //return;
+//            }
+//            else {
+//               SetIdentification(IDR);
+//               SetIdentifyingTelescope(idt);
+//               //SetIDCode(0);
+//               //SetZandA(0, 0);
+//               //SetIsIdentified();
+//            }
+//         }
+//         else {
+//            IDR->IDattempted = kFALSE;
+//         }
+//         idnumber += 1;
+//      }
+
+//      KVIdentificationResult partID;
+//      Bool_t ok = kFALSE;
+//      //printf("Beginning Coherency check\n");
+//      if (STOPID == KVFAZIADetector::kSI1) {
+//         ok = CoherencySi(partID);
+//      }
+//      else if (STOPID == KVFAZIADetector::kSI2) {
+//         ok = CoherencySiSi(partID);
+//      }
+//      else if (STOPID == KVFAZIADetector::kCSI) {
+//         ok = CoherencySiCsI(partID);
+//      }
+//      if (ok) {
+//         SetIsIdentified();
+//         KVIDTelescope* idt = (KVIDTelescope*)GetIDTelescopes()->FindObjectByType(partID.GetType());
+//         // if (!idt) {
+//         //    Warning("Identify", "cannot find ID telescope with type %s", partID.GetType());
+//         //    GetIDTelescopes()->ls();
+//         //    partID.Print();
+//         // }
+//         SetIdentifyingTelescope(idt);
+//         SetIdentification(&partID);
+//         //if(GetZ()==3 && IDCode==33) cout << "fine " << GetZ() << endl;
+//      }
 
 
 
-   }
+//   }
 
 }
 

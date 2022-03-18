@@ -4,9 +4,7 @@
 #include "KVFAZIAIDCsI.h"
 #include "KVIDGCsI.h"
 #include "KVIdentificationResult.h"
-#include "KVFAZIADetector.h"
 #include "KVDataSet.h"
-#include "KVFAZIA.h"
 
 ClassImp(KVFAZIAIDCsI)
 
@@ -23,7 +21,6 @@ KVFAZIAIDCsI::KVFAZIAIDCsI()
 {
    // Default constructor
    SetType("CsI");
-   set_id_code(kCsI);
    fMaxZ = 22.5; // dummy hight values, hard threshold at Z=4 set by CanIdentify() Mmethod
    fSigmaZ = .5;
    /* in principle all CsI R-L telescopes can identify mass & charge */
@@ -44,7 +41,7 @@ Bool_t KVFAZIAIDCsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t 
    if (IDR->IDquality == KVIDGCsI::kICODE10
          || (IDR->IDquality == KVIDZAGrid::kICODE8 && IDR->Rejecting_Cut == "gamma_line")) {
       IDR->IDOK = true;
-      IDR->IDcode = KVFAZIA::IDCodes::ID_GAMMA;
+      IDR->IDcode = 0; // kludge: should be KVFAZIA::IDCodes::ID_GAMMA, but would require moving class to 'geometry'
       ok = kTRUE;
       IDR->IDquality = KVIDGCsI::kICODE10;
       IDR->Z = 0;

@@ -851,126 +851,128 @@ void KVINDRAReconNuc::Identify()
    //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
    //Their "identifying" telescope is set to the CsI ID telescope
 
-   KVReconstructedNucleus::Identify();
+   Obsolete("Identify", "1.13", "1.15");
 
-   KVIdentificationResult partID;
-   Bool_t ok = kFALSE;
+//   KVReconstructedNucleus::Identify();
 
-   // INDRA coherency treatment
-   if (GetRingNumber() < 10) {
-      if (StoppedInCsI()) {
-         // particles stopping in CsI detectors on rings 1-9
-         // check coherency of CsI-R/L and Si-CsI identifications
-         ok = CoherencySiCsI(partID);
-         // we check that the ChIo contribution is sane:
-         // if no other particles hit this group, the Z given by the ChIoSi
-         // must be <= the Z found from Si-CsI or CsI-RL identification
+//   KVIdentificationResult partID;
+//   Bool_t ok = kFALSE;
 
-         //if(fCoherent && !fPileup)
-         fUseFullChIoEnergyForCalib = CoherencyChIoSiCsI(partID);
-      }
-      else {
-         // particle stopped in Si (=> ChIo-Si) or ChIo (=> Zmin)
-         Int_t id_no = 1;
-         KVIdentificationResult* pid = GetIdentificationResult(id_no);
-         while (pid->IDattempted) {
-            if (pid->IDOK) {
-               ok = kTRUE;
-               partID = *pid;
-               break;
-            }
-            ++id_no;
-            pid = GetIdentificationResult(id_no);
-         }
-         fUseFullChIoEnergyForCalib = !(GetChIo() && GetChIo()->GetNHits() > 1);
-      }
-   }
-   else {
-      //identification couronne 10 a 17
-      //Arret dans les CsI, coherence entre identification CsI RL et ChIo CsI
+//   // INDRA coherency treatment
+//   if (GetRingNumber() < 10) {
+//      if (StoppedInCsI()) {
+//         // particles stopping in CsI detectors on rings 1-9
+//         // check coherency of CsI-R/L and Si-CsI identifications
+//         ok = CoherencySiCsI(partID);
+//         // we check that the ChIo contribution is sane:
+//         // if no other particles hit this group, the Z given by the ChIoSi
+//         // must be <= the Z found from Si-CsI or CsI-RL identification
 
-      // if particle is alone in group, we can in principle attribute the ChIo energy
-      // to the energy lost by this particle alone
-      fUseFullChIoEnergyForCalib = !(GetChIo() && GetChIo()->GetNHits() > 1);
-      if (StoppedInCsI()) {
+//         //if(fCoherent && !fPileup)
+//         fUseFullChIoEnergyForCalib = CoherencyChIoSiCsI(partID);
+//      }
+//      else {
+//         // particle stopped in Si (=> ChIo-Si) or ChIo (=> Zmin)
+//         Int_t id_no = 1;
+//         KVIdentificationResult* pid = GetIdentificationResult(id_no);
+//         while (pid->IDattempted) {
+//            if (pid->IDOK) {
+//               ok = kTRUE;
+//               partID = *pid;
+//               break;
+//            }
+//            ++id_no;
+//            pid = GetIdentificationResult(id_no);
+//         }
+//         fUseFullChIoEnergyForCalib = !(GetChIo() && GetChIo()->GetNHits() > 1);
+//      }
+//   }
+//   else {
+//      //identification couronne 10 a 17
+//      //Arret dans les CsI, coherence entre identification CsI RL et ChIo CsI
 
-         if (GetSiLi() || GetSi75()) /* etalon module */
-            ok = CoherencyEtalons(partID);
-         else
-            ok = CoherencyChIoCsI(partID);
+//      // if particle is alone in group, we can in principle attribute the ChIo energy
+//      // to the energy lost by this particle alone
+//      fUseFullChIoEnergyForCalib = !(GetChIo() && GetChIo()->GetNHits() > 1);
+//      if (StoppedInCsI()) {
 
-      }
-      else if (StoppedInChIo()) {
-         // particle stopped in ChIo (=> Zmin)
-         Int_t id_no = 1;
-         KVIdentificationResult* pid = GetIdentificationResult(id_no);
-         while (pid->IDattempted) {
-            if (pid->IDOK) {
-               ok = kTRUE;
-               partID = *pid;
-               break;
-            }
-            ++id_no;
-            pid = GetIdentificationResult(id_no);
-         }
-         partID.Print();
-      }
-      else {
-         // particle stopped in SiLi or Si75 (etalon modules)
-         ok = CoherencyEtalons(partID);
-      }
+//         if (GetSiLi() || GetSi75()) /* etalon module */
+//            ok = CoherencyEtalons(partID);
+//         else
+//            ok = CoherencyChIoCsI(partID);
 
-   }
-   if (ok) {
-      SetIsIdentified();
-      KVIDTelescope* idt = (KVIDTelescope*)GetIDTelescopes()->FindObjectByType(partID.GetType());
-      if (!idt) {
-         Warning("Identify", "cannot find ID telescope with type %s", partID.GetType());
-         GetIDTelescopes()->ls();
-         partID.Print();
-      }
-      SetIdentifyingTelescope(idt);
-      SetIdentification(&partID);
-   }
+//      }
+//      else if (StoppedInChIo()) {
+//         // particle stopped in ChIo (=> Zmin)
+//         Int_t id_no = 1;
+//         KVIdentificationResult* pid = GetIdentificationResult(id_no);
+//         while (pid->IDattempted) {
+//            if (pid->IDOK) {
+//               ok = kTRUE;
+//               partID = *pid;
+//               break;
+//            }
+//            ++id_no;
+//            pid = GetIdentificationResult(id_no);
+//         }
+//         partID.Print();
+//      }
+//      else {
+//         // particle stopped in SiLi or Si75 (etalon modules)
+//         ok = CoherencyEtalons(partID);
+//      }
 
-   if (IsIdentified()) {
+//   }
+//   if (ok) {
+//      SetIsIdentified();
+//      KVIDTelescope* idt = (KVIDTelescope*)GetIDTelescopes()->FindObjectByType(partID.GetType());
+//      if (!idt) {
+//         Warning("Identify", "cannot find ID telescope with type %s", partID.GetType());
+//         GetIDTelescopes()->ls();
+//         partID.Print();
+//      }
+//      SetIdentifyingTelescope(idt);
+//      SetIdentification(&partID);
+//   }
 
-      /******* IDENTIFIED PARTICLES *******/
-      if (GetIdentifyingTelescope()->InheritsFrom("KVIDCsI")) {     /**** CSI R-L IDENTIFICATION ****/
+//   if (IsIdentified()) {
 
-         //Identified particles with ID code = 2 with subcodes 4 & 5
-         //(masse hors limite superieure/inferieure) are relabelled
-         //with kIDCode10 (identification entre les lignes CsI)
+//      /******* IDENTIFIED PARTICLES *******/
+//      if (GetIdentifyingTelescope()->InheritsFrom("KVIDCsI")) {     /**** CSI R-L IDENTIFICATION ****/
 
-         Int_t csi_subid = GetIDSubCode();
-         if (csi_subid == KVIDGCsI::kICODE4 || csi_subid == KVIDGCsI::kICODE5) {
-            SetIDCode(kIDCode10);
-         }
+//         //Identified particles with ID code = 2 with subcodes 4 & 5
+//         //(masse hors limite superieure/inferieure) are relabelled
+//         //with kIDCode10 (identification entre les lignes CsI)
 
-      }
+//         Int_t csi_subid = GetIDSubCode();
+//         if (csi_subid == KVIDGCsI::kICODE4 || csi_subid == KVIDGCsI::kICODE5) {
+//            SetIDCode(kIDCode10);
+//         }
 
-   }
-   else {
+//      }
 
-      /******* UNIDENTIFIED PARTICLES *******/
+//   }
+//   else {
 
-      /*** general ID code for non-identified particles ***/
-      SetIDCode(kIDCode14);
+//      /******* UNIDENTIFIED PARTICLES *******/
 
-      KVIDCsI* idtel = (KVIDCsI*)GetIDTelescopes()->FindObjectByType("CSI_R_L");
-      if (idtel) {
-         //Particles remaining unidentified are checked: if their identification in CsI R-L gave subcodes 6 or 7
-         //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
-         //Their "identifying" telescope is set to the CsI ID telescope
-         Int_t csi_subid = GetIDSubCode("CSI_R_L");
-         if (csi_subid == KVIDGCsI::kICODE6 || csi_subid == KVIDGCsI::kICODE7) {
-            SetIsIdentified();
-            SetIDCode(kIDCode9);
-            SetIdentifyingTelescope(idtel);
-         }
-      }
+//      /*** general ID code for non-identified particles ***/
+//      SetIDCode(kIDCode14);
 
-   }
+//      KVIDCsI* idtel = (KVIDCsI*)GetIDTelescopes()->FindObjectByType("CSI_R_L");
+//      if (idtel) {
+//         //Particles remaining unidentified are checked: if their identification in CsI R-L gave subcodes 6 or 7
+//         //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
+//         //Their "identifying" telescope is set to the CsI ID telescope
+//         Int_t csi_subid = GetIDSubCode("CSI_R_L");
+//         if (csi_subid == KVIDGCsI::kICODE6 || csi_subid == KVIDGCsI::kICODE7) {
+//            SetIsIdentified();
+//            SetIDCode(kIDCode9);
+//            SetIdentifyingTelescope(idtel);
+//         }
+//      }
+
+//   }
 }
 
 //_________________________________________________________________________________

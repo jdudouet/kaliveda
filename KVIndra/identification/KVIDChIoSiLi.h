@@ -14,12 +14,6 @@
  */
 class KVIDChIoSiLi : public KVIDChIoSi {
 
-public:
-   KVIDChIoSiLi();
-   KVIDChIoSiLi(const KVIDChIoSiLi&) ;
-   virtual ~KVIDChIoSiLi();
-   void Copy(TObject&) const;
-
    ClassDef(KVIDChIoSiLi, 1) //Identification in ChIo-SiLi matrices of INDRA
 };
 

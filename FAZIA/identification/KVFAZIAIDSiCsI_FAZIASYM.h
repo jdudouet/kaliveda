@@ -6,7 +6,6 @@
 
 #include "KVFAZIAIDTelescope.h"
 #include "KVIDZAGrid.h"
-#include "KVFAZIADetector.h"
 #include "KVIDCutLine.h"
 #include "KVIDCutContour.h"
 
@@ -17,8 +16,6 @@ protected:
 
    KVIDZAGrid* TheGrid;    //! telescope's grid for principal identification (from Z=1 up to Z=20)
    KVIDZAGrid* TheGrid_lcp;    //! telescope's grid for LCP identification (from Z=1 and Z=2)
-   KVFAZIADetector* fCsI;//!
-   KVFAZIADetector* fSi2;//!
    KVIDCutContour* fBelowProton; //;KVIDCutLine* fBelowProton; //;
    KVIDCutLine* fSiThreshold; //;
 

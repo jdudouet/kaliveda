@@ -102,6 +102,15 @@ protected:
       KVMultiDetArray::prepare_to_handle_new_raw_data();
       SetTriggerPattern(0);
    }
+   void SetIDCodeForIDTelescope(KVIDTelescope*) const;
+
+   // The following methods are used by the current implementation of the filter.
+   // They should be removed in future implementations.
+   virtual UChar_t GetNormalCalibrationCode()
+   {
+      // return a general calibration code for correctly calibrated particles
+      return ECodes::NORMAL_CALIBRATION;
+   }
 public:
    enum IDCodes {
       /** \enum KVFAZIA::IDCodes
@@ -125,6 +134,10 @@ public:
       SOME_ENERGY_LOSSES_CALCULATED = 2, ///< particle calibration OK, with some detector energies calculated
       WARNING_CSI_MAX_ENERGY = 3    ///< particle calibration OK, although apparent energy would mean punching through the CsI
    };
+   virtual Int_t GetIDCodeForParticlesStoppingInFirstStageOfTelescopes() const
+   {
+      return IDCodes::ID_STOPPED_IN_FIRST_STAGE;
+   }
 
    KVFAZIA(const Char_t* title = "");
    virtual ~KVFAZIA();

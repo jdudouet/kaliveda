@@ -23,7 +23,7 @@ $Id: KVINDRA.cpp,v 1.68 2009/01/21 10:05:51 franklan Exp $
 #include "KVTelescope.h"
 #include "KVIDTelescope.h"
 #include "KVIDSiCsI.h"
-#include "KVIDCsI.h"
+#include "KVIDINDRACsI.h"
 #include "KVIDChIoSi.h"
 #include "KVIDChIoCsI.h"
 #include "KVIDChIoSi75.h"
@@ -658,6 +658,24 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatFrame& f)
    }
    return kTRUE;
 }
+
+void KVINDRA::SetIDCodeForIDTelescope(KVIDTelescope* idt) const
+{
+   // Set the INDRA-specific general identification code for the given telescope
+
+   if (idt->InheritsFrom(KVIDPhoswich::Class())) idt->SetIDCode(IDCodes::ID_PHOSWICH);
+   else if (idt->InheritsFrom(KVIDINDRACsI::Class())) idt->SetIDCode(IDCodes::ID_CSI_PSA);
+   else if (idt->InheritsFrom(KVIDSiCsI::Class())) idt->SetIDCode(IDCodes::ID_SI_CSI);
+   else if (idt->InheritsFrom(KVIDChIoSi::Class())) idt->SetIDCode(IDCodes::ID_CI_SI);
+   else if (idt->InheritsFrom(KVIDChIoCsI::Class())) idt->SetIDCode(IDCodes::ID_CI_CSI);
+   else if (idt->InheritsFrom(KVIDChIoSi75::Class())) idt->SetIDCode(IDCodes::ID_CI_SI75);
+   else if (idt->InheritsFrom(KVIDSi75SiLi::Class())) idt->SetIDCode(IDCodes::ID_SI75_SILI);
+   else if (idt->InheritsFrom(KVIDChIoSi75::Class())) idt->SetIDCode(IDCodes::ID_CI_SI75);
+   else {
+      Error("SetIDCodeForIDTelescope", "Request for telescope name=%s of unknown class=%s",
+            idt->GetName(), idt->IsA()->GetName());
+   }
+}
 #endif
 //_______________________________________________________________________________________
 
@@ -923,8 +941,8 @@ void KVINDRA::CreateROOTGeometry()
    Info("CreateROOTGeometry", "Scanning geometry shapes and matrices...");
    KVGeoImport gimp(gGeoManager, KVMaterial::GetRangeTable(), this, kFALSE);
    gimp.SetNameCorrespondanceList("INDRA.names");
-   KVEvent* evt = new KVEvent();
-   KVNucleus* nuc = evt->AddParticle();
+   KVEvent evt;
+   KVNucleus* nuc = evt.AddParticle();
    nuc->SetZAandE(1, 1, 1);
    KVINDRADetector* det;
    TIter next(GetDetectors());
@@ -933,7 +951,7 @@ void KVINDRA::CreateROOTGeometry()
       nuc->SetTheta(det->GetTheta());
       nuc->SetPhi(det->GetPhi());
       gimp.SetLastDetector(0);
-      gimp.PropagateEvent(evt);
+      gimp.PropagateEvent(&evt);
       if (!(det->ROOTGeo())) {
          Info("CreateROOTGeometry", "Volume checking for %s", det->GetName());
          Double_t theta0 = det->GetTheta();
@@ -943,7 +961,7 @@ void KVINDRA::CreateROOTGeometry()
                nuc->SetTheta(TH);
                nuc->SetPhi(PH);
                gimp.SetLastDetector(0);
-               gimp.PropagateEvent(evt);
+               gimp.PropagateEvent(&evt);
                if (det->ROOTGeo()) break;
             }
             if (det->ROOTGeo()) break;
@@ -968,7 +986,7 @@ void KVINDRA::CreateROOTGeometry()
                      nuc->SetTheta(TH);
                      nuc->SetPhi(PH);
                      gimp.SetLastDetector(0);
-                     gimp.PropagateEvent(evt);
+                     gimp.PropagateEvent(&evt);
                      if (det->GetNode()->GetNDetsInFront() == 2) break;
                   }
                   if (det->GetNode()->GetNDetsInFront() == 2) break;
@@ -978,7 +996,6 @@ void KVINDRA::CreateROOTGeometry()
       }
       nrootgeo += (det->ROOTGeo());
    }
-   delete evt;
 
    Info("CreateROOTGeometry", "ROOT geometry initialised for %d/%d detectors", nrootgeo, GetDetectors()->GetEntries());
 

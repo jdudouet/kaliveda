@@ -28,15 +28,6 @@ ClassImp(KVIDSiCsI)
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-KVIDSiCsI::KVIDSiCsI()
-{
-   //set IDCode
-   set_id_code(kIDCode_SiCsI);
-   fZminCode = kIDCode_ArretSi;
-   fECode = kECode1;
-   fPIEDESTAL = nullptr;
-}
-
 void KVIDSiCsI::Initialize()
 {
    // perform standard initialization plus initialize Silicon pedestal cut "PIEDESTAL" (if defined

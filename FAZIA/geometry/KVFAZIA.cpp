@@ -12,8 +12,11 @@
 #include "TSystem.h"
 #include "KVDataSet.h"
 #include "KVConfig.h"
+#include "KVFAZIAIDSiPSA.h"
+#include "KVFAZIAIDCsI.h"
+#include "KVFAZIAIDSiCsI.h"
+#include "KVFAZIAIDSiSi.h"
 
-//#include "TGeoBox.h"
 #include "TGeoCompositeShape.h"
 #include "TGeoEltu.h"
 
@@ -683,5 +686,19 @@ void KVFAZIA::ReadTriggerPatterns(KVExpDB* db)
       dbrec->AddKey("Runs", "List of Runs");
       trigs->AddRecord(dbrec);
       db->LinkRecordToRunRange(dbrec, nl);
+   }
+}
+
+void KVFAZIA::SetIDCodeForIDTelescope(KVIDTelescope* idt) const
+{
+   // Set the FAZIA-specific general identification code for the given telescope
+
+   if (idt->InheritsFrom(KVFAZIAIDSiPSA::Class())) idt->SetIDCode(IDCodes::ID_SI1_PSA);
+   else if (idt->InheritsFrom(KVFAZIAIDSiSi::Class())) idt->SetIDCode(IDCodes::ID_SI1_SI2);
+   else if (idt->InheritsFrom(KVFAZIAIDSiCsI::Class())) idt->SetIDCode(IDCodes::ID_SI2_CSI);
+   else if (idt->InheritsFrom(KVFAZIAIDCsI::Class())) idt->SetIDCode(IDCodes::ID_CSI_PSA);
+   else {
+      Error("SetIDCodeForIDTelescope", "Request for telescope name=%s of unknown class=%s",
+            idt->GetName(), idt->IsA()->GetName());
    }
 }

@@ -28,19 +28,6 @@ ClassImp(KVIDChIoSi)
 //
 /////////////////////////////////////////////////////////////////////////////
 
-KVIDChIoSi::KVIDChIoSi()
-{
-   set_id_code(kIDCode_ChIoSi);
-   fZminCode = kIDCode_ArretChIo;
-   fECode = kECode1;
-   ChIoSiGrid = 0;
-   fchio = fsi = 0;
-}
-
-KVIDChIoSi::~KVIDChIoSi()
-{
-}
-
 //________________________________________________________________________________________//
 
 Bool_t KVIDChIoSi::Identify(KVIdentificationResult* IDR, Double_t x, Double_t y)

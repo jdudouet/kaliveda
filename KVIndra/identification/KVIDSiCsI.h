@@ -29,13 +29,9 @@ $Id: KVIDSiCsI.h,v 1.10 2006/10/19 14:32:43 franklan Exp $
 class KVIDSiCsI: public KVINDRAIDTelescope {
 
 protected:
-   KVIDCutLine* fPIEDESTAL;      //! Upper limit of Silicon pedestal zone (neutral particles)
+   KVIDCutLine* fPIEDESTAL = nullptr;    //! Upper limit of Silicon pedestal zone (neutral particles)
 
 public:
-
-   KVIDSiCsI();
-   virtual ~ KVIDSiCsI() {}
-
    void Initialize();
    Bool_t Identify(KVIdentificationResult* idr, Double_t x = -1, Double_t y = -1);
 

@@ -24,14 +24,3 @@ ClassImp(KVIDSiLiCsI)
 //
 //Identification in SiLi-CsI matrices of INDRA
 //
-
-KVIDSiLiCsI::KVIDSiLiCsI()
-{
-   set_id_code(kIDCode_SiLiCsI);
-   fZminCode = kIDCode_ArretSi;
-   fECode = kECode1;
-}
-
-KVIDSiLiCsI::~KVIDSiLiCsI()
-{
-}

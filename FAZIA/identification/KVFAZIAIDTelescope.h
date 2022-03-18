@@ -8,8 +8,6 @@
 #include "KVReconstructedNucleus.h"
 #include "TF1.h"
 
-#include <KVFAZIADetector.h>
-
 class KVFAZIAIDTelescope : public KVIDTelescope {
 
 protected:
@@ -17,18 +15,9 @@ protected:
    double fMaxZ, fSigmaZ;
 
 public:
-   enum {                       //determine identification code
-      kSi1Si2 = 12,
-      kSi1 = 11,
-      kSi2 = 22,
-      kCsI = 33,
-      kSi2CsI = 23
-   };
-
    KVFAZIAIDTelescope();
-   virtual ~KVFAZIAIDTelescope();
    virtual void AddDetector(KVDetector* d);
-   static const Char_t* GetNewName(KVString oldname);
+//   static const Char_t* GetNewName(KVString oldname);
    virtual void SetIdentificationStatus(KVReconstructedNucleus* n);
 
    ClassDef(KVFAZIAIDTelescope, 1) //Identification for FAZIA array

@@ -25,13 +25,3 @@ ClassImp(KVIDSi75SiLi)
 //Identification in Si75-SiLI matrices of INDRA
 //
 
-KVIDSi75SiLi::KVIDSi75SiLi()
-{
-   set_id_code(kIDCode_Si75SiLi);
-   fZminCode = kIDCode_Zmin;
-   fECode = kECode1;
-}
-
-KVIDSi75SiLi::~KVIDSi75SiLi()
-{
-}

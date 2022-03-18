@@ -503,7 +503,7 @@ Int_t KVMultiDetArray::FilteredEventCoherencyAnalysis(Int_t round, KVReconstruct
          if (pileup) {
             nchanged++;
             recon_nuc->SetIsIdentified();//to stop looking anymore & to allow identification of other particles in same group
-            if (idtelstop) idtelstop->SetIDCode(recon_nuc, idtelstop->GetBadIDCode());
+            if (idtelstop) recon_nuc->SetIDCode(GetBadIDCode());// idtelstop->SetIDCode(recon_nuc, idtelstop->GetBadIDCode());
             else recon_nuc->SetIsOK(kFALSE);
          }
          else if (recon_nuc->GetStatus() == 3) {
@@ -514,7 +514,7 @@ Int_t KVMultiDetArray::FilteredEventCoherencyAnalysis(Int_t round, KVReconstruct
          else if (recon_nuc->GetStatus() == 2) {
             // pile-up in first stage of telescopes
             recon_nuc->SetIsIdentified();
-            if (idtelstop && idtelstop->IsReadyForID()) idtelstop->SetIDCode(recon_nuc, idtelstop->GetMultiHitFirstStageIDCode());
+            if (idtelstop && idtelstop->IsReadyForID()) recon_nuc->SetIDCode(GetMultiHitFirstStageIDCode());//idtelstop->SetIDCode(recon_nuc, idtelstop->GetMultiHitFirstStageIDCode());
             else recon_nuc->SetIsOK(kFALSE);
             nchanged++;
          }
@@ -528,7 +528,7 @@ Int_t KVMultiDetArray::FilteredEventCoherencyAnalysis(Int_t round, KVReconstruct
                   nchanged++;
                   // if this is not the first round, this particle has been 'identified' after
                   // dealing with other particles in the group
-                  if (round > 1) idtelstop->SetIDCode(recon_nuc, idtelstop->GetCoherencyIDCode());
+                  if (round > 1) recon_nuc->SetIDCode(GetCoherencyIDCode());//idtelstop->SetIDCode(recon_nuc, idtelstop->GetCoherencyIDCode());
                   recon_nuc->SetIsIdentified();
                   recon_nuc->SetIsCalibrated();
                   idtelstop->SetIdentificationStatus(recon_nuc);
@@ -1021,8 +1021,8 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
                KVIDTelescope* idt = GetIDTelescope(part->GetParameters()->GetStringValue("IDENTIFYING TELESCOPE"));
                if (idt) {
                   recon_nuc->SetIdentifyingTelescope(idt);
-                  idt->SetIDCode(recon_nuc, idt->GetIDCode());
-                  recon_nuc->SetECode(idt->GetECode());
+                  recon_nuc->SetIDCode(idt->GetIDCode());//idt->SetIDCode(recon_nuc, idt->GetIDCode());
+                  recon_nuc->SetECode(GetNormalCalibrationCode());//recon_nuc->SetECode(idt->GetECode());
                }
             }
             recon_nuc->GetAnglesFromReconstructionTrajectory();
@@ -1098,21 +1098,22 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
                         && !idt->CheckTheoreticalIdentificationThreshold((KVNucleus*)part->GetFrame(detection_frame, kFALSE)))
                      part->AddGroup("INCOMPLETE");
                   if (!part->BelongsToGroup("INCOMPLETE")) {
-                     idt->SetIDCode(recon_nuc, idt->GetIDCode());
+                     recon_nuc->SetIDCode(idt->GetIDCode());//idt->SetIDCode(recon_nuc, idt->GetIDCode());
                      idt->SetIdentificationStatus(recon_nuc);
                   }
                   else {
-                     idt->SetIDCode(recon_nuc, idt->GetZminCode());
+                     recon_nuc->SetIDCode(GetZminCode());//idt->SetIDCode(recon_nuc, idt->GetZminCode());
                   }
-                  recon_nuc->SetECode(idt->GetECode());
+                  recon_nuc->SetECode(GetNormalCalibrationCode());//recon_nuc->SetECode(idt->GetECode());
                   //recon_nuc->SetIsIdentified();
                   //recon_nuc->SetIsCalibrated();
                }
             }
             else {   /*if(part->BelongsToGroup("INCOMPLETE"))*/
                // for particles stopping in 1st member of a telescope, there is no "identifying telescope"
-               KVIDTelescope* idt = (KVIDTelescope*)last_det->GetIDTelescopes()->First();
-               if (idt) idt->SetIDCode(recon_nuc, idt->GetZminCode());
+               //KVIDTelescope* idt = (KVIDTelescope*)last_det->GetIDTelescopes()->First();
+               //if (idt) idt->SetIDCode(recon_nuc, idt->GetZminCode());
+               recon_nuc->SetIDCode(GetZminCode());
             }
             recon_nuc->GetAnglesFromReconstructionTrajectory();
          }
@@ -1867,11 +1868,17 @@ void KVMultiDetArray::SetIdentifications()
 void KVMultiDetArray::InitializeIDTelescopes()
 {
    // Calls Initialize() method of each identification telescope (see KVIDTelescope
-   // and derived classes). This is essential before identification of particles is attempted.
+   // and derived classes) and sets the general identification code defined for each
+   // telescope.
+   //
+   // Calling this method is essential before identification of particles is attempted.
 
    TIter next(fIDTelescopes);
    KVIDTelescope* idt;
-   while ((idt = (KVIDTelescope*)next())) idt->Initialize();
+   while ((idt = (KVIDTelescope*)next())) {
+      idt->Initialize();
+      SetIDCodeForIDTelescope(idt);
+   }
 }
 
 Bool_t KVMultiDetArray::ReadGridsFromAsciiFile(const Char_t* grids) const

@@ -28,11 +28,6 @@
 
 class KVIDChIoSi75: public KVIDChIoSi {
 
-public:
-
-   KVIDChIoSi75();
-   virtual ~ KVIDChIoSi75();
-
    ClassDef(KVIDChIoSi75, 1)    //INDRA identification using ChIo-Si75 matrices
 };
 

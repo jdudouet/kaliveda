@@ -101,8 +101,6 @@ void KVFAZIAIDSiCsI_FAZIASYM::Initialize()
    //TheGrid = (KVIDZAGrid*) GetIDGrid();
    TheGrid = (KVIDZAGrid*) GetListOfIDGrids()->At(0);
    TheGrid_lcp = (KVIDZAGrid*) GetListOfIDGrids()->At(1);
-   fSi2 = (KVFAZIADetector*)GetDetector(1);
-   fCsI = (KVFAZIADetector*)GetDetector(2);
    if (TheGrid) {
       // std::cout << "Inizializzo TheGrid" << std::endl;
       SetHasMassID(TheGrid->HasMassIDCapability());

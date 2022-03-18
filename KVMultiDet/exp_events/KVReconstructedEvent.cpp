@@ -171,27 +171,28 @@ void KVReconstructedEvent::IdentifyEvent()
    //Particles stopping in first member of a telescope (KVReconstructedNucleus::GetStatus=3) will
    //have their Z estimated from the energy loss in the detector (if calibrated).
 
-   KVReconstructedNucleus* d;
-   while ((d = GetNextParticle())) {
-      if (!d->IsIdentified()) {
-         if (d->GetStatus() == KVReconstructedNucleus::kStatusOK) {
-            // identifiable particles
-            d->Identify();
-         }
-         else if (d->GetStatus() == KVReconstructedNucleus::kStatusStopFirstStage) {
-            // particles stopped in first member of a telescope
-            // estimation of Z (minimum) from energy loss (if detector is calibrated)
-            UInt_t zmin = d->GetStoppingDetector()->FindZmin(-1., d->GetMassFormula());
-            if (zmin) {
-               d->SetZ(zmin);
-               d->SetIsIdentified();
-               // "Identifying" telescope is taken from list of ID telescopes
-               // to which stopping detector belongs
-               d->SetIdentifyingTelescope((KVIDTelescope*)d->GetStoppingDetector()->GetIDTelescopes()->At(0));
-            }
-         }
-      }
-   }
+   Obsolete("IdentifyEvent", "1.13", "1.15");
+//   KVReconstructedNucleus* d;
+//   while ((d = GetNextParticle())) {
+//      if (!d->IsIdentified()) {
+//         if (d->GetStatus() == KVReconstructedNucleus::kStatusOK) {
+//            // identifiable particles
+//            d->Identify();
+//         }
+//         else if (d->GetStatus() == KVReconstructedNucleus::kStatusStopFirstStage) {
+//            // particles stopped in first member of a telescope
+//            // estimation of Z (minimum) from energy loss (if detector is calibrated)
+//            UInt_t zmin = d->GetStoppingDetector()->FindZmin(-1., d->GetMassFormula());
+//            if (zmin) {
+//               d->SetZ(zmin);
+//               d->SetIsIdentified();
+//               // "Identifying" telescope is taken from list of ID telescopes
+//               // to which stopping detector belongs
+//               d->SetIdentifyingTelescope((KVIDTelescope*)d->GetStoppingDetector()->GetIDTelescopes()->At(0));
+//            }
+//         }
+//      }
+//   }
 }
 
 //_____________________________________________________________________________

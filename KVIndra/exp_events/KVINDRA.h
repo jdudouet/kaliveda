@@ -113,6 +113,34 @@ protected:
 #ifdef WITH_MFM
    Bool_t handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatFrame&);
 #endif
+   void SetIDCodeForIDTelescope(KVIDTelescope*) const;
+
+   // The following methods are used by the current implementation of the filter.
+   // They should be removed in future implementations.
+   virtual UShort_t GetBadIDCode()
+   {
+      // return a general identification code for particles badly identified
+      // with this type of ID telescope
+      return IDCodes::NO_IDENTIFICATION;
+   }
+   virtual UShort_t GetCoherencyIDCode()
+   {
+      // return a general identification code for particles identified
+      // with this type of ID telescope after coherency analysis
+      return IDCodes::ID_CI_SI_COHERENCY;
+   }
+   virtual UShort_t GetMultiHitFirstStageIDCode()
+   {
+      // return a general identification code for particles which cannot
+      // be identified correctly due to pile-up in a delta-E detector
+      return IDCodes::ID_CI_MULTIHIT;
+   }
+   virtual UChar_t GetNormalCalibrationCode()
+   {
+      // return a general calibration code for correctly calibrated particles
+      return ECodes::NORMAL_CALIBRATION;
+   }
+
 public:
    enum IDCodes {
       /** \enum KVINDRA::IDCodes
@@ -122,10 +150,14 @@ public:
       ID_STOPPED_IN_FIRST_STAGE = 5, ///< particle stopped in first detector of telescope, only minimum Z can be estimated
       ID_GAMMA = 0, ///< 'gamma' particle detected in CsI
       ID_NEUTRON = 1, ///< 'neutron' discriminated by coherency between CsI and Si-CsI identifications
+      ID_PHOSWICH = 2, ///< particle identified in phoswich (campaigns 1-3)
       ID_CSI_PSA = 2, ///< particle identified in CsI detector by pulse shape analysis
       ID_SI_CSI = 3, ///< particle identified in Si-CsI telescope
+      ID_SI75_SILI = 3, ///< particle identified in Si75-SiLi etalon telescope
+      ID_SILI_CSI = 3, ///< particle identified in SiLi-CsI etalon telescope
       ID_CI_SI = 4, ///< particle identified in ChIo-Si telescope
       ID_CI_CSI = 4, ///< particle identified in ChIo-CsI telescope
+      ID_CI_SI75 = 4, ///< particle identified in ChIo-Si75 etalon telescope
       ID_CI_SI_COHERENCY = 6, ///< particle identified in ChIo-Si telescope in coincidence with light particle identified in CsI
       ID_CI_COHERENCY = 7, ///< particle stopped in ChIo revealed by coherency tests (Zmin)
       ID_CI_MULTIHIT = 8, ///< particles stopped in multiple Si (ring<10) or CsI (ring>9) behind same ChIo, bad identification
@@ -142,6 +174,10 @@ public:
       WARNING_CSI_MAX_ENERGY = 3,    ///< particle calibration OK, although apparent energy would mean punching through the CsI
       BAD_CALIBRATION = 15          ///< calibration attempted but bad result (negative energies etc.)
    };
+   virtual Int_t GetIDCodeForParticlesStoppingInFirstStageOfTelescopes() const
+   {
+      return IDCodes::ID_STOPPED_IN_FIRST_STAGE;
+   }
 
    KVINDRA();
    virtual ~ KVINDRA();

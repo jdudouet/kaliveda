@@ -19,17 +19,11 @@ KVFAZIAIDSiCsI::KVFAZIAIDSiCsI()
 {
    // Default constructor
    SetType("Si-CsI");
-   set_id_code(kSi2CsI);
    fBelowProton = 0;
    fSiThreshold = 0;
    fMaxZ = 16.5;
    fSigmaZ = .4;
 
-}
-
-KVFAZIAIDSiCsI::~KVFAZIAIDSiCsI()
-{
-   // Destructor
 }
 
 //____________________________________________________________________________________

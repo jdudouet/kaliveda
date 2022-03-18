@@ -54,7 +54,7 @@ void KVDataPatch_CorrectEtalonModuleIDCode::ApplyToParticle(KVNucleus* n)
          if (idr->IDcode == kIDCode0) {
             // gamma
             // just set general IDcode gamma and set energy = 0
-            N->SetIdentification(idr);
+            N->SetIdentification(idr, N->GetIdentifyingTelescope());
             N->SetEnergy(0.);
             N->GetParameters()->SetValue("KVDataPatch_CorrectEtalonModuleIDCode", "correction applied");
          }
@@ -64,7 +64,7 @@ void KVDataPatch_CorrectEtalonModuleIDCode::ApplyToParticle(KVNucleus* n)
             KVIdentificationResult ID;
             Bool_t ok = N->CoherencyChIoCsI(ID);
             if (ok) {
-               N->SetIdentification(&ID);
+               N->SetIdentification(&ID, N->GetIdentifyingTelescope());
                N->Calibrate();
                N->GetParameters()->SetValue("KVDataPatch_CorrectEtalonModuleIDCode", "correction applied");
             }

@@ -5,9 +5,6 @@
 #define __KVFAZIAIDSiPSA_H
 
 #include "KVFAZIAIDTelescope.h"
-#include "KVIDZAGrid.h"
-#include "KVFAZIADetector.h"
-#include "KVIDCutLine.h"
 #include "TF1.h"
 
 class KVFAZIAIDSiPSA : public KVFAZIAIDTelescope {
@@ -15,15 +12,8 @@ class KVFAZIAIDSiPSA : public KVFAZIAIDTelescope {
    static TF1* fZThreshold;//! empirical threshold for Z identification
    static TF1* fAThreshold;//! empirical threshold for A identification
 
-   KVIDZAGrid* IGrid;    //! telescope's Imax E grid
-   KVIDZAGrid* QGrid;    //! telescope's Qrise E grid
-   KVFAZIADetector* fSi; //! the silicon detector
-
 public:
    KVFAZIAIDSiPSA();
-   virtual ~KVFAZIAIDSiPSA();
-
-   virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
 
    virtual void Initialize();
 

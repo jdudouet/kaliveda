@@ -30,18 +30,14 @@ class KVIDChIoSi: public KVINDRAIDTelescope {
 
 protected:
 
-   KVIDGChIoSi* ChIoSiGrid;//!
-   KVDetector* fchio;//!
-   KVDetector* fsi;//!
-   Double_t fsipgped;//!
-   Double_t fchiopgped;//!
+   KVIDGChIoSi* ChIoSiGrid = nullptr; //!
+   KVDetector* fchio = nullptr; //!
+   KVDetector* fsi = nullptr; //!
+   Double_t fsipgped = 0; //!
+   Double_t fchiopgped = 0; //!
 
 
 public:
-
-   KVIDChIoSi();
-   virtual ~ KVIDChIoSi();
-
    virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
 
    Double_t GetIDMapX(Option_t* opt = "");

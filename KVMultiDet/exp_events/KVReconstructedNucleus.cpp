@@ -665,11 +665,11 @@ void KVReconstructedNucleus::SetIdentification(KVIdentificationResult* idr, KVID
    // The mass (A) information in KVIdentificationResult is only used if the mass
    // was measured as part of the identification. Otherwise the nucleus' mass formula
    // will be used to calculate A from the measured Z.
-   // The IDTelescope pointer, if given, will be used to modulate the particle's ID code
-   // depending on the nature of the particle's class.
+   //
+   // The identifying telescope is set to idt.
 
-   if (idt) idt->SetIDCode(this, idr->IDcode);
-   else SetIDCode(idr->IDcode);
+   SetIdentifyingTelescope(idt);
+   SetIDCode(idr->IDcode);
    SetZMeasured(idr->Zident);
    SetAMeasured(idr->Aident);
    SetZ(idr->Z);

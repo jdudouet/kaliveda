@@ -1315,7 +1315,7 @@ TFile* KVIDGridManagerGUI::TestIdentificationWithTree(KVIDGraph* gr, const Char_
             if (gr->IsIdentifiable(x, y)) {
                br_isid = 1;
                gr->Identify(x, y, idr);
-               nuc.SetIdentification(idr);
+               nuc.SetIdentification(idr, nullptr);
                br_pid = nuc.GetPID();
                br_idcode = gr->GetQualityCode();
                idmap->SetBinContent(i, j, br_idcode);

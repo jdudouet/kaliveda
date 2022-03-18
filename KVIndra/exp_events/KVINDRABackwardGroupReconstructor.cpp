@@ -40,29 +40,29 @@ void KVINDRABackwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PA
    // we assume they are calibrated after all other particles in group have
    // been identified, calibrated, and their energy contributions removed
    // from the ChIo
-   if (PART->GetIDCode() == 6 || PART->GetIDCode() == 7 || PART->GetIDCode() == 8)
+   if (PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_SI_COHERENCY
+         || PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_COHERENCY
+         || PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_MULTIHIT)
       PART->SetParameter("UseFullChIoEnergyForCalib", kTRUE);
 
-   SETINDRAECODE(PART, 1);
    Bool_t stopped_in_chio = kTRUE;
-   KVCsI* csi = GetCsI(PART);
+   auto csi = GetCsI(PART);
    if (csi) {
       stopped_in_chio = kFALSE;
       if (csi->IsCalibrated() && csi->GetDetectorSignalValue("TotLight") > 0) {
          /* CSI ENERGY CALIBRATION */
-         if (PART->GetIDCode() == 2 && PART->IsIsotope(4, 8)) {
+         if (PART->GetIDCode() == KVINDRA::IDCodes::ID_CSI_PSA && PART->IsIsotope(4, 8)) {
             fECsI = DoBeryllium8Calibration(PART);
          }
          else
             fECsI = csi->GetCorrectedEnergy(PART, -1., kFALSE);
-
-         if (fECsI <= 0) {
-            SetBadCalibrationStatus(PART);// bad - no CsI energy
-            return;
-         }
       }
       else {
          SetNoCalibrationStatus(PART);
+         return;
+      }
+      if (fECsI <= 0 && (PART->GetECode() != KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED)) { // DoBeryllium8Calibration returns fECsI<0 with ECode=SOME_ENERGY_LOSSES_CALCULATED if OK
+         SetBadCalibrationStatus(PART);// problem with CsI energy - no calibration
          return;
       }
    }
@@ -73,7 +73,7 @@ void KVINDRABackwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PA
       //     therefore we have to estimate the ChIo energy for this particle using the CsI energy
       // if fPileupChIo = kTRUE, there appears to be another particle stopped in the ChIo
       //     therefore we have to estimate the ChIo energy for this particle using the CsI energy
-      Double_t ERES = fECsI;
+      Double_t ERES = TMath::Abs(fECsI);
       if (!PART->GetParameters()->GetBoolValue("PileupChIo") &&
             PART->GetParameters()->GetBoolValue("UseFullChIoEnergyForCalib")
             && theChio->IsCalibrated()) {
@@ -88,18 +88,23 @@ void KVINDRABackwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PA
          fEChIo = theChio->GetCorrectedEnergy(PART, -1., ci_transmission);
          if (fEChIo <= 0) {
             if (!stopped_in_chio && ERES > 0) {
-               CalculateChIoDEFromResidualEnergy(PART, ERES);
+               if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
             }
          }
       }
       else {
          if (!stopped_in_chio && ERES > 0) {
-            CalculateChIoDEFromResidualEnergy(PART, ERES);
+            if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
+         }
+         else {
+            // particle stopped in ChIo, no calibration available
+            SetNoCalibrationStatus(PART);
+            return;
          }
       }
    }
 
-   PART->SetEnergy(fECsI + TMath::Abs(fEChIo));
+   PART->SetEnergy(TMath::Abs(fECsI) + TMath::Abs(fEChIo));
 }
 
 Bool_t KVINDRABackwardGroupReconstructor::CoherencyChIoCsI(KVReconstructedNucleus& PART)

@@ -27,15 +27,3 @@ ClassImp(KVIDPhoswich)
 //
 //Identification in Phoswich R-L matrices of INDRA
 //
-
-KVIDPhoswich::KVIDPhoswich()
-{
-   set_id_code(kIDCode_Phoswich);
-   fZminCode = kIDCode_ZminCsI;
-   fECode = kECode1;
-}
-
-KVIDPhoswich::~KVIDPhoswich()
-{
-}
-

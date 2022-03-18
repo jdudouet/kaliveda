@@ -26,15 +26,6 @@ ClassImp(KVIDChIoCsI)
 //Identification in ChIo-CsI matrices of INDRA
 //
 
-KVIDChIoCsI::KVIDChIoCsI()
-{
-   //set ID code for telescope
-   set_id_code(kIDCode_ChIoCsI);
-   fZminCode = kIDCode_ArretChIo;
-   fECode = kECode1;
-}
-
-
 Bool_t KVIDChIoCsI::CheckTheoreticalIdentificationThreshold(KVNucleus* ION, Double_t)
 {
    // Overrides KVIDTelescope method

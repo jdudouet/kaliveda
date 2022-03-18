@@ -55,6 +55,12 @@ protected:
    {
       AbstractMethod("CalibrateCoherencyParticle(KVReconstructedNucleus*)");
    }
+   void SetCalibrationStatus(KVReconstructedNucleus& PART, UShort_t code)
+   {
+      // Set status of particle to 'IsCalibrated' and give the quality code corresponding to the calibration
+      PART.SetIsCalibrated();
+      PART.SetECode(code);
+   }
 
    Double_t GetTargetEnergyLossCorrection(KVReconstructedNucleus* ion);
    TString GetPartSeedCond() const

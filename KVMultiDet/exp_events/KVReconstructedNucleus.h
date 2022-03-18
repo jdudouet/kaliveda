@@ -67,7 +67,15 @@ public:
    virtual void Clear(Option_t* option = "");
    virtual void Reconstruct(KVDetector* kvd);
 
-   void SetIdentification(KVIdentificationResult*, KVIDTelescope* = nullptr);
+   void SetIdentification(KVIdentificationResult*, KVIDTelescope*);
+   void SetIdentifyingTelescope(KVIDTelescope* i)
+   {
+      if (i) {
+         fIDTelescope = i;
+         fIDTelName = i->GetName();
+      }
+      else fIDTelName = "";
+   };
 
    const KVSeqCollection* GetDetectorList() const
    {
@@ -207,15 +215,9 @@ public:
    KVIDTelescope* GetIdentifyingTelescope() const
    {
       return fIDTelescope;
-   };
-   void SetIdentifyingTelescope(KVIDTelescope* i)
-   {
-      fIDTelescope = i;
-      if (i) fIDTelName = i->GetName();
-      else fIDTelName = "";
-   };
+   }
 
-   virtual void SetIDCode(UShort_t s)
+   void SetIDCode(UShort_t s)
    {
       // Set value of parameter "IDCODE"
       GetParameters()->SetValue("IDCODE", (Int_t)s);
@@ -226,7 +228,7 @@ public:
       // If no value set, returns -1
       return GetParameters()->GetIntValue("IDCODE");
    }
-   virtual void SetECode(UChar_t s)
+   void SetECode(UChar_t s)
    {
       // Set value of parameter "ECODE"
       GetParameters()->SetValue("ECODE", (Int_t)s);

@@ -280,6 +280,16 @@ void KVExpSetUp::AcceptAllECodes()
    }
 }
 
+void KVExpSetUp::InitializeIDTelescopes()
+{
+   // Override base method in order to set general identification codes for telescopes in each array
+   TIter next_array(&fMDAList);
+   KVMultiDetArray* mda;
+   while ((mda = (KVMultiDetArray*)next_array())) {
+      mda->InitializeIDTelescopes();
+   }
+}
+
 #ifdef WITH_MFM
 Bool_t KVExpSetUp::handle_raw_data_event_mfmframe(const MFMCommonFrame& mfmframe)
 {

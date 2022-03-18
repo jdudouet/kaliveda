@@ -6,10 +6,7 @@
 
 #include "KVFAZIAIDTelescope.h"
 #include "KVIDZAGrid.h"
-#include "KVFAZIADetector.h"
 #include "KVIDCutLine.h"
-
-
 
 class KVFAZIAIDSiCsI : public KVFAZIAIDTelescope {
 
@@ -19,11 +16,8 @@ protected:
    KVIDCutLine* fBelowProton; //;
    KVIDCutLine* fSiThreshold; //;
 
-
 public:
-
    KVFAZIAIDSiCsI();
-   virtual ~KVFAZIAIDSiCsI();
 
    virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
 

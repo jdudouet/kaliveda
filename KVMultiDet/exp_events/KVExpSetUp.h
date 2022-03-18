@@ -63,6 +63,8 @@ public:
    virtual void AcceptAllIDCodes();
    virtual void AcceptAllECodes();
 
+   virtual void InitializeIDTelescopes();
+
    ClassDef(KVExpSetUp, 1) //Describe an experimental set-up made of several KVMultiDetArray objects
 };
 

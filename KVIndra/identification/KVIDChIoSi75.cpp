@@ -25,11 +25,3 @@ ClassImp(KVIDChIoSi75)
 //Identification in ChIo-Si75 matrices of INDRA
 //
 
-KVIDChIoSi75::KVIDChIoSi75()
-{
-   fECode = kECode1;
-}
-
-KVIDChIoSi75::~KVIDChIoSi75()
-{
-}

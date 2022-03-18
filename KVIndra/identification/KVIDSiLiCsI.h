@@ -27,11 +27,6 @@
  */
 class KVIDSiLiCsI: public KVIDSiCsI {
 
-public:
-
-   KVIDSiLiCsI();
-   virtual ~ KVIDSiLiCsI();
-
    ClassDef(KVIDSiLiCsI, 1)    //INDRA identification using SiLi-CsI matrices
 };
 

@@ -13,8 +13,6 @@ class KVFAZIAIDCsI : public KVFAZIAIDTelescope {
 
 public:
    KVFAZIAIDCsI();
-   virtual ~KVFAZIAIDCsI() {}
-
    virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
    virtual Bool_t CanIdentify(Int_t Z, Int_t /*A*/)
    {

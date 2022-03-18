@@ -47,25 +47,11 @@ KVFAZIAIDSiPSA::KVFAZIAIDSiPSA()
       fAThreshold->SetParameters(-5.14823, 2.03461, 1.55798);
    }
    SetType("SiPSA");
-   set_id_code(kSi1);
    fMaxZ = 18.5;
    fSigmaZ = .4;
 
 }
 
-KVFAZIAIDSiPSA::~KVFAZIAIDSiPSA()
-{
-   // Destructor
-}
-
-Bool_t KVFAZIAIDSiPSA::Identify(KVIdentificationResult* idr, Double_t x, Double_t y)
-{
-   //Particle identification and code setting using identification grid (class KVIDZAFromZGrid).
-
-   Bool_t ok = KVFAZIAIDTelescope::Identify(idr, x, y);
-
-   return ok;
-}
 
 void KVFAZIAIDSiPSA::Initialize()
 {
@@ -76,16 +62,6 @@ void KVFAZIAIDSiPSA::Initialize()
 //printf("Initializing SiPSA\n");
 
    KVIDTelescope::Initialize();
-//   IGrid = (KVIDZAGrid*) GetIDGrid(); // for the moment we defined only Igrids -> to be modified latter
-//   fSi = (KVFAZIADetector*)GetDetector(1);
-//   if (IGrid) {
-//      SetHasMassID(IGrid->HasMassIDCapability());
-//      IGrid->Initialize();
-//      SetBit(kReadyForID);
-//   }
-//   else {
-//      ResetBit(kReadyForID);
-//   }
    if (!gDataSet->HasCalibIdentInfos()) { // for filtering simulations
       SetBit(kReadyForID, GetDetector(1)->IsLabelled("SI1"));// only activate PSA for SI1
       // if not, no particles are identified in SI1-SI2

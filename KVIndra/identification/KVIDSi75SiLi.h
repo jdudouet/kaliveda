@@ -27,11 +27,6 @@
  */
 class KVIDSi75SiLi: public KVINDRAIDTelescope {
 
-public:
-
-   KVIDSi75SiLi();
-   virtual ~ KVIDSi75SiLi();
-
    ClassDef(KVIDSi75SiLi, 1)    //INDRA identification using Si75-Si(Li) matrices
 };
 

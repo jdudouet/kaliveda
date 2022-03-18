@@ -27,11 +27,6 @@
  */
 class KVIDPhoswich: public KVINDRAIDTelescope {
 
-public:
-
-   KVIDPhoswich();
-   virtual ~ KVIDPhoswich();
-
    ClassDef(KVIDPhoswich, 1)   //INDRA identification using Phoswich R-L matrices
 };
 
