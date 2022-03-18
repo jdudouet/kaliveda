@@ -18,16 +18,16 @@ class KVINDRAEtalonGroupReconstructor : public KVINDRABackwardGroupReconstructor
 
 protected:
    Bool_t CoherencyEtalons(KVReconstructedNucleus& PART);
-   KVSi75* GetSi75(KVReconstructedNucleus* n)
+   KVDetector* GetSi75(KVReconstructedNucleus* n)
    {
-      return (KVSi75*)n->GetReconstructionTrajectory()->GetDetector("SI75");
+      return n->GetReconstructionTrajectory()->GetDetector("SI75");
    }
-   KVSiLi* GetSiLi(KVReconstructedNucleus* n)
+   KVDetector* GetSiLi(KVReconstructedNucleus* n)
    {
-      return (KVSiLi*)n->GetReconstructionTrajectory()->GetDetector("SILI");
+      return n->GetReconstructionTrajectory()->GetDetector("SILI");
    }
-   void CalculateSiLiDEFromResidualEnergy(Double_t ERES, KVSiLi* sili, KVReconstructedNucleus* n);
-   void CalculateSi75DEFromResidualEnergy(Double_t ERES, KVSi75* si75, KVReconstructedNucleus* n);
+   Bool_t CalculateSiLiDEFromResidualEnergy(Double_t ERES, KVDetector* sili, KVReconstructedNucleus* n);
+   Bool_t CalculateSi75DEFromResidualEnergy(Double_t ERES, KVDetector* si75, KVReconstructedNucleus* n);
 public:
    KVINDRAEtalonGroupReconstructor() {}
    virtual ~KVINDRAEtalonGroupReconstructor() {}

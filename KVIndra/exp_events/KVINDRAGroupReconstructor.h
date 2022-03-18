@@ -5,19 +5,7 @@
 #define __KVINDRAGROUPRECONSTRUCTOR_H
 
 #include "KVGroupReconstructor.h"
-#include "KVChIo.h"
-#include "KVCsI.h"
-#include "KVINDRAReconNuc.h"
-
-#define SETINDRAECODE(n,x) if(n->InheritsFrom("KVINDRAReconNuc")) \
-      n->SetECode(kECode##x); \
-   else \
-      n->SetECode(x)
-#define SETINDRAIDCODE(n,x) if(n->InheritsFrom("KVINDRAReconNuc")) \
-      n->SetIDCode(kIDCode##x); \
-   else \
-      n->SetIDCode(x)
-
+#include "KVINDRA.h"
 
 /**
 \class KVINDRAGroupReconstructor
@@ -28,32 +16,34 @@
 class KVINDRAGroupReconstructor : public KVGroupReconstructor {
 
 protected:
-   KVChIo* theChio;                 // the ChIo of the group
+   KVDetector* theChio;                 // the ChIo of the group
    Double_t fECsI, fESi, fEChIo;
    bool print_part;//debug
 
    void SetBadCalibrationStatus(KVReconstructedNucleus* n)
    {
-      SETINDRAECODE(n, 15);
-      n->SetEnergy(-1.0);
+      n->SetIsUncalibrated();
+      n->SetECode(KVINDRA::ECodes::BAD_CALIBRATION);
+      n->SetEnergy(0);
    }
    void SetNoCalibrationStatus(KVReconstructedNucleus* n)
    {
-      SETINDRAECODE(n, 0);
-      n->SetEnergy(0.0);
+      n->SetIsUncalibrated();
+      n->SetECode(KVINDRA::ECodes::NO_CALIBRATION_ATTEMPTED);
+      n->SetEnergy(0);
    }
 
    double DoBeryllium8Calibration(KVReconstructedNucleus* n);
    void CheckCsIEnergy(KVReconstructedNucleus* n);
-   KVCsI* GetCsI(KVReconstructedNucleus* n)
+   KVDetector* GetCsI(KVReconstructedNucleus* n)
    {
-      return (KVCsI*)n->GetReconstructionTrajectory()->GetDetector("CSI");
+      return n->GetReconstructionTrajectory()->GetDetector("CSI");
    }
 
-   void CalculateChIoDEFromResidualEnergy(KVReconstructedNucleus* n, Double_t ERES);
+   Bool_t CalculateChIoDEFromResidualEnergy(KVReconstructedNucleus* n, Double_t ERES);
 
    /// TO BE IMPLEMENTED!!!
-   void CalibrateCoherencyParticle(KVReconstructedNucleus*, KVReconstructedNucleus*) {}
+   void CalibrateCoherencyParticle(KVReconstructedNucleus*) {}
 
 public:
    KVINDRAGroupReconstructor() {}
@@ -62,7 +52,7 @@ public:
    void SetGroup(KVGroup* g)
    {
       KVGroupReconstructor::SetGroup(g);
-      theChio = (KVChIo*)g->GetDetectorByType("CI");
+      theChio = g->GetDetectorByType("CI");
    }
 
    KVReconstructedNucleus* ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);
@@ -73,7 +63,7 @@ public:
 
    virtual bool DoCoherencyAnalysis(KVReconstructedNucleus&) = 0;
 
-   virtual void DoCalibration(KVReconstructedNucleus*) {}
+   virtual void DoCalibration(KVReconstructedNucleus*) = 0;
 
    ClassDef(KVINDRAGroupReconstructor, 1) //Reconstruct particles in INDRA groups
 };

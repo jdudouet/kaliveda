@@ -5,7 +5,6 @@
 #include <KVIDGCsI.h>
 #include <KVIDINDRACsI.h>
 #include <KVINDRADetector.h>
-#include "KVINDRACodeMask.h"
 
 ClassImp(KVINDRAGroupReconstructor)
 
@@ -17,19 +16,42 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
    // but do not reconstruct a particle.
 
    if (node->GetDetector()->IsType("CSI")) {
+      ///Info("ReconstructTrajectory","Checking %s...", node->GetName());
       if (node->GetDetector()->Fired(GetPartSeedCond())) {
+         //Info("ReconstructTrajectory","...fired");
          ++nfireddets;
          KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType("CSI_R_L");
          if (idt) {
+            //Info("ReconstructTrajectory","...found CSI_R_L id");
             KVIdentificationResult idr;
             if (idt->IsReadyForID()) {
+               //Info("ReconstructTrajectory","...it is ready");
                idt->Identify(&idr);
-               if (idr.IDOK && idr.IDcode == kIDCode0) {
+               if (idr.IDOK && idr.IDquality == KVIDGCsI::kICODE10) { // gamma in CsI
+                  //Info("ReconstructTrajectory","...GAMMA REJECTION");
                   GetEventFragment()->GetParameters()->IncrementValue("INDRA_GAMMA_MULT", 1);
                   GetEventFragment()->GetParameters()->IncrementValue("INDRA_GAMMA_DETS", node->GetName());
                   node->GetDetector()->SetAnalysed();
                   return nullptr;
                }
+               //Info("ReconstructTrajectory","ID result: IDOK:%d IDquality:%d IDcode:%d Z:%d A:%d",
+               //     idr.IDOK, idr.IDquality, idr.IDcode, idr.Z, idr.A);
+               //node->GetDetector()->Print("data");
+               // if we arrive here, CSI_R_L identification for the particle has been performed and
+               // the result is not a gamma (which are rejected; no particle is reconstructed).
+               // as the coordinates in the identification map are randomized (KVACQParamSignal),
+               // we do not want to perform a second identification attempt in KVINDRAGroupReconstructor::IdentifyParticle:
+               // the results may not be the same, and for particles close to the threshold a charged particle
+               // identified here may be subsequently identified as a gamma in a second identification attempt,
+               // leading to the incoherency that there are gamma particles (IDcode=KVINDRA::IDCodes::ID_GAMMA)
+               // in the final reconstructed event.
+               // therefore in this case we add a new particle to the event, and copy the results of this
+               // first identification into the particle, with IDR->IDattempted=true, so that in
+               // KVINDRAGroupReconstructor::IdentifyParticle the CSI identification will not be redone.
+               auto new_part = GetEventFragment()->AddParticle();
+               //idr.IDattempted=true;
+               *(new_part->GetIdentificationResult(1)) = idr;
+               return new_part;
             }
          }
          return GetEventFragment()->AddParticle();
@@ -41,19 +63,29 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
 
 void KVINDRAGroupReconstructor::Identify()
 {
+   static int i = 0;
    KVGroupReconstructor::Identify();
    for (KVEvent::Iterator it = GetEventFragment()->begin(); it != GetEventFragment()->end(); ++it) {
+
       KVReconstructedNucleus* d = it.get_pointer<KVReconstructedNucleus>();
-      if (d->IsIdentified() && d->GetStatus() == KVReconstructedNucleus::kStatusStopFirstStage) {
-         if (d->GetIdentifyingTelescope()) {
-            d->GetIdentifyingTelescope()->SetIDCode(d, kIDCode5);
+
+      if (!d->IsIdentified()) d->SetIDCode(KVINDRA::IDCodes::NO_IDENTIFICATION); // unidentifiable particle
+      else {
+         if (d->GetIDCode() == KVINDRA::IDCodes::ID_CSI_PSA && d->GetZ() == 0) {
+            ++i;
+            std::cout << "\n\n";
+            std::cout << "    GAMMA #" << i << "\n\n";
+            d->Print();
+            std::cout << "\n\n";
+            auto traj = (KVGeoDNTrajectory*)d->GetStoppingDetector()->GetNode()->GetTrajectories()->First();
+            KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType("CSI_R_L");
+            std::cout << idt << std::endl;
+            std::cout << "Type: " << d->GetStoppingDetector()->GetType() << std::endl;
+            std::cout << "Fired: " << d->GetStoppingDetector()->Fired(GetPartSeedCond()) << std::endl;
+            std::cout << "ReadyforID: " << d->GetIdentifyingTelescope()->IsReadyForID() << std::endl;
+            std::cout << "\n\n";
+            exit(1);
          }
-         else {
-            SETINDRAIDCODE(d, 5);
-         }
-      }
-      else if (!d->IsIdentified()) {
-         SETINDRAIDCODE(d, 14); // unidentifiable particle
       }
    }
 }
@@ -90,7 +122,6 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
    if (ok) { // identification may change here due to coherency analysis
       PART.SetIsIdentified();
-      PART.SetIdentifyingTelescope(identifying_telescope);
       PART.SetIdentification(&partID, identifying_telescope);
    } // if not ok, do we need to unset any previously identified particle?
 
@@ -105,7 +136,7 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
          Int_t grid_code = partID.IDquality;
          if (grid_code == KVIDGCsI::kICODE4 || grid_code == KVIDGCsI::kICODE5) {
-            partID.IDcode = kIDCode10;
+            partID.IDcode = KVINDRA::IDCodes::ID_CSI_MASS_OUT_OF_RANGE;
             PART.SetIdentification(&partID, identifying_telescope);
          }
 
@@ -117,7 +148,7 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       /******* UNIDENTIFIED PARTICLES *******/
 
       /*** general ID code for non-identified particles ***/
-      SETINDRAIDCODE((&PART), 14);
+      PART.SetIDCode(KVINDRA::IDCodes::NO_IDENTIFICATION);
 #ifndef WITH_CPP11
       std::map<std::string, KVIdentificationResult*>::iterator csirl = id_by_type.find("CSI_R_L");
 #else
@@ -126,14 +157,24 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       if (csirl != id_by_type.end()) {
          //Particles remaining unidentified are checked: if their identification in CsI R-L gave subcodes 6 or 7
          //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
+         //
+         //Particles with ID code = 2 with subcodes 4 & 5 (masse hors limite superieure/inferieure) are relabelled
+         //with kIDCode10 (identification entre les lignes CsI)
+         //
          //Their "identifying" telescope is set to the CsI ID telescope
          if (csirl->second->IDattempted) {
             if (csirl->second->IDquality == KVIDGCsI::kICODE6 || csirl->second->IDquality == KVIDGCsI::kICODE7) {
                PART.SetIsIdentified();
-               csirl->second->IDcode = kIDCode9;
+               csirl->second->IDcode = KVINDRA::IDCodes::ID_CSI_FRAGMENT;
                partID = *(csirl->second);
                identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("CSI_R_L");
-               PART.SetIdentifyingTelescope(identifying_telescope);
+               PART.SetIdentification(&partID, identifying_telescope);
+            }
+            else if (csirl->second->IDquality == KVIDGCsI::kICODE4 || csirl->second->IDquality == KVIDGCsI::kICODE5) {
+               PART.SetIsIdentified();
+               csirl->second->IDcode = KVINDRA::IDCodes::ID_CSI_MASS_OUT_OF_RANGE;
+               partID = *(csirl->second);
+               identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("CSI_R_L");
                PART.SetIdentification(&partID, identifying_telescope);
             }
          }
@@ -142,14 +183,25 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
    }
 }
 
-void KVINDRAGroupReconstructor::CalculateChIoDEFromResidualEnergy(KVReconstructedNucleus* n, Double_t ERES)
+Bool_t KVINDRAGroupReconstructor::CalculateChIoDEFromResidualEnergy(KVReconstructedNucleus* n, Double_t ERES)
 {
    // calculate fEChIo from residual energy
+   //
+   // returns kFALSE if it doesn't work, and sets particle bad calibration status
+   //
+   // returns kTRUE if it works, and sets calib status to SOME_ENERGY_LOSSES_CALCULATED
+
    Double_t e0 = theChio->GetDeltaEFromERes(n->GetZ(), n->GetA(), ERES);
    theChio->SetEResAfterDetector(ERES);
    fEChIo = theChio->GetCorrectedEnergy(n, e0);
+   if (fEChIo <= 0) {
+      SetBadCalibrationStatus(n);
+      fEChIo = 0;
+      return kFALSE;
+   }
    fEChIo = -TMath::Abs(fEChIo);
-   SETINDRAECODE(n, 2);
+   n->SetECode(KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
+   return kTRUE;
 }
 
 void KVINDRAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
@@ -163,9 +215,14 @@ void KVINDRAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
 
    print_part = false;
 
-   if (PART->GetIDCode() != 9) DoCalibration(PART);
+   SetNoCalibrationStatus(PART);
 
-   PART->SetIsCalibrated();
+   if (PART->GetIDCode() != KVINDRA::IDCodes::ID_CSI_FRAGMENT && PART->GetIDCode() != KVINDRA::IDCodes::ID_CSI_MASS_OUT_OF_RANGE) {
+      // this status may be modified depending on what happens in DoCalibration
+      SetCalibrationStatus(*PART, KVINDRA::ECodes::NORMAL_CALIBRATION);
+      DoCalibration(PART);
+   }
+
    PART->SetParameter("INDRA.ECHIO", fEChIo);
    PART->SetParameter("INDRA.ESI", fESi);
    PART->SetParameter("INDRA.ECSI", fECsI);
@@ -191,12 +248,17 @@ double KVINDRAGroupReconstructor::DoBeryllium8Calibration(KVReconstructedNucleus
    // Then multiply resulting energy by 2
    // Note: fECsI is -ve, because energy is calculated not measured
 
-   KVCsI* csi = GetCsI(n);
+   auto csi = GetCsI(n);
    Double_t half_light = csi->GetDetectorSignalValue("TotLight") * 0.5;
    KVNucleus tmp(2, 4);
-   double ecsi = -2.*csi->GetCorrectedEnergy(&tmp, half_light, kFALSE);
-   SETINDRAECODE(n, 2);
-   return ecsi;
+   double ecsi = 2.*csi->GetCorrectedEnergy(&tmp, half_light, kFALSE);
+   if (ecsi > 0) {
+      SetCalibrationStatus(*n, KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
+      // calculated energy returned as negative value
+      return -ecsi;
+   }
+   else SetBadCalibrationStatus(n);
+   return 0;
 }
 
 void KVINDRAGroupReconstructor::CheckCsIEnergy(KVReconstructedNucleus* n)
@@ -204,12 +266,12 @@ void KVINDRAGroupReconstructor::CheckCsIEnergy(KVReconstructedNucleus* n)
    // Check calculated CsI energy loss of particle.
    // If it is greater than the maximum theoretical energy loss
    // (depending on the length of CsI, the Z & A of the particle)
-   // we set the energy calibration code to kECode3 (historical VEDA code
+   // we set the energy calibration code to 3 (historical VEDA code
    // for particles with E_csi > E_max_csi)
 
    KVDetector* csi = GetCsI(n);
    if (csi && (n->GetZ() > 0) && (n->GetZ() < 3) && (csi->GetDetectorSignalValue("Energy", Form("Z=%d,A=%d", n->GetZ(), n->GetA())) > csi->GetMaxDeltaE(n->GetZ(), n->GetA()))) {
-      SETINDRAECODE(n, 3);
+      n->SetECode(KVINDRA::ECodes::WARNING_CSI_MAX_ENERGY);
    }
 }
 

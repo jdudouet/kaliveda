@@ -2,11 +2,11 @@
 //Author: John Frankland,,,
 
 #include "KVINDRAEtalonGroupReconstructor.h"
-#include "KVINDRACodeMask.h"
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <KVSilicon.h>
+#include "KVIDGCsI.h"
 using namespace std;
 
 ClassImp(KVINDRAEtalonGroupReconstructor)
@@ -34,7 +34,7 @@ KVReconstructedNucleus* KVINDRAEtalonGroupReconstructor::ReconstructTrajectory(c
       KVIDTelescope* idt;
       bool with_etalon = (traj->GetN() == 4);
 
-      std::map<std::string, KVIdentificationResult> IDR;
+      std::unordered_map<std::string, KVIdentificationResult> IDR;
       while ((idt = (KVIDTelescope*)next_idt())) {
          if (idt->IsReadyForID()) { // is telescope able to identify for this run ?
             IDR[idt->GetType()].IDattempted = kTRUE;
@@ -54,7 +54,7 @@ KVReconstructedNucleus* KVINDRAEtalonGroupReconstructor::ReconstructTrajectory(c
       KVIdentificationResult&  idcsi = IDR["CSI_R_L"];
       if (idcsi.IDattempted) {
          if (idcsi.IDOK) {
-            if (idcsi.IDcode == kIDCode0) {
+            if (idcsi.IDcode == KVINDRA::IDCodes::ID_GAMMA || idcsi.IDquality == KVIDGCsI::kICODE10) {
                // gamma
                //Info("ReconstructTrajectory","Gamma in CsI: with_etalon=%d",with_etalon);
                GetEventFragment()->GetParameters()->IncrementValue("INDRA_GAMMA_MULT", 1);
@@ -110,37 +110,37 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
    // we assume they are calibrated after all other particles in group have
    // been identified, calibrated, and their energy contributions removed
    // from the ChIo
-   if (PART->GetIDCode() == 6 || PART->GetIDCode() == 7 || PART->GetIDCode() == 8)
+   if (PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_SI_COHERENCY
+         || PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_COHERENCY
+         || PART->GetIDCode() == KVINDRA::IDCodes::ID_CI_MULTIHIT)
       PART->SetParameter("UseFullChIoEnergyForCalib", kTRUE);
 
-   SETINDRAECODE(PART, 1);
    Bool_t stopped_in_chio = kTRUE;
-   KVCsI* csi = GetCsI(PART);
+   auto csi = GetCsI(PART);
    if (csi) {
       stopped_in_chio = kFALSE;
       if (csi->IsCalibrated()) {
          /* CSI ENERGY CALIBRATION */
-         if (PART->GetIDCode() == 2 && PART->IsIsotope(4, 8)) {
+         if (PART->GetIDCode() == KVINDRA::IDCodes::ID_CSI_PSA && PART->IsIsotope(4, 8)) {
             fECsI = DoBeryllium8Calibration(PART);
          }
          else
             fECsI = csi->GetCorrectedEnergy(PART, -1., kFALSE);
-
-         if (fECsI <= 0) {
-            SetBadCalibrationStatus(PART);// bad - no CsI energy
-            return;
-         }
       }
       else {
          SetNoCalibrationStatus(PART);
          return;
       }
+      if (fECsI <= 0 && (PART->GetECode() != KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED)) { // DoBeryllium8Calibration returns fECsI<0 with ECode=SOME_ENERGY_LOSSES_CALCULATED if OK
+         SetBadCalibrationStatus(PART);// problem with CsI energy - no calibration
+         return;
+      }
    }
    if (PART->GetParameters()->GetBoolValue("IncludeEtalonsInCalibration")) {
-      KVSiLi* sili = GetSiLi(PART);
+      auto sili = GetSiLi(PART);
       if (sili) {
          bool stopped_in_sili = PART->GetStoppingDetector()->IsType("SILI");
-         Double_t ERES = fECsI;
+         Double_t ERES = TMath::Abs(fECsI);
          if (!PART->GetParameters()->GetBoolValue("PileupSiLi") && sili->IsCalibrated()) {
             Bool_t si_transmission = kTRUE;
             if (stopped_in_sili) {
@@ -152,7 +152,7 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
             fESiLi = sili->GetCorrectedEnergy(PART, -1., si_transmission);
             if (fESiLi <= 0) {
                if (!stopped_in_sili && ERES > 0.0) {
-                  CalculateSiLiDEFromResidualEnergy(ERES, sili, PART);
+                  if (!CalculateSiLiDEFromResidualEnergy(ERES, sili, PART)) return;
                }
                else {
                   SetBadCalibrationStatus(PART);
@@ -161,13 +161,13 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
             }
          }
          else {
-            CalculateSiLiDEFromResidualEnergy(ERES, sili, PART);
+            if (!CalculateSiLiDEFromResidualEnergy(ERES, sili, PART)) return;
          }
       }
-      KVSi75* si75 = GetSi75(PART);
+      auto si75 = GetSi75(PART);
       if (si75) {
          bool stopped_in_si75 = PART->GetStoppingDetector()->IsType("SI75");
-         Double_t ERES = fECsI + TMath::Abs(fESiLi);
+         Double_t ERES = TMath::Abs(fECsI) + TMath::Abs(fESiLi);
          if (!PART->GetParameters()->GetBoolValue("PileupSi75")
                && !PART->GetParameters()->GetBoolValue("PileupSiLi")
                && si75->IsCalibrated()) {
@@ -181,7 +181,7 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
             fESi75 = si75->GetCorrectedEnergy(PART, -1., si_transmission);
             if (fESi75 <= 0) {
                if (!stopped_in_si75 && ERES > 0.0) {
-                  CalculateSi75DEFromResidualEnergy(ERES, si75, PART);
+                  if (!CalculateSi75DEFromResidualEnergy(ERES, si75, PART)) return;
                }
                else {
                   SetBadCalibrationStatus(PART);
@@ -190,7 +190,7 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
             }
          }
          else {
-            CalculateSi75DEFromResidualEnergy(ERES, si75, PART);
+            if (!CalculateSi75DEFromResidualEnergy(ERES, si75, PART)) return;
          }
       }
    }
@@ -200,7 +200,7 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
       //     therefore we have to estimate the ChIo energy for this particle using the CsI energy
       // if fPileupChIo = kTRUE, there appears to be another particle stopped in the ChIo
       //     therefore we have to estimate the ChIo energy for this particle using the CsI energy
-      Double_t ERES = fECsI + TMath::Abs(fESiLi) + TMath::Abs(fESi75);
+      Double_t ERES = TMath::Abs(fECsI) + TMath::Abs(fESiLi) + TMath::Abs(fESi75);
       if (!PART->GetParameters()->GetBoolValue("PileupChIo")
             && PART->GetParameters()->GetBoolValue("UseFullChIoEnergyForCalib")
             && theChio->IsCalibrated()) {
@@ -215,20 +215,18 @@ void KVINDRAEtalonGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART
          fEChIo = theChio->GetCorrectedEnergy(PART, -1., ci_transmission);
          if (fEChIo <= 0) {
             if (!stopped_in_chio && ERES > 0) {
-               CalculateChIoDEFromResidualEnergy(PART, ERES);
+               if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
             }
          }
       }
       else {
          if (!stopped_in_chio && ERES > 0) {
-            CalculateChIoDEFromResidualEnergy(PART, ERES);
+            if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
          }
       }
    }
 
-
-   PART->SetEnergy(fECsI + TMath::Abs(fESiLi) + TMath::Abs(fESi75) + TMath::Abs(fEChIo));
-
+   PART->SetEnergy(TMath::Abs(fECsI) + TMath::Abs(fESiLi) + TMath::Abs(fESi75) + TMath::Abs(fEChIo));
 }
 
 Bool_t KVINDRAEtalonGroupReconstructor::CoherencyEtalons(KVReconstructedNucleus& PART)
@@ -342,24 +340,36 @@ Bool_t KVINDRAEtalonGroupReconstructor::CoherencyEtalons(KVReconstructedNucleus&
    return kFALSE;
 }
 
-void KVINDRAEtalonGroupReconstructor::CalculateSiLiDEFromResidualEnergy(Double_t ERES, KVSiLi* sili, KVReconstructedNucleus* n)
+Bool_t KVINDRAEtalonGroupReconstructor::CalculateSiLiDEFromResidualEnergy(Double_t ERES, KVDetector* sili, KVReconstructedNucleus* n)
 {
    // Etalon modules
    // calculate fESiLi from residual CsI energy
    Double_t e0 = sili->GetDeltaEFromERes(n->GetZ(), n->GetA(), ERES);
    sili->SetEResAfterDetector(ERES);
    fESiLi = sili->GetCorrectedEnergy(n, e0);
+   if (fESiLi <= 0) {
+      fESiLi = 0;
+      SetBadCalibrationStatus(n);
+      return kFALSE;
+   }
    fESiLi = -TMath::Abs(fESiLi);
-   SETINDRAECODE(n, 2);
+   SetCalibrationStatus(*n, KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
+   return kTRUE;
 }
 
-void KVINDRAEtalonGroupReconstructor::CalculateSi75DEFromResidualEnergy(Double_t ERES, KVSi75* si75, KVReconstructedNucleus* n)
+Bool_t KVINDRAEtalonGroupReconstructor::CalculateSi75DEFromResidualEnergy(Double_t ERES, KVDetector* si75, KVReconstructedNucleus* n)
 {
    // Etalon modules
    // calculate fESi75 from residual CsI+SiLi energy
    Double_t e0 = si75->GetDeltaEFromERes(n->GetZ(), n->GetA(), ERES);
    si75->SetEResAfterDetector(ERES);
    fESi75 = si75->GetCorrectedEnergy(n, e0);
+   if (fESi75 <= 0) {
+      fESi75 = 0;
+      SetBadCalibrationStatus(n);
+      return kFALSE;
+   }
    fESi75 = -TMath::Abs(fESi75);
-   SETINDRAECODE(n, 2);
+   SetCalibrationStatus(*n, KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
+   return kTRUE;
 }

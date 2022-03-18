@@ -320,19 +320,6 @@ public:
    {
       return fCodes;
    }
-   virtual void SetIDCode(UShort_t code_mask)
-   {
-      // Sets code for identification
-      GetCodes().SetIDCode(code_mask);
-      KVReconstructedNucleus::SetIDCode(GetCodes().GetVedaIDCode());
-   }
-
-   virtual void SetECode(UChar_t code_mask)
-   {
-      //Sets code for energy calibration
-      GetCodes().SetECode(code_mask);
-      KVReconstructedNucleus::SetECode(GetCodes().GetVedaECode());
-   }
    virtual Int_t GetIDCode() const
    {
       // Returns value of VEDA ID code

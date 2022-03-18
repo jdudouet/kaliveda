@@ -37,11 +37,16 @@ bool KVINDRAForwardGroupReconstructor::DoCoherencyAnalysis(KVReconstructedNucleu
 void KVINDRAForwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PART)
 {
    // Special calibration for particles in rings 1 to 9
-   // We set the energy calibration code for the particle here
-   //    kECode0 = no calibration
-   //    kECode1 = everything OK
-   //    kECode2 = small warning, for example if energy loss in a detector is calculated
-   //    kECode15 = bad, calibration is no good
+   // We set the energy calibration code for the particle here:
+   //
+   //~~~{.cpp}
+   //   KVINDRA::ECodes::NO_CALIBRATION_ATTEMPTED = 0, ///< particle stopped in detectors with no available calibration
+   //   KVINDRA::ECodes::NORMAL_CALIBRATION = 1,       ///< normal well-calibrated particle with no problems
+   //   KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED = 2, ///< particle calibration OK, with some detector energies calculated
+   //   KVINDRA::ECodes::WARNING_CSI_MAX_ENERGY = 3,    ///< particle calibration OK, although apparent energy would mean punching through the CsI
+   //   KVINDRA::ECodes::BAD_CALIBRATION = 15          ///< calibration attempted but bad result (negative energies etc.)
+   //~~~
+   //
    // The contributions from ChIo, Si, and CsI are stored in particle parameters
    // INDRA.ECHIO, INDRA.ESI and INDRA.ECSI
    // If the contribution is calculated rather than measured (see below), it is stored as a negative value.
@@ -73,21 +78,19 @@ void KVINDRAForwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PAR
    bool fPileup = PART->GetParameters()->GetBoolValue("Pileup");
    bool fCoherent = PART->GetParameters()->GetBoolValue("Coherent");
 
-   if (PART->GetIDCode() == 1) { // neutrons
+   if (PART->GetIDCode() == KVINDRA::IDCodes::ID_NEUTRON) { // neutrons
       DoNeutronCalibration(PART);
       return;
    }
 
-   SETINDRAECODE(PART, 1);
-
    Bool_t stopped_in_silicon = kTRUE;
 
-   KVCsI* csi = GetCsI(PART);
+   auto csi = GetCsI(PART);
    if (csi) {
       stopped_in_silicon = kFALSE;
       if (csi->IsCalibrated() && csi->GetDetectorSignalValue("TotLight") > 0) {
          /* CSI ENERGY CALIBRATION */
-         if (PART->GetIDCode() == 2 && PART->IsIsotope(4, 8)) {
+         if (PART->GetIDCode() == KVINDRA::IDCodes::ID_CSI_PSA && PART->IsIsotope(4, 8)) {
             fECsI = DoBeryllium8Calibration(PART);
          }
          else
@@ -97,19 +100,28 @@ void KVINDRAForwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PAR
          SetNoCalibrationStatus(PART);// no CsI calibration - no calibration performed
          return;
       }
-      if (PART->GetECode() == 1 && fECsI <= 0) { // for kECode2, fECsI is always <0
-         //Info("Calib", "ECsI = %f",fECsI);
+      if (fECsI <= 0 && (PART->GetECode() != KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED)) { // DoBeryllium8Calibration returns fECsI<0 with ECode=SOME_ENERGY_LOSSES_CALCULATED if OK
          SetBadCalibrationStatus(PART);// problem with CsI energy - no calibration
          return;
       }
    }
-   KVSilicon* si = GetSi(PART);
+   auto si = GetSi(PART);
    if (si) {
       /* SILICIUM ENERGY CONTRIBUTION */
       // if fPileup = kTRUE, the Silicon energy appears to include a contribution from another particle
       //     therefore we have to estimate the silicon energy for this particle using the CsI energy
       // if fCoherent = kFALSE, the Silicon energy is too small to be consistent with the CsI identification,
       //     therefore we have to estimate the silicon energy for this particle using the CsI energy
+
+      if (PART->GetIDCode() == KVINDRA::IDCodes::ID_STOPPED_IN_FIRST_STAGE && stopped_in_silicon) {
+         // particles stopped in Silicon detectors with no identification except estimation of Zmin (case of INDRA without Ionization Chambers):
+         // if silicon is calibrated, give measured energy in silicon as particle energy
+         if (si->IsCalibrated())
+            PART->SetEnergy(si->GetEnergy());
+         else
+            SetNoCalibrationStatus(PART);
+         return;
+      }
 
       if (!fPileup && fCoherent && si->IsCalibrated()) {
          // all is apparently well. use full energy deposited in silicon.
@@ -163,13 +175,13 @@ void KVINDRAForwardGroupReconstructor::DoCalibration(KVReconstructedNucleus* PAR
          if (fEChIo < 0.) {
             // bad chio calibration
             if (!PART->GetStoppingDetector()->IsType("CI") && (ERES > 0.0)) {
-               CalculateChIoDEFromResidualEnergy(PART, ERES);
+               if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
             }
          }
       }
       else {
-         if (!PART->GetStoppingDetector()->IsType("CI")) {
-            CalculateChIoDEFromResidualEnergy(PART, ERES);
+         if (!PART->GetStoppingDetector()->IsType("CI") && (ERES > 0.0)) {
+            if (!CalculateChIoDEFromResidualEnergy(PART, ERES)) return;
          }
          else {
             // particle stopped in ChIo, no calibration available
@@ -188,11 +200,11 @@ void KVINDRAForwardGroupReconstructor::DoNeutronCalibration(KVReconstructedNucle
    // to calculate the energy deposited by the neutron
    KVIdentificationResult* IDcsi = PART->GetIdentificationResult(1);
    KVNucleus tmp(IDcsi->Z, IDcsi->A);
-   KVCsI* csi = GetCsI(PART);
+   auto csi = GetCsI(PART);
    if (csi && csi->IsCalibrated()) {
       fECsI = csi->GetCorrectedEnergy(&tmp, -1., kFALSE);
       PART->SetEnergy(fECsI);
-      SETINDRAECODE(PART, 2); // not a real energy measure
+      SetCalibrationStatus(*PART, KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // not a real energy measure
    }
    else
       SetNoCalibrationStatus(PART);
@@ -316,7 +328,7 @@ Bool_t KVINDRAForwardGroupReconstructor::CoherencySiCsI(KVReconstructedNucleus& 
             partID.Aident = kTRUE;
             partID.Z = 0;
             partID.A = 1;
-            partID.IDcode = kIDCode1; // general code for neutrons
+            partID.IDcode = KVINDRA::IDCodes::ID_NEUTRON; // general code for neutrons
             PART.SetParameter("Coherent", fCoherent);
             PART.SetParameter("Pileup", fPileup);
             return kTRUE;
@@ -501,23 +513,30 @@ Bool_t KVINDRAForwardGroupReconstructor::CoherencySiCsI(KVReconstructedNucleus& 
    return kFALSE;
 }
 
-Bool_t
-KVINDRAForwardGroupReconstructor::CalculateSiliconDEFromResidualEnergy(KVReconstructedNucleus* n, KVSilicon* si)
+Bool_t KVINDRAForwardGroupReconstructor::CalculateSiliconDEFromResidualEnergy(KVReconstructedNucleus* n, KVDetector* si)
 {
    // calculate fESi from fECsI
    // returns kTRUE if OK
+   //
+   // this sets directly the value of fESi
+   //
+   // if result is not good, bad calibration status is set for particle and we return false: in this case fESi=0
+   //
+   // if result is good, particle calibration status set to SOME_ENERGY_LOSSES_CALCULATED and fESi<0
+
    Double_t e0 = si->GetDeltaEFromERes(n->GetZ(), n->GetA(), TMath::Abs(fECsI));
    si->SetEResAfterDetector(TMath::Abs(fECsI));
    fESi = si->GetCorrectedEnergy(n, e0);
    if (fESi <= 0) {
       // can't calculate fESi from CsI energy - bad
       SetBadCalibrationStatus(n);
+      fESi = 0;
       return kFALSE;
    }
    else {
       // calculated energy: negative
       fESi = -TMath::Abs(fESi);
-      SETINDRAECODE(n, 2);
+      SetCalibrationStatus(*n, KVINDRA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
    }
    return kTRUE;
 }
