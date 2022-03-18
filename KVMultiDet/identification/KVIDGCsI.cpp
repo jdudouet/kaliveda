@@ -68,7 +68,8 @@ void KVIDGCsI::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) con
 {
    // Set Z and A of nucleus based on position in R-L grid
    // The identification of gammas (kICODE10) and charged particles is performed
-   // Note:
+   //
+   // ### Note
    //  for isotopically identified particles, the integer A (KVNucleus::GetA) is the mass assigned to the closest line
    //  [unless the closest line is the IMF line, in which case we use the closest identifier line],
    //  whereas the floating-point A (KVReconstructedNucleus::GetRealA) is calculated by interpolation.

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "KVIDINDRACsI.h"
-#include "KVINDRACodeMask.h"
 #include "TMath.h"
 #include "KVIdentificationResult.h"
 #include <KVIDGCsI.h>
@@ -33,9 +32,6 @@ ClassImp(KVIDINDRACsI)
 
 KVIDINDRACsI::KVIDINDRACsI()
 {
-   set_id_code(kIDCode_CsI);
-   fZminCode = kIDCode_ZminCsI;
-   fECode = kECode1;
    CsIGrid = 0;
 
    fThresMin[0][0] = 1;
@@ -63,7 +59,19 @@ KVIDINDRACsI::KVIDINDRACsI()
 
 Bool_t KVIDINDRACsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t y)
 {
-   //Particle identification and code setting using identification grid KVIDGCsI* fGrid.
+   // Particle identification and code setting using identification grid
+   //
+   // Note that gamma identification code is no longer attributed here: in case a gamma is identified,
+   // the IDR->IDcode will be the same general ID code as for all CsI particles,
+   // but IDR->IDquality == KVIDGCsI::kICODE10
+   //
+   // The KVIdentificationResult is first Clear()ed; then it is filled with IDtype = GetType()
+   // of this identification telescope, IDattempted = true, and the results of the identification
+   // procedure.
+
+   IDR->Clear();
+   IDR->IDattempted = true;
+   IDR->SetIDType(GetType());
 
    //perform identification
    Double_t csir, csil;
@@ -72,11 +80,7 @@ Bool_t KVIDINDRACsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t 
    IDR->SetGridName(CsIGrid->GetName());
 
    // set general ID code
-   IDR->IDcode = kIDCode2;
-
-   // general ID code for gammas
-   if (IDR->IDquality == KVIDGCsI::kICODE10)
-      IDR->IDcode = kIDCode0;
+   IDR->IDcode = GetIDCode();
 
    return kTRUE;
 }
