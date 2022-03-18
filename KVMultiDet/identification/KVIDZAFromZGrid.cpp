@@ -214,6 +214,9 @@ void KVIDZAFromZGrid::Initialize()
       int zz = ((KVIDZALine*)id)->GetZ();
       if (zz > fZMax) fZMax = zz;
    }
+
+   // set to true if grid has a limited region for mass identification, indicated by an info "MassID"
+   fHasMassIDRegion = (GetInfos()->FindObject("MassID") != nullptr);
 }
 
 void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) const
@@ -238,7 +241,8 @@ void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* i
    bool have_pid_range_for_Z = fPIDRange && (idr->Z <= fZmaxInt) && (idr->Z > fZminInt - 1);
    bool mass_id_success = false;
 
-   if (have_pid_range_for_Z && idr->IdentifyingGridHasFlag("MassID")) {
+   if (have_pid_range_for_Z
+         && (!fHasMassIDRegion || idr->IdentifyingGridHasFlag("MassID"))) { // if a mass ID region is defined, we must be inside it
       // try mass identification
       mass_id_success = (DeduceAfromPID(idr) > 0);
       if (mass_id_success) {

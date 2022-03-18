@@ -89,6 +89,7 @@ protected:
    KVList fTables;
 
    Bool_t fIgnoreMassID;
+   Bool_t fHasMassIDRegion;// set to true if grid has a limited region for mass identification, indicated by an info "MassID"
 
    int is_inside(double pid) const;
 
