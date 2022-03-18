@@ -27,8 +27,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
          double Ep = det->GetDetectorSignalValue("Energy", "Z=1,A=1");
          if (Ep > 0) {
             PART->SetEnergy(Ep);
-            PART->SetIsCalibrated();
-            PART->SetECode(KVFAZIA::ECodes::NORMAL_CALIBRATION);
+            SetCalibrationStatus(*PART, KVFAZIA::ECodes::NORMAL_CALIBRATION);
             PART->SetParameter("FAZIA.ECSI", Ep);
          }
       }
@@ -38,8 +37,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       if (det->IsCalibrated()) {
          double Ep = det->GetEnergy();
          PART->SetEnergy(Ep);
-         PART->SetIsCalibrated();
-         PART->SetECode(KVFAZIA::ECodes::NORMAL_CALIBRATION);
+         SetCalibrationStatus(*PART, KVFAZIA::ECodes::NORMAL_CALIBRATION);
          PART->SetParameter("FAZIA.ESI1", Ep);
       }
    }
@@ -56,8 +54,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
          }
          PART->SetParameter("FAZIA.ESI1", e1);
          PART->SetEnergy(e1);
-         PART->SetIsCalibrated();
-         PART->SetECode(KVFAZIA::ECodes::NORMAL_CALIBRATION);
+         SetCalibrationStatus(*PART, KVFAZIA::ECodes::NORMAL_CALIBRATION);
       }
    }
 
@@ -84,9 +81,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
          PART->SetParameter("FAZIA.ESI2", (calc_e2 ? -e2 : e2));
          if (e1 > 0 && e2 > 0) {
             PART->SetEnergy(e1 + e2);
-            PART->SetIsCalibrated();
-            PART->SetECode((calc_e1 || calc_e2) ? KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED :
-                           KVFAZIA::ECodes::NORMAL_CALIBRATION);
+            SetCalibrationStatus(*PART, (calc_e1 || calc_e2) ? KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED : KVFAZIA::ECodes::NORMAL_CALIBRATION);
          }
       }
    }
@@ -105,8 +100,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
          PART->SetParameter("FAZIA.ESI2", esi2);
          PART->SetParameter("FAZIA.ECSI", ecsi);
          PART->SetEnergy(esi1 + esi2 + ecsi);
-         PART->SetIsCalibrated();
-         PART->SetECode(KVFAZIA::ECodes::NORMAL_CALIBRATION); // all energies calibrated
+         SetCalibrationStatus(*PART, KVFAZIA::ECodes::NORMAL_CALIBRATION); // all energies calibrated
       }
       else {
          // treat case of uncalibrated CsI detector
@@ -126,9 +120,7 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
             PART->SetParameter("FAZIA.ESI2", si2->GetEnergy());
             PART->SetParameter("FAZIA.ECSI", -ecsi);
             PART->SetEnergy(deltaE + ecsi);
-            PART->SetIsCalibrated();
-            PART->SetECode(KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // CsI energy calculated
-            //PART->ls();
+            SetCalibrationStatus(*PART, KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // CsI energy calculated
          }
       }
    }
@@ -175,9 +167,10 @@ void KVFAZIAGroupReconstructor::CalibrateParticle(KVReconstructedNucleus* PART)
       }
 
       if (ecsi > 0 && esi1 > 0 && esi2 > 0) {
-         PART->SetIsCalibrated();
-         if (is_calculated["si1"] || is_calculated["si2"] || is_calculated["csi"]) PART->SetECode(KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
-         else PART->SetECode(KVFAZIA::ECodes::NORMAL_CALIBRATION);
+         if (is_calculated["si1"] || is_calculated["si2"] || is_calculated["csi"])
+            SetCalibrationStatus(*PART, KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED);
+         else
+            SetCalibrationStatus(*PART, KVFAZIA::ECodes::NORMAL_CALIBRATION);
          PART->SetEnergy(esi1 + esi2 + ecsi);
          PART->SetParameter("FAZIA.ESI1", is_calculated["si1"] ? -esi1 : esi1);
          PART->SetParameter("FAZIA.ESI2", is_calculated["si2"] ? -esi2 : esi2);
@@ -244,8 +237,7 @@ void KVFAZIAGroupReconstructor::CalibrateCoherencyParticle(KVReconstructedNucleu
          }
          PART->SetParameter("FAZIA.ESI1", -e1); // energy loss is calculated in this case
          PART->SetEnergy(e1);
-         PART->SetIsCalibrated();
-         PART->SetECode(KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // energy loss is calculated in this case
+         SetCalibrationStatus(*PART, KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // energy loss is calculated in this case
       }
    }
 
@@ -267,8 +259,7 @@ void KVFAZIAGroupReconstructor::CalibrateCoherencyParticle(KVReconstructedNucleu
          PART->SetParameter("FAZIA.ESI2", -e2); // always calculated
          if (e1 > 0 && e2 > 0) {
             PART->SetEnergy(e1 + e2);
-            PART->SetIsCalibrated();
-            PART->SetECode(KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // always calculated
+            SetCalibrationStatus(*PART, KVFAZIA::ECodes::SOME_ENERGY_LOSSES_CALCULATED); // always calculated
          }
       }
    }
@@ -350,18 +341,19 @@ void KVFAZIAGroupReconstructor::PostReconstructionProcessing()
 
 void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 {
-   KVGroupReconstructor::IdentifyParticle(PART);
-
-   // check for unvetoed punch-through particles in Si1-Si2 identification
-   auto si1si2 = id_by_type.find("Si-Si");
-   if (si1si2 != id_by_type.end()) HandleSI1SI2PunchThrough(si1si2->second, PART);
-
    // Coherency codes (CCode):
    // -1 no modification du to coherency checks
    // 1 CsI id = gamma + good in Si-Si -> Si-Si
    // 2 CsI id -> Si-CsI id
    // 3 Si-CsI id -> Si-Si id because Z(sicsi)<Z(sisi)
    // 4 stopped in CsI (no id) + good id Si-Si -> Si-Si
+   // 5 stopped in SI2 (no id) + good id Si1PSA -> Si1PSA
+
+   KVGroupReconstructor::IdentifyParticle(PART);
+
+   // check for unvetoed punch-through particles in Si1-Si2 identification
+   auto si1si2 = id_by_type.find("Si-Si");
+   if (si1si2 != id_by_type.end()) HandleSI1SI2PunchThrough(si1si2->second, PART);
 
    bool si1_pileup(false), si2_pileup(false);
 
@@ -371,29 +363,26 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
    if (PART.GetStoppingDetector() == si1 && !PART.IsIdentified()) {
       PART.SetStatus(KVReconstructedNucleus::kStatusStopFirstStage);
       TreatStatusStopFirstStage(PART);
-      PART.SetIDCode(KVFAZIA::IDCodes::ID_STOPPED_IN_FIRST_STAGE);
       return;
    }
 
-
    // Coherency checks for identifications
    if (PART.IsIdentified()) {
+      /********** PARTICLES initially stopped/identified in the CSI *****************/
       if (partID.IsType("CsI")) {
          bool coherency_particle_added_in_si1si2 = false;
          if (partID.IDcode == KVFAZIA::IDCodes::ID_GAMMA) { // gammas
             // look at Si1-Si2 identification.
             // if a correct identification was obtained, we ignore the gamma in CsI and change to Si1-Si2
-            auto si1si2 = id_by_type.find("Si-Si");
             if (si1si2 != id_by_type.end()) {
                if (si1si2->second->IDOK) {
                   //               Info("IdentifyParticle","Got GAMMA in CsI, changing to Si1Si2 identification [Z=%d A=%d]",
                   //                    si1si2->second->Z, si1si2->second->A);
                   ChangeReconstructedTrajectory(PART);
                   partID = *(si1si2->second);
-                  PART.SetIdentifyingTelescope(fSi1Si2IDTelescope);
+                  PART.SetIsIdentified();
                   PART.SetIdentification(&partID, fSi1Si2IDTelescope);
                   PART.GetParameters()->SetValue("CCode", 1);
-                  //PART.Print();
                }
             }
          }
@@ -415,7 +404,6 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                   si1_pileup = true;
                }
             }
-            auto si1si2 = id_by_type.find("Si-Si");
             if (si1si2 != id_by_type.end()) {
                // detect a pile-up in Si2 in coincidence with particule detected in CsI
                // the following covers the following cases:
@@ -463,22 +451,23 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
          }
       }
+      /********** PARTICLES initially identified in SI2-CSI *****************/
       else if (partID.IsType("Si-CsI")) {
          // ions correctly identified in Si2-CsI should have coherent identification in Si1-Si2: as the particle punches
          // through Si2 the Si1-Si2 identification should underestimate the A and/or Z of the ion, i.e. either the A
          // or the Z from Si1-Si2 identification should be smaller than from Si2-CsI identification.
-         // Unless of course some other particle stops in Si1 at the same time... (check PSA?)
+         //
+         // the following is to treat the case (quite typical for fazia) where a particle stops in Si2 (id in Si1Si2)
+         // but a small noise in the CsI makes it look like a particle stopped in CsI and identified in Si2-CsI
          int zz = partID.Z;
-         auto si1si2 = id_by_type.find("Si-Si");
          if (si1si2 != id_by_type.end()) {
             KVIdentificationResult* idr_si1si2 = si1si2->second;
-            if (idr_si1si2->IDOK && idr_si1si2->IDquality < KVIDZAGrid::kICODE4) {
+            if (idr_si1si2->IDOK && idr_si1si2->IDcode == KVFAZIA::IDCodes::ID_SI1_SI2) { // only change if there is no suspicion of punch-through in si1-si2
                if (zz < idr_si1si2->Z) {
                   //               Info("IdentifyParticle","SiCsI identification [Z=%d A=%d] changed to SiSi identification [Z=%d A=%d]",
                   //                    PART.GetZ(),PART.GetA(),si1si2->second->Z,si1si2->second->A);
                   ChangeReconstructedTrajectory(PART);
                   partID = *(si1si2->second);
-                  PART.SetIdentifyingTelescope(fSi1Si2IDTelescope);
                   PART.SetIdentification(&partID, fSi1Si2IDTelescope);
                   PART.GetParameters()->SetValue("CCode", 3);
                }
@@ -487,20 +476,33 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
       }
    }
    else {
-      // particle not identified, stopped in CsI, with good Si1-Si2 identification?
+      // particle not identified, apparently stopped in CsI, with Si1-Si2 identification?
       if (PART.GetStoppingDetector()->IsLabelled("CSI")) {
-         auto si1si2 = id_by_type.find("Si-Si");
          if (si1si2 != id_by_type.end()) {
-
-            if (si1si2->second->IDOK && si1si2->second->IDquality < KVIDZAGrid::kICODE4) {
+            if (si1si2->second->IDOK) {
                // stopping detector becomes Si2, identification Si1-Si2 accepted
                //               Info("IdentifyParticle","Unidentified, stopped in CsI, good Si1Si2 identification [Z=%d A=%d]",
                //                   si1si2->second->Z,si1si2->second->A);
                ChangeReconstructedTrajectory(PART);
                partID = *(si1si2->second);
-               PART.SetIdentifyingTelescope(fSi1Si2IDTelescope);
+               PART.SetIsIdentified();
                PART.SetIdentification(&partID, fSi1Si2IDTelescope);
                PART.GetParameters()->SetValue("CCode", 4);
+            }
+         }
+      }
+      // particle not identified, apparently stopped in SI2, with Si1-PSA identification?
+      if (PART.GetStoppingDetector()->IsLabelled("SI2")) {
+         auto sipsa = id_by_type.find("SiPSA");
+         if (sipsa != id_by_type.end()) {
+            if (sipsa->second->IDOK) {
+               // stopping detector becomes Si1
+               ChangeReconstructedTrajectory(PART);
+               partID = *(sipsa->second);
+               PART.SetIsIdentified();
+               auto sipsa_idtel = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->Last();
+               PART.SetIdentification(&partID, sipsa_idtel);
+               PART.GetParameters()->SetValue("CCode", 5);
             }
          }
       }
@@ -511,16 +513,18 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
 void KVFAZIAGroupReconstructor::ChangeReconstructedTrajectory(KVReconstructedNucleus& PART)
 {
-   // change recon trajectory (modifies stopping detector)
+   // Change the reconstruction trajectory & the stopping detector for the particle.
+   //
+   // The stopping detector is moved 1 closer to the target, i.e.
+   //
+   //   - initial stopping detector=CSI with trajectory CSI/SI2/SI1: final stopping=SI2, trajectory=SI2/SI1
+   //   - initial stopping detector=SI2 with trajectory SI2/SI1: final stopping=SI1, trajectory=SI1
 
    PART.GetReconstructionTrajectory()->IterateFrom();
    PART.GetReconstructionTrajectory()->GetNextNode();
    KVGeoDetectorNode* node = PART.GetReconstructionTrajectory()->GetNextNode();
-
-   KVGroup* group = PART.GetGroup();
    KVGeoDNTrajectory* traj = (KVGeoDNTrajectory*)node->GetTrajectories()->First();
-
-   const KVReconNucTrajectory* newtraj = (const KVReconNucTrajectory*)group->GetTrajectoryForReconstruction(traj, node);
+   const KVReconNucTrajectory* newtraj = (const KVReconNucTrajectory*)GetGroup()->GetTrajectoryForReconstruction(traj, node);
    PART.ModifyReconstructionTrajectory(newtraj);
 }
 
@@ -571,14 +575,13 @@ void KVFAZIAGroupReconstructor::HandleSI1SI2PunchThrough(KVIdentificationResult*
             idr->IDcode = KVFAZIA::IDCodes::ID_SI1_SI2_PUNCH_THROUGH;
             idr->SetComment("Particle punching through SI2, identified Z is only a minimum estimation");
             idr->IDOK = kTRUE; // this will previously have been false
+            idr->Zident = kFALSE;
             pt_treated = true;
          }
-         if (pt_treated && PART.GetStoppingDetector() == si2) {
-            // For any particles stopped (at least apparently) in SI2,
-            // we may (potentially) change the identification of particle,
+         if (pt_treated && (PART.GetStoppingDetector() == si2)) {
+            // For any particles stopped (at least apparently) in SI2, we may (potentially) change the identification of particle,
             // or at least its IDCode
             PART.SetIsIdentified();
-            PART.SetIdentifyingTelescope(fSi1Si2IDTelescope);
             PART.SetIdentification(idr, fSi1Si2IDTelescope);
          }
       }
@@ -647,7 +650,6 @@ void KVFAZIAGroupReconstructor::AddCoherencyParticles()
          part.original_particle->GetIdentificationResult(i)->Copy(*IDR);
       }
       rnuc->SetIsIdentified();
-      rnuc->SetIdentifyingTelescope(part.identifying_telescope);
       rnuc->SetIdentification(rnuc->GetIdentificationResult(1), part.identifying_telescope);
 //      Info("AddCoherencyParticle", "Initial ident of particle to add: Z=%d A=%d identified in %s",
 //           rnuc->GetZ(), rnuc->GetA(), rnuc->GetIdentifyingTelescope()->GetType());
@@ -684,11 +686,13 @@ void KVFAZIAGroupReconstructor::AddCoherencyParticles()
             si2->SetDetectorSignalValue("Q2.FPGAEnergy", new_q2);
 
             // now retry the identification
-            rnuc->GetIdentificationResult(1)->IDOK = kFALSE;
-            part.identifying_telescope->Identify(rnuc->GetIdentificationResult(1));
+            KVIdentificationResult IDR;
+            IDR.SetNumber(1);
+            part.identifying_telescope->Identify(&IDR);
 //            rnuc->GetIdentificationResult(1)->Print();
-            if (rnuc->GetIdentificationResult(1)->IDOK) {
+            if (IDR.IDOK) {
 //               Info("AddCoherencyParticle", "Achieved new identification for particle:");
+               *(rnuc->GetIdentificationResult(1)) = IDR;
                rnuc->SetIdentification(rnuc->GetIdentificationResult(1), part.identifying_telescope);
                // check we are not in punch-through region
                HandleSI1SI2PunchThrough(rnuc->GetIdentificationResult(1), *rnuc);
