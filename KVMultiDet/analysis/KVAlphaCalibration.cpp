@@ -211,8 +211,7 @@ void KVAlphaCalibration::FitInit(bool debug_)
 #endif
 
    InitializationPeak.clear();
-   for (unsigned int i = 0; i <= npeaks; i++) {
-
+   for (unsigned int i = 0; i < npeaks; i++) {
       InitializationPeak.push_back(xpos[i]);
    }
 
@@ -221,17 +220,15 @@ void KVAlphaCalibration::FitInit(bool debug_)
    std::sort(IntensityOfPeak.begin(), IntensityOfPeak.end());
 
    if (debug_) std::cerr << "DEBUG IN FitInit : Number of peaks found is " << spec->GetNPeaks() << std::endl;
-   if (debug_) if (spec->GetNPeaks() != NumberOfPeak) std::cerr << "DEBUG IN FitInit : Number of peaks different from the one you asked"
-               << "-> Ignoring histogram" << std::endl
-               << "Please modify your TSpectrum parameters (aka SigmaOfTSpectrum and ThresholdOfTSpectrumOfTSpectrum)" << std::endl;
+   // if (debug_) if (spec->GetNPeaks() != NumberOfPeak) std::cerr << "DEBUG IN FitInit : Number of peaks different from the one you asked"
+   //             << "-> Ignoring histogram" << std::endl
+   //             << "Please modify your TSpectrum parameters (aka SigmaOfTSpectrum and ThresholdOfTSpectrumOfTSpectrum)" << std::endl;
    //In mode debug it will also print the result of the linear fit in the terminal
    if (spec->GetNPeaks() == NumberOfPeak) {
 
       for (int i = 0; i < NumberOfPeak; i++) {
-
          if (debug_) std::cerr << "DEBUG IN FitInit : Peak position number " << i << " = " << InitializationPeak[i] << std::endl;
          factorGraph->SetPoint(i, MeanOfPeak[i], InitializationPeak[i]);
-
       }
 
 
@@ -249,7 +246,6 @@ void KVAlphaCalibration::FitInit(bool debug_)
       InitializationFitResults[0] = InitializationFit->GetParameter(0);
 
       InitializationFitResults[1] = InitializationFit->GetParameter(1);
-
    }
 
    if (debug_)  std::cerr << "DEBUG IN FitInit : Ending FitInit" << std::endl;
