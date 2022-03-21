@@ -192,7 +192,7 @@ void KVAlphaCalibration::FitAll(bool debug_)
 
 }
 
-void KVAlphaCalibration::FitInit(bool debug_)
+TGraph* KVAlphaCalibration::FitInit(bool debug_)
 {
 
    //This method find the peaks with a TSpectrum and fit their position to
@@ -249,6 +249,7 @@ void KVAlphaCalibration::FitInit(bool debug_)
    }
 
    if (debug_)  std::cerr << "DEBUG IN FitInit : Ending FitInit" << std::endl;
+   return factorGraph;
 }
 
 void KVAlphaCalibration::FitSpectrum(bool debug_)

@@ -65,7 +65,7 @@
    It is possible for the user to draw the histogram, but he needs to create
    a canvas. The histogram will be drawn in it
    </p>
- */
+*/
 
 class KVAlphaCalibration {
 
@@ -111,7 +111,7 @@ public :
 
 
 
-   void FitInit(bool debug_ = false);
+   TGraph* FitInit(bool debug_ = false);
    void FitSpectrum(bool debug_ = false);
    void FitAll(bool debug_ = false);
 
