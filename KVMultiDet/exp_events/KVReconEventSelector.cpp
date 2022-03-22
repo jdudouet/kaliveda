@@ -25,13 +25,18 @@ void KVReconEventSelector::Init(TTree* tree)
 void KVReconEventSelector::Make(const Char_t* kvsname)
 {
    // Generate a new recon data analysis selector class
+   //
+   // This will be based on a template file which may change as a function of the current
+   // dataset, if a variable
+   //~~~~
+   //[dataset].ReconEventSelector.Template
+   //~~~~
+   // is defined with the name of the template
 
    KVClassFactory cf(kvsname, "Analysis of reconstructed events", "",
-#ifdef USING_ROOT6
-                     kTRUE, "ROOT6ReconDataSelectorTemplate");
-#else
-                     kTRUE, "ReconDataSelectorTemplate");
-#endif
+                     kTRUE,
+                     gDataSet->GetDataSetEnv("ReconEventSelector.Template", "ROOT6ReconDataSelectorTemplate"));
+
    cf.AddImplIncludeFile("KVReconstructedNucleus.h");
    cf.AddImplIncludeFile("KVBatchSystem.h");
 

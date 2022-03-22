@@ -201,6 +201,8 @@ Plugin.KVDataAnalyser:   RawDataAnalyser        KVRawDataAnalyser            KVM
 +Plugin.TSelector:    EventSelector    KVEventSelector    KVMultiDetanalysis   "KVEventSelector()"
 +Plugin.TSelector:    EventFilter    KVEventFiltering    KVMultiDetexp_events   "KVEventFiltering()"
 +Plugin.TSelector:    ReconEventSelector    KVReconEventSelector    KVMultiDetanalysis   "KVReconEventSelector()"
+# allow to modify the template file as a function of the dataset being analysed
+ReconEventSelector.Template: ROOT6ReconDataSelectorTemplate
 
 # Plugins for data transfer between repositories
 # Used by KVDataTransfer::NewTransfer
