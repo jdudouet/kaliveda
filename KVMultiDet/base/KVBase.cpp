@@ -1147,7 +1147,7 @@ void KVBase::PrintSplashScreen()
 #ifdef WITH_GIT_INFOS
    TString gitinfo;
    gitinfo.Form("%s@%s", gitBranch(), gitCommit());
-   printf("| From %-50s              |\n", gitinfo.Data());
+   printf("| From %-63s |\n", gitinfo.Data());
 #endif
    cout << "| See http://indra.in2p3.fr/kaliveda for help                          |" << endl;
    cout << "\\----------------------------------------------------------------------/" << endl << endl;
