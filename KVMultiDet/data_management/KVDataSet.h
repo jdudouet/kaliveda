@@ -305,7 +305,7 @@ public:
    virtual void SetAnalysisTasks(const KVSeqCollection*);
    virtual KVDataAnalysisTask* GetAnalysisTask(Int_t) const;
    virtual KVDataAnalysisTask* GetAnalysisTask(const Char_t* keywords) const;
-   virtual KVDataAnalysisTask* GetAnalysisTaskAny(const Char_t* keywords) const;
+   virtual std::unique_ptr<KVDataAnalysisTask> GetAnalysisTaskAny(const Char_t* keywords) const;
    virtual Int_t GetNtasks() const;
 
    virtual TList* GetListOfAvailableSystems(const Char_t* datatype,

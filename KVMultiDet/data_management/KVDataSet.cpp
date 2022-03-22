@@ -1338,7 +1338,7 @@ void KVDataSet::MakeAnalysisClass(const Char_t* task, const Char_t* classname)
    _task += " analysis";
    //We want to be able to write analysis classes even when we don't have any data
    //to analyse. Therefore we use GetAnalysisTaskAny.
-   unique_ptr<KVDataAnalysisTask> dat(GetAnalysisTaskAny(_task.Data()));
+   auto dat = GetAnalysisTaskAny(_task.Data());
    if (!dat.get()) {
       Error("MakeAnalysisClass",
             "called for unknown or unavailable analysis task : %s", _task.Data());
@@ -1353,7 +1353,7 @@ void KVDataSet::MakeAnalysisClass(const Char_t* task, const Char_t* classname)
    //all analysis base classes must define a static Make(const Char_t * classname)
    //which generates the skeleton class files.
 
-   TClass* cl = 0x0;
+   TClass* cl = nullptr;
    //has the user base class for the task been compiled and loaded ?
    if (dat->CheckUserBaseClassIsLoaded()) cl = TClass::GetClass(dat->GetUserBaseClass());
    else
@@ -1441,17 +1441,13 @@ Bool_t KVDataSet::FindDataSetFile(const Char_t* filename)
 
 //___________________________________________________________________________
 
-KVDataAnalysisTask* KVDataSet::GetAnalysisTaskAny(const Char_t* keywords) const
+std::unique_ptr<KVDataAnalysisTask> KVDataSet::GetAnalysisTaskAny(const Char_t* keywords) const
 {
    //This method returns a pointer to the analysis task whose description (title) contains
    //all of the whitespace-separated keywords (which may be regular expressions)
    //given in the string "keywords". The comparison is case-insensitive.
    //The analysis task does not need to be "available", i.e. the associated prerequisite
    //data type does not have to be present in the repository (see GetAnalysisTask).
-   //
-   //WARNING! WARNING! WARNING!
-   //  *** the user must delete the KVDataAnalysisTask object returned by this method after use ***
-   //
 
    //case-insensitive search for matches in list of all analysis tasks, based on 'title' attribute
    KVDataAnalysisTask* tsk =
@@ -1462,10 +1458,10 @@ KVDataAnalysisTask* KVDataSet::GetAnalysisTaskAny(const Char_t* keywords) const
       return 0;
    }
    //make new copy of default analysis task
-   KVDataAnalysisTask* new_task = new KVDataAnalysisTask(*tsk);
+   auto new_task = std::make_unique<KVDataAnalysisTask>(*tsk);
    //check if any dataset-specific parameters need to be changed
-   SetDataSetSpecificTaskParameters(new_task);
-   return new_task; //must be deleted by user
+   SetDataSetSpecificTaskParameters(new_task.get());
+   return new_task;
 }
 
 //___________________________________________________________________________

@@ -36,29 +36,6 @@ variables (see KVVarGlob::SetSelection()). The Test() method returns true or fal
 for a given nucleus depending on whether or not the condition is fulfilled. Combinations of
 selections can be performed using Boolean logic operations `&&` and `||`.
 
-There are two ways to define and use KVParticleCondition objects:
-  1. Using strings of pseudo-code
-  2. Using lambda expressions (only with ROOT6 or later)
-
-### Using strings of pseudo-code
-These must be valid C++ expressions using `_NUC_` instead and in place of
-a `const KVNucleus*` pointer to the particle to be tested, for example
-~~~~{.cpp}
-KVParticleCondition c1("_NUC_->GetZ()>2");
-KVParticleCondition c2("_NUC_->GetVpar()>0");
-~~~~
-Note that the methods used in the selection
-do not have to be limited to the methods of the KVNucleus class.
-The 'real' class of the object
-passed to Test() can be used to cast the base pointer up (or is it down?) to the
-required pointer type at execution. In this case, you must call the method
-SetParticleClassName() with the name of the class to use in the cast.
-
-Note that the first call to Test() automatically causes the 'optimization' of the
-KVParticleCondition, which means that a class implementing the required condition is generated
-and compiled on the fly before continuing (see method Optimize()).
-
-### Using lambda expressions (only with ROOT6 or later)
 Lambda expressions were introduced in C++11 and provide an easy way to define small functions
 on the fly inside code. The lambda must take a `const KVNucleus*` pointer as argument and return
 a boolean:
