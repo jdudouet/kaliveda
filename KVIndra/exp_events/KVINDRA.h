@@ -164,6 +164,32 @@ public:
       ID_CSI_FRAGMENT = 9, ///< particle partially identified in CsI detector, with Z greater than identifiable
       ID_CSI_MASS_OUT_OF_RANGE = 10 ///< particle partially identified in CsI detector, mass out of range of apparent Z (pile-up?)
    };
+   TString GetIDCodeMeaning(Int_t idc) const
+   {
+      // Return a symbolic name corresponding to the IDCode value
+      switch (idc) {
+         case NO_IDENTIFICATION:
+            return "NO_IDENTIFICATION";
+         case ID_STOPPED_IN_FIRST_STAGE:
+            return "ID_STOPPED_IN_FIRST_STAGE";
+         case ID_GAMMA:
+            return "ID_GAMMA";
+         case ID_NEUTRON:
+            return "ID_NEUTRON";
+         case ID_CSI_PSA:
+            return "ID_CSI_PSA";
+         case ID_SI_CSI:
+            return "ID_SI_CSI";
+         case ID_CI_SI:
+            return "ID_CI_CSI";
+         case ID_CSI_FRAGMENT:
+            return "ID_CSI_FRAGMENT";
+         case ID_CSI_MASS_OUT_OF_RANGE:
+            return "ID_CSI_MASS_OUT_OF_RANGE";
+         default:
+            return Form("(unknown:%d)", idc);
+      }
+   }
    enum ECodes {
       /** \enum KVINDRA::ECodes
           \brief Calibration quality codes attributed to particles reconstructed from data
@@ -174,6 +200,23 @@ public:
       WARNING_CSI_MAX_ENERGY = 3,    ///< particle calibration OK, although apparent energy would mean punching through the CsI
       BAD_CALIBRATION = 15          ///< calibration attempted but bad result (negative energies etc.)
    };
+   TString GetECodeMeaning(Int_t ec) const
+   {
+      switch (ec) {
+         case NO_CALIBRATION_ATTEMPTED:
+            return "NO_CALIBRATION_ATTEMPTED";
+         case NORMAL_CALIBRATION:
+            return "NORMAL_CALIBRATION";
+         case SOME_ENERGY_LOSSES_CALCULATED:
+            return "SOME_ENERGY_LOSSES_CALCULATED";
+         case WARNING_CSI_MAX_ENERGY:
+            return "WARNING_CSI_MAX_ENERGY";
+         case BAD_CALIBRATION:
+            return "BAD_CALIBRATION";
+         default:
+            return Form("(unknown:%d)", ec);
+      }
+   }
    virtual Int_t GetIDCodeForParticlesStoppingInFirstStageOfTelescopes() const
    {
       return IDCodes::ID_STOPPED_IN_FIRST_STAGE;

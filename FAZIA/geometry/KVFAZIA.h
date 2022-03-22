@@ -116,6 +116,7 @@ public:
       /** \enum KVFAZIA::IDCodes
           \brief Identification quality codes attributed to particles reconstructed from data
        */
+      NO_IDENTIFICATION = -1,    ///< no identification possible for particle
       ID_GAMMA = 0,    ///< 'gamma' particle identified by pulse shape analysis in CSI
       ID_SI1_PSA = 11, ///< particle identified by pulse shape analysis in SI1
       ID_SI1_SI2 = 12, ///< particle identified in SI1-SI2 telescope
@@ -125,6 +126,31 @@ public:
       ID_SI1_SI2_MAYBE_PUNCH_THROUGH = 120, ///< possible ambiguity of particle identification in SI1-SI2 due to unvetoed punch-through
       ID_SI1_SI2_PUNCH_THROUGH = 121 ///< particle punching through SI2, identified Z is a minimum value
    };
+   TString GetIDCodeMeaning(Int_t idc) const
+   {
+      switch (idc) {
+         case NO_IDENTIFICATION:
+            return "NO_IDENTIFICATION";
+         case ID_GAMMA:
+            return "ID_GAMMA";
+         case ID_SI1_PSA:
+            return "ID_SI1_PSA";
+         case ID_SI1_SI2:
+            return "ID_SI1_SI2";
+         case ID_SI2_CSI:
+            return "ID_SI2_CSI";
+         case ID_CSI_PSA:
+            return "ID_CSI_PSA";
+         case ID_STOPPED_IN_FIRST_STAGE:
+            return "ID_STOPPED_IN_FIRST_STAGE";
+         case ID_SI1_SI2_MAYBE_PUNCH_THROUGH:
+            return "ID_SI1_SI2_MAYBE_PUNCH_THROUGH";
+         case ID_SI1_SI2_PUNCH_THROUGH:
+            return "ID_SI1_SI2_PUNCH_THROUGH";
+         default:
+            return Form("(unknown:%d)", idc);
+      }
+   }
    enum ECodes {
       /** \enum KVFAZIA::ECodes
           \brief Calibration quality codes attributed to particles reconstructed from data
@@ -134,6 +160,21 @@ public:
       SOME_ENERGY_LOSSES_CALCULATED = 2, ///< particle calibration OK, with some detector energies calculated
       WARNING_CSI_MAX_ENERGY = 3    ///< particle calibration OK, although apparent energy would mean punching through the CsI
    };
+   TString GetECodeMeaning(Int_t ec) const
+   {
+      switch (ec) {
+         case NO_CALIBRATION_ATTEMPTED:
+            return "NO_CALIBRATION_ATTEMPTED";
+         case NORMAL_CALIBRATION:
+            return "NORMAL_CALIBRATION";
+         case SOME_ENERGY_LOSSES_CALCULATED:
+            return "SOME_ENERGY_LOSSES_CALCULATED";
+         case WARNING_CSI_MAX_ENERGY:
+            return "WARNING_CSI_MAX_ENERGY";
+         default:
+            return Form("(unknown:%d)", ec);
+      }
+   }
    virtual Int_t GetIDCodeForParticlesStoppingInFirstStageOfTelescopes() const
    {
       return IDCodes::ID_STOPPED_IN_FIRST_STAGE;
