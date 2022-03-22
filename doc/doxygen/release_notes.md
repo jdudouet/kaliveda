@@ -1,13 +1,13 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 25th February 2022
+Last update: 22nd March 2022
 
 ## Version 1.12/05 (Released: xx/xx/2022)
 
 __Changes in Build System__
 
 Starting from v1.12/05, we require a minimum ROOT version of 6.18, minimum cmake version 3.5,
-and a compiler (the same as that used to compile ROOT) with at least support for C++11, or possibly even C++14.
+and a compiler (the same as that used to compile ROOT) with at least support for C++14.
 
 __Changes in__ \ref INDRAnalysis / \ref FAZIAnal / \ref INDRAFAZIAnalysis : __New methods and symbols to handle identification/calibration codes__
 

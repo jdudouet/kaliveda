@@ -56,15 +56,15 @@ include(SetUpROOTBuild)
 include(GetCompilerStandard)
 GET_COMPILER_STANDARD(CURRENT_CXX_COMPILER_STANDARD)
 
-#--if C++11 support is not enabled (i.e. current standard is < C++11)
-#--we require it here (this can only happen with ROOT5)
-if(CURRENT_CXX_COMPILER_STANDARD LESS CXX_STANDARD_11)
-    set(CMAKE_CXX_STANDARD 11)
+#--if C++14 support is not enabled (i.e. current standard is < C++14)
+#--we require it here [C++14 is needed for std::make_unique etc.]
+if(CURRENT_CXX_COMPILER_STANDARD LESS CXX_STANDARD_14)
+    set(CMAKE_CXX_STANDARD 14)
     set(CMAKE_CXX_STANDARD_REQUIRED yes)
-    message(STATUS "KaliVeda: C++11 support is required and has been enabled")
-    set(KALIVEDA_NEEDS_CXX11 TRUE)
+    message(STATUS "KaliVeda: C++14 support is required and has been enabled")
+    set(KALIVEDA_NEEDS_CXX14 TRUE)
 else()
-    set(KALIVEDA_NEEDS_CXX11 FALSE)
+    set(KALIVEDA_NEEDS_CXX14 FALSE)
 endif()
 
 #--check for BOOST - minimum version corresponds progress_display
