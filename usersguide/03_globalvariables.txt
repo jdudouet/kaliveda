@@ -309,20 +309,20 @@ auto myvg = dynamical_cast<MyClassName*>(AddGV("MyClassName", "myVarGlob"));
 ~~~~~~~
 
 
-[KVEvent]: http://indra.in2p3.fr/kaliveda/doc/master/classKVEvent.html
-[KVNucleus]: http://indra.in2p3.fr/kaliveda/doc/master/classKVNucleus.html
-[KVVarGlob]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVarGlob.html
-[KVZtot]: http://indra.in2p3.fr/kaliveda/doc/master/classKVZtot.html
-[KVZmax]: http://indra.in2p3.fr/kaliveda/doc/master/classKVZmax.html
-[KVVarGlob1]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVarGlob1.html
-[KVVarGlobMean]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVarGlobMean.html
-[KVVGSum]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVGSum.html
-[KVVGObjectSum]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVGObjectSum.html
-[KVVGVectorSum]: http://indra.in2p3.fr/kaliveda/doc/master/classKVVGVectorSum.html
-[KVGVList]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGVList.html
-[KVEventSelector]: http://indra.in2p3.fr/kaliveda/doc/master/classKVEventSelector.html
-[KVFlowTensor]: http://indra.in2p3.fr/kaliveda/doc/master/classKVFlowTensor.html
+[KVEvent]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVEvent.html
+[KVNucleus]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVNucleus.html
+[KVVarGlob]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVarGlob.html
+[KVZtot]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVZtot.html
+[KVZmax]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVZmax.html
+[KVVarGlob1]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVarGlob1.html
+[KVVarGlobMean]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVarGlobMean.html
+[KVVGSum]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVGSum.html
+[KVVGObjectSum]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVGObjectSum.html
+[KVVGVectorSum]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVVGVectorSum.html
+[KVGVList]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGVList.html
+[KVEventSelector]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVEventSelector.html
+[KVFlowTensor]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVFlowTensor.html
 [Data Analysis]: analysis.html
 [Multi-particle Events]: events.html
 [particle selection criteria]: analysis.html#defining-particle-selection-criteria-initrun
-[Global Variables]: http://indra.in2p3.fr/kaliveda/doc/master/group__GlobalVariables.html
+[Global Variables]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/group__GlobalVariables.html

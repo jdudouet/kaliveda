@@ -12,19 +12,15 @@ a `kaliveda` interactive session, just like you would with ROOT:
 
 ~~~~~~~~{.bash}
 $ kaliveda
-***********************************************************
-*                    HI COQUINE !!!                       *
-*                                                         *
-*         W E L C O M E     to     K A L I V E D A        *
-*                                                         *
-* Version: 1.11/01                      Built: 2020-05-28 *
-* git: heads/master@release-1.11.00-37-g48b83dd9          *
-*                                                         *
-*               For help, see the website :               *
-*             http://indra.in2p3.fr/kaliveda              *
-*                                                         *
-*                          ENJOY !!!                      *
-***********************************************************
+
+/----------------------------------------------------------------------\
+| Welcome to KaliVeda 1.12/05             github:kaliveda-dev/kaliveda |
+| (c) 2002-2022, The KaliVeda development team                         |
+|                                                                      |
+| Built with ROOT 6.24.06 on 2022-03-18, 10:11:25                      |
+| From heads/master@release-1.12.05-g209ab9c0                          |
+| See http://indra.in2p3.fr/kaliveda for help                          |
+\----------------------------------------------------------------------/
 
 kaliveda[0] .L MyClass.cpp+
 Info in <TUnixSystem::ACLiC>: creating shared library ./MyClass_cpp.so
@@ -317,5 +313,5 @@ to classes:
 |                                 | ~~~~                                                                              |
 +---------------------------------+-----------------------------------------------------------------------------------+
 
-[KVClassFactory]: http://indra.in2p3.fr/kaliveda/doc/master/classKVClassFactory.html
-[examples]: http://indra.in2p3.fr/kaliveda/doc/master/examples.html
+[KVClassFactory]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVClassFactory.html
+[examples]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/examples.html

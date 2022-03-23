@@ -196,17 +196,17 @@ There is usually no need to implement these methods.
 
 [KaliVedaGUI]: ../KaliVedaGUIDoc/KaliVedaGUI.html
 [kaliveda-sim]: ../KVSimDirGUIDoc/KVSimDirGUI.html
-[KVEventSelector]: http://indra.in2p3.fr/kaliveda/doc/master/classKVEventSelector.html
-[KVExpSetUp]: http://indra.in2p3.fr/kaliveda/doc/master/classKVExpSetUp.html
-[KVRawDataAnalyser]: http://indra.in2p3.fr/kaliveda/doc/master/classKVRawDataAnalyser.html
-[KVRawDataReconstructor]: http://indra.in2p3.fr/kaliveda/doc/master/classKVRawDataReconstructor.html
-[KVReconRawDataAnalyser]: http://indra.in2p3.fr/kaliveda/doc/master/classKVReconRawDataAnalyser.html
-[KVNameValueList]: http://indra.in2p3.fr/kaliveda/doc/master/classKVNameValueList.html
+[KVEventSelector]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVEventSelector.html
+[KVExpSetUp]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVExpSetUp.html
+[KVRawDataAnalyser]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVRawDataAnalyser.html
+[KVRawDataReconstructor]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVRawDataReconstructor.html
+[KVReconRawDataAnalyser]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVReconRawDataAnalyser.html
+[KVNameValueList]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVNameValueList.html
 [Using Detector Array Geometries]: geometry.html
-[KVReconstructedEvent]: http://indra.in2p3.fr/kaliveda/doc/master/classKVReconstructedEvent.html
-[KVReconstructedNucleus]: http://indra.in2p3.fr/kaliveda/doc/master/classKVReconstructedNucleus.html
-[KVEventReconstructor]: http://indra.in2p3.fr/kaliveda/doc/master/classKVEventReconstructor.html
-[KVGroupReconstructor]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGroupReconstructor.html
-[KVParticleCondition]: http://indra.in2p3.fr/kaliveda/doc/master/classKVParticleCondition.html
+[KVReconstructedEvent]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVReconstructedEvent.html
+[KVReconstructedNucleus]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVReconstructedNucleus.html
+[KVEventReconstructor]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVEventReconstructor.html
+[KVGroupReconstructor]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGroupReconstructor.html
+[KVParticleCondition]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVParticleCondition.html
 [here]: events.html#iterating-over-particles-in-events
 [Global Variables]: globalvariables.html

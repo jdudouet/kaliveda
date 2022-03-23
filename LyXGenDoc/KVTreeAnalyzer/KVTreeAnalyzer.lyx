@@ -1,7 +1,9 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass article
 \use_default_options true
 \maintain_unincluded_children false
@@ -9,16 +11,18 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans helvet
-\font_typewriter default
+\font_roman "default" "default"
+\font_sans "helvet" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family sfdefault
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
-
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -29,16 +33,26 @@
 \use_hyperref false
 \papersize default
 \use_geometry false
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
+\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -47,7 +61,10 @@
 \tocdepth 3
 \paragraph_separation indent
 \paragraph_indentation default
-\quotes_language english
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -61,7 +78,7 @@
 \begin_body
 
 \begin_layout Title
-KVTreeAnalyzer - TTree and histogram analysis tool
+kvtreeanalyzer - TTree and histogram analysis tool
 \end_layout
 
 \begin_layout Standard
@@ -76,7 +93,7 @@ LatexCommand tableofcontents
 \begin_layout Standard
 
 \family typewriter
-KVTreeAnalyzer
+kvtreeanalyzer
 \family default
  is a graphical user interface (GUI) for analysis of data in 
 \family typewriter
@@ -114,7 +131,8 @@ TTree
 \begin_inset CommandInset href
 LatexCommand href
 name "KVCanvas"
-target "../KVCanvas.html"
+target "http://indra.in2p3.fr/kaliveda/doc/master/classKVCanvas.html"
+literal "false"
 
 \end_inset
 
@@ -127,38 +145,30 @@ target "../KVCanvas.html"
 \begin_layout Standard
 To open the 
 \family typewriter
-KVTreeAnalyzer
+kvtreeanalyzer
 \family default
- GUI in a ROOT interactive session, either type
+ GUI from the command prompt, either type
 \end_layout
 
 \begin_layout LyX-Code
-root[0] new KVTreeAnalyzer(0)
+$ kvtreeanalyzer
 \end_layout
 
 \begin_layout Standard
 in order to choose the file to analyze from the GUI, or, if you want to
- analyze a 
-\family typewriter
-TTree
-\family default
- which is already in memory,
+ open directly a ROOT file with the GUI,
 \end_layout
 
 \begin_layout LyX-Code
-root[0] new KVTreeAnalyzer(mytree)
+$ kvtreeanalyzer myfile.root
 \end_layout
 
 \begin_layout Standard
-with 
-\family typewriter
-mytree
-\family default
- a pointer to a 
+The first 
 \family typewriter
 TTree
 \family default
-.
+ found in the file will be connected for analysis.
 \end_layout
 
 \begin_layout Standard
@@ -177,12 +187,12 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 The 
 \family typewriter
-KVTreeAnalyzer
+kvtreeanalyzer
 \family default
  GUI
 \begin_inset CommandInset label
@@ -212,7 +222,7 @@ Menus
 'File' menu
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:'File'-menu"
+name "subsec:'File'-menu"
 
 \end_inset
 
@@ -220,12 +230,49 @@ name "sub:'File'-menu"
 \end_layout
 
 \begin_layout Description
-Open open a ROOT file containing a 
+New
+\begin_inset space ~
+\end_inset
+
+analysis open a ROOT file containing a 
 \family typewriter
 TTree
 \family default
- and/or histograms to start a new analysis, or open a ROOT file containing
- a previously-saved analysis session;
+ and/or histograms to start a new analysis
+\end_layout
+
+\begin_layout Description
+Open
+\begin_inset space ~
+\end_inset
+
+analysis open a ROOT file containing a previously-saved analysis session
+ and reconnect the file containing the 
+\family typewriter
+TTree
+\family default
+ 
+\end_layout
+
+\begin_layout Description
+Add
+\begin_inset space ~
+\end_inset
+
+Friend...
+ open a second file and use the 
+\family typewriter
+TTree
+\family default
+ in it as a 
+\begin_inset Quotes eld
+\end_inset
+
+friend
+\begin_inset Quotes erd
+\end_inset
+
+ (see ROOT documentation about Adding Friends to Trees)
 \end_layout
 
 \begin_layout Description
@@ -253,7 +300,11 @@ Save
 \end_inset
 
 as...
- save current analysis in a new file;
+ save current analysis in a new file with user-specified name;
+\end_layout
+
+\begin_layout Description
+Close close the currently analysed file
 \end_layout
 
 \begin_layout Description
@@ -277,10 +328,19 @@ reference "sec:Automatic-Analysis"
 \end_layout
 
 \begin_layout Subsection
+'Options' menu
+\end_layout
+
+\begin_layout Description
+PROOF activate (or deactivate) use of PROOFLite (on a multicore machine)
+ to run analyses in parallel
+\end_layout
+
+\begin_layout Subsection
 'Selections' menu
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:'Selections'-menu"
+name "subsec:'Selections'-menu"
 
 \end_inset
 
@@ -311,7 +371,24 @@ TTree
 \end_layout
 
 \begin_layout Description
-Delete delete the selected selection(s).
+Delete delete the selected selection(s)
+\end_layout
+
+\begin_layout Description
+Generate...Constant
+\begin_inset space ~
+\end_inset
+
+X-sections generate selections with a given variable, with each selection
+ corresponding to constant cross-section (same number of events).
+ Opens a dialogue asking for the name of the variable to use, the total
+ cross-section (can be 1) and the cross-section of each selection (can be
+ 
+\begin_inset Formula $<1$
+\end_inset
+
+ if total cross-section is 1, i.e.
+ allows to define the fraction of events in each selection).
 \end_layout
 
 \begin_layout Section
@@ -334,7 +411,7 @@ TTree
 , along with any aliases defined by the user with 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:'Make-alias'"
+reference "subsec:'Make-alias'"
 
 \end_inset
 
@@ -352,7 +429,7 @@ reference "sub:'Make-alias'"
 'Make alias'
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:'Make-alias'"
+name "subsec:'Make-alias'"
 
 \end_inset
 
@@ -365,7 +442,7 @@ Allows to create a new alias expression which will be added to the list
  If the analysis is saved (see 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:'File'-menu"
+reference "subsec:'File'-menu"
 
 \end_inset
 
@@ -378,7 +455,7 @@ TMath
  functions, or one of the 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Abbreviations"
+reference "subsec:Abbreviations"
 
 \end_inset
 
@@ -395,7 +472,7 @@ reference "sub:Abbreviations"
 Abbreviations
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Abbreviations"
+name "subsec:Abbreviations"
 
 \end_inset
 
@@ -445,7 +522,7 @@ This panel allows to generate, apply and manage event selections.
 Generating selections
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Generating-selections"
+name "subsec:Generating-selections"
 
 \end_inset
 
@@ -460,7 +537,7 @@ Selections can be created in several ways:
 'Make selection'
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:'Make-selection'"
+name "subsec:'Make-selection'"
 
 \end_inset
 
@@ -476,7 +553,7 @@ TMath
  functions, or any of the defined 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Abbreviations"
+reference "subsec:Abbreviations"
 
 \end_inset
 
@@ -522,7 +599,7 @@ OR
  
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:'Selections'-menu"
+reference "subsec:'Selections'-menu"
 
 \end_inset
 
@@ -594,7 +671,7 @@ DELETE
  button in the 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Options"
+reference "subsec:Options"
 
 \end_inset
 
@@ -602,28 +679,28 @@ reference "sub:Options"
 \end_layout
 
 \begin_layout Standard
-The title of each histogram is displayed: it has the format
-\end_layout
-
-\begin_layout LyX-Code
-VAR1[:VAR2[:VAR3]] [{SELECTION}]
-\end_layout
-
-\begin_layout Standard
-i.e.
- the names of the plotted expressions (in the order 
-\begin_inset Formula $z:y:x$
+For each histogram, the variables/expressions used on 
+\begin_inset Formula $x$
 \end_inset
 
- or 
-\begin_inset Formula $y:x$
+, 
+\begin_inset Formula $y$
 \end_inset
 
-) followed by the applied selection (if any) between '
-\family typewriter
-{}
-\family default
-'.
+, and 
+\begin_inset Formula $z$
+\end_inset
+
+ axes, any selection and weighting, as well as the mean and standard deviation
+ of the 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ expressions are displayed.
 \end_layout
 
 \begin_layout Section
@@ -634,7 +711,7 @@ Histogram creation
 Generate a 1D histogram
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Generate-a-1D"
+name "subsec:Generate-a-1D"
 
 \end_inset
 
@@ -653,7 +730,7 @@ reference "sec:VARIABLES-panel"
  The new histogram (generated according to the selected 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:histogram-creation-options"
+reference "subsec:histogram-creation-options"
 
 \end_inset
 
@@ -668,7 +745,7 @@ reference "sec:HISTOGRAMS-list"
  
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Options"
+reference "subsec:Options"
 
 \end_inset
 
@@ -683,7 +760,7 @@ Note: If a 1D histogram for the same leaf or alias for the current selection
  (no need for option 'Apply selection' in this case, see 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Options"
+reference "subsec:Options"
 
 \end_inset
 
@@ -694,7 +771,7 @@ reference "sub:Options"
 Generate a 2D histogram
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Generate-a-2D"
+name "subsec:Generate-a-2D"
 
 \end_inset
 
@@ -755,7 +832,7 @@ Click the 'Draw' button to generate the histogram.
  The new histogram (generated according to the selected 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:histogram-creation-options"
+reference "subsec:histogram-creation-options"
 
 \end_inset
 
@@ -770,7 +847,7 @@ reference "sec:HISTOGRAMS-list"
  
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Options"
+reference "subsec:Options"
 
 \end_inset
 
@@ -785,26 +862,11 @@ Note1: If a 2D histogram for the same combination of variables for the current
  (no need for option 'Apply selection' in this case, see 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Options"
+reference "subsec:Options"
 
 \end_inset
 
 ).
-\end_layout
-
-\begin_layout Description
-Note2: By default, all 2D histograms are displayed using ROOT drawing option
- 
-\family typewriter
-
-\begin_inset Quotes eld
-\end_inset
-
-COL
-\begin_inset Quotes erd
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
@@ -815,14 +877,14 @@ Generate a profile histogram
 Proceed as for 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Generate-a-2D"
+reference "subsec:Generate-a-2D"
 
 \end_inset
 
  after having selected option 'Profile' (see 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:histogram-creation-options"
+reference "subsec:histogram-creation-options"
 
 \end_inset
 
@@ -833,7 +895,7 @@ reference "sub:histogram-creation-options"
 Generate a Dalitz plot
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Generate-a-Dalitz"
+name "subsec:Generate-a-Dalitz"
 
 \end_inset
 
@@ -852,6 +914,7 @@ Select three leaves or aliases in the list (left-click on the first,
 LatexCommand href
 name "KVDalitzPlot"
 target "../KVDalitzPlot.html"
+literal "false"
 
 \end_inset
 
@@ -865,7 +928,7 @@ target "../KVDalitzPlot.html"
  in this case, select option 'Bins' (see 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:histogram-creation-options"
+reference "subsec:histogram-creation-options"
 
 \end_inset
 
@@ -895,7 +958,7 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 User-binning dialogue box
@@ -922,7 +985,7 @@ name "fig:User-binning-dalitz"
 Histogram creation options
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:histogram-creation-options"
+name "subsec:histogram-creation-options"
 
 \end_inset
 
@@ -939,7 +1002,11 @@ Profile select to generate a profile histogram from two variables selected
 \end_layout
 
 \begin_layout Description
-Normalize choose this option to generate a normalized 1D distribution of
+Normalize
+\begin_inset space ~
+\end_inset
+
+(integral) choose this option to generate a normalized 1D distribution of
  a variable, by double-clicking on it in the 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -953,12 +1020,35 @@ reference "sec:VARIABLES-panel"
 \end_layout
 
 \begin_layout Description
-Weight allows to define a binning weight for generating histograms.
- In the dialogue box which opens when 'Draw' is clicked, enter an expression
- (any mathematical combination of leaves and aliases, TMath functions, 
+Normalize
+\begin_inset space ~
+\end_inset
+
+(events) choose this option to generate a normalized 1D distribution of
+ a variable, by double-clicking on it in the 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:Abbreviations"
+reference "sec:VARIABLES-panel"
+
+\end_inset
+
+.
+ The normalization is with respect to the number of events corresponding
+ to the current selection (useful when plotting e.g.
+ array variables which can have several values for each event);
+\end_layout
+
+\begin_layout Description
+Weight allows to define a binning weight for generating histograms.
+ In the dialogue box which opens when 'Draw' is clicked, enter an expression
+ (any mathematical combination of leaves and aliases, 
+\family typewriter
+TMath
+\family default
+ functions, 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "subsec:Abbreviations"
 
 \end_inset
 
@@ -985,7 +1075,7 @@ reference "fig:User-binning-dalitz"
 OPTIONS panel
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Options"
+name "subsec:Options"
 
 \end_inset
 
@@ -1034,7 +1124,7 @@ reference "sec:SELECTIONS-panel"
 \end_inset
 
 ).
- Double-click on the histogram to regenerate;
+ Double-click on the existing histogram to regenerate;
 \end_layout
 
 \begin_layout Description
@@ -1098,7 +1188,7 @@ reference "fig:AutoSave-directory-and"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1110,7 +1200,7 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 AutoSave directory and format choice dialogue box
@@ -1175,14 +1265,14 @@ TTree
  Simply select 'Apply analysis...' in the 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sub:'File'-menu"
+reference "subsec:'File'-menu"
 
 \end_inset
 
  and select a ROOT file containing the new data.
  A new 
 \family typewriter
-KVTreeAnalyzer
+kvtreeanalyzer
 \family default
  GUI window will open containing the generated analysis.
 \end_layout

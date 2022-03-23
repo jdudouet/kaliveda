@@ -106,11 +106,11 @@ INDRAFAZIA.E789.FAZIA.Si-Si.GridOrder:   QL1.Amplitude_Q2.FPGAEnergy,QH1.FPGAEne
 Identification with each grid will be attempted in the order given; the first successful identification
 (with quality code < 4; see [KVIDZAGrid]) will be accepted.
 
-[KVIDTelescope]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIDTelescope.html
-[KVGeoDNTrajectory]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGeoDNTrajectory.html
-[KVFAZIAIDSiPSA]: http://indra.in2p3.fr/kaliveda/doc/master/classKVFAZIAIDSiPSA.html
-[KVIDINDRACsI]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIDINDRACsI.html
-[KVIdentificationResult]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIdentificationResult.html
+[KVIDTelescope]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIDTelescope.html
+[KVGeoDNTrajectory]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGeoDNTrajectory.html
+[KVFAZIAIDSiPSA]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVFAZIAIDSiPSA.html
+[KVIDINDRACsI]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIDINDRACsI.html
+[KVIdentificationResult]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIdentificationResult.html
 [Detector signals and calibrations]: calibrations.html
-[KVIDGridEditor]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIDGridEditor.html
-[KVIDZAGrid]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIDZAGrid.html
+[KVIDGridEditor]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIDGridEditor.html
+[KVIDZAGrid]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIDZAGrid.html

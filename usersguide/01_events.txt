@@ -4,4 +4,4 @@
 
 This chapter has been moved to the class reference guide. See [Nuclei & Events].
 
-[Nuclei & Events]: http://indra.in2p3.fr/kaliveda/doc/master/group__NucEvents.html
+[Nuclei & Events]: http://indra.in2p3.fr/kaliveda/doc/dev/group__NucEvents.html

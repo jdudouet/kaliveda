@@ -50,9 +50,10 @@ links_to_doc:
 		title=`sed -n '/ #$$/p' $$docfile | sed -n '/^# /p' | sed 's/^[# ]*// ; s/[ #]*$$//'`; \
 		stripdocfile=`./strip_number $$docfile`;\
 		echo \<a href=\"UsersGuide\/$${stripdocfile%.*}.html\"\>$$i $$title\<\/a\> >> userguide_TOC.html ; \
-                htmlfile="html/`basename --suffix=$(MKDWN_EXT) $$stripdocfile`.html";\
-                pandoc $(GLOBAL_PANDOC_OPTIONS) --number-offset=$$((i-1)) -f markdown -t html -s -o $$htmlfile $$docfile;\
-                i=$$((i+1));\
+		htmlfile="html/`basename --suffix=$(MKDWN_EXT) $$stripdocfile`.html";\
+		sed "s/CLASS_DOC_BRANCH/$(CLASS_DOC_BRANCH)/g" $$docfile > tmpfile.txt;\
+		pandoc $(GLOBAL_PANDOC_OPTIONS) --number-offset=$$((i-1)) -f markdown -t html -s -o $$htmlfile tmpfile.txt;\
+		i=$$((i+1));\
 	done ; \
 	echo \<\/div\> >> userguide_TOC.html
 

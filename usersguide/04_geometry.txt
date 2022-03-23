@@ -501,12 +501,12 @@ while( ( n = tr->GetNextNode() ) )
 See [KVGeoDNTrajectory] class for more details.
 
 [ROOTgeom]: https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html#the-geometry-package
-[KVMultiDetArray]: http://indra.in2p3.fr/kaliveda/doc/master/classKVMultiDetArray.html
-[KVGeoStrucElement]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGeoStrucElement.html
-[KVGeoImport]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGeoImport.html
-[KVGeoDetectorNode]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGeoDetectorNode.html
-[KVGeoDNTrajectory]: http://indra.in2p3.fr/kaliveda/doc/master/classKVGeoDNTrajectory.html
-[KVReconNucTrajectory]: http://indra.in2p3.fr/kaliveda/doc/master/classKVReconNucTrajectory.html
-[KVMaterial]: http://indra.in2p3.fr/kaliveda/doc/master/classKVMaterial.html
-[KVIDTelescope]: http://indra.in2p3.fr/kaliveda/doc/master/classKVIDTelescope.html
+[KVMultiDetArray]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVMultiDetArray.html
+[KVGeoStrucElement]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGeoStrucElement.html
+[KVGeoImport]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGeoImport.html
+[KVGeoDetectorNode]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGeoDetectorNode.html
+[KVGeoDNTrajectory]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVGeoDNTrajectory.html
+[KVReconNucTrajectory]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVReconNucTrajectory.html
+[KVMaterial]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVMaterial.html
+[KVIDTelescope]: http://indra.in2p3.fr/kaliveda/doc/CLASS_DOC_BRANCH/classKVIDTelescope.html
 [Energy loss & range calculations]: energyloss.html
