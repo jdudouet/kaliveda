@@ -23,19 +23,17 @@ void ROOT6SimulatedEventAnalysisTemplate::InitAnalysis()
 
    // DEFINITION OF HISTOGRAMS
    for (int EC = 0; EC <= 5; ++EC)
-      AddHisto(new TH2F(Form("VparVper_alphas_EC%d", EC),
-                        Form("#alpha particle velocities EC=%d", EC),
-                        250, -15, 15, 250, -15, 15));
+      AddHisto<TH2F>(Form("VparVper_alphas_EC%d", EC),
+                     Form("#alpha particle velocities EC=%d", EC),
+                     250, -15, 15, 250, -15, 15);
 
    // DEFINITION OF TREE USED TO STORE RESULTS
    CreateTreeFile();
 
-   TTree* t = new TTree("data", GetOpt("SimulationInfos"));
+   auto t = AddTree("data", GetOpt("SimulationInfos"));
 
    // add a branch to tree for each defined global variable
    GetGVList()->MakeBranches(t);
-
-   AddTree(t);
 }
 
 //____________________________________________________________________________________

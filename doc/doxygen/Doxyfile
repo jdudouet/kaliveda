@@ -948,7 +948,8 @@ EXCLUDE_SYMBOLS        =
 
 EXAMPLE_PATH           = kaliveda.git/KVMultiDet/examples \
                          kaliveda.git/KVIndra/examples \
-                         kaliveda.git/MicroStat/examples
+                         kaliveda.git/MicroStat/examples \
+                         kaliveda.git/indrafazia/examples
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and

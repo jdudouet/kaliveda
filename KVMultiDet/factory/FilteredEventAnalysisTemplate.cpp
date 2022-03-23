@@ -16,17 +16,15 @@ void FilteredEventAnalysisTemplate::InitAnalysis()
    AddGV("KVZVtot", "ZVTOT");  // total pseudo-momentum
 
    // DEFINITION OF HISTOGRAMS
-   AddHisto(new TH2F("Z_Vpar", "Z vs V_{par} [cm/ns] in CM", 250, -10, 10, 75, .5, 75.5));
+   AddHisto<TH2F>("Z_Vpar", "Z vs V_{par} [cm/ns] in CM", 250, -10, 10, 75, .5, 75.5);
 
    // DEFINITION OF TREE USED TO STORE RESULTS
    CreateTreeFile();
 
-   TTree* t = new TTree("data", GetOpt("SimulationInfos"));
+   auto t = AddTree("data", GetOpt("SimulationInfos"));
 
    // add a branch to tree for each defined global variable
    GetGVList()->MakeBranches(t);
-
-   AddTree(t);
 
    // check if we can access the original simulated events before filtering
    // (activated when selecting both filtered & simulated files in kaliveda-sim GUI)

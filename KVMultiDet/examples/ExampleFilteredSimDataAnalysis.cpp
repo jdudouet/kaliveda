@@ -19,7 +19,6 @@ void ExampleFilteredSimDataAnalysis::InitAnalysis()
 
    // DEFINITION OF GLOBAL VARIABLES FOR ANALYSIS
    AddGV("KVMult", "mult");    // total multiplicity of each event
-#ifdef USING_ROOT6
    auto zvtot = AddGV("KVZVtot", "ZVTOT");  // total pseudo-momentum
    // Rejection of less-well measured events:
    //   here we require reconstruction of at least 80% of projectile quasi-momentum
@@ -27,20 +26,17 @@ void ExampleFilteredSimDataAnalysis::InitAnalysis()
       return vg->GetValue() > 0.8 * ZVproj;
    });
    // ZVproj = projectile quasi-momentum, will be defined in InitRun()
-#endif
 
    // DEFINITION OF HISTOGRAMS
-   AddHisto(new TH2F("Z_Vpar", "Z vs V_{par} [cm/ns] in CM", 250, -10, 10, 75, .5, 75.5));
+   AddHisto<TH2F>("Z_Vpar", "Z vs V_{par} [cm/ns] in CM", 250, -10, 10, 75, .5, 75.5);
 
    // DEFINITION OF TREE USED TO STORE RESULTS
    CreateTreeFile();
 
-   TTree* t = new TTree("data", GetOpt("SimulationInfos"));
+   auto t = AddTree("data", GetOpt("SimulationInfos"));
 
    // add a branch to tree for each defined global variable
    GetGVList()->MakeBranches(t);
-
-   AddTree(t);
 
    // check if we can access the original simulated events before filtering
    // (activated when selecting both filtered & simulated files in kaliveda-sim GUI)
@@ -61,10 +57,8 @@ void ExampleFilteredSimDataAnalysis::InitRun()
    const KV2Body* kin = gDataAnalyser->GetKinematics();
    ZVproj = kin->GetNucleus(1)->GetVpar() * kin->GetNucleus(1)->GetZ();
 
-#ifdef USING_ROOT6
    // reject reconstructed events which are not consistent with the DAQ trigger
    SetTriggerConditionsForRun(gMultiDetArray->GetCurrentRunNumber());
-#endif
 }
 
 //____________________________________________________________________________________
@@ -77,12 +71,7 @@ Bool_t ExampleFilteredSimDataAnalysis::Analysis()
    // to the currently analysed reconstructed event
    if (link_to_unfiltered_simulation) GetFriendTreeEntry(GetEvent()->GetParameters()->GetIntValue("SIMEVENT_TREE_ENTRY"));
 
-#ifdef WITH_CPP11
    for (auto& part : OKEventIterator(*GetEvent())) {
-#else
-   for (KVEvent::Iterator it = OKEventIterator(*GetEvent()).begin(); it != GetEvent()->end(); ++it) {
-      KVNucleus& part = it.get_reference<KVNucleus>();
-#endif
       // if we can access the events of the unfiltered simulation, and if Gemini++ was used
       // to decay events before filtering, this is how you can access the "parent" nucleus
       // of the current detected decay product

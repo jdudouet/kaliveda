@@ -33,6 +33,7 @@ void ROOT6ReconDataSelectorTemplate::InitAnalysis(void)
    /*** USING A TREE ***/
    CreateTreeFile();//<--- essential
    auto t = AddTree("myTree");
+
    GetGVList()->MakeBranches(t); // store global variable values in branches
 
    /*** DEFINE WHERE TO SAVE THE RESULTS ***/

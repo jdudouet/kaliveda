@@ -17,36 +17,30 @@ void ExampleReconAnalysis::InitAnalysis(void)
    /* These will be automatically calculated for each event before
       your Analysis() method will be called                        */
    AddGV("KVZtot", "ztot");                             // total charge
-#ifdef WITH_CPP11
+
    auto zvtot = AddGV("KVZVtot", "zvtot");              // total Z*vpar
    zvtot->SetMaxNumBranches(1);    // only write "Z" component in TTree
-#else
-   AddGV("KVZVtot", "zvtot")->SetMaxNumBranches(1);
-#endif
+
    AddGV("KVMult", "mtot"); // total multiplicity
+
    // total multiplicity in forward CM hemisphere
-#ifdef USING_ROOT5
-   KVVarGlob* gv = AddGV("KVMult", "mtot_av");
-   gv->SetSelection("_NUC_->GetVpar()>0");
-#else
    auto gv = AddGV("KVMult", "mtot_av");
-   gv->SetSelection( {
+   gv->SetSelection({
       "Vcm>0", [](const KVNucleus * n)
       {
          return n->GetVpar() > 0;
       }}
                    );
-#endif
    gv->SetFrame("CM");
 
    /*** DECLARING SOME HISTOGRAMS ***/
-   AddHisto(new TH1F("zdist", "Charge distribution", 100, -.5, 99.5));
-   AddHisto(new TH2F("zvpar", "Z vs V_{par} in CM", 100, -15., 15., 75, .5, 75.5));
+   AddHisto<TH1F>("zdist", "Charge distribution", 100, -.5, 99.5);
+   AddHisto<TH2F>("zvpar", "Z vs V_{par} in CM", 100, -15., 15., 75, .5, 75.5);
 
    /*** USING A TREE ***/
    CreateTreeFile();//<--- essential
-   TTree* t = new TTree("myTree", "");
-   AddTree(t);
+   auto t = AddTree("myTree");
+
    GetGVList()->MakeBranches(t); // store global variable values in branches
 
    /*** DEFINE WHERE TO SAVE THE RESULTS ***/
@@ -61,13 +55,18 @@ void ExampleReconAnalysis::InitRun(void)
    // Initialisations for each run
    // Called at the beginning of each run
 
-   // You no longer need to define the correct identification/calibration codes for particles
-   // which will be used in your analysis, they are automatically selected using the default
-   // values in variables *.ReconstructedNuclei.AcceptID/ECodes.
+   // This is the place to define the correct identification/calibration codes for particles
+   // which will be used in your analysis. These particles will be labelled 'OK'
+   // (i.e. the method IsOK() for these particles returns kTRUE).
    //
-   // You can change the selection (or deactivate it) here by doing:
-   // gMultiDetArray->AcceptECodes(""); => accept all calibration codes
+   // If no explicit selection is indicated here, an automatic selection for each multidetector
+   // array will be made using the default accepted values which are defined in variables
+   // [array].ReconstructedNuclei.AcceptID/ECodes.
+   //
+   // You can change the selection (or deactivate it) here by doing any of the following:
+   //
    // gMultiDetArray->AcceptIDCodes("12,33"); => accept only ID codes in list
+   // gMultiDetArray->AcceptAllIDCodes();     => accept particles with any ID code
    //
    // If the experiment used a combination of arrays, codes have to be set for
    // each array individually:
@@ -76,10 +75,8 @@ void ExampleReconAnalysis::InitRun(void)
    // set title of TTree with name of analysed system
    GetTree("myTree")->SetTitle(GetCurrentRun()->GetSystemName());
 
-#ifdef USING_ROOT6
    // reject reconstructed events which are not consistent with the DAQ trigger
    SetTriggerConditionsForRun(GetCurrentRun()->GetNumber());
-#endif
 }
 
 //_____________________________________
@@ -93,12 +90,7 @@ Bool_t ExampleReconAnalysis::Analysis(void)
    FillTree(); // write new results in TTree
 
    /*** LOOP OVER PARTICLES OF EVENT ***/
-#ifdef WITH_CPP11
    for (auto& n : OKEventIterator(*GetEvent())) {
-#else
-   for (KVEvent::Iterator it = OKEventIterator(*GetEvent()).begin(); it != GetEvent()->end(); ++it) {
-      KVNucleus& n = it.get_reference<KVNucleus>();
-#endif
       // "OK" particles => using selection criteria of InitRun()
       // fill Z distribution
       FillHisto("zdist", n.GetZ());
