@@ -658,6 +658,7 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_ebyedat(const MFMEbyedatFrame& f)
    }
    return kTRUE;
 }
+#endif
 
 void KVINDRA::SetIDCodeForIDTelescope(KVIDTelescope* idt) const
 {
@@ -676,7 +677,7 @@ void KVINDRA::SetIDCodeForIDTelescope(KVIDTelescope* idt) const
             idt->GetName(), idt->IsA()->GetName());
    }
 }
-#endif
+
 //_______________________________________________________________________________________
 
 void KVINDRA::SetPinLasersForCsI()
