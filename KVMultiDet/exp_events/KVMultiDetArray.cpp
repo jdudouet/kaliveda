@@ -1096,7 +1096,7 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
                   else {
                      recon_nuc->SetIDCode(GetZminCode());//idt->SetIDCode(recon_nuc, idt->GetZminCode());
                   }
-                  recon_nuc->SetECode(idt->GetECode());
+                  recon_nuc->SetECode(GetNormalCalibrationCode());
                   //recon_nuc->SetIsIdentified();
                   //recon_nuc->SetIsCalibrated();
                }

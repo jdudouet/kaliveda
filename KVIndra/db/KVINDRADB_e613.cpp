@@ -49,9 +49,9 @@ void KVINDRADB_e613::Build()
 
    //by default we set two keys for both recognising the 'header' lines and deciding
    //if we have a good run line: the "Run" and "Events" fields must be present
-   GetLineReader()->SetFieldKeys(2, GetDBEnv("Runlist.Run"),
+   GetLineReader()->SetFieldKeys(GetDBEnv("Runlist.Run"),
                                  GetDBEnv("Runlist.Events"));
-   GetLineReader()->SetRunKeys(2, GetDBEnv("Runlist.Run"),
+   GetLineReader()->SetRunKeys(GetDBEnv("Runlist.Run"),
                                GetDBEnv("Runlist.Events"));
 
    ReadRunList(runlist_fullpath.Data());
@@ -100,7 +100,7 @@ void KVINDRADB_e613::ReadChIoPressures()
    ifstream fin;
    if (!OpenCalibFile("Pressures", fin)) {
       Error("ReadChIoPressures()", "Could not open file %s",
-            GetCalibFileName("Pressures"));
+            GetCalibFileName("Pressures").Data());
       return;
    }
    Info("ReadChIoPressures()", "Reading ChIo pressures parameters...");
@@ -211,7 +211,7 @@ void KVINDRADB_e613::ReadGainList()
    KVFileReader flist;
    TString fp;
    if (!KVBase::SearchKVFile(GetCalibFileName("Gains"), fp, fDataSet.Data())) {
-      Error("ReadGainList", "Fichier %s, inconnu au bataillon", GetCalibFileName("Gains"));
+      Error("ReadGainList", "Fichier %s, inconnu au bataillon", GetCalibFileName("Gains").Data());
       return;
    }
 

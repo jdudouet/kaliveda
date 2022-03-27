@@ -55,7 +55,7 @@ public:
    void SetGroup(KVGroup* g)
    {
       KVGroupReconstructor::SetGroup(g);
-      theChio = (KVChIo*)g->GetDetectorByType("CI");
+      theChio = g->GetDetectorByType("CI");
    }
 
    KVReconstructedNucleus* ReconstructTrajectory(const KVGeoDNTrajectory* traj, const KVGeoDetectorNode* node);

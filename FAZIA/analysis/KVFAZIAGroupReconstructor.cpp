@@ -671,7 +671,7 @@ void KVFAZIAGroupReconstructor::AddCoherencyParticles()
          auto ESI1_ql1 = si1->GetDetectorSignalValue("Energy-QL1");
          auto ESI2 = si2->GetEnergy();
          new_qh1 = si1->GetInverseDetectorSignalValue("Energy", TMath::Max(0., ESI1_qh1 - ESI1_parent), "QH1.FPGAEnergy");
-         if (si1->HasDetectorSignalValue("Energy-QL1")) {
+         if (si1->HasDetectorSignal("Energy-QL1")) {
             new_ql1 = si1->GetInverseDetectorSignalValue("Energy-QL1", TMath::Max(0., ESI1_ql1 - ESI1_parent), "QL1.Amplitude");
          }
 //         Info("AddCoherencyParticle", "Changing raw data parameters:");

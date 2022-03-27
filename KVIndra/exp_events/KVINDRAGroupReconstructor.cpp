@@ -78,9 +78,8 @@ void KVINDRAGroupReconstructor::Identify()
       if (!d->IsIdentified()) d->SetIDCode(KVINDRA::IDCodes::NO_IDENTIFICATION); // unidentifiable particle
       else {
          if (d->GetIDCode() == KVINDRA::IDCodes::ID_CSI_PSA && d->GetZ() == 0) {
-            ++i;
             std::cout << "\n\n";
-            std::cout << "    GAMMA #" << i << "\n\n";
+            std::cout << "    GAMMA\n\n";
             d->Print();
             std::cout << "\n\n";
             auto traj = (KVGeoDNTrajectory*)d->GetStoppingDetector()->GetNode()->GetTrajectories()->First();
