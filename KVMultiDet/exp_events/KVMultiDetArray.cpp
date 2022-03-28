@@ -3020,9 +3020,9 @@ Bool_t KVMultiDetArray::handle_raw_data_event_ebyedat(KVGANILDataReader&)
 void KVMultiDetArray::prepare_to_handle_new_raw_data()
 {
    // reset acquisition parameters etc. before reading new raw data event
-   TIter it(GetACQParams());
-   KVACQParam* acqpar;
-   while ((acqpar = (KVACQParam*)it())) acqpar->Clear();
+   TIter it(&fFiredACQParams);
+   TObject* obj;
+   while ((obj = it())) obj->Clear();
    fReconParameters.Clear();
    fFiredACQParams.Clear();
    fHandledRawData = false;
