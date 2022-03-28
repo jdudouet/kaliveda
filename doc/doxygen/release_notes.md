@@ -1,8 +1,13 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 23rd March 2022
+Last update: 28th March 2022
 
-## Version 1.12/05 (Released: 23/03/2022)
+## Version 1.12/06 (Released: 28/03/2022)
+
+__Changes in__ \ref FAZIAnal : __Bugfix for raw FAZIA data analysis__
+
+When analysing raw FAZIA data, detectors were not reset before reading a new event, leading to a steadily increasing number of
+fired detectors with each new event. A small change to KVMultiDetArray::prepare_to_handle_new_raw_data() fixes this.
 
 __Changes in Build System__
 
