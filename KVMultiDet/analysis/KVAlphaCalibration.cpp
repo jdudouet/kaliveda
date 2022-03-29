@@ -231,7 +231,6 @@ TGraph* KVAlphaCalibration::FitInit(bool debug_)
          factorGraph->SetPoint(i, MeanOfPeak[i], InitializationPeak[i]);
       }
 
-
       if (debug_) std::cerr << "DEBUG IN FitInit : Initializing Parameters" << std::endl;
 
       InitializationFit->SetParameter(0, 1);

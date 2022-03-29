@@ -28,6 +28,9 @@ INDRAFAZIA.E818.FAZIA.ReconstructedNuclei.AcceptECodes: 1-2
 INDRAFAZIA.E818.INDRA.CSI.IDTelescopeNameFormat: CSI_R_L_%s
 #INDRAFAZIA.E818.DataQualityAuditPreparation.DataAnalysisTask.UserClass.Base:     DataQualityAuditE818/TSelector
 
+# nominal geometry (85.43cm is distance to true target position, i.e. approx. 1 cm upstream of theoretical target position)
+INDRAFAZIA.E818.FAZIETO.DistanceZ:       85.43
+INDRAFAZIA.E818.FAZIETO.ThetaMinCompactGeo:  1.5
 
 +Plugin.KVMultiDetArray:    INDRAFAZIA.E818    KVExpSetUp    KVMultiDetexp_events    "KVExpSetUp()"
 +Plugin.KVExpDB:   INDRAFAZIA.E818    KVExpSetUpDB     KVMultiDetexp_events   "KVExpSetUpDB(const Char_t*)"
