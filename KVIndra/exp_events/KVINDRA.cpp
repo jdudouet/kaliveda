@@ -1250,16 +1250,30 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPP
    auto mfmfilereader = dynamic_cast<KVMFMDataFileReader*>(fRawDataReader);
    mfmfilereader->GetMesytecBufferReader().read_event_in_buffer(
       (const uint8_t*)f.GetPointUserData(), f.GetBlobSize(),
-   [&](const mesytec::mdpp::event & evt) {
+   [ = ](const mesytec::mdpp::event & evt) {
       auto& setup = mfmfilereader->GetMesytecBufferReader().get_setup();
       // loop over module data in event, set data in detectors when possible
       for (auto& mdat : evt.modules) {
          auto mod_id = mdat.module_id;
-         for (auto& voie : mdat.data) {
-            KVString detname(setup.get_detector(mod_id, voie.channel));
-            KVString sig_type(voie.data_type);
-            Double_t sig_data = voie.data;
-            add_and_set_detector_signal(GetDetector(detname), detname, sig_data, sig_type);
+         auto& current_module = setup.get_module(mod_id);
+         if (current_module.is_mdpp_module()) {
+            // data for detectors from MDPP module
+            for (auto& voie : mdat.data) {
+               KVString detname(setup.get_detector(mod_id, voie.channel));
+               KVString sig_type(voie.data_type);
+               Double_t sig_data = voie.data;
+               add_and_set_detector_signal(GetDetector(detname), detname, sig_data, sig_type);
+            }
+         }
+         else if (current_module.is_mvlc_scaler()) {
+            // data from 64 bit scalers in MVLC
+            //
+            // 4 data words of 16 bits (least significant is first word) => 64 bit scaler
+            assert(mdat.data.size() == 4);
+            ULong64_t x = 0;
+            int i = 0;
+            for (auto& d : mdat.data) x += ((uint64_t)d.data_word) << (16 * (i++));
+            fReconParameters.SetValue64bit(current_module.name.c_str(), x);
          }
       }
    },
