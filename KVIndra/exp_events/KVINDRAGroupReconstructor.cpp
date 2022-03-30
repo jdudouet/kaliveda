@@ -44,7 +44,7 @@ KVReconstructedNucleus* KVINDRAGroupReconstructor::ReconstructTrajectory(const K
                   return nullptr;
                }
 
-               // if we arrive here, CSI_R_L identification for the particle has been performed and
+               // if we arrive here, CSI identification for the particle has been performed and
                // the result is not a gamma (which are rejected; no particle is reconstructed).
                // as the coordinates in the identification map are randomized (KVACQParamSignal),
                // we do not want to perform a second identification attempt in KVINDRAGroupReconstructor::IdentifyParticle:
@@ -83,7 +83,7 @@ void KVINDRAGroupReconstructor::Identify()
             d->Print();
             std::cout << "\n\n";
             auto traj = (KVGeoDNTrajectory*)d->GetStoppingDetector()->GetNode()->GetTrajectories()->First();
-            KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType("CSI_R_L");
+            KVIDINDRACsI* idt = (KVIDINDRACsI*)traj->GetIDTelescopes()->FindObjectByType(CSI_ID_TYPE);
             std::cout << idt << std::endl;
             std::cout << "Type: " << d->GetStoppingDetector()->GetType() << std::endl;
             std::cout << "Fired: " << d->GetStoppingDetector()->Fired(GetPartSeedCond()) << std::endl;
@@ -154,11 +154,7 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
 
       /*** general ID code for non-identified particles ***/
       PART.SetIDCode(KVINDRA::IDCodes::NO_IDENTIFICATION);
-#ifndef WITH_CPP11
-      std::map<std::string, KVIdentificationResult*>::iterator csirl = id_by_type.find("CSI_R_L");
-#else
-      auto csirl = id_by_type.find("CSI_R_L");
-#endif
+      auto csirl = id_by_type.find(CSI_ID_TYPE.Data());
       if (csirl != id_by_type.end()) {
          //Particles remaining unidentified are checked: if their identification in CsI R-L gave subcodes 6 or 7
          //(Zmin) then they are relabelled "Identified" with IDcode = 9 (ident. incomplete dans CsI ou Phoswich (Z.min))
@@ -172,14 +168,14 @@ void KVINDRAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                PART.SetIsIdentified();
                csirl->second->IDcode = KVINDRA::IDCodes::ID_CSI_FRAGMENT;
                partID = *(csirl->second);
-               identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("CSI_R_L");
+               identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType(CSI_ID_TYPE);
                PART.SetIdentification(&partID, identifying_telescope);
             }
             else if (csirl->second->IDquality == KVIDGCsI::kICODE4 || csirl->second->IDquality == KVIDGCsI::kICODE5) {
                PART.SetIsIdentified();
                csirl->second->IDcode = KVINDRA::IDCodes::ID_CSI_MASS_OUT_OF_RANGE;
                partID = *(csirl->second);
-               identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType("CSI_R_L");
+               identifying_telescope = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->FindObjectByType(CSI_ID_TYPE);
                PART.SetIdentification(&partID, identifying_telescope);
             }
          }

@@ -19,15 +19,17 @@
 #define KVIDINDRACsI_H
 
 #include "KVINDRAIDTelescope.h"
+#include "KVIDGraph.h"
+
 /**
   \class KVIDCsI
   \ingroup INDRAIdent
-  \brief Identification in CsI fast-slow maps for INDRA
+  \brief Identification in CsI scintillators for INDRA
  */
 class KVIDINDRACsI: public KVINDRAIDTelescope {
 
    KVIDGraph* CsIGrid;//! telescope's grid
-
+   Bool_t fRapideLente;// set to true when using rapide-lente grid i.e. KVIDGCsI
    Int_t fThresMin[2][4];// min ID thresholds (smooth step)
    Int_t fThresMax[2][4];// max ID thresholds (smooth step)
 
@@ -36,14 +38,12 @@ protected:
    float clamp(float x, float lowerlimit, float upperlimit);
 
 public:
-
    KVIDINDRACsI();
-   virtual ~ KVIDINDRACsI() {}
-
    void Initialize()
    {
       KVINDRAIDTelescope::Initialize();
       CsIGrid = GetIDGrid();
+      fRapideLente = CsIGrid && CsIGrid->InheritsFrom("KVIDGCsI");
    }
    virtual Bool_t Identify(KVIdentificationResult*, Double_t x = -1., Double_t y = -1.);
 
@@ -52,8 +52,8 @@ public:
       // Used for filtering simulations
       // Returns kTRUE if this telescope is theoretically capable of identifying a given nucleus,
       // without considering thresholds etc.
-      // For INDRA CsI Rapide-Lente detectors, identification is possible up to Z=4
-      return (Z < 5);
+      // For CsI detectors, identification is possible up to Z=5
+      return (Z < 6);
    }
    void SetIdentificationStatus(KVReconstructedNucleus* n);
 

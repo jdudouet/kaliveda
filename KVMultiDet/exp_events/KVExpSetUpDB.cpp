@@ -53,8 +53,21 @@ void KVExpSetUpDB::Build()
 {
    // Build the database.
    // Runs & Systems tables are handled by us, calibrations are handled by each multidetector
+   //
+   // If no run infos are available (perhaps no data yet available for dataset), we make a dummy
+   // database with runs numbered from 1 to 100.
 
-   FillRunsTable();
+   try {
+      FillRunsTable();
+   }
+   catch (...) {
+      Info("Build", "No informations on dataset runs available");
+      Info("Build", "Dummy database runs numbered from 1 to 100 will be created");
+      for (int i = 1; i <= 100; ++i) {
+         AddRun(new KVDBRun(i, "Dummy database run"));
+      }
+   }
+
    ReadComments();
    ReadSystemList();
    ReadScalerInfos();
@@ -92,8 +105,16 @@ void KVExpSetUpDB::FillRunsTable()
 {
    // Fill the Runs table using the informations in file runinfos.root
    // (which can be generated using KVRunListCreator).
+   //
+   // If there are no run infos available (perhaps because no data yet exists for the dataset),
+   // this method throws an exception and the database will have a dummy list of runs
+   // numbered from 1 to 100
 
    TString runinfos = KVDataSet::GetFullPathToDataSetFile(fDataSet, "runinfos.root");
+
+   if (runinfos == "")
+      throw std::runtime_error("run infos file not found");
+
    Info("FillRunsTable", "Reading run infos from %s", runinfos.Data());
    TFile runinfos_file(runinfos);
    TIter it(runinfos_file.GetListOfKeys());

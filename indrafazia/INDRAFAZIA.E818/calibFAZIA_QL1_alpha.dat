@@ -1,7 +1,7 @@
 SignalIn:                     QL1.Amplitude
-SignalIOut:                   Energy
+SignalOut:                    Energy
 CalibType:                    ChannelEnergyQL1
-CalibOption:                  func=pol1,min=0,max=10000,inverse=false
+CalibOption:                  func=pol1,min=0,max=100000,inverse=false
 Runlist:                      1-9999999
 SI1-11: -0,0.018203
 SI1-12: -0,0.018351

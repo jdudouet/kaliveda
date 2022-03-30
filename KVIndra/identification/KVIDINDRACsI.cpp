@@ -23,17 +23,12 @@
 #include <KVReconstructedNucleus.h>
 
 ClassImp(KVIDINDRACsI)
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//KVIDINDRACsI
-//
-//Identification in CsI R-L matrices of INDRA
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 KVIDINDRACsI::KVIDINDRACsI()
 {
    CsIGrid = 0;
 
+   // thresholds used by filter for Rapide-Lente identifications
    fThresMin[0][0] = 1;
    fThresMax[0][0] = 2;    // protons
    fThresMin[0][1] = 2;
@@ -51,7 +46,7 @@ KVIDINDRACsI::KVIDINDRACsI()
    fThresMin[1][3] = 1;
    fThresMax[1][3] = 3;    // alphas
 
-   /* in principle all CsI R-L telescopes can identify mass & charge */
+   /* in principle all CsI telescopes can identify mass & charge */
    SetHasMassID(kTRUE);
 }
 
@@ -97,7 +92,9 @@ Bool_t KVIDINDRACsI::Identify(KVIdentificationResult* IDR, Double_t x, Double_t 
 
 void KVIDINDRACsI::SetIdentificationStatus(KVReconstructedNucleus* n)
 {
-   // For filtering simulations
+   // For filtering simulations (only implemented for Rapide-Lente identification)
+   //
+   // FILTERING WITH RAPIDE-LENTE IDENTIFICATIONS
    // If n->GetEnergy() is above threshold for mass identification, we set
    // n->IsAMeasured(kTRUE) (and n->IsZMeasured(kTRUE)).
    // Otherwise, we just set n->IsZMeasured(kTRUE) and use the A given by
@@ -107,30 +104,37 @@ void KVIDINDRACsI::SetIdentificationStatus(KVReconstructedNucleus* n)
    // for A>5 identification if CsI energy > 40 MeV
    //
    // If A is not measured, we make sure the KE of the particle corresponds to the simulated one
+   //
+   // FILTERING WITH OTHER IDENTIFICATION
+   // The nucleus is declared to be Z & A identified, whatever its identity or energy
 
    n->SetZMeasured();
 
-   if (n->GetA() > 5) {
-      if (GetDetector(1)->GetEnergy() > 40)
-         n->SetAMeasured();
+   if (fRapideLente) {
+      if (n->GetA() > 5) {
+         if (GetDetector(1)->GetEnergy() > 40)
+            n->SetAMeasured();
+         else {
+            double e = n->GetE();
+            n->SetZ(n->GetZ());
+            n->SetE(e);
+         }
+         return;
+      }
+      if (fThresMin[n->GetZ() - 1][n->GetA() - 1] > 0) {
+         Bool_t okmass = gRandom->Uniform() < smootherstep(fThresMin[n->GetZ() - 1][n->GetA() - 1], fThresMax[n->GetZ() - 1][n->GetA() - 1], GetDetector(1)->GetEnergy());
+         if (okmass) {
+            n->SetAMeasured();
+         }
+      }
       else {
          double e = n->GetE();
          n->SetZ(n->GetZ());
          n->SetE(e);
       }
-      return;
    }
-   if (fThresMin[n->GetZ() - 1][n->GetA() - 1] > 0) {
-      Bool_t okmass = gRandom->Uniform() < smootherstep(fThresMin[n->GetZ() - 1][n->GetA() - 1], fThresMax[n->GetZ() - 1][n->GetA() - 1], GetDetector(1)->GetEnergy());
-      if (okmass) {
-         n->SetAMeasured();
-      }
-   }
-   else {
-      double e = n->GetE();
-      n->SetZ(n->GetZ());
-      n->SetE(e);
-   }
+   else //
+      n->SetAMeasured();
 }
 
 
