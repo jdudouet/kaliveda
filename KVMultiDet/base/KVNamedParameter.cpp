@@ -323,7 +323,7 @@ void KVNamedParameter::ls(Option_t* option) const
    else {
       switch (GetType()) {
          case kIsInt:
-            if (can_print) cout << "<" << GetName() << "=" << GetInt() << ">" << endl;
+            if (can_print) cout << "<" << GetName() << "=" << dec << GetInt() << ">" << endl;
             break;
 
          case kIsBool:
