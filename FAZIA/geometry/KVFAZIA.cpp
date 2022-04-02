@@ -536,7 +536,7 @@ Bool_t KVFAZIA::treat_event(const DAQ::FzEvent& e)
                det->SetGTTag(GTTag);
 
                if (!rdata.has_energy() && !rdata.has_waveform()) {
-                  Warning("treat_event", "[NO DATA] [%s %s]", det->GetName(), FzDataType_str[fIdSignal]);
+                  if (FzDataType_str[fIdSignal] != "I2") Warning("treat_event", "[NO DATA] [%s %s]", det->GetName(), FzDataType_str[fIdSignal]);
                   continue;
                }
 
