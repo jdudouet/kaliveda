@@ -6,7 +6,7 @@
 INDRAFAZIA.E818.DataSet.Title:  E818 (April/May 2022)
 INDRAFAZIA.E818.DataSet.RepositoryDir:	INDRAFAZIA/E818
 INDRAFAZIA.E818.DataSet.RunFileName.raw:    run_%R.dat.%D.%I
-INDRAFAZIA.E818.DataSet.RunFileIndexMultiplier.raw:    100
+INDRAFAZIA.E818.DataSet.RunFileIndexMultiplier.raw:    1000
 INDRAFAZIA.E818.DataSet.RunFile.DoNotDelete: raw
 INDRAFAZIA.E818.DataSet.RunFileClass.raw:    MFM
 INDRAFAZIA.E818.MesytecCrateConf:   mesytec_crate_map.dat
