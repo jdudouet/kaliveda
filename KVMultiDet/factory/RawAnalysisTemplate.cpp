@@ -73,10 +73,10 @@ Bool_t RawAnalysisTemplate::Analysis()
       while ((det = (KVDetector*)it())) {
          if (det->Fired()) {
             ++Mult;
-            // if detector has a signal "QH1FPGAEnergy", store it in tree
-            if (det->HasDetectorSignal("QH1FPGAEnergy")) {
+            // if detector has a signal "QH1.FPGAEnergy", store it in tree
+            if (det->HasDetectorSignal("QH1.FPGAEnergy")) {
                DetSigName = det->GetName();
-               DetSigVal = det->GetDetectorSignalValue("QH1FPGAEnergy");
+               DetSigVal = det->GetDetectorSignalValue("QH1.FPGAEnergy");
                FillTree();
             }
          }
