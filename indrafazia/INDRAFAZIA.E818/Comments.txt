@@ -1,6 +1,7 @@
 run=1000 | FAZIA solo. Cible Au 660ug/cm2 sur porte-cible lateral.
-run=2000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2 diam=20mm porte-cible principal.
+run=2000 | FAZIA solo. Cible Au 980ug/cm2 diam=20mm porte-cible principal.
 run=2016 | HV 10kV on target
+run=3000 | INDRA and FAZIA (independent)
 run=4000 | Petit bouclier devant FAZIA. Increased intensity.
 run=5000 | Grand bouclier devant FAZIA. Much higher intensity.
 run=5002 | Run stopped by plantage Narval.
