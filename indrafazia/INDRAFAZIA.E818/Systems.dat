@@ -3,25 +3,25 @@
 +Poubelle
 Runs : 5002
 
-+12C(CSS1) + 197Au[660] 13.75 MeV/A
++12C(q=4+ f=13.45MHz CSS1) + 197Au[660] 13.75 MeV/A
 12 6 197 79 1.7 13.75
 Target : 1 0.0
 197Au 0.660
 Runs : 1000-1999
 
-+12C(CSS1) + 197Au[980] 13.75 MeV/A
++12C(q=4+ f=13.45MHz CSS1) + 197Au[980] 13.75 MeV/A
 12 6 197 79 1.7 13.75
 Target : 1 0.0
 197Au 0.980
 Runs : 2000-6999
 
-+12C(CIME) + 197Au[980] 8 MeV/A
++12C(q=4+ f=12.779MHz CIME) + 197Au[980] 8 MeV/A
 12 6 197 79 1.7 8.752
 Target : 1 0.0
 197Au 0.980
 Runs : 7000-12999
 
-+12C(CIME) + 12C[150] 8 MeV/A
++12C(q=4+ f=12.779MHz CIME) + 12C[150] 8 MeV/A
 12 6 12 6 1.7 8.752
 Target : 1 0.0
 12C 0.150
