@@ -1,1 +1,12 @@
-run=0 | starting...
+run=1000 | FAZIA solo. Cible Au 660ug/cm2 sur porte-cible lateral.
+run=2000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2 diam=20mm porte-cible principal.
+run=2016 | HV 10kV on target
+run=4000 | Petit bouclier devant FAZIA. Increased intensity.
+run=5000 | Grand bouclier devant FAZIA. Much higher intensity.
+run=5002 | Run stopped by plantage Narval.
+run=6000 | Grand bouclier devant FAZIA. High intensity.
+run=7000 | INDRA and FAZIA (independent). HV 8kV on target.
+run=8000 | Petit bouclier devant FAZIA.
+run=9000 | Grand bouclier devant FAZIA. Increased intensity.
+run=11000 | Slight decentring of beam, to the left in INDRA, to the right in FAZIA (with grand bouclier).
+run=12000 | All FAZIA triggers disabled, still with grand bouclier in place.

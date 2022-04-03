@@ -1,55 +1,30 @@
-+Cosmic Rays
-Runs :
-
-+Alpha Source
-Runs :
-
-+Alpha Source plus Cosmic Rays
-Runs : 
-
-+Gene INDRA
-Runs :
-
-+Gene FAZIA
-Runs :
+# Systems for E818 dataset
 
 +Poubelle
-Runs :
+Runs : 5002
 
-+12C + 197Au[1700] 12 MeV/A
-12 6 197 79 1.7 12.0
++12C(CSS1) + 197Au[660] 13.75 MeV/A
+12 6 197 79 1.7 13.75
 Target : 1 0.0
-197Au 1.7
-Runs :
+197Au 0.660
+Runs : 1000-1999
 
-+12C + 197Au[1700] 8 MeV/A
-12 6 197 79 1.7 8.0
++12C(CSS1) + 197Au[980] 13.75 MeV/A
+12 6 197 79 1.7 13.75
 Target : 1 0.0
-197Au 1.7
-Runs :
+197Au 0.980
+Runs : 2000-6999
 
-+36Ar + EmptyFrame 74 MeV/A
-Runs :
-
-+36Ar + 197Au[1700] 74 MeV/A
-36 18 197 79 1.7 74.0
++12C(CIME) + 197Au[980] 8 MeV/A
+12 6 197 79 1.7 8.752
 Target : 1 0.0
-197Au 1.7
-Runs :
+197Au 0.980
+Runs : 7000-12999
 
 +36Ar + 58Ni[300] 74 MeV/A
 36 18 58 28 .3 74.0
 Target : 1 0.0
 58Ni 0.3
-Runs :
-
-+58Ni + EmptyFrame 74 MeV/A
-Runs :
-
-+58Ni + 197Au[1700] 74 MeV/A
-58 28 197 79 1.7 74.0
-Target : 1 0.0
-197Au 1.7
 Runs :
 
 +58Ni + 58Ni[300] 74 MeV/A
