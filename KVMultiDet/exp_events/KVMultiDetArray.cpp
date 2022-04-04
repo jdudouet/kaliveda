@@ -3046,7 +3046,10 @@ void KVMultiDetArray::prepare_to_handle_new_raw_data()
    // reset fired signals
    TIter nxt(&fFiredSignals);
    KVDetectorSignal* ds;
-   while ((ds = (KVDetectorSignal*)nxt())) ds->SetFired(false);
+   while ((ds = (KVDetectorSignal*)nxt())) {
+      ds->SetFired(false);
+      ds->SetValue(0);
+   }
    fFiredSignals.Clear();
 }
 
