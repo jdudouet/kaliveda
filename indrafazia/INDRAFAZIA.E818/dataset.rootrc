@@ -70,10 +70,10 @@ INDRAFAZIA.E818.Q3.PZCorrection:               0
 INDRAFAZIA.E818.Q3.FastShaperRiseTime:         2
 INDRAFAZIA.E818.Q3.FastShaperFlatTop:          0.5
 
-INDRAFAZIA.E818.QH1.FPGARiseTime:          2.
-INDRAFAZIA.E818.Q2.FPGARiseTime:           2.
-INDRAFAZIA.E818.Q3.fast.FPGARiseTime:      2.
-INDRAFAZIA.E818.Q3.slow.FPGARiseTime:      2.
+INDRAFAZIA.E818.QH1.FPGARiseTime:          10.
+INDRAFAZIA.E818.Q2.FPGARiseTime:           10.
+INDRAFAZIA.E818.Q3.fast.FPGARiseTime:      10.
+INDRAFAZIA.E818.Q3.slow.FPGARiseTime:      10.
 
 INDRAFAZIA.E818.QL1.MinimumAmplitude:          2
 INDRAFAZIA.E818.Q2.MinimumAmplitude:           2
