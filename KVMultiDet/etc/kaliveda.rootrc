@@ -181,7 +181,7 @@ KVDataAnalyser.UserClass.ForceRecompile:     no
 # Batch systems
 BatchSystem:     Xterm
 Xterm.BatchSystem.Title:    Execute task in an X-terminal window
-Xterm.BatchSystem.DefaultJobOptions:   -T #JobName# -e
+Xterm.BatchSystem.DefaultJobOptions: -T #JobName# -e
 Xterm.BatchSystem.JobSubCmd:   xterm
 Xterm.BatchSystem.JobScript: 'KaliVedaAnalysis -b -n | tee #JobName#.log'&
 +BatchSystem:    PROOFLite
