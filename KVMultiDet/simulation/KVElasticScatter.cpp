@@ -24,7 +24,8 @@ ClassImp(KVElasticScatter)
 KVElasticScatter::KVElasticScatter(): fBeamDirection(0, 0, 1)
 {
    //Default constructor
-   fDepth = fTheta = 0;
+   fDepth = 0;
+   fTheta = 0;
    fBinE = 500;
    fEnergy = 0;
    fKinematics = 0;
