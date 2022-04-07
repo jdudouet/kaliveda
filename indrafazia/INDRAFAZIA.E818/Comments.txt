@@ -17,3 +17,4 @@ run=15000 | all detectors in trigger
 run=17000 | INDRA and FAZIA (independent), all detectors in trigger
 run=18000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, bad INDRA thresholds up to run 26999
 run=27000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, now with good INDRA thresholds
+run=35000 | Merging INDRA-FAZIA with 2.5us window. Note:in all previous runs, some INDRA timestamps/scalers are corrupted (bad parsing)
