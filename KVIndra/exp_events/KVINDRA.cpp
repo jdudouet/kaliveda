@@ -1269,11 +1269,17 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPP
             // data from 64 bit scalers in MVLC
             //
             // 4 data words of 16 bits (least significant is first word) => 64 bit scaler
-            assert(mdat.data.size() == 4);
-            ULong64_t x = 0;
-            int i = 0;
-            for (auto& d : mdat.data) x += ((uint64_t)d.data_word) << (16 * (i++));
-            fReconParameters.SetValue64bit(current_module.name.c_str(), x);
+            if (mdat.data.size() == 4) {
+               ULong64_t x = 0;
+               int i = 0;
+               for (auto& d : mdat.data) x += ((uint64_t)d.data_word) << (16 * (i++));
+               fReconParameters.SetValue64bit(current_module.name.c_str(), x);
+            }
+            else {
+               Warning("handle_raw_data_event_mfmframe_mesytec_mdpp",
+                       "Scaler data %s is corrupt : %d words instead of 4",
+                       current_module.name.c_str(), mdat.data.size());
+            }
          }
       }
    },
