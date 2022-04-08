@@ -13,8 +13,16 @@ run=11000 | Slight decentring of beam, to the left in INDRA, to the right in FAZ
 run=12000 | All FAZIA triggers disabled, still with grand bouclier in place.
 run=13000 | INDRA and FAZIA (independent), INDRA rings 13-17 not in trigger, only Si1 in FAZIA
 run=14000 | INDRA rings 13-17 back in trigger, only Si1 in FAZIA
-run=15000 | all detectors in trigger
+run=15000 | All detectors in trigger
 run=17000 | INDRA and FAZIA (independent), all detectors in trigger
 run=18000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, bad INDRA thresholds up to run 26999
 run=27000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, now with good INDRA thresholds
 run=35000 | Merging INDRA-FAZIA with 2.5us window. Note:in all previous runs, some INDRA timestamps/scalers are corrupted (bad parsing)
+run=40000 | Run with independent INDRA/FAZIA just to test sequence of timestamps
+run=43000 | Merging with INDRA@3400Hz, FAZIA@800Hz
+run=43015 | Run stopped on NARVAL crash: check this and previous runs (may be poubelle)
+run=48000 | Increase of beam intensity (8.10^7 pps)
+run=49000 | Ni porte-cible, rien, nada
+run=50000 | Cible Au 660ug/cm2 sur porte-cible lateral.
+run=51000 | Merge with M>=2 trigger (only) on FAZIA
+run=52000 | Merge with M>=2 trigger (only) on FAZIA
