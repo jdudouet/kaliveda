@@ -161,7 +161,7 @@ public:
       infos.SetValue("Run", run_num);
       infos.SetValue("Start", when.AsSQLString());
       infos.SetValue("End", runfile.date);
-      infos.SetValue("Size", (int)runfile.size);
+      infos.SetValue64bit("Size", runfile.size);
 
       KVMFMDataFileReader reader(path_to_file);
       ULong64_t events = 0;
