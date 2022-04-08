@@ -1,0 +1,9 @@
+#
+# Malfunctioning INDRA detectors during E818 (part 1 for now, upto end Ar+Ni)
+#
+SI_0806,SI_0817,SI_0819,SI_0914: 1-999999
+# Hopefully will return for Ni+Ni
+SI_0915: 1-52999
+CSI_0814,CSI_1010,CSI_1017,CSI_1119: 1-999999
+# Hopefully will return for Ni+Ni
+CSI_1109: 1-529999
