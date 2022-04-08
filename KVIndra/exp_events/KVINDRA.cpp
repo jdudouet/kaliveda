@@ -1275,11 +1275,11 @@ Bool_t KVINDRA::handle_raw_data_event_mfmframe_mesytec_mdpp(const MFMMesytecMDPP
                for (auto& d : mdat.data) x += ((uint64_t)d.data_word) << (16 * (i++));
                fReconParameters.SetValue64bit(current_module.name.c_str(), x);
             }
-            else {
-               Warning("handle_raw_data_event_mfmframe_mesytec_mdpp",
-                       "Scaler data %s is corrupt : %d words instead of 4",
-                       current_module.name.c_str(), mdat.data.size());
-            }
+//            else {
+//               Warning("handle_raw_data_event_mfmframe_mesytec_mdpp",
+//                       "Scaler data %s is corrupt : %d words instead of 4",
+//                       current_module.name.c_str(), mdat.data.size());
+//            }
          }
       }
    },
