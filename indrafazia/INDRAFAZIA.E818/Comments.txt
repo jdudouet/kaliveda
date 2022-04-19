@@ -1,28 +1,52 @@
 run=1000 | FAZIA solo. Cible Au 660ug/cm2 sur porte-cible lateral.
 run=2000 | FAZIA solo. Cible Au 980ug/cm2 diam=20mm porte-cible principal.
-run=2016 | HV 10kV on target
+run=2016 | HV 10kV on target. FAZIA solo. Cible Au 980ug/cm2 diam=20mm porte-cible principal.
 run=3000 | INDRA and FAZIA (independent)
-run=4000 | Petit bouclier devant FAZIA. Increased intensity.
-run=5000 | Grand bouclier devant FAZIA. Much higher intensity.
+run=4000 | INDRA and FAZIA (independent). Petit bouclier devant FAZIA. Increased intensity.
+run=5000 | INDRA and FAZIA (independent). Grand bouclier devant FAZIA. Much higher intensity.
 run=5002 | Run stopped by plantage Narval.
-run=6000 | Grand bouclier devant FAZIA. High intensity.
-run=7000 | INDRA and FAZIA (independent). HV 8kV on target.
-run=8000 | Petit bouclier devant FAZIA.
-run=9000 | Grand bouclier devant FAZIA. Increased intensity.
+run=6000 | INDRA and FAZIA (independent). Grand bouclier devant FAZIA. High intensity.
+run=7000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2 diam=20mm porte-cible principal. HV 8kV on target.
+run=8000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2. Petit bouclier devant FAZIA. HV 8kV on target.
+run=9000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2. Grand bouclier devant FAZIA. Increased intensity. HV 8kV on target.
+run=10000 | INDRA and FAZIA (independent). Cible Au 980ug/cm2. Grand bouclier devant FAZIA. Increased intensity. HV 8kV on target.
 run=11000 | Slight decentring of beam, to the left in INDRA, to the right in FAZIA (with grand bouclier).
-run=12000 | All FAZIA triggers disabled, still with grand bouclier in place.
-run=13000 | INDRA and FAZIA (independent), INDRA rings 13-17 not in trigger, only Si1 in FAZIA
-run=14000 | INDRA rings 13-17 back in trigger, only Si1 in FAZIA
-run=15000 | All detectors in trigger
-run=17000 | INDRA and FAZIA (independent), all detectors in trigger
-run=18000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, bad INDRA thresholds up to run 26999
-run=27000 | INDRA and FAZIA (independent), rings 13-17 not in trigger, now with good INDRA thresholds
-run=35000 | Merging INDRA-FAZIA with 2.5us window. Note:in all previous runs, some INDRA timestamps/scalers are corrupted (bad parsing)
+run=12000 | INDRA solo. All FAZIA triggers disabled, still with grand bouclier in place.
+run=13000 | INDRA and FAZIA (independent), INDRA only rings 6-12 in trigger, only Si1 in FAZIA. Cible C 150ug/cm2.
+run=14000 | INDRA and FAZIA (independent), INDRA all rings in trigger, only Si1 in FAZIA. Cible C 150ug/cm2.
+run=15000 | INDRA and FAZIA (independent), INDRA all rings, FAZIA Si1/Si2/CsI. Cible C 150ug/cm2.
+run=16000 | INDRA and FAZIA (independent), INDRA all rings, FAZIA Si1/Si2/CsI. Cible C 150ug/cm2.
+run=17000 | INDRA and FAZIA (independent), INDRA all rings, FAZIA Si1/Si2/CsI. Cible 58Ni 410 ug/cm2.
+run=18000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=19000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=20000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=21000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=22000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=23000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=24000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=25000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=26000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, bad INDRA thresholds (too low).
+run=27000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=28000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=29000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=30000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=31000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=32000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=33000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=34000 | INDRA and FAZIA (independent), INDRA rings 6-12, FAZIA Si1/Si2/CsI, now with good INDRA thresholds.
+run=35000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI. Note:in all previous runs, some INDRA timestamps/scalers are corrupted (bad parsing)
+run=36000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=37000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=38000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
 run=40000 | Run with independent INDRA/FAZIA just to test sequence of timestamps
-run=43000 | Merging with INDRA@3400Hz, FAZIA@800Hz
-run=43015 | Run stopped on NARVAL crash: check this and previous runs (may be poubelle)
-run=48000 | Increase of beam intensity (8.10^7 pps)
+run=42000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=43000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=43005 | Run stopped on NARVAL crash
+run=45000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=46000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=47000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI.
+run=48000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI. Increase of beam intensity (8.10^7 pps)
 run=49000 | Ni porte-cible, rien, nada
-run=50000 | Cible Au 660ug/cm2 sur porte-cible lateral.
-run=51000 | Merge with M>=2 trigger (only) on FAZIA
-run=52000 | Merge with M>=2 trigger (only) on FAZIA
+run=50000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI. Cible Au 660ug/cm2 sur porte-cible lateral.
+run=51000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA M>=2 Si1/Si2/CsI.
+run=52000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA M>=2 Si1/Si2/CsI.
