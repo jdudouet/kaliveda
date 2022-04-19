@@ -704,7 +704,7 @@ public:
       TLorentzVector::SetPhi(TMath::DegToRad() * phi);
    }
 
-   virtual Bool_t IsOK();
+   Bool_t IsOK() const;
    void SetIsOK(Bool_t flag = kTRUE);
    void ResetIsOK()
    {

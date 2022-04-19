@@ -65,7 +65,6 @@ l3.Test(&N);      ==> returns false
 class KVParticleCondition : public KVBase {
    static KVHashList fgOptimized;// list of optimized particle conditions
    mutable Int_t fNUsing;//! number of classes using this as an optimized condition
-#ifdef USING_ROOT6
    using LambdaFunc = std::function<bool(const KVNucleus*)>;
    mutable LambdaFunc fLambdaCondition;
    LambdaFunc fSavedLambda1, fSavedLambda2;// used by || and &&
@@ -89,7 +88,6 @@ class KVParticleCondition : public KVBase {
          }
       }
    }
-#endif
 
 protected:
 
@@ -117,7 +115,6 @@ public:
    KVParticleCondition(const KVString& cond);
    KVParticleCondition(const Char_t* cond);
    KVParticleCondition(const KVParticleCondition&);
-#ifdef USING_ROOT6
    KVParticleCondition(const KVString& name, const LambdaFunc& F)
       : KVBase(name, "KVParticleCondition"), fLambdaCondition(F)
    {
@@ -156,9 +153,9 @@ public:
    }
 //   KVParticleCondition(KVParticleCondition&& other) noexcept;
 //   KVParticleCondition& operator=(KVParticleCondition&& other) noexcept;
-#endif
+
    virtual ~KVParticleCondition();
-#ifdef USING_ROOT6
+
    void Set(const KVString& name, const LambdaFunc& F)
    {
       // Set condition using lambda expression (replace any existing definition).
@@ -174,7 +171,7 @@ public:
       fLambdaCondition = F;
       SetName(name);
    }
-#endif
+
    void Set(const KVString&);
 
    Bool_t Test(const KVNucleus* nuc) const
@@ -187,13 +184,9 @@ public:
       //If optimisation fails (see method Optimize()), the condition will always
       //be evaluated as 'kFALSE' for all particles
 
-#ifdef USING_ROOT6
       logical_operator_lambda_condition_test();
-#endif
       if (!IsSet()) return kTRUE;
-#ifdef USING_ROOT6
       if (IsLambda()) return fLambdaCondition(nuc);
-#endif
       if (!fOptimal) Optimize();
 
       return (fOptOK ? fOptimal->optimized_test(nuc) : kFALSE);
@@ -222,9 +215,7 @@ public:
 
    KVParticleCondition& operator=(const KVParticleCondition&);
    KVParticleCondition& operator=(const KVString&);
-#ifdef USING_ROOT6
    KVParticleCondition& operator=(const LambdaFunc&);
-#endif
    friend KVParticleCondition operator&&(const KVParticleCondition&, const KVParticleCondition&);
    friend KVParticleCondition operator||(const KVParticleCondition&, const KVParticleCondition&);
    KVParticleCondition& operator|=(const KVParticleCondition&);

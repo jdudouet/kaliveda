@@ -27,13 +27,19 @@ void recon_event_iterator(KVEvent* e_ptr)
 void iterator_examples()
 {
    KVNucleusEvent Event;
+   KVNumberList random_Z;
    for (int i = 0; i < 10; ++i) {
       KVNucleus* n = Event.AddParticle();
       n->SetZ(i);
       n->SetIsOK(i % 2);
       if (i > 4) n->AddGroup("GROUP");
-      if (gRandom->Uniform() > .5) n->AddGroup("RANDOM");
+      if (gRandom->Uniform() > .5) {
+         n->AddGroup("RANDOM");
+         random_Z.Add(i);
+      }
    }
+
+   cout << "RANDOM group : " << random_Z.AsString() << endl << endl;
 
    cout << "Loop over all particles (0-9):" << endl;
    for (KVNucleusEvent::Iterator it = Event.begin(); it != Event.end(); ++it) {
@@ -55,13 +61,22 @@ void iterator_examples()
    }
 
    cout << "\nLoop over OK particles (1,3,5,7,9):" << endl;
-   for (KVNucleusEvent::Iterator it = EventOKIterator(Event).begin(); it != Event.end(); ++it) {
-      (*it).Print();
+   for (auto& n : EventOKIterator(Event)) {
+      n.Print();
    }
 
    cout << "\nLoop over GROUP particles (5,6,7,8,9):" << endl;
-   for (KVNucleusEvent::Iterator it = EventGroupIterator(Event, "GROUP").begin(); it != Event.end(); ++it) {
-      (*it).Print();
+   for (auto& n : EventGroupIterator(Event, "GROUP")) {
+      n.Print();
+   }
+
+   cout << "\nArbitrary selection of particle using KVParticleCondition (Z<3 || Z>7):" << endl;
+   for (auto& n : EventIterator(Event, {"Z<3 || Z>7", [](const KVNucleus * n)
+{
+   return (n->GetZ() < 3 || n->GetZ() > 7);
+   }
+                                       })) {
+      n.Print();
    }
 
    cout << "\nPerform two different iterations with the same iterator" << endl;
@@ -160,7 +175,7 @@ void iterator_examples()
    cout << Event.GetSum("GetZ", "ok") << endl;
 
    cout << "\nKVEvent::FillHisto(h,\"GetZ\",\"ok\"):" << endl;
-   TH1F* h = new TH1F("h", "KVEvent::GetZ() for \"ok\" particles", 10, -.5, 9.5);
+   auto h = new TH1F("h", "KVEvent::GetZ() for \"ok\" particles", 10, -.5, 9.5);
    Event.FillHisto(h, "GetZ", "ok");
    h->Draw();
 

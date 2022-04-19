@@ -3,8 +3,7 @@
 // 17/02/2004
 #include "Riostream.h"
 #include "KVGVList.h"
-
-#include <KVEvent.h>
+#include "KVTemplateEvent.h"
 
 ClassImp(KVGVList)
 
@@ -17,8 +16,16 @@ void KVGVList::init_KVGVList(void)
 }
 
 //_________________________________________________________________
-KVGVList::KVGVList(void): KVUniqueNameList()
+KVGVList::KVGVList(const KVParticleCondition& selection): KVUniqueNameList(),
+   fSelection(selection)
 {
+   // Create a list of global variables.
+   //
+   // If given, the KVParticleCondition will be used to select the particles to iterate
+   // over in each event in order to calculate the global variables.
+   //
+   // By default, if no selection is defined, only particles which are "OK" (i.e. for which
+   // KVParticle::IsOK() returns true) will be iterated over - this will change in the future!
    init_KVGVList();
 }
 
@@ -34,10 +41,17 @@ KVGVList::KVGVList(const KVGVList& a) : KVUniqueNameList()
 void KVGVList::Init(void)
 {
    // Initialisation of all global variables in list
-   // As this method may be called several times we ensure that
-   // variables are only initialised once
+   //
+   // As this method may be called several times we ensure that variables are only initialised once
+   //
+   // If no selection for particles in the event has been defined, a default selection of "OK" particles is set here.
 
    this->R__FOR_EACH(KVVarGlob, ListInit)();
+   if (!fSelection.IsSet()) {
+      fSelection.Set("OK", [](const KVNucleus * n) {
+         return n->IsOK();
+      });
+   }
 }
 
 //_________________________________________________________________
@@ -83,12 +97,10 @@ void KVGVList::Calculate()
    KVVarGlob* vg;
    while ((vg = (KVVarGlob*)it())) {
       vg->Calculate();
-#ifdef USING_ROOT6
       if (!vg->TestEventSelection()) {
          fAbortEventAnalysis = true;
          break;
       }
-#endif
    }
 }
 
@@ -99,12 +111,10 @@ void KVGVList::Calculate2()
    KVVarGlob* vg;
    while ((vg = (KVVarGlob*)it())) {
       vg->Calculate();
-#ifdef USING_ROOT6
       if (!vg->TestEventSelection()) {
          fAbortEventAnalysis = true;
          break;
       }
-#endif
    }
 }
 
@@ -115,18 +125,19 @@ void KVGVList::CalculateN()
    KVVarGlob* vg;
    while ((vg = (KVVarGlob*)it())) {
       vg->Calculate();
-#ifdef USING_ROOT6
       if (!vg->TestEventSelection()) {
          fAbortEventAnalysis = true;
          break;
       }
-#endif
    }
 }
 
 void KVGVList::CalculateGlobalVariables(KVEvent* e)
 {
    // This method will calculate all global variables defined in the list for the event 'e'.
+   //
+   // This will iterate over all particles in the event which correspond to the KVParticleCondition fSelection;
+   // if none has been defined, only particles for which KVParticle::IsOK() returns true will be used.
    //
    // Note that for 2-body variables, the Fill2 method will be called for each distinct pair of particles
    // in the event, plus each pair made up of a particle and itself.
@@ -143,36 +154,27 @@ void KVGVList::CalculateGlobalVariables(KVEvent* e)
 
       if (vg->IsGlobalVariable()) {
          // call Fill methods for global variables
-         if (vg->IsNBody()) vg->FillN(e);
+         if (vg->IsNBody())
+            vg->FillN(e);
          else {
-            Int_t mult = e->GetMult();
-            for (int i = 1; i <= mult; ++i) {
-               auto nuc_i = e->GetNucleus(i);
-               if (nuc_i->IsOK()) {
-                  if (vg->IsTwoBody()) {
-                     for (int j = i; j <= mult; ++j) {
-                        auto nuc_j = e->GetNucleus(j);
-                        if (nuc_j->IsOK()) {
-                           // we use every distinct pair of particles (including identical pairs) in the event
-                           vg->Fill2(nuc_i, nuc_j);
-                        }
-                     }
-                  }
-                  else {
-                     vg->Fill(nuc_i);
+            for (auto it = EventIterator(e, fSelection).begin(); it != KVNucleusEvent::Iterator::End(); ++it) {
+               if (vg->IsTwoBody()) {
+                  for (auto it2 = it; it2 != KVNucleusEvent::Iterator::End(); ++it2) {
+                     // we use every distinct pair of particles (including identical pairs) in the event
+                     vg->Fill2(it.get_const_pointer(), it2.get_const_pointer());
                   }
                }
+               else
+                  vg->Fill(it.get_const_pointer());
             }
          }
       }
       // call calculate for global variables and for KVEventClassifier objects
       vg->Calculate();
-#ifdef USING_ROOT6
       if ((fAbortEventAnalysis = !vg->TestEventSelection())) {
          return;
       }
       vg->DefineNewFrame(e);
-#endif
    }
 }
 

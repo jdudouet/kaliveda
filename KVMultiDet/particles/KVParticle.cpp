@@ -238,7 +238,7 @@ void KVParticle::Clear(Option_t*)
 }
 
 //_________________________________________________________________________________________________________
-Bool_t KVParticle::IsOK()
+Bool_t KVParticle::IsOK() const
 {
    //Determine whether this particle is considered "good" or not for analysis,
    //depending on a previous call to SetIsOK(Bool_t flag).

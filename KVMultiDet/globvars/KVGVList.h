@@ -2,6 +2,7 @@
 #define KVGVList_h
 #include "KVVarGlob.h"
 #include "KVUniqueNameList.h"
+#include "KVParticleCondition.h"
 #include "TTree.h"
 #include "KVEventClassifier.h"
 
@@ -120,6 +121,7 @@ used for the branch added to the user's analysis TTree by method MakeBranches().
  */
 class KVGVList: public KVUniqueNameList {
 
+   KVParticleCondition fSelection;// used to select particles to iterate over in event
    std::vector<Double_t> fBranchVar;//! used for automatic creation & filling of TTree branches
    std::vector<Int_t> fIBranchVar;//! used for automatic creation & filling of TTree branches
    Int_t fNbBranch;
@@ -152,16 +154,14 @@ protected:
    void CalculateN();
 
 public:
-   KVGVList(void);             // constructeur par defaut
-   KVGVList(const KVGVList& a);        // constructeur par Copy
-
-   virtual ~ KVGVList(void) {}
+   KVGVList(const KVParticleCondition& selection = KVParticleCondition());
+   KVGVList(const KVGVList& a);
 
    KVVarGlob* AddGV(const Char_t* class_name, const Char_t* name);
    KVVarGlob* AddGVFirst(const Char_t* class_name, const Char_t* name);
 
-   void Init(void);     // methode d'initialisation des variables globales
-   void Reset(void);    // Remise a zero avant le
+   void Init(void);
+   void Reset(void);
 
    void CalculateGlobalVariables(KVEvent* e);
 
