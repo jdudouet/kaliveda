@@ -13,14 +13,14 @@ The 'kaliveda' command launches a ROOT session with dynamic shared library paths
     $ kaliveda
     
     /----------------------------------------------------------------------\
-    | Welcome to KaliVeda 1.12/05             github:kaliveda-dev/kaliveda |
+    | Welcome to KaliVeda 1.13/00             github:kaliveda-dev/kaliveda |
     | (c) 2002-2022, The KaliVeda development team                         |
     |                                                                      |
-    | Built with ROOT 6.24.06 on 2022-03-18, 10:11:25                      |
-    | From heads/master@release-1.12.05-g209ab9c0                          |
+    | Built with ROOT 6.26.02 on 2022-04-20, 13:33:46                      |
+    | From heads/dev@release-1.12.05-207-g7d6bd9a2                         |
     | See http://indra.in2p3.fr/kaliveda for help                          |
     \----------------------------------------------------------------------/
-
+ 
     kaliveda [0] 
 
 ## Compiling & linking with KaliVeda & ROOT libraries

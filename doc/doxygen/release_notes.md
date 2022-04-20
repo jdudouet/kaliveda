@@ -1,8 +1,8 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 5th August 2021
+Last update: 20th April 2022
 
-## Version 1.12/04 (current development version - dev branch)
+## Version 1.13/00 (current development version - dev branch)
 
 __Changes 5/8/2021 in__ \ref AnalysisInfra : __New data quality auditing tools__
 
@@ -15,13 +15,6 @@ which can be used:
 
 Data can be audited using the new dedicated analysis task, "Prepare data quality audits", run by KVDataQualityAuditSelector.
 We provide also KVDataQualityAuditReportMaker to help with the production of graphs and histograms from the audit.
-
-__Changes 30/6/2021 in Build system__
-
-**MAJOR** The minimum required version of ROOT is now 6.18 or later.
-
-This is due to unconstrained use of C++11 syntax and later in KaliVeda classes, especially member variables
-where the rootcint dictionary generator of ROOT 5 is not capable of handling the syntax.
 
 __Changes 24/6/2021 in__ \ref GlobalVariables
 
@@ -86,14 +79,6 @@ from \f$E*\f$ in order to calculate the thermal excitation energy \f$U\f$ availa
 the \f$E_{rot}\f$ added by KVGemini is calculated according to the GEMINI++ prescription.
 
 See methods KVGemini::DecayEvent() and KVGemini::DecaySingleNucleus().
-
-__Changes 28/5/2021 in Build system__
-
-**MAJOR** The minimum required version for cmake is now 3.5 (version by default in Ubuntu 16.04)
-
-**MAJOR** C++11 support is enabled by default for all builds if it was not already enabled by ROOT. Note that although this now means that even when using ROOT5
-auto variables, range-based for loops and lambda functions can be used, as C++11 support in the ROOT5 dictionary generator and interpreter is
-very limited (or non-existent) many new features of KaliVeda reliant on C++11 are still only enabled when building with ROOT6.
 
 __Changes 28/5/2021 in__ \ref NucEvents : __Templated event classes__
 
