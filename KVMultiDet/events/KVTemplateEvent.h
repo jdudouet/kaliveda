@@ -675,19 +675,19 @@ public:
 
    void SetFrame(const Char_t* frame, const KVFrameTransform& ft)
    {
-      //Define a Lorentz-boosted and/or rotated frame for all "ok" particles in the event.
+      //Define a Lorentz-boosted and/or rotated frame for all particles in the event.
       //See KVParticle::SetFrame() for details.
       //
       //In order to access the kinematics in the boosted frame, use the GetFrame() method of the
       //individual particles (see KVParticle::GetFrame()).
 
-      for (Iterator it = GetNextParticleIterator("ok"); it != end(); ++it) {
-         (*it).SetFrame(frame, ft);
+      for (auto& part : *this) {
+         part.SetFrame(frame, ft);
       }
    }
    void SetFrame(const Char_t* newframe, const Char_t* oldframe, const KVFrameTransform& ft)
    {
-      //Define a Lorentz-boosted frame "newframe" for all "ok" particles in the event.
+      //Define a Lorentz-boosted frame "newframe" for all particles in the event.
       //The transformation is applied to the particle coordinates in the existing frame "oldframe"
       //
       //See KVParticle::SetFrame() for details.
@@ -697,21 +697,21 @@ public:
       //      KVParticle* newframe = particle->GetFrame("newframe");
       //      KVParticle* newframe = particle->GetFrame("oldframe")->GetFrame("newframe");
 
-      for (Iterator it = GetNextParticleIterator("ok"); it != end(); ++it) {
-         (*it).SetFrame(newframe, oldframe, ft);
+      for (auto& part : *this) {
+         part.SetFrame(newframe, oldframe, ft);
       }
    }
    void ChangeFrame(const KVFrameTransform& ft, const KVString& name = "")
    {
       //Permanently change the reference frame used for particle kinematics in the event.
-      //The transformation is applied to all "ok" particles in the event.
+      //The transformation is applied to all particles in the event.
       //You can optionally set the name of this new default kinematical reference frame.
       //
       //See KVParticle::ChangeFrame() and KVParticle::SetFrame() for details.
 
 
-      for (Iterator it = GetNextParticleIterator("ok"); it != end(); ++it) {
-         (*it).ChangeFrame(ft, name);
+      for (auto& part : *this) {
+         part.ChangeFrame(ft, name);
       }
       if (name != "") SetParameter("defaultFrame", name);
    }
@@ -723,8 +723,8 @@ public:
       //
       //See KVParticle::ChangeDefaultFrame() and KVParticle::SetFrame() for details.
 
-      for (Iterator it = GetNextParticleIterator("ok"); it != end(); ++it) {
-         (*it).ChangeDefaultFrame(newdef, defname);
+      for (auto& part : *this) {
+         part.ChangeDefaultFrame(newdef, defname);
       }
       SetParameter("defaultFrame", newdef);
    }
@@ -735,8 +735,8 @@ public:
       //
       //See KVParticle::UpdateAllFrames() for details.
 
-      for (Iterator it = GetNextParticleIterator("ok"); it != end(); ++it) {
-         (*it).UpdateAllFrames();
+      for (auto& part : *this) {
+         part.UpdateAllFrames();
       }
    }
 

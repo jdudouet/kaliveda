@@ -206,7 +206,6 @@ Bool_t KVEventSelector::Process(Long64_t entry)
             part.SetIsOK(fPartCond.Test(part));
          }
       }
-      GetEvent()->ResetGetNextParticle();
       SetAnalysisFrame();//let user define any necessary reference frames for OK particles
 
       // initialise global variables at first event
