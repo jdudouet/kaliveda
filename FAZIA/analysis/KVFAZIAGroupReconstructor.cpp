@@ -405,7 +405,7 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                }
             }
             if (si1si2 != id_by_type.end()) {
-               // detect a pile-up in Si2 in coincidence with particule detected in CsI
+               // detect a pile-up in Si1/2 in coincidence with particule detected in CsI
                // the following covers the following cases:
                //   - good ID Si1-Si2 (IDquality < kICODE4) with Z>Zcsi
                //   - ID "between the lines" in Si1-Si2 (IDquality=kICODE4,kICODE5) with Z>Zcsi
