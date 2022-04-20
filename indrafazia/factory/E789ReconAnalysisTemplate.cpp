@@ -124,7 +124,7 @@ Bool_t E789ReconAnalysisTemplate::Analysis(void)
    int mtot_ch = 0;
 
    for (auto& n : EventIterator(*GetEvent())) {
-      auto rn = dynamic_cast<KVReconstructedNucleus&>(n);
+      auto& rn = dynamic_cast<KVReconstructedNucleus&>(n);
 
       fill_idcode_histos("all", rn);
       fill_ecode_histos("all", rn);
