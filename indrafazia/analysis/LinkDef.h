@@ -7,4 +7,5 @@
 #pragma link C++ class KVDataQualityAuditSelector_E789+;
 #pragma link C++ class KVDataQualityAuditReporting_INDRAFAZIA+;
 #pragma link C++ class KVINDRAFAZIAE789TriggerConditions+;
+#pragma link C++ class KVDataPatch_E789_FAZIABadCsICalibFragments+;
 #endif
