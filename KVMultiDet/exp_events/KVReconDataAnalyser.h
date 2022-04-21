@@ -6,6 +6,7 @@
 
 #include "KVDataSetAnalyser.h"
 #include "KVReconEventSelector.h"
+#include "KVDataPatchList.h"
 class TChain;
 class KVDBRun;
 
@@ -25,6 +26,8 @@ protected:
    KVString fDataVersion;//KV version used to write analysed data
    KVString fDataSeries;//KV series used to write analysed data
    Int_t fDataReleaseNum;//KV release number used to write analysed data
+
+   KVDataPatchList fRustines;//patches to be applied to correct data before analysis
 
 public:
 
