@@ -21,6 +21,7 @@ $Author: franklan $
 #include "TPluginManager.h"
 #include "TClass.h"
 #include "KVRunFile.h"
+#include <memory>
 
 using namespace std;
 
@@ -1458,7 +1459,13 @@ std::unique_ptr<KVDataAnalysisTask> KVDataSet::GetAnalysisTaskAny(const Char_t* 
       return 0;
    }
    //make new copy of default analysis task
+#ifdef __cpp_lib_make_unique
+   // is this a good way to test for the existence of make_unique ?
+   // with gcc 4.8.5 and C++14 support enabled, std::make_unique is not defined
    auto new_task = std::make_unique<KVDataAnalysisTask>(*tsk);
+#else
+   auto new_task = std::unique_ptr<KVDataAnalysisTask>(new KVDataAnalysisTask(*tsk));
+#endif
    //check if any dataset-specific parameters need to be changed
    SetDataSetSpecificTaskParameters(new_task.get());
    return new_task;
