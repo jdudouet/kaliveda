@@ -262,3 +262,8 @@ INDRAFAZIA.E789.Q3.MinimumAmplitude:           3
 INDRAFAZIA.E789.SI1.IsFiredFromSignal:  0
 INDRAFAZIA.E789.SI2.IsFiredFromSignal:  0
 INDRAFAZIA.E789.CSI.IsFiredFromSignal:  0
+
+# RUSTINES
+# Plugin classes which implement patches to correct reconstructed/calibrated data
+# written on disk with previous (bugged) versions. See KVDataPatch & KVDataPatchList.
++Plugin.KVDataPatch:   E789_FAZIABadCsICalibFragments  KVDataPatch_E789_FAZIABadCsICalibFragments indrafaziaanalysis  "KVDataPatch_E789_FAZIABadCsICalibFragments()"
