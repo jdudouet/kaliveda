@@ -218,6 +218,9 @@ void KVReconDataAnalyser::preInitRun()
    PrintTreeInfos();
    Info("preInitRun", "Data written with series %s, release %d", GetDataSeries().Data(),
         GetDataReleaseNumber());
+   fRustines.InitializePatchList(GetDataSet()->GetName(), GetDataType(), run, GetDataSeries(),
+                                 GetDataReleaseNumber(), theChain->GetCurrentFile()->GetStreamerInfoCache());
+   fRustines.Print();
 }
 
 void KVReconDataAnalyser::preAnalysis()
@@ -225,6 +228,9 @@ void KVReconDataAnalyser::preAnalysis()
    // Set minimum (trigger) multiplicity for array
 
    gMultiDetArray->SetMinimumOKMultiplicity(fSelector->GetEvent());
+
+   // apply any required patches to data
+   if (fRustines.HasActivePatches()) fRustines.Apply(fSelector->GetEvent());
 }
 
 TEnv* KVReconDataAnalyser::GetReconDataTreeInfos() const
