@@ -131,6 +131,9 @@ void KVRawDataAnalyser::SubmitTask()
 
    if (gDataSet != GetDataSet()) GetDataSet()->cd();
 
+   // prepare any user-supplied options for the analysis
+   fOptionList.ParseOptions(GetUserClassOptions());
+
    preInitAnalysis();
    //call user's initialisation
    InitAnalysis();

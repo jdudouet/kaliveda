@@ -62,4 +62,5 @@
 #pragma link C++ class TF1Derivative;
 #pragma link C++ class KVValueRange<Int_t>+;
 #pragma link C++ class KVValueRange<Double_t>+;
+#pragma link C++ class KVUserAnalysisOptionList+;
 #endif

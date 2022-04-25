@@ -658,41 +658,6 @@ void KVEventSelector::FillTree(const Char_t* tree_name)
 
 }
 
-void KVEventSelector::SetOpt(const Char_t* option, const Char_t* value)
-{
-   //Set a value for an option
-   KVString tmp(value);
-   fOptionList.SetValue(option, tmp);
-}
-
-//_________________________________________________________________
-
-Bool_t KVEventSelector::IsOptGiven(const Char_t* opt)
-{
-   // Returns kTRUE if the option 'opt' has been set
-
-   return fOptionList.HasParameter(opt);
-}
-
-//_________________________________________________________________
-
-TString KVEventSelector::GetOpt(const Char_t* opt) const
-{
-   // Returns the value of the option
-   //
-   // Only use after checking existence of option with IsOptGiven(const Char_t* opt)
-
-   return fOptionList.GetTStringValue(opt);
-}
-
-//_________________________________________________________________
-
-void KVEventSelector::UnsetOpt(const Char_t* opt)
-{
-   // Removes the option 'opt' from the internal lists, as if it had never been set
-
-   fOptionList.RemoveParameter(opt);
-}
 #ifdef USING_ROOT6
 void KVEventSelector::SetTriggerConditionsForRun(int run)
 {
@@ -715,24 +680,8 @@ void KVEventSelector::ParseOptions()
    // This method is called by SlaveBegin
    //
 
-   fOptionList.Clear(); // clear list
-   KVString option = GetOption();
-   option.Begin(",");
-   while (!option.End()) {
+   fOptionList.ParseOptions(GetOption());
 
-      KVString opt = option.Next();
-      opt.Begin("=");
-      KVString param = opt.Next();
-      KVString val = opt.Next();
-      while (!opt.End()) {
-         val += "=";
-         val += opt.Next();
-      }
-
-      SetOpt(param.Data(), val.Data());
-   }
-
-   fOptionList.Print();
    // check for branch name
    if (IsOptGiven("BranchName")) SetBranchName(GetOpt("BranchName"));
    // check for events read interval

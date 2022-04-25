@@ -14,7 +14,7 @@
 #include <TH3.h>
 #include <TH2.h>
 #include <TProfile2D.h>
-#include "KVNameValueList.h"
+#include "KVUserAnalysisOptionList.h"
 #include "TProofOutputFile.h"
 #include "KVDataAnalyser.h"
 
@@ -184,7 +184,7 @@ protected :
    KVString fCombinedOutputFile;// optional name for single results file with trees and histos
 
    //parsed list of options given to TTree::Process
-   KVNameValueList fOptionList;
+   KVUserAnalysisOptionList fOptionList;
 
    Bool_t fDisableCreateTreeFile;//used with PROOF
 
@@ -436,10 +436,22 @@ public:
 
    virtual void SaveHistos(const Char_t* filename = "", Option_t* option = "recreate", Bool_t onlyfilled = kFALSE);
 
-   virtual void SetOpt(const Char_t* option, const Char_t* value);
-   virtual Bool_t IsOptGiven(const Char_t* option);
-   virtual TString GetOpt(const Char_t* option) const;
-   virtual void UnsetOpt(const Char_t* opt);
+   void SetOpt(const Char_t* option, const Char_t* value)
+   {
+      fOptionList.SetOpt(option, value);
+   }
+   Bool_t IsOptGiven(const Char_t* option)
+   {
+      return fOptionList.IsOptGiven(option);
+   }
+   TString GetOpt(const Char_t* option) const
+   {
+      return fOptionList.GetOpt(option);
+   }
+   void UnsetOpt(const Char_t* opt)
+   {
+      fOptionList.UnsetOpt(opt);
+   }
 
    virtual void SetAdditionalBranchAddress()
    {

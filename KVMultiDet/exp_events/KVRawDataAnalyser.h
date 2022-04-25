@@ -9,6 +9,7 @@
 #include "KVRawDataReader.h"
 #include "KVDBRun.h"
 
+#include <KVUserAnalysisOptionList.h>
 #include <TH2.h>
 #include <TH3.h>
 #include <TProfile.h>
@@ -34,6 +35,7 @@ protected:
    KVDBRun* fCurrentRun;         //poiner to current run
    Long64_t TotalEntriesToRead;
    KVString fCombinedOutputFile;// optional name for single results file with trees and histos
+   KVUserAnalysisOptionList fOptionList; // list of options set by user for analysis
 
    void ProcessRun();
 
@@ -171,6 +173,22 @@ public:
    }
    Bool_t CreateTreeFile(const Char_t* filename = "");
 
+   void SetOpt(const Char_t* option, const Char_t* value)
+   {
+      fOptionList.SetOpt(option, value);
+   }
+   Bool_t IsOptGiven(const Char_t* option)
+   {
+      return fOptionList.IsOptGiven(option);
+   }
+   TString GetOpt(const Char_t* option) const
+   {
+      return fOptionList.GetOpt(option);
+   }
+   void UnsetOpt(const Char_t* opt)
+   {
+      fOptionList.UnsetOpt(opt);
+   }
    /*** END: Methods copied from KVEventSelector ***/
 
    ClassDef(KVRawDataAnalyser, 1) //Abstract base class for user analysis of raw data
