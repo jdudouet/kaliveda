@@ -16,7 +16,7 @@ INDRAFAZIA.E818.DataSet.ExpSetUp.ClassList: KVINDRA KVFAZIA
 INDRAFAZIA.E818.EventReconstruction.DoCalibration: yes
 INDRAFAZIA.E818.EventReconstruction.DoIdentification: yes
 INDRAFAZIA.E818.HasCalibIdentInfos:   yes
-#INDRAFAZIA.E818.ActiveIdentifications:      INDRA.CSI INDRA.SI-CSI FAZIA.Si-Si FAZIA.Si-CsI FAZIA.Si FAZIA.CsI
+INDRAFAZIA.E818.ActiveIdentifications:      INDRA.CSI INDRA.SI-CSI FAZIA.Si-Si FAZIA.Si-CsI FAZIA.Si FAZIA.CsI
 
 # nominal geometry (85.43cm is distance to true target position, i.e. approx. 1 cm upstream of theoretical target position)
 INDRAFAZIA.E818.FAZIETO.DistanceZ:       85.43
