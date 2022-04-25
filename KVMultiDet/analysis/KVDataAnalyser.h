@@ -208,6 +208,7 @@ public:
    Bool_t RunningInLaunchDirectory();
 
    const Char_t* GetLaunchDirectory() const;
+   TString GetPathToFileInLaunchDirectory(const TString&) const;
    const Char_t* GetBatchStatusFileName() const;
    void UpdateBatchStatusFile(Int_t totev, Int_t evread, TString disk) const;
    void DeleteBatchStatusFile() const;

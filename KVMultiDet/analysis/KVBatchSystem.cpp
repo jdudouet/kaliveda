@@ -78,6 +78,12 @@ const Char_t* KVBatchSystem::GetJobSubCmdLine()
    //
    //The special variable #JobName# can be used anywhere and will be replaced by the
    //jobname returned by GetJobName() at the moment of job submission.
+   //
+   //The special variable #tmpDIR# can be used anywhere and will be replaced by the
+   //full path to the system temporary directory at the moment of job submission.
+   //
+   //The special variable #launchDIR# can be used anywhere and will be replaced by the
+   //full path to the working directory at the moment of job submission.
 
    static TString command_line;
    command_line.Form("%s %s ", fJobSubCmd.Data(), fDefOpt.Data());
@@ -94,6 +100,10 @@ const Char_t* KVBatchSystem::GetJobSubCmdLine()
    command_line += fJobScript;
    //replace #JobName# with name of current job
    command_line.ReplaceAll("#JobName#", GetJobName());
+   //replace #tmpDIR# with temporary directory path
+   command_line.ReplaceAll("#tmpDIR#", gSystem->TempDirectory());
+   //replace #launchDIR# with working directory (job submission directory) path
+   command_line.ReplaceAll("#launchDIR#", gSystem->WorkingDirectory());
    return command_line.Data();
 }
 

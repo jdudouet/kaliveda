@@ -183,7 +183,7 @@ BatchSystem:     Xterm
 Xterm.BatchSystem.Title:    Execute task in an X-terminal window
 Xterm.BatchSystem.DefaultJobOptions: -T #JobName# -e
 Xterm.BatchSystem.JobSubCmd:   xterm
-Xterm.BatchSystem.JobScript: 'KaliVedaAnalysis -b -n | tee #JobName#.log'&
+Xterm.BatchSystem.JobScript: 'mkdir -p #tmpDIR#/#JobName# && rm -f #tmpDIR#/#JobName#/* && cd #tmpDIR#/#JobName# && KaliVedaAnalysis -b -n | tee #launchDIR#/#JobName#.log'&
 +BatchSystem:    PROOFLite
 PROOFLite.BatchSystem.Title:  Use PROOFLite
 PROOFLite.BatchSystem.JobSubCmd:  root

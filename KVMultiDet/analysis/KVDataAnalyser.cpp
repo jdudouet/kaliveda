@@ -788,6 +788,19 @@ const Char_t* KVDataAnalyser::GetLaunchDirectory() const
    return fBatchEnv->GetValue("LaunchDirectory", gSystem->WorkingDirectory());
 }
 
+TString KVDataAnalyser::GetPathToFileInLaunchDirectory(const TString& f) const
+{
+   // Use this method to get the full path to a file in the directory where the job was launched.
+   //
+   // When not using a batch system, this will just be the current working directory.
+   //
+   // If the job is actually running elsewhere, use this method to access a file in the launch directory.
+
+   TString fullpath;
+   AssignAndDelete(fullpath, gSystem->ConcatFileName(GetLaunchDirectory(), f.Data()));
+   return fullpath;
+}
+
 const Char_t* KVDataAnalyser::GetBatchStatusFileName() const
 {
    // Returns full path to file used to store status of running batch jobs
