@@ -78,7 +78,9 @@ void zmax_example2()
    for (int i = 0; i < 1000; ++i) {
 
       // shuffle list of Z
+#if !defined(__APPLE__)
       random_shuffle(zlist.begin(), zlist.end()); // see http://www.cplusplus.com/reference/algorithm/random_shuffle
+#endif
       // fill event
       event.Clear();
       for (vector<int>::iterator it = zlist.begin(); it != zlist.end(); ++it) {
