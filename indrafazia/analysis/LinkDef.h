@@ -8,4 +8,5 @@
 #pragma link C++ class KVDataQualityAuditReporting_INDRAFAZIA+;
 #pragma link C++ class KVINDRAFAZIAE789TriggerConditions+;
 #pragma link C++ class KVDataPatch_E789_FAZIABadCsICalibFragments+;
+#pragma link C++ class KVDataPatch_E789_FAZIASI1PunchThroughCCode5+;
 #endif
