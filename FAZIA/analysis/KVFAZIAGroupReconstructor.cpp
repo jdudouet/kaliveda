@@ -492,6 +492,10 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
          }
       }
       // particle not identified, apparently stopped in SI2, with Si1-PSA identification?
+      // Such particles were added to the event in 1.12/05, but they (mostly) correspond to
+      // punch-through in SI1 and give bad "accumulations" of data in e.g. Z-V plots.
+      // So they are best left unidentified! (we still give the CCode value 5)
+      // They receive idcode KVFAZIA::ID_SI1_PUNCH_THROUGH, are identified, but not in Z (or A)
       if (PART.GetStoppingDetector()->IsLabelled("SI2")) {
          auto sipsa = id_by_type.find("SiPSA");
          if (sipsa != id_by_type.end()) {
@@ -501,6 +505,9 @@ void KVFAZIAGroupReconstructor::IdentifyParticle(KVReconstructedNucleus& PART)
                partID = *(sipsa->second);
                PART.SetIsIdentified();
                auto sipsa_idtel = (KVIDTelescope*)PART.GetReconstructionTrajectory()->GetIDTelescopes()->Last();
+               partID.Zident = false;
+               partID.Aident = false;
+               partID.SetComment("particle partially identified by pulse shape analysis in SI1, although it is punching through (no SI2 signal or SI1-SI2 id)");
                PART.SetIdentification(&partID, sipsa_idtel);
                PART.GetParameters()->SetValue("CCode", 5);
             }
