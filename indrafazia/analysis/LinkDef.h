@@ -4,4 +4,5 @@
 #pragma link off all functions;
 #pragma link C++ class KVINDRAFAZIAE789TriggerConditions+;
 #pragma link C++ class KVDataPatch_E789_FAZIABadCsICalibFragments+;
+#pragma link C++ class KVDataPatch_E789_FAZIASI1PunchThroughCCode5+;
 #endif
