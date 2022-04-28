@@ -134,7 +134,8 @@ public:
       ID_CSI_PSA = 33, ///< particle identified by pulse shape analysis in CSI
       ID_STOPPED_IN_FIRST_STAGE = 5, ///< particle stopped in SI1, no identification possible better than estimation of minimum Z
       ID_SI1_SI2_MAYBE_PUNCH_THROUGH = 120, ///< possible ambiguity of particle identification in SI1-SI2 due to unvetoed punch-through
-      ID_SI1_SI2_PUNCH_THROUGH = 121 ///< particle punching through SI2, identified Z is a minimum value
+      ID_SI1_SI2_PUNCH_THROUGH = 121, ///< particle punching through SI2, identified Z is a minimum value
+      ID_SI1_PUNCH_THROUGH = 110, ///< particle partially identified by pulse shape analysis in SI1, although it is punching through (no SI2 signal or SI1-SI2 id)
    };
    TString GetIDCodeMeaning(Int_t idc) const
    {
