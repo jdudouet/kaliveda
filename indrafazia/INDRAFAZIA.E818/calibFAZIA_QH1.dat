@@ -1,5 +1,6 @@
+# QH1 calibration from elastic scattering peaks
 SignalIn:          QH1.FPGAEnergy
-SignalOut:         Energy
+SignalOut:         EnergyElastic
 CalibType:         ChannelEnergyQH1
 CalibOptions:      func=pol1,min=0,max=100000
 RunList:           1-999999

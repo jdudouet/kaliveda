@@ -1,7 +1,8 @@
+# Silicon calibration from alpha source
 SignalIn:                     ADC
-SignalOut:                    Energy
+SignalOut:                    EnergyAlpha
 CalibType:                    ChannelEnergy
-CalibOption:                  func=pol1,min=0,max=65535
+CalibOptions:                 func=pol1,min=0,max=65535
 Runlist:                      1-9999999
 SI-0601: -0,0.008293
 SI-0602: -0,0.008360

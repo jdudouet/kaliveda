@@ -1,7 +1,8 @@
+# QL1 calibration from alpha source
 SignalIn:                     QL1.Amplitude
-SignalOut:                    Energy
+SignalOut:                    EnergyAlpha
 CalibType:                    ChannelEnergyQL1
-CalibOption:                  func=pol1,min=0,max=100000
+CalibOptions:                 func=pol1,min=0,max=100000
 Runlist:                      1-9999999
 SI1-11: -0,0.018203
 SI1-12: -0,0.018351
