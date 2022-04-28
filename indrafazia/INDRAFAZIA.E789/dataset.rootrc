@@ -116,3 +116,4 @@ INDRAFAZIA.E789.CSI.IsFiredFromSignal:  0
 # Plugin classes which implement patches to correct reconstructed/calibrated data
 # written on disk with previous (bugged) versions. See KVDataPatch & KVDataPatchList.
 +Plugin.KVDataPatch:   E789_FAZIABadCsICalibFragments  KVDataPatch_E789_FAZIABadCsICalibFragments indrafaziaanalysis  "KVDataPatch_E789_FAZIABadCsICalibFragments()"
++Plugin.KVDataPatch:   E789_FAZIASI1PunchThroughCCode5  KVDataPatch_E789_FAZIASI1PunchThroughCCode5 indrafaziaanalysis  "KVDataPatch_E789_FAZIASI1PunchThroughCCode5()"
