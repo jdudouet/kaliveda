@@ -46,10 +46,9 @@ public:
    {
       return true;
    }
-   void ApplyToEvent(KVEvent*) {}
-   void ApplyToParticle(KVNucleus* n)
+   void ApplyToEvent(KVReconstructedEvent*) {}
+   void ApplyToParticle(KVReconstructedNucleus* rnuc)
    {
-      auto rnuc = dynamic_cast<KVReconstructedNucleus*>(n);
       if (rnuc->InArray("FAZIA") && rnuc->IsZMeasured() && rnuc->IsCalibrated()
             && rnuc->GetStoppingDetector()->IsType("CsI") && rnuc->GetZ() > 2)
          correct_ecsi(rnuc);

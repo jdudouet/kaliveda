@@ -42,10 +42,9 @@ public:
    {
       return true;
    }
-   void ApplyToEvent(KVEvent*) {}
-   void ApplyToParticle(KVNucleus* n)
+   void ApplyToEvent(KVReconstructedEvent*) {}
+   void ApplyToParticle(KVReconstructedNucleus* rnuc)
    {
-      auto rnuc = dynamic_cast<KVReconstructedNucleus*>(n);
       if (rnuc->InArray("FAZIA") && rnuc->GetParameters()->HasIntParameter("CCode")
             && (rnuc->GetParameters()->GetIntValue("CCode") == 5)) {
          auto idr = rnuc->GetIdentificationResult(rnuc->GetNumberOfIdentificationResults());
