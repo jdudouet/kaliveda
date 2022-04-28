@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-using namespace std;
+#include <random>
 
 void zmax_example1()
 {
@@ -20,7 +20,7 @@ void zmax_example1()
       // fill event with random nuclei 1<=Z<=50
       event.AddParticle()->SetZ(gRandom->Integer(50) + 1);
    }
-   cout << "Random event :" << endl << endl;
+   std::cout << "Random event :\n\n";
    event.Print();
 
    /* STEP 2: use KVZmax global variable to rank nuclei in Z */
@@ -29,7 +29,7 @@ void zmax_example1()
    KVNucleus* nunuc;
    while ((nunuc = event.GetNextParticle())) zmax.Fill(nunuc);
 
-   cout << endl << "Sorted event :" << endl << endl;
+   std::cout << "\nSorted event :\n\n";
    for (int i = 0; i < mult; ++i) zmax.GetZmax(i)->Print();
 }
 
@@ -62,12 +62,11 @@ void zmax_example2()
 
    // In order to check the Z-sorting, we generate random events which all
    // contain the same nuclei in a different order
-   vector<int> zlist(10);
-   for (int i = 0; i < 10; ++i) zlist[i] = i + 1; // list of Z = 1, 2, ..., 9, 10
-   /*******C++11 version********
-    * int z = 1;
-    * generate_n(zlist.begin(), 10, [&z](){return z++;}); // see http://www.cplusplus.com/reference/algorithm/generate_n
-    * **************************/
+   std::vector<int> zlist(10);
+   int z = 1;
+   std::generate_n(zlist.begin(), 10, [&z]() {
+      return z++;
+   }); // see http://www.cplusplus.com/reference/algorithm/generate_n
 
    TTree tree;
    varlist.MakeBranches(&tree);  // automatically generate branches for global variables
@@ -75,23 +74,19 @@ void zmax_example2()
 
    // randomly generate 1000 events & fill tree
    KVSimEvent event;
+   // to use std::shuffle
+   std::random_device rd;
+   std::mt19937 g(rd());
+
    for (int i = 0; i < 1000; ++i) {
 
       // shuffle list of Z
-#if !defined(__APPLE__)
-      random_shuffle(zlist.begin(), zlist.end()); // see http://www.cplusplus.com/reference/algorithm/random_shuffle
-#endif
+      std::shuffle(zlist.begin(), zlist.end(), g); // see http://www.cplusplus.com/reference/algorithm/random_shuffle
       // fill event
       event.Clear();
-      for (vector<int>::iterator it = zlist.begin(); it != zlist.end(); ++it) {
-         event.AddParticle()->SetZ(*it);
+      for (auto z : zlist) {
+         event.AddParticle()->SetZ(z);
       }
-      /******C++11 version********
-       * for(auto z : zlist)
-       * {
-       *    event.AddParticle()->SetZ(z);
-       * }
-       * *************************/
 
       // print 1st event, check it's random
       if (i == 0) {
