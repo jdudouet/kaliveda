@@ -397,6 +397,7 @@ public:
    void OpenChain(const TString& treename, const TString& treetitle, const TSeqCollection* files);
 
    void DrawHisto(TObject* o, Bool_t gen = kTRUE);
+   void DrawHistogram(TH1* histo, Bool_t same = false, Bool_t logscale = false);
    void DrawCut(TCutG*);
    void DrawLeaf(TObject*);
    void DrawLeafExpr();

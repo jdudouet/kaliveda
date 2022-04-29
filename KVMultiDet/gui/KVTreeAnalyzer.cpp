@@ -1153,6 +1153,82 @@ void KVTreeAnalyzer::DrawCut(TCutG* cut)
    return;
 }
 
+void KVTreeAnalyzer::DrawHistogram(TH1* histo, Bool_t same, Bool_t logscale)
+{
+   if (fDrawSame || same) {
+      // if 'draw same' is active we superimpose the (1-D) spectrum on the existing
+      // plot with a different colour and add it to the automatically generated
+      // legend which is also displayed in the plot
+      histo->SetLineColor(my_color_array[++fSameColorIndex]);
+      histo->SetLineWidth(2);
+      if (fSameColorIndex == MAX_COLOR_INDEX) fSameColorIndex = -1;
+      if (fDrawOption != "" && histo->InheritsFrom("TH2")) histo->SetOption(fDrawOption);
+      if (histo->InheritsFrom("TH2")) {
+         TString hopt = histo->GetOption();
+         if (hopt != "") hopt.Form("%s,same", histo->GetOption());
+         else hopt = "same";
+         histo->Draw(hopt);
+      }
+      else
+         histo->Draw("same");
+      TObject* legend = gPad->GetListOfPrimitives()->FindObject("TPave");
+      if (legend) {
+         gPad->GetListOfPrimitives()->Remove(legend);
+         delete legend;
+      }
+      ((TPad*) gPad)->BuildLegend();
+      if (histo->InheritsFrom("TH2")) {
+         gPad->SetLogy(kFALSE);
+         gPad->SetLogz(fDrawLog || logscale);
+      }
+      else {
+         gPad->SetLogy(fDrawLog || logscale);
+         // adjust y-scale to new histogram if needed
+         // find first histogram
+         TIter nxt(gPad->GetListOfPrimitives());
+         TObject* h;
+         while ((h = nxt())) {
+            if (h->InheritsFrom("TH1")) {
+               TH1* hh = (TH1*)h;
+               if (histo->GetMaximum() > hh->GetMaximum()) hh->SetMaximum(histo->GetMaximum() + 1);
+               break;
+            }
+         }
+      }
+      gPad->Modified();
+      gPad->Update();
+      if (fAutoSaveHisto) AutoSaveHisto(histo);
+   }
+   else {
+      // if 'new canvas' is active the histogram is displayed in a new KVCanvas
+      // create a new canvas also if none exists
+      if (fNewCanvas || !gPad) {
+         KVCanvas* c = new KVCanvas;
+         c->SetTitle(histo->GetTitle());
+         c->SetWindowSize(700, 700);
+      }
+      else if (gPad) {   // update title of existing canvas
+         gPad->GetCanvas()->SetTitle(histo->GetTitle());
+      }
+      histo->SetLineColor(my_color_array[0]);
+      histo->SetLineWidth(2);
+      if (histo->InheritsFrom("TH2")) {
+         gPad->SetLogy(kFALSE);
+         gPad->SetLogz(fDrawLog || logscale);
+      }
+      else {
+         histo->SetMaximum(-1111);//in case maximum was changed to accomodate superimposition
+         gPad->SetLogy(fDrawLog || logscale);
+      }
+      histo->SetStats(fStatsHisto);//show/hide stat box according to check-box
+      if (fDrawOption != "" && histo->InheritsFrom("TH2")) histo->SetOption(fDrawOption);
+      histo->Draw();
+      gPad->Modified();
+      gPad->Update();
+      if (fAutoSaveHisto) AutoSaveHisto(histo);
+   }
+}
+
 void KVTreeAnalyzer::DrawHisto(TObject* obj, Bool_t gen)
 {
    // Method called when a user double-clicks a histogram in the GUI list.
@@ -1230,76 +1306,7 @@ void KVTreeAnalyzer::DrawHisto(TObject* obj, Bool_t gen)
       if (!histo) return;
    }
 
-   if (fDrawSame) {
-      // if 'draw same' is active we superimpose the (1-D) spectrum on the existing
-      // plot with a different colour and add it to the automatically generated
-      // legend which is also displayed in the plot
-      histo->SetLineColor(my_color_array[++fSameColorIndex]);
-      if (fSameColorIndex == MAX_COLOR_INDEX) fSameColorIndex = -1;
-      if (fDrawOption != "" && histo->InheritsFrom("TH2")) histo->SetOption(fDrawOption);
-      if (histo->InheritsFrom("TH2")) {
-         TString hopt = histo->GetOption();
-         if (hopt != "") hopt.Form("%s,same", histo->GetOption());
-         else hopt = "same";
-         histo->Draw(hopt);
-      }
-      else
-         histo->Draw("same");
-      TObject* legend = gPad->GetListOfPrimitives()->FindObject("TPave");
-      if (legend) {
-         gPad->GetListOfPrimitives()->Remove(legend);
-         delete legend;
-      }
-      ((TPad*) gPad)->BuildLegend();
-      if (histo->InheritsFrom("TH2")) {
-         gPad->SetLogy(kFALSE);
-         gPad->SetLogz(fDrawLog);
-      }
-      else {
-         gPad->SetLogy(fDrawLog);
-         // adjust y-scale to new histogram if needed
-         // find first histogram
-         TIter nxt(gPad->GetListOfPrimitives());
-         TObject* h;
-         while ((h = nxt())) {
-            if (h->InheritsFrom("TH1")) {
-               TH1* hh = (TH1*)h;
-               if (histo->GetMaximum() > hh->GetMaximum()) hh->SetMaximum(histo->GetMaximum() + 1);
-               break;
-            }
-         }
-      }
-      gPad->Modified();
-      gPad->Update();
-      if (fAutoSaveHisto) AutoSaveHisto(histo);
-   }
-   else {
-      // if 'new canvas' is active the histogram is displayed in a new KVCanvas
-      // create a new canvas also if none exists
-      if (fNewCanvas || !gPad) {
-         KVCanvas* c = new KVCanvas;
-         c->SetTitle(histo->GetTitle());
-         c->SetWindowSize(700, 700);
-      }
-      else if (gPad) {   // update title of existing canvas
-         gPad->GetCanvas()->SetTitle(histo->GetTitle());
-      }
-      histo->SetLineColor(my_color_array[0]);
-      if (histo->InheritsFrom("TH2")) {
-         gPad->SetLogy(kFALSE);
-         gPad->SetLogz(fDrawLog);
-      }
-      else {
-         histo->SetMaximum(-1111);//in case maximum was changed to accomodate superimposition
-         gPad->SetLogy(fDrawLog);
-      }
-      histo->SetStats(fStatsHisto);//show/hide stat box according to check-box
-      if (fDrawOption != "" && histo->InheritsFrom("TH2")) histo->SetOption(fDrawOption);
-      histo->Draw();
-      gPad->Modified();
-      gPad->Update();
-      if (fAutoSaveHisto) AutoSaveHisto(histo);
-   }
+   DrawHistogram(histo);
 }
 
 Bool_t KVTreeAnalyzer::IsCurrentSelection(const Char_t* sel)
@@ -1714,7 +1721,10 @@ void KVTreeAnalyzer::DrawLeafExpr()
    h->SetTitle(histotitle);
    if (h->InheritsFrom("TH2")) h->SetOption(fDrawOption);
    h->SetDirectory(0);
-   if (h->InheritsFrom("TH1")) h->GetXaxis()->SetTitle(fXLeaf->GetTitle());
+   if (h->InheritsFrom("TH1")) {
+      h->GetXaxis()->SetTitle(fXLeaf->GetTitle());
+      h->SetLineWidth(2);
+   }
    if (h->InheritsFrom("TH2") || h->InheritsFrom("TProfile")) h->GetYaxis()->SetTitle(fYLeaf->GetTitle());
 
    AddHisto(h);
