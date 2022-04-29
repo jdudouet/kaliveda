@@ -83,7 +83,7 @@ RawAnalysis.DataAnalysisTask.Prereq:     raw
 RawAnalysis.DataAnalysisTask.Analyser:     UserClass
 RawAnalysis.DataAnalysisTask.UserClass:     yes
 RawAnalysis.DataAnalysisTask.UserClass.Base:     RawDataAnalyser
-RawAnalysis.DataAnalysisTask.StatusUpdateInterval:     20000
+RawAnalysis.DataAnalysisTask.StatusUpdateInterval:     50000
 
 +DataAnalysisTask:     ReconRawAnalysis
 ReconRawAnalysis.DataAnalysisTask.Title:     Analysis of reconstructed raw data
@@ -91,7 +91,7 @@ ReconRawAnalysis.DataAnalysisTask.Prereq:     raw
 ReconRawAnalysis.DataAnalysisTask.Analyser:     UserClass
 ReconRawAnalysis.DataAnalysisTask.UserClass:     yes
 ReconRawAnalysis.DataAnalysisTask.UserClass.Base:     ReconRawDataAnalyser
-ReconRawAnalysis.DataAnalysisTask.StatusUpdateInterval:     20000
+ReconRawAnalysis.DataAnalysisTask.StatusUpdateInterval:     50000
 
 # analysis of TTree containing KVEvent objects using KVEventSelector
 +DataAnalysisTask:     SimEventAnalysis
@@ -100,7 +100,7 @@ SimEventAnalysis.DataAnalysisTask.Prereq:     sim
 SimEventAnalysis.DataAnalysisTask.Analyser:     SimDirAnalyser
 SimEventAnalysis.DataAnalysisTask.UserClass:     yes
 SimEventAnalysis.DataAnalysisTask.UserClass.Base:     EventSelector/TSelector
-SimEventAnalysis.DataAnalysisTask.StatusUpdateInterval:     20000
+SimEventAnalysis.DataAnalysisTask.StatusUpdateInterval:     50000
 
 # filtering of TTree containing KVEvent objects using KVEventFiltering
 +DataAnalysisTask:     SimEventFilter
@@ -109,7 +109,7 @@ SimEventFilter.DataAnalysisTask.Prereq:     sim
 SimEventFilter.DataAnalysisTask.Analyser:     SimDirAnalyser
 SimEventFilter.DataAnalysisTask.UserClass:     no
 SimEventFilter.DataAnalysisTask.UserClass.Base:     EventFilter/TSelector
-SimEventFilter.DataAnalysisTask.StatusUpdateInterval:     20000
+SimEventFilter.DataAnalysisTask.StatusUpdateInterval:     50000
 
 # analysis of TTree containing filtered simulation using KVEventSelector
 +DataAnalysisTask:     SimEventFilterAnalysis
@@ -118,20 +118,20 @@ SimEventFilterAnalysis.DataAnalysisTask.Prereq:     sim
 SimEventFilterAnalysis.DataAnalysisTask.Analyser:     SimDirFilterAnalyser
 SimEventFilterAnalysis.DataAnalysisTask.UserClass:     yes
 SimEventFilterAnalysis.DataAnalysisTask.UserClass.Base:     EventSelector/TSelector
-SimEventFilterAnalysis.DataAnalysisTask.StatusUpdateInterval:     20000
+SimEventFilterAnalysis.DataAnalysisTask.StatusUpdateInterval:     50000
 
 +DataAnalysisTask:     Reconstruction
 Reconstruction.DataAnalysisTask.Title:     Event reconstruction from raw data (raw->recon)
 Reconstruction.DataAnalysisTask.Prereq:     raw
 Reconstruction.DataAnalysisTask.Analyser:     RawDataReconstructor
 Reconstruction.DataAnalysisTask.UserClass:     no
-Reconstruction.DataAnalysisTask.StatusUpdateInterval:     5000
+Reconstruction.DataAnalysisTask.StatusUpdateInterval:     50000
 
 +DataAnalysisTask:     ReconAnalysis
 ReconAnalysis.DataAnalysisTask.Title:     Analysis of reconstructed events (recon)
 ReconAnalysis.DataAnalysisTask.Prereq:     recon
 ReconAnalysis.DataAnalysisTask.UserClass:     yes
-ReconAnalysis.DataAnalysisTask.StatusUpdateInterval:     5000
+ReconAnalysis.DataAnalysisTask.StatusUpdateInterval:     50000
 ReconAnalysis.DataAnalysisTask.Analyser:     ReconDataAnalyser
 ReconAnalysis.DataAnalysisTask.UserClass.Base:     ReconEventSelector/TSelector
 
@@ -139,7 +139,7 @@ ReconAnalysis.DataAnalysisTask.UserClass.Base:     ReconEventSelector/TSelector
 DataQualityAuditPreparation.DataAnalysisTask.Title:     Prepare data quality audits
 DataQualityAuditPreparation.DataAnalysisTask.Prereq:     recon
 DataQualityAuditPreparation.DataAnalysisTask.UserClass:     no
-DataQualityAuditPreparation.DataAnalysisTask.StatusUpdateInterval:     5000
+DataQualityAuditPreparation.DataAnalysisTask.StatusUpdateInterval:     50000
 DataQualityAuditPreparation.DataAnalysisTask.Analyser:     ReconDataAnalyser
 DataQualityAuditPreparation.DataAnalysisTask.UserClass.Base:     DataQualityAudit/TSelector
 
