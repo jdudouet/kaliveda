@@ -202,7 +202,7 @@ public:
       return "";
    }
 
-   ClassDef(KVIdentificationResult, 4) //Full result of one attempted particle identification
+   ClassDef(KVIdentificationResult, 5) //Full result of one attempted particle identification
 };
 
 #endif
