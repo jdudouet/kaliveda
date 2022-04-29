@@ -14,11 +14,17 @@
 */
 
 class KVPROOFLiteBatch : public KVBatchSystem {
+
+   int max_num_cpus; // max number of CPUs to use: by default, all available
+
 public:
    KVPROOFLiteBatch(const Char_t* name);
    virtual ~KVPROOFLiteBatch();
 
-   virtual void SubmitTask(KVDataAnalyser* da);
+   void SubmitTask(KVDataAnalyser* da);
+
+   void GetBatchSystemParameterList(KVNameValueList&);
+   void SetBatchSystemParameters(const KVNameValueList&);
 
    ClassDef(KVPROOFLiteBatch, 1) //Batch system interface to PROOFLite
 };

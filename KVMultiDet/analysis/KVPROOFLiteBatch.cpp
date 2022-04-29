@@ -8,7 +8,7 @@
 ClassImp(KVPROOFLiteBatch)
 
 KVPROOFLiteBatch::KVPROOFLiteBatch(const Char_t* name)
-   : KVBatchSystem(name)
+   : KVBatchSystem(name), max_num_cpus(WITH_MULTICORE_CPU)
 {
 }
 
@@ -23,9 +23,9 @@ void KVPROOFLiteBatch::SubmitTask(KVDataAnalyser* da)
 {
    // Run analysis on PROOFLite facility
 
-   // Open PROOFLite session and initialise KaliVeda package
+   // Open PROOFLite session with required number of workers and initialise KaliVeda package
    if (!gProof) {
-      TProof* p = TProof::Open("");
+      TProof* p = TProof::Open(Form("workers=%d", max_num_cpus));
       p->ClearCache();//to avoid problems with compilation of KVParticleCondition
       // enable KaliVeda on PROOF cluster
       if (p->EnablePackage("KaliVeda") != 0) {
@@ -44,5 +44,24 @@ void KVPROOFLiteBatch::SubmitTask(KVDataAnalyser* da)
    da->SubmitTask();
 }
 
-//____________________________________________________________________________//
+void KVPROOFLiteBatch::GetBatchSystemParameterList(KVNameValueList& nl)
+{
+   // Add to batch parameters the number of CPUs to use
+   //
+   // By default, it is the number of CPUs on the machine
+
+   KVBatchSystem::GetBatchSystemParameterList(nl);
+   nl.SetValue("MaxNumCPUs", max_num_cpus);
+}
+
+void KVPROOFLiteBatch::SetBatchSystemParameters(const KVNameValueList& nl)
+{
+   // Add to batch parameters the number of CPUs to use
+   //
+   // By default, it is the number of CPUs on the machine
+
+   KVBatchSystem::SetBatchSystemParameters(nl);
+   max_num_cpus = nl.GetIntValue("MaxNumCPUs");
+}
+
 
