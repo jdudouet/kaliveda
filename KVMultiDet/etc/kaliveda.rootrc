@@ -214,6 +214,7 @@ ReconEventSelector.Template: ROOT6ReconDataSelectorTemplate
 Plugin.KVDataTransfer:   sftp    KVDataTransferSFTP   KVMultiDetanalysis   "KVDataTransferSFTP()"
 +Plugin.KVDataTransfer:   bbftp    KVDataTransferBBFTP   KVMultiDetanalysis   "KVDataTransferBBFTP()"
 +Plugin.KVDataTransfer:   xrd    KVDataTransferXRD   KVMultiDetanalysis   "KVDataTransferXRD()"
++Plugin.KVDataTransfer:   dms    KVDataTransferDMS   KVMultiDetanalysis   "KVDataTransferDMS()"
 
 # Change handling of scaler buffers in GANIL data files
 KVGANILDataReader.ScalerBuffersManagement:    kSkipScaler

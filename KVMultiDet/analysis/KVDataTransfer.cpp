@@ -10,7 +10,6 @@ $Date: 2007/05/31 09:59:22 $
 #include "KVDataTransfer.h"
 #include "KVDataSet.h"
 #include "KVDataRepositoryManager.h"
-#include "KVDataRepository.h"
 #include "KVDataSetManager.h"
 #include "TError.h"
 #include "TPluginManager.h"
@@ -41,14 +40,17 @@ KVDataTransfer* KVDataTransfer::NewTransfer(const Char_t* source_rep,
       const Char_t* target_rep)
 {
    //Creates a new data transfer object to transfer files between the two named data repositories.
+   //
    //The type of the created object depends on the values of the environment variables
    //(defined in .kvrootrc file):
-   //
+   //~~~~
    //source_rep.DataRepository.FileTransfer.type
    //target_rep.DataRepository.FileTransfer.type
-   //
+   //~~~~
    //If either of these = bbftp, we create a KVDataTransferBBFTP object.
+   //
    //If source_rep.DataRepository.FileTransfer.type = xrd, we create a KVDataTransferXRD object.
+   //
    //By default (no type given), we use a KVDataTransferSFTP object.
    //In fact, the type of object created is defined in .kvrootrc by the following plugins:
    //
@@ -58,6 +60,10 @@ KVDataTransfer* KVDataTransfer::NewTransfer(const Char_t* source_rep,
    // +Plugin.KVDataTransfer:   bbftp    KVDataTransferBBFTP   KVMultiDet   "KVDataTransferBBFTP()"
    // +Plugin.KVDataTransfer:   xrd    KVDataTransferXRD   KVMultiDet   "KVDataTransferXRD()"
 
+   if (!gDataRepositoryManager) {
+      auto drm = new KVDataRepositoryManager;
+      drm->Init();
+   }
    KVDataRepository* SR =
       gDataRepositoryManager->GetRepository(source_rep);
    if (!SR) {
@@ -73,9 +79,12 @@ KVDataTransfer* KVDataTransfer::NewTransfer(const Char_t* source_rep,
       return 0;
    }
    TString uri = "sftp";        //default plugin
+   //if either one has type 'dms'...
+   if (SR->IsType("dms") || TR->IsType("dms"))
+      uri = "dms";
    //if either one has transfer type 'bbftp'...
-   if (!strcmp(SR->GetFileTransferType(), "bbftp")
-         || !strcmp(TR->GetFileTransferType(), "bbftp"))
+   else if (!strcmp(SR->GetFileTransferType(), "bbftp")
+            || !strcmp(TR->GetFileTransferType(), "bbftp"))
       uri = "bbftp";
    //if source repository has transfer type 'xrd'...
    else if (!strcmp(SR->GetFileTransferType(), "xrd"))
