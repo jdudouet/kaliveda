@@ -9,7 +9,7 @@
 ClassImp(KVMFMDataFileReader)
 
 KVMFMDataFileReader::KVMFMDataFileReader(const Char_t* filepath)
-   : KVRawDataReader(), MFMFileReader(filepath, 100 * 1024 * 1024)
+   : KVRawDataReader(), MFMFileReader(filepath, 512 * 1024 * 1024)
 {
    // Open the datafile with given path
    // Read the first frame in the file (should be a MFMXmlFileHeaderFrame) and extract informations
