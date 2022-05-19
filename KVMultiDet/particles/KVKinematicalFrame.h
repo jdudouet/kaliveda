@@ -20,7 +20,7 @@
 
 class KVKinematicalFrame : public TNamed {
    KVFrameTransform       fTransform;    //! kinematical transform wrt 'parent' frame
-   unique_ptr<KVParticle> fParticle;     //! kinematically transformed particle
+   std::unique_ptr<KVParticle> fParticle;     //! kinematically transformed particle
 
 public:
    KVKinematicalFrame(const Char_t* name, const KVParticle* original, const KVFrameTransform& trans);

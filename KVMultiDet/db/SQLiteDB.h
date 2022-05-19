@@ -372,13 +372,13 @@ namespace KVSQLite {
    };
 
    class database {
-      unique_ptr<TSQLiteServer> fDBserv;       //connection to database
+      std::unique_ptr<TSQLiteServer> fDBserv;       //connection to database
 #ifdef WITH_CPP11
       mutable std::unordered_map<std::string, KVSQLite::table> fTables; //map of tables in database
 #else
       mutable std::map<std::string, KVSQLite::table> fTables; //map of tables in database
 #endif
-      mutable unique_ptr<TSQLStatement> fSQLstmt;     //used for bulk operations
+      mutable std::unique_ptr<TSQLStatement> fSQLstmt;     //used for bulk operations
       mutable KVSQLite::table* fBulkTable;            //pointer to table currently used with fSQLstmt
       mutable bool fInserting;
       mutable bool fSelecting;
@@ -387,7 +387,7 @@ namespace KVSQLite {
       mutable TString fSelectedColumns;
 
       void PrintResults(TSQLResult* tabent, int column_width = 20) const;
-      unique_ptr<TSQLResult> SelectRowsFromTable(
+      std::unique_ptr<TSQLResult> SelectRowsFromTable(
          const TString& table,
          const TString& columns = "*",
          const TString& condition = "") const;

@@ -407,7 +407,7 @@ Bool_t KVString::Match(TString pattern)
    if (!pattern.Contains("*")) return this->Contains(pattern);
    else if (pattern == "*") return kTRUE;
    else {
-      unique_ptr<TObjArray> tok(pattern.Tokenize("*"));
+      std::unique_ptr<TObjArray> tok(pattern.Tokenize("*"));
       Int_t n_tok = tok->GetEntries();
       if (!pattern.BeginsWith("*"))
          if (!BeginsWith(((TObjString*)tok->First())->GetString())) {
@@ -1078,7 +1078,7 @@ KVString::KVString(Double_t value, Double_t error): TString(""), kObjArr(nullptr
    Int_t y_exp, ey_exp;
 
    //Recup de la valeur y
-   unique_ptr<TObjArray> loa_y(sy.Tokenize("e"));
+   std::unique_ptr<TObjArray> loa_y(sy.Tokenize("e"));
 
    TIter next_y(loa_y.get());
    TObjString* os_y = 0;
@@ -1091,7 +1091,7 @@ KVString::KVString(Double_t value, Double_t error): TString(""), kObjArr(nullptr
    y_exp = sy_exp.Atoi();
 
    //Recup de la valeur ey
-   unique_ptr<TObjArray> loa_ey(sey.Tokenize("e"));
+   std::unique_ptr<TObjArray> loa_ey(sey.Tokenize("e"));
 
    TIter next_ey(loa_ey.get());
    TObjString* os_ey = 0;

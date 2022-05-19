@@ -45,13 +45,6 @@
 // will be defined for all ROOT versions from 6.00 onwards
 #cmakedefine USING_ROOT6
 
-// allow use of unique_ptr with C++98
-#include <memory>
-#ifndef WITH_CPP11
-#define unique_ptr auto_ptr
-#endif
-using std::unique_ptr;
-
 // macro which expands to default constructor
 #define ROOT_DEF_CTOR(classname,basename) \
    classname() : basename() {}
@@ -97,33 +90,27 @@ using std::unique_ptr;
    ROOT_DEF_CTOR(classname,basename) \
    ROOT_NAME_CTOR(classname,basename) \
    ROOT_COPY_CTOR(classname,basename) \
-   virtual ~classname() {} \
    ROOT_COPY_ASSIGN_OP(classname)
 
-// provide set of constructors (default, named, copy) & a default destructor,
+// provide set of constructors (default, copy),
+// plus copy assignment operator
+#define ROOT_FULL_SET_UNNAMED(classname,basename) \
+   ROOT_DEF_CTOR(classname,basename) \
+   ROOT_COPY_CTOR(classname,basename) \
+   ROOT_COPY_ASSIGN_OP(classname)
+
+// provide set of constructors (default, named, copy),
 // plus copy assignment operator, default & named ctors call init()
 #define ROOT_FULL_SET_WITH_INIT(classname,basename) \
    ROOT_DEF_CTOR_WITH_INIT(classname,basename) \
    ROOT_NAME_CTOR_WITH_INIT(classname,basename) \
    ROOT_COPY_CTOR(classname,basename) \
-   virtual ~classname() {} \
    ROOT_COPY_ASSIGN_OP(classname)
 
 // avoid warnings from clang static analyzer
-#ifdef WITH_CPP11
 #define AUTO_NEW_CTOR(classname,ptr) \
    auto ptr = new classname
-#else
-#define AUTO_NEW_CTOR(classname,ptr) \
-   classname* ptr = new classname
-#endif
 
-// hide C++11 constructs and syntax when necessary
-#ifdef WITH_CPP11
-#define CPP11_ONLY(construct) construct
-#else
-#define CPP11_ONLY(construct)
-#endif
 //-----------------------------------ROOT-version dependent compiler flags
 //-----------------------------------to handle backwards compatibility
 //

@@ -215,7 +215,7 @@ protected:
    KVList fTasks;                //possible data analysis tasks for this dataset
    TString fCalibDir;           //directory containing database, calibration, identification parameters etc. for dataset
    Bool_t fDBBuild;             //has the database been built by us ?
-   mutable unique_ptr<TFile> fDBase;               //file containing database
+   mutable std::unique_ptr<TFile> fDBase;               //file containing database
    TString fDBName;             //name of database
    TString fDBFileName;         //name of file in which database is stored on disk
    mutable KVExpDB* fDataBase;       //pointer to dataset's database

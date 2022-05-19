@@ -134,7 +134,7 @@ protected:
    TGLabel*    selectedRuns;
    Int_t     entryMax;
    Bool_t       selAll;
-   unique_ptr<TList> list_of_runs;
+   std::unique_ptr<TList> list_of_runs;
 
    KVDataSetAnalyser* ia;
    TGCompositeFrame* cfAnalysis;

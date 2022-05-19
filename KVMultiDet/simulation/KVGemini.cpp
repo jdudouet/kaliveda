@@ -133,11 +133,10 @@ void KVGemini::DecayEvent(const KVSimEvent* hot, KVSimEvent* cold, bool addRotat
    // \note Do not set any parameters for the `cold` event before calling this method, they will be cleared before decay
 
    cold->Clear();
-   KVSimNucleus* hotnuc;
    part_index = 1;
-   while ((hotnuc = (KVSimNucleus*)const_cast<KVSimEvent*>(hot)->GetNextParticle())) {
+   for (auto& hotnuc : SimEventIterator(hot)) {
       try {
-         DecaySingleNucleus(*hotnuc, cold, addRotationalEnergy);
+         DecaySingleNucleus(hotnuc, cold, addRotationalEnergy);
          ++part_index;
       }
       catch (...) {
@@ -162,7 +161,7 @@ void KVGemini::FillTreeWithEvents(KVSimNucleus& toDecay, bool addRotationalEnerg
       try {
          DecaySingleNucleus(toDecay, decayProducts, addRotationalEnergy);
       }
-      catch (exception& e) {
+      catch (std::exception& e) {
          continue;
       }
       theTree->Fill();

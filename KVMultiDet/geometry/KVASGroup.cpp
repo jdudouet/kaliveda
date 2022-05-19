@@ -273,7 +273,7 @@ TList* KVASGroup::GetDetectorsInLayer(UInt_t lay)
    UInt_t imin = GetLayerNearestTarget();
    UInt_t imax = GetLayerFurthestTarget();
    for (UInt_t i = imin; i <= imax; i++) {
-      unique_ptr<TList> tlist(GetTelescopesInLayer(i));
+      std::unique_ptr<TList> tlist(GetTelescopesInLayer(i));
       if (tlist.get()) {
          //note we take the max number of detectors in telescopes of layer i
          Int_t max = 0;
@@ -319,7 +319,7 @@ UInt_t KVASGroup::GetDetectorLayer(KVDetector* det)
    //Find the "detector layer" to which this detector belongs
 
    for (UInt_t i = 1; i <= GetNumberOfDetectorLayers(); i++) {
-      unique_ptr<TList> list(GetDetectorsInLayer(i));
+      std::unique_ptr<TList> list(GetDetectorsInLayer(i));
       if (list->FindObject(det)) {
          return i;
       }
@@ -346,7 +346,7 @@ TList* KVASGroup::GetAlignedDetectors(KVDetector* det, UChar_t dir)
 
    if (dir == kForwards) {
       for (UInt_t lay = first_layer; lay <= last_layer; lay++) {
-         unique_ptr<TList> dets(GetDetectorsInLayer(lay));
+         std::unique_ptr<TList> dets(GetDetectorsInLayer(lay));
          if (dets.get()) {
             TIter next(dets.get());
             KVDetector* d2;
@@ -361,7 +361,7 @@ TList* KVASGroup::GetAlignedDetectors(KVDetector* det, UChar_t dir)
    }
    else {
       for (UInt_t lay = last_layer; lay >= first_layer; lay--) {
-         unique_ptr<TList> dets(GetDetectorsInLayer(lay));
+         std::unique_ptr<TList> dets(GetDetectorsInLayer(lay));
          if (dets.get()) {
             TIter next(dets.get());
             KVDetector* d2;

@@ -471,11 +471,10 @@ void KVElasticScatterEvent::MakeDiffusion()
    //Traitement de l evt (remplissage d'arbre ou d'histo
    //    TreateEvent();
 
-   KVNucleus* knuc = 0;
    sim_evt->GetParameters()->Clear();
-   while ((knuc = sim_evt->GetNextParticle())) {
-      knuc->GetParameters()->Clear();
-      knuc->RemoveAllGroups();
+   for (auto& knuc : SimEventIterator(sim_evt)) {
+      knuc.GetParameters()->Clear();
+      knuc.RemoveAllGroups();
    }
 
    //-------------------------
@@ -593,14 +592,13 @@ void KVElasticScatterEvent::SortieDeCible()
    //
 
    ktarget->SetOutgoing(kTRUE);
-   KVNucleus* knuc = 0;
-   while ((knuc = sim_evt->GetNextParticle())) {
-      knuc->SetE0();
-      Double_t eLostInTarget = knuc->GetKE();
-      ktarget->DetectParticle(knuc, 0);
-      eLostInTarget -= knuc->GetKE();
-      knuc->GetParameters()->SetValue("TARGET Out", eLostInTarget);
-      knuc->SetMomentum(*knuc->GetPInitial());
+   for (auto& knuc : SimEventIterator(sim_evt)) {
+      knuc.SetE0();
+      Double_t eLostInTarget = knuc.GetKE();
+      ktarget->DetectParticle(&knuc, 0);
+      eLostInTarget -= knuc.GetKE();
+      knuc.GetParameters()->SetValue("TARGET Out", eLostInTarget);
+      knuc.SetMomentum(*knuc.GetPInitial());
    }
 
    ktarget->SetOutgoing(kFALSE);

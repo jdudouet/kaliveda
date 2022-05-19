@@ -561,9 +561,8 @@ void KVTarget::DetectEvent(KVEvent* event)
    //called first.
 
    SetOutgoing();
-   KVNucleus* part;
-   while ((part = (KVNucleus*) event->GetNextParticle())) {     // loop over particles
-      DetectParticle(part, &GetInteractionPoint());
+   for (auto& part : EventIterator(event)) {    // loop over particles
+      DetectParticle(&part, &GetInteractionPoint());
    }
 }
 

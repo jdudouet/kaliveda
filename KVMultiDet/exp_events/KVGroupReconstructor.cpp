@@ -407,12 +407,10 @@ void KVGroupReconstructor::Calibrate()
 {
    // Calculate and set energies of all identified but uncalibrated particles in event.
 
-   KVReconstructedNucleus* d;
+   for (auto& d : ReconEventIterator(GetEventFragment())) {
 
-   while ((d = GetEventFragment()->GetNextParticle())) {
-
-      if (d->IsIdentified() && !d->IsCalibrated()) {
-         CalibrateParticle(d);
+      if (d.IsIdentified() && !d.IsCalibrated()) {
+         CalibrateParticle(&d);
       }
 
    }

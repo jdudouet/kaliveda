@@ -21,7 +21,7 @@
  */
 class KVReconRawDataAnalyser : public KVRawDataAnalyser {
 protected:
-   unique_ptr<KVEventReconstructor> fEvRecon;
+   std::unique_ptr<KVEventReconstructor> fEvRecon;
    KVReconstructedEvent* fRecev;
 
 public:

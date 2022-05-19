@@ -129,7 +129,7 @@ void KVNumberList::ParseAndFindLimits(const TString& string, const Char_t delim)
    //Takes a string and breaks it up into its constituent parts,
    //which were initially separated by white space or a comma.
    //Any part which contains "-" will be sent to AddLimits().
-   unique_ptr<TObjArray> toks1(string.Tokenize(delim));
+   std::unique_ptr<TObjArray> toks1(string.Tokenize(delim));
    Int_t n_toks = toks1->GetEntries();
    for (int i = 0; i < n_toks; i++) {
       TString tok = ((TObjString*)(*toks1)[i])->GetString();
@@ -155,7 +155,7 @@ void KVNumberList::AddLimits(TString& string)
    //'string' should contain something like "34-59" i.e. two integers separated by a '-'.
    //these two numbers are taken for new lower and upper limits, fNLimits is increased by one,
    //if necessary the arrays' size is increased.
-   unique_ptr<TObjArray> toks1(string.Tokenize('-'));
+   std::unique_ptr<TObjArray> toks1(string.Tokenize('-'));
    Int_t n_toks = toks1->GetEntries();
    if (n_toks != 2) return;
    KVString lower(((TObjString*)(*toks1)[0])->GetString());
@@ -557,7 +557,7 @@ TString KVNumberList::GetLogical(const Char_t* observable) const
    GetList();
    TString tmp = fString;
    tmp.ReplaceAll(" ", "||");
-   unique_ptr<TObjArray> toks(tmp.Tokenize("||"));
+   std::unique_ptr<TObjArray> toks(tmp.Tokenize("||"));
    static TString cond;
    cond = "( ";
    Int_t nt = toks->GetEntries();

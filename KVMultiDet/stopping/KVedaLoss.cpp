@@ -153,7 +153,7 @@ KVIonRangeTableMaterial* KVedaLoss::AddElementalMaterial(Int_t Z, Int_t A) const
    //
    // If the element name is "X", this material will be called "natX", for "naturally-occuring X".
 
-   unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
+   std::unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
    KVIonRangeTableMaterial* mat = yanez->AddElementalMaterial(Z, A);
    AddMaterial(mat);
    return GetMaterial(mat->GetName());
@@ -163,7 +163,7 @@ Bool_t KVedaLoss::AddRANGEMaterial(const Char_t* name) const
 {
    // If the given material is defined in the RANGE tables, import it into VEDALOSS
 
-   unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
+   std::unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
    if (yanez->GetMaterial(name)) {
       AddMaterial(yanez->GetMaterial(name));
       return kTRUE;
@@ -183,7 +183,7 @@ KVIonRangeTableMaterial* KVedaLoss::AddCompoundMaterial(const Char_t* name, cons
    // \param[in] natoms[nelem] number of atoms of each element
    // \param[in] density in \f$g/cm^{3}\f$, only required if compound is a solid
 
-   unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
+   std::unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
    KVIonRangeTableMaterial* mat = yanez->AddCompoundMaterial(name, symbol, nel, Z, A, nat, dens);
    AddMaterial(mat);
    return GetMaterial(mat->GetName());
@@ -202,7 +202,7 @@ KVIonRangeTableMaterial* KVedaLoss::AddMixedMaterial(const Char_t* name, const C
    // \param[in] prop[nel] proportion by mass in mixture of element
    // \param[in] density in \f$g/cm^{3}\f$, if mixture is a solid
 
-   unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
+   std::unique_ptr<KVIonRangeTable> yanez(KVIonRangeTable::GetRangeTable("RANGE"));
    KVIonRangeTableMaterial* mat = yanez->AddMixedMaterial(name, symbol, nel, Z, A, nat, prop, dens);
    AddMaterial(mat);
    return GetMaterial(mat->GetName());

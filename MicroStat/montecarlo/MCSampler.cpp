@@ -80,8 +80,7 @@ namespace MicroStat {
    {
       // if nuclear masses are modified, we have to update those in the
       // partition read from file
-      KVNucleus* n;
-      while ((n = fPartition->GetNextParticle())) n->SetA(n->GetA());
+      for (auto& n : EventIterator(fPartition)) n.SetA(n.GetA());
    }
 
    void MCSampler::CalculateWeights(Double_t excitation_energy)
@@ -381,12 +380,11 @@ namespace MicroStat {
                Double_t proba = wt->GetWeight() / GetSumWeights();
                if (proba > 1.e-06) {
                   KVEvent* pt = GetPartition(wt->GetIndex());
-                  KVNucleus* n;
-                  while ((n = pt->GetNextParticle())) {
+                  for (auto& n : EventIterator(pt)) {
                      for (int j = 0; j < nparticles - 1; j++) {
-                        if (!strcmp(n->GetSymbol(), particles[j].Data())) multiplicities[j] += proba;
+                        if (!strcmp(n.GetSymbol(), particles[j].Data())) multiplicities[j] += proba;
                      }
-                     if (n->GetZ() > 2) multiplicities[nparticles - 1] += proba;
+                     if (n.GetZ() > 2) multiplicities[nparticles - 1] += proba;
                   }
                }
 

@@ -176,7 +176,7 @@ protected:
    virtual void copy_fired_parameters_to_recon_param_list();
 
    TString GetFileName(KVExpDB*, const Char_t* meth, const Char_t* keyw);
-   unique_ptr<KVFileReader> GetKVFileReader(KVExpDB* db, const Char_t* meth, const Char_t* keyw);
+   std::unique_ptr<KVFileReader> GetKVFileReader(KVExpDB* db, const Char_t* meth, const Char_t* keyw);
    void ReadCalibrationFiles(KVExpDB* db);
    void ReadCalibFile(const Char_t* filename, KVExpDB* db, KVDBTable* calib_table);
    void ReadOoODetectors(KVExpDB* db);
@@ -564,7 +564,7 @@ public:
    virtual KVGroupReconstructor* GetReconstructorForGroup(const KVGroup*) const;
    Int_t GetNumberOfGroups() const
    {
-      unique_ptr<KVSeqCollection> glist(GetStructureTypeList("GROUP"));
+      std::unique_ptr<KVSeqCollection> glist(GetStructureTypeList("GROUP"));
       return glist->GetEntries();
    }
 

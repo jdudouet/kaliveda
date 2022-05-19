@@ -23,7 +23,7 @@ namespace KVSQLite {
    std::map<TString, KVSQLite::column_type::types> table::type_map;
    std::map<KVSQLite::column_type::types, TString> column::inv_type_map;
 
-   unique_ptr<TSQLResult> database::SelectRowsFromTable(const TString& table, const TString& columns, const TString& condition) const
+   std::unique_ptr<TSQLResult> database::SelectRowsFromTable(const TString& table, const TString& columns, const TString& condition) const
    {
       // \param[in] table name of table
       // \param[in] columns comma-separated list of columns
@@ -33,20 +33,20 @@ namespace KVSQLite {
       TString query;
       query.Form("SELECT %s FROM '%s'", columns.Data(), table.Data());
       if (condition != "") query += Form(" WHERE %s", condition.Data());
-      return unique_ptr<TSQLResult>(fDBserv->Query(query));
+      return std::unique_ptr<TSQLResult>(fDBserv->Query(query));
    }
 
    void database::read_table_infos()
    {
       // initialise map of database tables from existing database
-      unique_ptr<TList> tl(fDBserv->GetTablesList());
+      std::unique_ptr<TList> tl(fDBserv->GetTablesList());
       TObject* o;
       TIter it_tab(tl.get());
       while ((o = it_tab())) {
 
          table t(o->GetName());
 
-         unique_ptr<TSQLTableInfo> ti(fDBserv->GetTableInfo(o->GetName()));
+         std::unique_ptr<TSQLTableInfo> ti(fDBserv->GetTableInfo(o->GetName()));
 
          TIter it_col(ti->GetColumns());
          TSQLColumnInfo* colin;
@@ -90,7 +90,7 @@ namespace KVSQLite {
    void database::PrintResults(TSQLResult* tabent, int column_width) const
    {
       int nfields = tabent->GetFieldCount();
-      unique_ptr<TSQLRow> row(nullptr);
+      std::unique_ptr<TSQLRow> row(nullptr);
       for (int r = -1; true; ++r) {
          if (r > -1) {
             row.reset(tabent->Next());
@@ -115,13 +115,13 @@ namespace KVSQLite {
       // Print on stdout contents of database
 
       std::cout << "Database : " << fDBserv->GetDB() << " [" << fDBserv->GetDBMS() << "]\n";
-      unique_ptr<TList> tl(fDBserv->GetTablesList());
+      std::unique_ptr<TList> tl(fDBserv->GetTablesList());
       TObject* o;
       TIter it_tab(tl.get());
       while ((o = it_tab())) {
          std::cout << "\t";
          std::cout << "Table : " << o->GetName() << "\n";
-         unique_ptr<TSQLResult> tabent = SelectRowsFromTable(o->GetName());
+         std::unique_ptr<TSQLResult> tabent = SelectRowsFromTable(o->GetName());
          PrintResults(tabent.get());
       }
       std::cout << std::endl;
@@ -130,7 +130,7 @@ namespace KVSQLite {
    {
       // Print on stdout contents of database
 
-      unique_ptr<TSQLResult> tabent = SelectRowsFromTable(table, columns, condition);
+      std::unique_ptr<TSQLResult> tabent = SelectRowsFromTable(table, columns, condition);
       PrintResults(tabent.get(), column_width);
       std::cout << std::endl;
    }
@@ -534,8 +534,8 @@ namespace KVSQLite {
          qry += selection;
       }
 
-      unique_ptr<TSQLResult> result(fDBserv->Query(qry));
-      unique_ptr<TSQLRow> row(result->Next());
+      std::unique_ptr<TSQLResult> result(fDBserv->Query(qry));
+      std::unique_ptr<TSQLRow> row(result->Next());
       TString number = row->GetField(0);
       return number.Atoi();
    }

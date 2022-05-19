@@ -248,11 +248,9 @@ void KVReconstructedEvent::MergeEventFragments(TCollection* events, Option_t* op
    TIter it(events);
    KVReconstructedEvent* e;
    while ((e = (KVReconstructedEvent*)it())) {
-      KVReconstructedNucleus* n;
       if (e->GetMult()) {
-         e->ResetGetNextParticle();
-         while ((n = e->GetNextParticle())) {
-            AddParticle()->CopyAndMoveReferences(n);
+         for (auto& n : ReconEventIterator(e)) {
+            AddParticle()->CopyAndMoveReferences(&n);
          }
       }
       GetParameters()->Merge(*(e->GetParameters()));

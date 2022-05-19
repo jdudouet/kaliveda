@@ -15,7 +15,7 @@
 
 class KVRawDataReconstructor : public KVRawDataAnalyser {
 
-   unique_ptr<KVEventReconstructor> fEvRecon;
+   std::unique_ptr<KVEventReconstructor> fEvRecon;
    KVReconstructedEvent* fRecev;
    TFile* fRecFile;
    TTree* fRecTree;

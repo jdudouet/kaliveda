@@ -25,7 +25,7 @@ private:
    }
 
 protected:
-   unique_ptr<TObjArray> toks;//!
+   std::unique_ptr<TObjArray> toks;//!
    KVString reading_line, file_name;
    Int_t nline;
    Bool_t status;
@@ -140,7 +140,7 @@ public:
 
    void AddParameters(const Char_t* pattern)
    {
-      unique_ptr<TObjArray> tamp(GetCurrentLine().Tokenize(pattern));
+      std::unique_ptr<TObjArray> tamp(GetCurrentLine().Tokenize(pattern));
       Int_t ne = tamp->GetEntries();
       // toks may be uninitialized
       if (toks.get() == nullptr) toks.reset(new TObjArray);

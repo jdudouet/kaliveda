@@ -43,7 +43,7 @@
  */
 
 class KVZMQMessage : public TMessage {
-   unique_ptr<TObject> fObject;
+   std::unique_ptr<TObject> fObject;
    Bool_t fReadNewObject;
    zmq::message_t fMessage;
 

@@ -73,7 +73,7 @@ class KVString : public TString {
 
 protected:
 
-   mutable unique_ptr<TObjArray>  kObjArr;//!used by Next() to iterate over list
+   mutable std::unique_ptr<TObjArray>  kObjArr;//!used by Next() to iterate over list
    mutable Int_t       fIterIndex;//! used by Next() to iterate over list
    mutable Bool_t      fEndList;//! used by Next() & End() to iterate over list
 

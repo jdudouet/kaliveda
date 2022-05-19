@@ -93,9 +93,8 @@ namespace MicroStat {
       Double_t N = e->GetMult();
       Double_t logmass_sum, mass_sum;
       logmass_sum = mass_sum = 0.;
-      KVNucleus* n;
-      while ((n = e->GetNextParticle())) {
-         Double_t m = n->GetMass();
+      for (auto& n : EventIterator(e)) {
+         Double_t m = n.GetMass();
          logmass_sum += TMath::Log(m);
          mass_sum += m;
       }
@@ -113,11 +112,9 @@ namespace MicroStat {
       // using the given partition and available energy
 
       massTot0 = 0;
-#ifdef WITH_CPP11
+
       for (auto& e : EventIterator(partition)) massTot0 += e.GetMass();
-//#else
-      for (KVNucleusEvent::Iterator it = EventIterator(partition).begin(); it != KVNucleusEvent::Iterator::End(); ++it) massTot0 += (*it).GetMass();
-#endif
+
       resetGenerateEvent();
    }
 

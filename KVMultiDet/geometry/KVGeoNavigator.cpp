@@ -4,6 +4,7 @@
 #include "KVGeoNavigator.h"
 #include "KVTemplateEvent.h"
 #include "KV3DGeoTrack.h"
+#include <KVTemplateEvent.h>
 #include <TGeoManager.h>
 #include <TGeoMatrix.h>
 #include "KVGeoStrucElement.h"
@@ -268,9 +269,8 @@ void KVGeoNavigator::PropagateEvent(KVEvent* TheEvent, TVector3* TheOrigin)
    // unless a different origin is given.
 
    ResetTrackID();
-   KVNucleus* part;
-   while ((part = TheEvent->GetNextParticle())) {
-      PropagateParticle(part, TheOrigin);
+   for (auto& part : EventIterator(TheEvent)) {
+      PropagateParticle(&part, TheOrigin);
    }
 }
 

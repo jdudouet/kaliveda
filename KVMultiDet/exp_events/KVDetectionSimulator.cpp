@@ -56,28 +56,27 @@ void KVDetectionSimulator::DetectEvent(KVEvent* event, const Char_t* detection_f
    // Reset detectors in array hit by any previous events
    ClearHitGroups();
 
-   event->ResetGetNextParticle();
-   KVNucleus* part;
-   while ((part = event->GetNextParticle())) {  // loop over particles
+   for (auto& part : EventIterator(event)) {
+      // loop over particles
 
-      KVNucleus* _part = (KVNucleus*)part->GetFrame(detection_frame, kFALSE);
+      KVNucleus* _part = (KVNucleus*)part.GetFrame(detection_frame, kFALSE);
 
       KVNameValueList det_stat, nvl;
       Double_t eLostInTarget = 0;
 
       TVector3 initial_momentum = _part->GetMomentum();
 
-      if (part->GetZ() == 0) {
+      if (part.GetZ() == 0) {
          det_stat.SetValue("UNDETECTED", "NEUTRON");
 
-         part->AddGroup("UNDETECTED");
-         part->AddGroup("NEUTRON");
+         part.AddGroup("UNDETECTED");
+         part.AddGroup("NEUTRON");
       }
       else if (_part->GetKE() < GetMinKECutOff()) {
          det_stat.SetValue("UNDETECTED", "NO ENERGY");
 
-         part->AddGroup("UNDETECTED");
-         part->AddGroup("NO ENERGY");
+         part.AddGroup("UNDETECTED");
+         part.AddGroup("NO ENERGY");
       }
       else {
          if (IncludeTargetEnergyLoss() && GetTarget()) {
@@ -90,8 +89,8 @@ void KVDetectionSimulator::DetectEvent(KVEvent* event, const Char_t* detection_f
             if (_part->GetKE() < GetMinKECutOff()) {
                det_stat.SetValue("UNDETECTED", "STOPPED IN TARGET");
 
-               part->AddGroup("UNDETECTED");
-               part->AddGroup("STOPPED IN TARGET");
+               part.AddGroup("UNDETECTED");
+               part.AddGroup("STOPPED IN TARGET");
             }
             GetTarget()->SetOutgoing(kFALSE);
          }
@@ -104,33 +103,33 @@ void KVDetectionSimulator::DetectEvent(KVEvent* event, const Char_t* detection_f
 
                det_stat.SetValue("UNDETECTED", "DEAD ZONE");
 
-               part->AddGroup("UNDETECTED");
-               part->AddGroup("DEAD ZONE");
+               part.AddGroup("UNDETECTED");
+               part.AddGroup("DEAD ZONE");
 
             }
             else {
-               part->AddGroup("DETECTED");
+               part.AddGroup("DETECTED");
             }
          }
       }
 
-      if (IncludeTargetEnergyLoss() && GetTarget()) part->SetParameter("TARGET Out", eLostInTarget);
+      if (IncludeTargetEnergyLoss() && GetTarget()) part.SetParameter("TARGET Out", eLostInTarget);
       if (!nvl.IsEmpty()) {
          Int_t nbre_nvl = nvl.GetNpar();
          KVString LastDet(nvl.GetNameAt(nbre_nvl - 1));
-         if (part->GetE() < GetMinKECutOff() || part->GetParameters()->HasParameter("DEADZONE")) {
-            part->SetParameter("STOPPING DETECTOR", LastDet.Data());
+         if (part.GetE() < GetMinKECutOff() || part.GetParameters()->HasParameter("DEADZONE")) {
+            part.SetParameter("STOPPING DETECTOR", LastDet.Data());
             det_stat.SetValue("DETECTED", "OK");
          }
          else {
             det_stat.SetValue("DETECTED", "PUNCHED THROUGH");
          }
          for (Int_t ii = 0; ii < nvl.GetNpar(); ++ii) {
-            part->SetParameter(nvl.GetNameAt(ii), nvl.GetDoubleValue(ii));
+            part.SetParameter(nvl.GetNameAt(ii), nvl.GetDoubleValue(ii));
          }
       }
       for (Int_t ii = 0; ii < det_stat.GetNpar(); ii += 1) {
-         part->SetParameter(det_stat.GetNameAt(ii), det_stat.GetStringValue(ii));
+         part.SetParameter(det_stat.GetNameAt(ii), det_stat.GetStringValue(ii));
       }
 
       _part->SetMomentum(initial_momentum);

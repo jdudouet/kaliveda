@@ -20,13 +20,8 @@ namespace DAQ {
  */
 class KVFzDataReader : public KVProtobufDataReader {
 
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,0,0)
-   unique_ptr<KVUniqueNameList> fListOfFiles;//! list of files for run
-   unique_ptr<TIter> fFileListIterator;//! iterator for file list
-#else
-   KVUniqueNameList* fListOfFiles;//! list of files for run
-   TIter* fFileListIterator;//! iterator for file list
-#endif
+   std::unique_ptr<KVUniqueNameList> fListOfFiles;//! list of files for run
+   std::unique_ptr<TIter> fFileListIterator;//! iterator for file list
    KVString fFullFilePath;//! full path to files including "root:" etc. and "/run000000/"
    int run_number;//! run number deduced from filename
 

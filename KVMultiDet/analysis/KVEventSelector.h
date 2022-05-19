@@ -5,7 +5,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
-#include "KVEvent.h"
+#include "KVTemplateEvent.h"
 #include "KVGVList.h"
 #include "KVString.h"
 #include "KVParticleCondition.h"

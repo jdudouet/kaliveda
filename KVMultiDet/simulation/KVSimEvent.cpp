@@ -18,10 +18,9 @@ void KVSimEvent::Print(Option_t* t) const
    cout << "------------------------------------" << endl;
    fParameters.Print();
    KVSimNucleus* frag = 0;
-   ResetGetNextParticle();
-   while ((frag = GetNextParticle(t))) {
-      frag->Print();
-      cout << "   Position: (" << frag->GetPosition().x() << "," << frag->GetPosition().y() << "," << frag->GetPosition().z() << ")" << endl;
+   for (auto it = GetNextParticleIterator(t); it != end(); ++it) {
+      (*it).Print();
+      cout << "   Position: (" << (*it).GetPosition().x() << "," << (*it).GetPosition().y() << "," << (*it).GetPosition().z() << ")" << endl;
    }
 
 }

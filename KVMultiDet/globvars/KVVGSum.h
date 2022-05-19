@@ -99,7 +99,7 @@ Example: calculate mean transverse energy of IMF with CM parallel
 class KVVGSum: public KVVarGlobMean {
 
    TClass* fClass; //class used to represent particles
-   unique_ptr<TMethodCall> fMethod; //method used to extract property of interest from particles
+   std::unique_ptr<TMethodCall> fMethod; //method used to extract property of interest from particles
    Double_t fVal; //used to retrieve value of property for each particle
 
    enum {

@@ -200,13 +200,10 @@ Bool_t KVEventSelector::Process(Long64_t entry)
    if (gDataAnalyser) gDataAnalyser->preAnalysis();
    fEventsRead++;
    if (GetEvent()) {
-      KVNucleus* part = 0;
       //apply particle selection criteria
       if (fPartCond.IsSet()) {
-         part = 0;
-         GetEvent()->ResetGetNextParticle();
-         while ((part = GetEvent()->GetNextParticle("ok"))) {
-            part->SetIsOK(fPartCond.Test(part));
+         for (auto& part : EventOKIterator(GetEvent())) {
+            part.SetIsOK(fPartCond.Test(part));
          }
       }
       GetEvent()->ResetGetNextParticle();

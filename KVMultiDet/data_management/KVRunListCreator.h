@@ -17,7 +17,7 @@ class KVRunListCreator {
    TString fDataType;           //type of data (KVRawDataReader plugin name)
 
    KVUniqueNameList fRunInfos;
-   unique_ptr<KVRawDataReader> fReader;
+   std::unique_ptr<KVRawDataReader> fReader;
 
 public:
 
