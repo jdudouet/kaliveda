@@ -54,15 +54,15 @@ namespace MicroStat {
       // initialise the event
       event->Clear();
       Int_t mult = 0;
-      KVNucleus* part;
-      while ((part = partition->GetNextParticle())) {
-         event->AddParticle()->SetZandA(part->GetZ(), part->GetA());
+
+      for (auto& part : EventIterator(partition)) {
+         event->AddNucleus()->SetZandA(part.GetZ(), part.GetA());
          ++mult;
       }
 
       // generate momenta
-      while ((part = event->GetNextParticle())) {
-         nextparticleGenerateEvent(mult, part);
+      for (auto& part : EventIterator(event)) {
+         nextparticleGenerateEvent(mult, &part);
          --mult;
       }
    }

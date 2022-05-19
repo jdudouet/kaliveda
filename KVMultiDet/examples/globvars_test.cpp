@@ -18,7 +18,7 @@ void generate_event(KVEvent& e)
    KVPosition ranVec(0, 90, 0, 360);
    // protons - E=50MeV, theta=60 => Etrans=50*sin^2(60)
    for (int i = 1; i <= 5; ++i) {
-      KVNucleus* nuc = e.AddParticle();
+      KVNucleus* nuc = e.AddNucleus();
       nuc->SetZandA(1, 1);
       nuc->SetE(50);
       nuc->SetTheta(60);
@@ -26,7 +26,7 @@ void generate_event(KVEvent& e)
    }
    // neons - E=250MeV, theta=30 => Etrans=250*sin^2(30)
    for (int i = 1; i <= 3; ++i) {
-      KVNucleus* nuc = e.AddParticle();
+      KVNucleus* nuc = e.AddNucleus();
       nuc->SetZandA(10, 20);
       nuc->SetE(250);
       nuc->SetTheta(30);
@@ -35,7 +35,7 @@ void generate_event(KVEvent& e)
    // alphas - E=100MeV, theta=120 => Etrans=100*sin^2(120)
    ranVec.SetPolarMinMax(90, 180);
    for (int i = 1; i <= 4; ++i) {
-      KVNucleus* nuc = e.AddParticle();
+      KVNucleus* nuc = e.AddNucleus();
       nuc->SetZandA(2, 4);
       nuc->SetE(100);
       nuc->SetTheta(120);

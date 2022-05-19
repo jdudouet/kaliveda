@@ -57,18 +57,18 @@ KVEventViewer::~KVEventViewer()
    // Destructor
 }
 
-void KVEventViewer::DrawNucleus(KVNucleus* nucleus, const Char_t* frame)
+void KVEventViewer::DrawNucleus(KVNucleus& nucleus, const Char_t* frame)
 {
    // Draw nucleus
 
-   Int_t N = nucleus->GetN();
-   Int_t Z = nucleus->GetZ();
+   Int_t N = nucleus.GetN();
+   Int_t Z = nucleus.GetZ();
 
-   TVector3 V = (fMomentumSpace ? nucleus->GetFrame(frame, kFALSE)->GetMomentum() : nucleus->GetFrame(frame, kFALSE)->GetV());
+   TVector3 V = (fMomentumSpace ? nucleus.GetFrame(frame, kFALSE)->GetMomentum() : nucleus.GetFrame(frame, kFALSE)->GetV());
 
-   Bool_t Highlight = SetHighlight(nucleus);
+   Bool_t Highlight = SetHighlight(&nucleus);
 
-   if (nucleus->GetA() == 1) {
+   if (nucleus.GetA() == 1) {
       TGeoVolume* ball = 0;
       if (Z == 0) ball = geom->MakeSphere("n",  Nuc,  0., free_nucleon_radius);
       else if (Z == 1) ball = geom->MakeSphere("p",  Nuc,  0., free_nucleon_radius);
@@ -121,14 +121,13 @@ void KVEventViewer::DrawEvent(KVEvent* event, const Char_t* frame)
    // Find biggest velocity/momentum & biggest fragment
    maxV = 0;
    maxZ = 0;
-   KVNucleus* nuc;
    if (fMomentumSpace) fScaleFactor = 1.e-2;
    else fScaleFactor = 1.;
-   while ((nuc = event->GetNextParticle("ok"))) {
-      Double_t v = fScaleFactor * (fMomentumSpace ? nuc->GetFrame(frame, kFALSE)->GetMomentum().Mag() :
-                                   nuc->GetFrame(frame, kFALSE)->GetV().Mag());
+   for (auto& nuc : EventOKIterator(event)) {
+      Double_t v = fScaleFactor * (fMomentumSpace ? nuc.GetFrame(frame, kFALSE)->GetMomentum().Mag() :
+                                   nuc.GetFrame(frame, kFALSE)->GetV().Mag());
       if (v > maxV) maxV = v;
-      if (nuc->GetZ() > maxZ) maxZ = nuc->GetZ();
+      if (nuc.GetZ() > maxZ) maxZ = nuc.GetZ();
    }
    // scale down
    maxV *= 0.5;
@@ -154,7 +153,7 @@ void KVEventViewer::DrawEvent(KVEvent* event, const Char_t* frame)
       gRandom->SetSeed(fSeed);
    }
 
-   while ((nuc = event->GetNextParticle("ok"))) DrawNucleus(nuc, frame);
+   for (auto& nuc : EventOKIterator(event)) DrawNucleus(nuc, frame);
 
    geom->CloseGeometry();
 
@@ -246,7 +245,8 @@ void KVEventViewer::ReadTextEvent()
 
       eventFile >> Z >> V[0] >> V[1] >> V[2];
 
-      KVNucleus* nuc = theEvent->AddParticle();
+      auto nuc = theEvent->AddNucleus();
+      assert(nuc);
       nuc->SetZ(Z);
       TVector3 v(V);
       nuc->SetVelocity(v);

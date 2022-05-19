@@ -147,11 +147,11 @@ void KVGVList::CalculateGlobalVariables(KVEvent* e)
          else {
             Int_t mult = e->GetMult();
             for (int i = 1; i <= mult; ++i) {
-               KVNucleus* nuc_i = e->GetParticle(i);
+               auto nuc_i = e->GetNucleus(i);
                if (nuc_i->IsOK()) {
                   if (vg->IsTwoBody()) {
                      for (int j = i; j <= mult; ++j) {
-                        KVNucleus* nuc_j = e->GetParticle(j);
+                        auto nuc_j = e->GetNucleus(j);
                         if (nuc_j->IsOK()) {
                            // we use every distinct pair of particles (including identical pairs) in the event
                            vg->Fill2(nuc_i, nuc_j);

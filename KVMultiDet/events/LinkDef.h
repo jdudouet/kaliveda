@@ -7,6 +7,7 @@
 #pragma link C++ nestedclasses;
 #pragma link C++ nestedtypedefs;
 #pragma link C++ class KVEvent-;
+#pragma link C++ class KVTemplateEvent<KVParticle>+;
 #pragma link C++ class KVTemplateEvent<KVNucleus>+;
 #pragma link C++ class KVNucleusEvent+;
 #pragma link C++ class KVTemplateEvent<KVNucleus>::Iterator+;

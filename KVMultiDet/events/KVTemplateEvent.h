@@ -370,7 +370,7 @@ public:
       //
       // If given, "opt" will be used to select particles ("OK" or groupname)
 
-      unique_ptr<TObjArray> spec(species.Tokenize(", "));// remove any spaces
+      std::unique_ptr<TObjArray> spec(species.Tokenize(", "));// remove any spaces
       Int_t nspec = spec->GetEntries();
       memset(mult, 0, nspec * sizeof(Int_t)); // set multiplicities to zero
       for (Iterator it = GetNextParticleIterator(opt); it != end(); ++it) {
@@ -717,91 +717,9 @@ public:
       }
    }
 
-   virtual void FillArraysP(Int_t& mult, Int_t* Z, Int_t* A, Double_t* px, Double_t* py, Double_t* pz, const TString& frame = "", const TString& selection = "")
-   {
-      // "Translate" this event into a simple array form
-      // mult will be set to number of nuclei in event
-      // (px,py,pz) momentum components in MeV/c
-      // frame = optional name of reference frame (see SetFrame methods)
-      // selection = selection i.e. "OK"
-
-      Int_t i = 0;
-      for (Iterator it = GetNextParticleIterator(selection); it != end(); ++it) {
-         Nucleus* nuc = (Nucleus*)(*it).GetFrame(frame, kFALSE);
-         Z[i] = nuc->GetZ();
-         A[i] = nuc->GetA();
-         px[i] = nuc->Px();
-         py[i] = nuc->Py();
-         pz[i] = nuc->Pz();
-         i++;
-      }
-      mult = i;
-   }
-   virtual void FillArraysV(Int_t& mult, Int_t* Z, Int_t* A, Double_t* vx, Double_t* vy, Double_t* vz, const TString& frame = "", const TString& selection = "")
-   {
-      // "Translate" this event into a simple array form
-      // mult will be set to number of nuclei in event
-      // (vx,vy,vz) velocity components in cm/ns
-      // frame = optional name of reference frame (see SetFrame methods)
-      // selection = optional selection e.g. "OK"
-
-      Int_t i = 0;
-      for (Iterator it = GetNextParticleIterator(selection); it != end(); ++it) {
-         Nucleus* nuc = (Nucleus*)(*it).GetFrame(frame, kFALSE);
-         Z[i] = nuc->GetZ();
-         A[i] = nuc->GetA();
-         vx[i] = nuc->GetVelocity().X();
-         vy[i] = nuc->GetVelocity().Y();
-         vz[i] = nuc->GetVelocity().Z();
-         i++;
-      }
-      mult = i;
-   }
-   virtual void FillArraysEThetaPhi(Int_t& mult, Int_t* Z, Int_t* A, Double_t* E, Double_t* Theta, Double_t* Phi, const TString& frame = "", const TString& selection = "")
-   {
-      // "Translate" this event into a simple array form
-      // mult will be set to number of nuclei in event
-      // E = kinetic energy in MeV
-      // Theta,Phi in degrees
-      // frame = optional name of reference frame (see SetFrame methods)
-      // selection = optional selection e.g. "OK"
-
-      Int_t i = 0;
-      for (Iterator it = GetNextParticleIterator(selection); it != end(); ++it) {
-         Nucleus* nuc = (Nucleus*)(*it).GetFrame(frame, kFALSE);
-         Z[i] = nuc->GetZ();
-         A[i] = nuc->GetA();
-         E[i] = nuc->GetEnergy();
-         Theta[i] = nuc->GetTheta();
-         Phi[i] = nuc->GetPhi();
-         i++;
-      }
-      mult = i;
-   }
-   virtual void FillArraysPtRapPhi(Int_t& mult, Int_t* Z, Int_t* A, Double_t* Pt, Double_t* Rap, Double_t* Phi, const TString& frame = "", const TString& selection = "")
-   {
-      // "Translate" this event into a simple array form
-      // mult will be set to number of nuclei in event
-      // Pt = transverse momentum (perpendicular to z-axis)
-      // Rap = rapidity along z-axis
-      // phi = azimuthal angle around z-axis (x-axis=0 deg.)
-      // frame = optional name of reference frame (see SetFrame methods)
-      // selection = optional selection e.g. "OK"
-
-      Int_t i = 0;
-      for (Iterator it = GetNextParticleIterator(selection); it != end(); ++it) {
-         Nucleus* nuc = (Nucleus*)(*it).GetFrame(frame, kFALSE);
-         Z[i] = nuc->GetZ();
-         A[i] = nuc->GetA();
-         Pt[i] = nuc->Pt();
-         Rap[i] = nuc->Rapidity();
-         Phi[i] = nuc->GetPhi();
-         i++;
-      }
-      mult = i;
-   }
-
-   void FillIntegerList(KVIntegerList* IL, Option_t* opt)
+   template<typename U = Nucleus>
+   std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
+   FillIntegerList(KVIntegerList* IL, Option_t* opt)
    {
       // Clear & fill the KVIntegerList with the contents of this event,
       // the option will be passed to GetNextParticle(opt).
@@ -824,7 +742,10 @@ public:
       int i = 0;
       for (Iterator it = begin(); it != end(); ++it) mass[i++] = (*it).GetMass();
    }
-   void GetGSMasses(std::vector<Double_t>& mass)
+
+   template<typename U = Nucleus>
+   std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
+   GetGSMasses(std::vector<Double_t>& mass)
    {
       // Fill vector with ground state mass of each nucleus of event (in MeV).
 
@@ -833,7 +754,10 @@ public:
       int i = 0;
       for (Iterator it = begin(); it != end(); ++it) mass[i++] = (*it).GetMassGS();
    }
-   Double_t GetChannelQValue() const
+
+   template<typename U = Nucleus>
+   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
+   get_channel_qvalue() const
    {
       // Calculate the Q-value [MeV] for this event as if all nuclei were produced by
       // the decay of an initial compound nucleus containing the sum of all nuclei
@@ -859,7 +783,20 @@ public:
       }
       return CN.GetMassGS() - sumM;
    }
-   Double_t GetGSChannelQValue() const
+   template<typename U = Nucleus>
+   std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, Double_t >
+   get_channel_qvalue() const
+   {
+      // for non nuclear particle types: returns 0
+      return 0;
+   }
+   Double_t GetChannelQValue() const
+   {
+      return get_channel_qvalue();
+   }
+   template<typename U = Nucleus>
+   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
+   GetGSChannelQValue() const
    {
       // Calculate the Q-value [MeV] for this event as if all nuclei were produced by
       // the decay of an initial compound nucleus containing the sum of all nuclei
@@ -883,7 +820,9 @@ public:
       }
       return CN.GetMassGS() - sumM;
    }
-   KVString GetPartitionName()
+   template<typename U = Nucleus>
+   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, KVString>
+   get_partition_name()
    {
       //
       //return list of isotopes of the event with the format :
@@ -912,6 +851,19 @@ public:
       return partition;
    }
 
+   template<typename U = Nucleus>
+   std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, KVString >
+   get_partition_name()
+   {
+      // for non nuclear particle species: returns empty string
+      return "";
+   }
+
+   KVString GetPartitionName()
+   {
+      return get_partition_name();
+   }
+
    void SetFrameName(const KVString& name)
    {
       // Set name of default frame for all particles in event
@@ -929,18 +881,10 @@ public:
 
    struct EventIterator {
       Iterator it;
-#ifdef WITH_CPP11
       EventIterator(const KVEvent& event, typename Iterator::Type t = Iterator::Type::All, const TString& grp = "")
-#else
-      EventIterator(const KVEvent& event, typename Iterator::Type t = Iterator::All, const TString& grp = "")
-#endif
          : it(event, t, grp)
       {}
-#ifdef WITH_CPP11
       EventIterator(const KVEvent* event, typename Iterator::Type t = Iterator::Type::All, const TString& grp = "")
-#else
-      EventIterator(const KVEvent* event, typename Iterator::Type t = Iterator::All, const TString& grp = "")
-#endif
          : it(event, t, grp)
       {}
       Iterator begin() const
@@ -955,35 +899,19 @@ public:
 
    struct EventOKIterator : public EventIterator {
       EventOKIterator(const KVEvent& event) :
-#ifdef WITH_CPP11
          EventIterator(event, Iterator::Type::OK)
-#else
-         EventIterator(event, Iterator::OK)
-#endif
       {}
       EventOKIterator(const KVEvent* event) :
-#ifdef WITH_CPP11
          EventIterator(event, Iterator::Type::OK)
-#else
-         EventIterator(event, Iterator::OK)
-#endif
       {}
    };
 
    struct EventGroupIterator : public EventIterator {
       EventGroupIterator(const KVEvent& event, const TString& grp) :
-#ifdef WITH_CPP11
          EventIterator(event, Iterator::Type::Group, grp)
-#else
-         EventIterator(event, Iterator::Group, grp)
-#endif
       {}
       EventGroupIterator(const KVEvent* event, const TString& grp) :
-#ifdef WITH_CPP11
          EventIterator(event, Iterator::Type::Group, grp)
-#else
-         EventIterator(event, Iterator::Group, grp)
-#endif
       {}
    };
 

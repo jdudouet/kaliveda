@@ -683,7 +683,7 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
    KVNameValueList un;
 
    Int_t part_index = 0; //index of particle in event
-   while ((part = event->GetNextParticle())) {  // loop over particles
+   while ((part = event->GetNextNucleus())) {  // loop over particles
       ++part_index;
       TList* lidtel = 0;
 
@@ -990,7 +990,7 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
       while ((grp_tch = (KVGroup*) nxt_grp())) {
          grp_tch->ClearHitDetectors();
       }
-      while ((part = event->GetNextParticle())) {
+      while ((part = event->GetNextNucleus())) {
          if (part->BelongsToGroup("DETECTED") ||
                (part->BelongsToGroup("UNDETECTED") &&
                 !part->BelongsToGroup("NO HIT") &&
@@ -1066,7 +1066,7 @@ void KVMultiDetArray::DetectEvent(KVEvent* event, KVReconstructedEvent* rec_even
       TIter nxt_grp(fHitGroups->GetGroups());
       while ((grp_tch = (KVGroup*) nxt_grp())) grp_tch->ClearHitDetectors();
       KVReconstructedNucleus* recon_nuc;
-      while ((part = event->GetNextParticle())) {
+      while ((part = event->GetNextNucleus())) {
          if (part->BelongsToGroup("DETECTED")) {
             KVDetector* last_det = 0;
             if (part->GetParameters()->HasParameter("STOPPING DETECTOR"))

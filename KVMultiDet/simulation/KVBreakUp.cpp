@@ -461,7 +461,7 @@ void KVBreakUp::TreatePartition()
 
    current_event->Clear();
    for (Int_t ii = 0; ii < Mtotal; ii += 1)
-      current_event->AddParticle()->SetZ(tab[ii]);
+      current_event->AddNucleus()->SetZ(tab[ii]);
 
    delete [] tab;
 

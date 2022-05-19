@@ -81,7 +81,7 @@ void KVGeoImport::ImportGeometry(Double_t dTheta, Double_t dPhi,
 
    KVNucleusEvent EVT;
    KVEvent* evt = &EVT;
-   KVNucleus* nuc = evt->AddParticle();
+   auto nuc = evt->AddNucleus();
    nuc->SetZAandE(1, 1, 1);
 
    Info("ImportGeometry",

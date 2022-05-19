@@ -50,11 +50,11 @@ void example(double E0 = 50, int nevents = 100000)
 
    // decay products
    KVNucleusEvent decay;
-   KVNucleus* n = decay.AddParticle();
+   KVNucleus* n = decay.AddNucleus();
    n->SetZandA(1, 2);
-   n = decay.AddParticle();
+   n = decay.AddNucleus();
    n->SetZandA(2, 4);
-   n = decay.AddParticle();
+   n = decay.AddNucleus();
    n->SetZandA(3, 6);
 
    MicroStat::mdweight gps;
@@ -72,18 +72,18 @@ void example(double E0 = 50, int nevents = 100000)
    KVHashList histos;
    TH1F* h;
 
-   while ((n = decay.GetNextParticle())) {
-      Double_t kappa = total_mass / (total_mass - n->GetMass());
-      std::cout << n->GetSymbol() << " : max KE = " << 1. / kappa << " * " << etot << " MeV" << std::endl;
-      std::cout << n->GetSymbol() << " : m/M = " << n->GetMass() / total_mass << " k = " << kappa << std::endl;
-      histos.Add(h = new TH1F(n->GetSymbol(), Form("Kinetic energy of %s", n->GetSymbol()), 200, 0, etot));
+   for (auto& n : decay) {
+      Double_t kappa = total_mass / (total_mass - n.GetMass());
+      std::cout << n.GetSymbol() << " : max KE = " << 1. / kappa << " * " << etot << " MeV" << std::endl;
+      std::cout << n.GetSymbol() << " : m/M = " << n.GetMass() / total_mass << " k = " << kappa << std::endl;
+      histos.Add(h = new TH1F(n.GetSymbol(), Form("Kinetic energy of %s", n.GetSymbol()), 200, 0, etot));
       h->Sumw2();
    }
    KVNucleusEvent event;
 
    while (nevents--) {
       gps.GenerateEvent(&decay, &event);
-      while ((n = event.GetNextParticle()))((TH1F*)histos.FindObject(n->GetSymbol()))->Fill(n->GetE());
+      for (auto& n : event)((TH1F*)histos.FindObject(n.GetSymbol()))->Fill(n.GetE());
       gps.resetGenerateEvent();
    }
 

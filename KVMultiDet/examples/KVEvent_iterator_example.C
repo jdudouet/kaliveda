@@ -12,28 +12,16 @@ bool compareZ(KVNucleus& a, KVNucleus& b)
 
 void nucleus_event_iterator(KVEvent* e_ptr)
 {
-#ifdef WITH_CPP11
    for (auto& n : EventOKIterator(e_ptr)) {
       n.Print();
    }
-#else
-   for (KVNucleusEvent::Iterator it = EventOKIterator(e_ptr).begin(); it != KVNucleusEvent::Iterator::End(); ++it) {
-      (*it).Print();
-   }
-#endif
 }
 
 void recon_event_iterator(KVEvent* e_ptr)
 {
-#ifdef WITH_CPP11
    for (auto& n : ReconEventOKIterator(e_ptr)) {
       n.Print();
    }
-#else
-   for (KVReconstructedEvent::Iterator it = ReconEventOKIterator(e_ptr).begin(); it != KVReconstructedEvent::Iterator::End(); ++it) {
-      (*it).Print();
-   }
-#endif
 }
 
 void iterator_examples()
@@ -61,12 +49,10 @@ void iterator_examples()
       cout << endl;
    }
 
-#ifdef WITH_CPP11
    cout << "\nLoop over all particles (0-9) [range-based for loop]:" << endl;
    for (auto& nuc : Event) {
       nuc.Print();
    }
-#endif
 
    cout << "\nLoop over OK particles (1,3,5,7,9):" << endl;
    for (KVNucleusEvent::Iterator it = EventOKIterator(Event).begin(); it != Event.end(); ++it) {
@@ -80,26 +66,17 @@ void iterator_examples()
 
    cout << "\nPerform two different iterations with the same iterator" << endl;
    cout << "\n1.) Loop over OK particles (1,3,5,7,9):" << endl;
-#ifdef WITH_CPP11
    KVNucleusEvent::Iterator iter(Event, KVNucleusEvent::Iterator::Type::OK);
-#else
-   KVNucleusEvent::Iterator iter(Event, KVNucleusEvent::Iterator::OK);
-#endif
    for (; iter != KVNucleusEvent::Iterator::End(); ++iter) {
       (*iter).Print();
    }
 
    cout << "\n2.) Loop over GROUP particles (5,6,7,8,9):" << endl;
-#ifdef WITH_CPP11
    iter.Reset(KVNucleusEvent::Iterator::Type::Group, "GROUP");
-#else
-   iter.Reset(KVNucleusEvent::Iterator::Group, "GROUP");
-#endif
    for (; iter != KVNucleusEvent::Iterator::End(); ++iter) {
       (*iter).Print();
    }
 
-#ifdef WITH_CPP11
    cout << "\nLoop over RANDOM particles [range-based for loop]:" << endl;
    for (auto& nuc : EventGroupIterator(Event, "RANDOM")) {
       nuc.Print();
@@ -108,7 +85,6 @@ void iterator_examples()
    for (auto& nuc : EventOKIterator(Event)) {
       nuc.Print();
    }
-#endif
 
    cout << "\nSearch using algorithm std::find:" << endl;
    KVNucleus boron;
@@ -132,7 +108,7 @@ void iterator_examples()
    cout << "\n2.) KVReconstructedEventIterator with KVNucleusEvent [Warning]" << endl;
    recon_event_iterator(_eptr);
    KVReconstructedEvent recev;
-   recev.AddParticle()->SetZ(10);
+   recev.AddNucleus()->SetZ(10);
    _eptr = &recev;
    cout << "\n3.) KVNucleusEventIterator with KVReconstructedEvent" << endl;
    nucleus_event_iterator(_eptr);
@@ -187,5 +163,15 @@ void iterator_examples()
    TH1F* h = new TH1F("h", "KVEvent::GetZ() for \"ok\" particles", 10, -.5, 9.5);
    Event.FillHisto(h, "GetZ", "ok");
    h->Draw();
-}
 
+   cout << "\nUsing non-nuclear particle species in event classes:" << endl;
+   KVTemplateEvent<KVParticle> my_event;
+   my_event.AddParticle()->SetMass(12.);
+   my_event.AddParticle()->SetMass(2.);
+   my_event.AddParticle()->SetMass(18.);
+   for (auto& p : my_event) {
+      std::cout << "This particle's mass is " << p.GetMass() << std::endl;
+      // std::cout << "This nucleus' Z is " << p.GetZ() << std::endl; does not compile: p is of type KVParticle&
+   }
+   std::cout << "Total mass of event = " << my_event.GetSum("GetMass") << std::endl;
+}

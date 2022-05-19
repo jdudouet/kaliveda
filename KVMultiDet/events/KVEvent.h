@@ -130,11 +130,27 @@ public:
       (void)opt;
       return fParticles->GetEntriesFast();
    }
-   virtual KVNucleus* GetNextParticle(Option_t* = "") const = 0;
+   virtual KVParticle* GetNextParticle(Option_t* = "") const = 0;
    virtual void ResetGetNextParticle() const = 0;
-   virtual KVNucleus* GetParticle(Int_t npart) const = 0;
+   virtual KVParticle* GetParticle(Int_t npart) const = 0;
+   virtual KVParticle* AddParticle() = 0;
 
-   virtual KVNucleus* AddParticle() = 0;
+   KVNucleus* GetNextNucleus(Option_t* opt = "") const
+   {
+      return dynamic_cast<KVNucleus*>(GetNextParticle(opt));
+   }
+   void ResetGetNextNucleus() const
+   {
+      ResetGetNextParticle();
+   }
+   KVNucleus* GetNucleus(Int_t npart) const
+   {
+      return dynamic_cast<KVNucleus*>(GetParticle(npart));
+   }
+   KVNucleus* AddNucleus()
+   {
+      return dynamic_cast<KVNucleus*>(AddParticle());
+   }
 
    virtual void SetFrame(const Char_t*, const KVFrameTransform&) = 0;
    virtual void SetFrame(const Char_t*, const Char_t*, const KVFrameTransform&) = 0;
@@ -185,9 +201,8 @@ public:
       TIter it(events);
       KVEvent* e;
       while ((e = (KVEvent*)it())) {
-         KVNucleus* n;
          e->ResetGetNextParticle();
-         while ((n = e->GetNextParticle())) {
+         while (auto n = e->GetNextParticle()) {
             n->Copy(*AddParticle());
          }
          GetParameters()->Merge(*(e->GetParameters()));
