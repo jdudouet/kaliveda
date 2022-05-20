@@ -312,7 +312,7 @@ void KVIDGridManagerGUI::StartEditor()
 
 void KVIDGridManagerGUI::StartEditor(TObject* o)
 {
-   Info("StartEditor(TObject*)", "obj=%p", o);
+   //Info("StartEditor(TObject*)", "obj=%p", o);
    StartEditor();
 }
 

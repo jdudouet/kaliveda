@@ -114,7 +114,8 @@ void KVIDGridEditor::StartViewer()
       fCanvas->AddExec("recommence", "gIDGridEditor->SelectLabel()");
       // connect canvas' Closed() signal to method CanvasWasClosed().
       // this way we always know if the canvas is closed by user closing the window
-      fCanvas->Connect("Closed()", "KVIDGridEditor", this, "CanvasWasClosed()");
+      //fCanvas->Connect("Closed()", "KVIDGridEditor", this, "CanvasWasClosed()");
+      dynamic_cast<TGMainFrame*>(fCanvas->GetCanvasImp())->Connect("CloseWindow()", "KVIDGridEditor", this, "CanvasWasClosed()");
       fPad = fCanvas->cd();
 
       if (!ready) init();
@@ -128,6 +129,10 @@ void KVIDGridEditor::CanvasWasClosed()
 {
    // Slot connected to the 'Closed()' signal of the canvas.
    // If the user closes the canvas window this method gets called.
+
+   //Info("CanvasWasClosed","now");
+   fCanvas->Close();
+   delete fCanvas;
    fCanvas = 0;
    fPad = 0;
 }
@@ -179,7 +184,8 @@ Bool_t KVIDGridEditor::IsClosed()
 void KVIDGridEditor::Close()
 {
    if (!IsClosed()) {
-      fCanvas->Disconnect("Closed()", this, "CanvasWasClosed()");
+      //fCanvas->Disconnect("Closed()", this, "CanvasWasClosed()");
+      dynamic_cast<TGMainFrame*>(fCanvas->GetCanvasImp())->Disconnect("CloseWindow()", "KVIDGridEditor", this, "CanvasWasClosed()");
       fCanvas->Close();
       delete fCanvas;
       fCanvas = 0;
@@ -207,12 +213,12 @@ void KVIDGridEditor::Clear(const Option_t* opt)
    if (option.Contains("AL")) {
       if ((TheHisto)) {
          if (ownhisto) {
-            TheHisto->Delete();
+            //TheHisto->Delete();
             delete TheHisto;
             ownhisto = false;
          }
-         TheHisto->Delete();
-         TheHisto = 0;
+         //TheHisto->Delete();
+         TheHisto = nullptr;
       }
       if (TheGrid) {
          if (!IsClosed()) TheGrid->UnDraw();
@@ -298,6 +304,7 @@ KVIDGridEditor::~KVIDGridEditor()
       delete lplabel5;
    }
    if (gIDGridEditor == this) gIDGridEditor = 0x0;
+   dynamic_cast<TGMainFrame*>(fCanvas->GetCanvasImp())->Disconnect("CloseWindow()", "KVIDGridEditor", this, "CanvasWasClosed()");
 
 }
 
@@ -649,16 +656,16 @@ void KVIDGridEditor::SetHisto(TH2* hh)
 
       if (!Answer.Contains("Current") && ownhisto) {
          delete TheHisto;
-         TheHisto = 0;
+         TheHisto = nullptr;
          ownhisto = false;
       }
 
       if ((!Answer.Contains("Current")) && (!Answer.Contains("Dummy"))) {
          TheHistoChoice = 0;
          if ((TheHistoChoice = (TH2*)gROOT->FindObject(Answer.Data()))) TheHisto = TheHistoChoice;
-         else if ((TheHistoChoice = (TH2*)gFile->Get(Answer.Data()))) TheHisto = TheHistoChoice;
-         else if ((TheHistoChoice = (TH2*)gFile->FindObjectAnyFile(Answer.Data()))) TheHisto = TheHistoChoice;
-         else if ((TheHistoChoice = (TH2*)gFile->FindObjectAny(Answer.Data()))) TheHisto = TheHistoChoice;
+         else if (gFile && (TheHistoChoice = (TH2*)gFile->Get(Answer.Data()))) TheHisto = TheHistoChoice;
+         else if (gFile && (TheHistoChoice = (TH2*)gFile->FindObjectAnyFile(Answer.Data()))) TheHisto = TheHistoChoice;
+         else if (gFile && (TheHistoChoice = (TH2*)gFile->FindObjectAny(Answer.Data()))) TheHisto = TheHistoChoice;
          else if (gTreeAnalyzer && (TheHistoChoice = (TH2*)gTreeAnalyzer->GetHistogram(Answer.Data()))) TheHisto = TheHistoChoice;
          else if ((TheHistoChoice = FindInCanvases(Answer.Data()))) TheHisto = TheHistoChoice;
          else Answer = "Dummy";
@@ -697,7 +704,11 @@ void KVIDGridEditor::SetHisto(TH2* hh)
    }
 
    if (!IsClosed() && (TheHisto)) {
+      //std::cout << "got histo to draw: "<< TheHisto << std::endl;
+      //TheHisto->Print();
+      //std::cout << "current canvas is " << fCanvas->GetName() << std::endl;
       fPad = fCanvas->cd();//au cas ou il y a plusieurs canvas ouverts
+      //std::cout << "current pad is " << fPad->GetName() << std::endl;
       TheHisto->Draw("col");
       fPad->SetLogz(true);
       TheHisto->SetMinimum(1);

@@ -45,7 +45,6 @@ KVCanvas::KVCanvas(): TCanvas()
 KVCanvas::~KVCanvas()
 {
    gCopyObject = 0;
-   // Destructor
 }
 
 //________________________________________________________________
