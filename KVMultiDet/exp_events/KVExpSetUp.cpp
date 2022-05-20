@@ -89,7 +89,7 @@ void KVExpSetUp::Build(Int_t run)
    TIter nxt_mda(&fMDAList);
    while ((tmp = (KVMultiDetArray*)nxt_mda())) {
       tmp->PerformClosedROOTGeometryOperations();
-      unique_ptr<KVSeqCollection> groups(tmp->GetStructureTypeList("GROUP"));
+      std::unique_ptr<KVSeqCollection> groups(tmp->GetStructureTypeList("GROUP"));
       if (group_offset) {
          // renumber all groups to keep unique names/numbers
          TIter next(groups.get());
