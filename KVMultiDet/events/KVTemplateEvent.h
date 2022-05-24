@@ -107,7 +107,7 @@ public:
 
          if (fType == Type::Bad)
             return kFALSE;
-         return fSelection.Test(current());
+         return fSelection.Test(dynamic_cast<const KVNucleus*>(current()));
       }
       Nucleus* current() const
       {
