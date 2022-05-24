@@ -13,9 +13,10 @@ set(build_targets
 if(USE_INDRA)
     list(APPEND build_targets KVDataBaseGUI)
 endif()
-if(USE_INDRAFAZIA AND WITH_MFM)
-    list(APPEND build_targets irods_uploader)
-    KALIVEDA_SET_INCLUDE_DIRS(FAZIA MODULES ${FAZIA_MOD_LIST})
+#if(USE_INDRAFAZIA AND WITH_MFM)
+if(WITH_MFM)
+    list(APPEND build_targets irods_uploader mfmfile_concatenator)
+#    KALIVEDA_SET_INCLUDE_DIRS(FAZIA MODULES ${FAZIA_MOD_LIST})
 endif()
 
 set(kaliveda_SRC kaliveda.cpp)
@@ -40,6 +41,7 @@ set(KaliVedaGUI_SRC KaliVedaGUI.cpp)
 set(update_runlist_SRC update_runlist.cxx)
 
 set(irods_uploader_SRC irods_uploader.cpp)
+set(mfmfile_concatenator_SRC mfmfile_concatenator.cpp)
 
 foreach(t ${build_targets})
     add_executable(${t} ${${t}_SRC})
