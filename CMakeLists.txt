@@ -67,6 +67,10 @@ else()
     set(KALIVEDA_NEEDS_CXX14 FALSE)
 endif()
 
+#--check whether compiler implementation of C++14 includes std::enable_if_t
+include(TestForEnableIfT)
+TEST_FOR_ENABLE_IF_T(WITH_STD_ENABLE_IF_T)
+
 #--check for BOOST - minimum version corresponds progress_display
 set(WITH_BOOST)
 find_package(Boost 1.9)
