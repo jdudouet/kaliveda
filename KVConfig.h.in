@@ -23,6 +23,15 @@
 #cmakedefine WITH_BOOST
 #cmakedefine CCIN2P3_BUILD
 #cmakedefine WITH_STD_ENABLE_IF_T
+#ifndef WITH_STD_ENABLE_IF_T
+// Add alias template for std::enable_if::type from C++14 standard
+#include <type_traits>
+namespace std
+{
+   template<bool _Cond, typename _Tp = void>
+   using enable_if_t = typename enable_if<_Cond, _Tp>::type;
+}
+#endif
 #define WITH_TEMPLATED_EVENTS
 
 // Info on C++ standard used to compile code
