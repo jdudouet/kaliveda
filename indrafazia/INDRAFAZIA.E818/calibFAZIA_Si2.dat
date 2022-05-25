@@ -7,7 +7,6 @@ SignalIn:                                Q2.FPGAEnergy
 SignalOut:                               Energy
 CalibType:                               ChannelEnergyQ2
 CalibOptions:                            func=pol1,min=0,max=100000,inverse=false
-RunList:                                 1-180000
 SI2-11: -0,0.267955
 SI2-12: -0,0.270799
 SI2-13: -0,0.270870

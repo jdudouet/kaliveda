@@ -3,7 +3,6 @@ SignalIn:          QH1.FPGAEnergy
 SignalOut:         EnergyElastic
 CalibType:         ChannelEnergyQH1
 CalibOptions:      func=pol1,min=0,max=100000
-RunList:           1-999999
 SI1-11: 3.982887,0.258412
 SI1-12: 1.019892,0.267689
 SI1-13: 0.735698,0.264850

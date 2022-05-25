@@ -3355,6 +3355,10 @@ void KVMultiDetArray::ReadCalibFile(const Char_t* filename, KVExpDB* db, KVDBTab
       opt_val.Remove(TString::kBoth, ' ');
       options.SetValue(opt, opt_val.Data());
    }
+   // check for stupid spellnig mitskaes
+   if (TString(env.GetValue("Runlist", "")) != "") {
+      Warning("ReadCalibFile", "Calibration has 'Runlist' parameter (ignored): %s, did you mean 'RunList'?", env.GetValue("Runlist", ""));
+   }
 
    if (options.GetTStringValue("SignalIn") == "") {
       Error("ReadCalibFile", "No input signal defined : SignalIn");
@@ -3386,8 +3390,13 @@ void KVMultiDetArray::ReadCalibFile(const Char_t* filename, KVExpDB* db, KVDBTab
    if (options.HasParameter("ZRange")) zrange = options.GetStringValue("ZRange");
 
    KVNumberList run_list = db->GetRunList();
-   if (options.GetTStringValue("RunList") != "")
+   if (options.GetTStringValue("RunList") != "") {
       run_list.Set(options.GetTStringValue("RunList"));
+      Info("ReadCalibFile", "Calibration used for runs %s", run_list.AsString());
+   }
+   else {
+      Info("ReadCalibFile", "Calibration used for all runs in database");
+   }
 
    TIter next(env.GetTable());
    TEnvRec* rec = 0;

@@ -4,7 +4,6 @@
 # Initial parameter values are from INDRA_camp5/INDRAFAZIA.E789. Only gain (a1) and Silicon thickness can vary in the fit
 # associated Si thickness are written in the file INDRA.DetectorThicknesses.dat
 # format: [det_name]: a1,a2,a3,a4
-RunList: 				  1-9999999
 SignalIn:					TotLight
 SignalOut:  				 Energy
 CalibType:  				 LightEnergy
