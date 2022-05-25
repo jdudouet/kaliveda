@@ -217,6 +217,8 @@ protected:
       return 1;
    }
 
+   void set_detector_thicknesses(const TString&);
+
 public:
    void prepare_to_handle_new_raw_data();
    KVNameValueList& GetReconParameters()
@@ -323,7 +325,7 @@ public:
    }
    KVUniqueNameList* GetIDTelescopeTypes();
    KVSeqCollection* GetIDTelescopesWithType(const Char_t* type);
-   virtual void SetDetectorThicknesses();
+   void SetDetectorThicknesses();
 
    void SetTarget(const Char_t* material, const Float_t thickness);
    void SetTarget(KVTarget* target);

@@ -2198,13 +2198,66 @@ KVGeoNavigator* KVMultiDetArray::GetNavigator() const
 
 void KVMultiDetArray::SetDetectorThicknesses()
 {
-   // Look for a file in the dataset directory with the name given by .kvrootrc variable:
+   // Actual thicknesses of detectors can be given in one or more files associated with a dataset.
    //
-   //    KVMultiDetArray.DetectorThicknesses:
-   // or
-   //    dataset.KVMultiDetArray.DetectorThicknesses:
+   // If the variable
    //
-   // and, if it exists, we use it to set the real thicknesses of the detectors.
+   //~~~~
+   //[dataset].DetectorThicknessesFile:    toto.dat
+   //~~~~
+   //
+   // is defined for the current dataset, we expect toto.dat to contain a list of files to be read in order
+   // to set dectector thicknesses. Note that the same detector may appear several times in the files.
+   // In this case it is the thickness in the last file (in the order listed in toto.dat) which will remain.
+   //
+   // Otherwise, we look for a single file in the dataset directory with the name given by one or other of
+   // the variables
+   //
+   //~~~~
+   //KVMultiDetArray.DetectorThicknesses:
+   //[dataset].KVMultiDetArray.DetectorThicknesses:
+   //~~~~
+   //
+   // and, if found, we use it to set the detector thicknesses.
+   //
+   // See set_detector_thicknesses() for details of the format of the individual thickness files.
+
+   // look for list of files
+   TString filename = GetDataSetEnv(fDataSet, "DetectorThicknessesFile", "");
+   if (filename != "") {
+      KVFileReader fr;
+      TString fullpath = KVDataSet::GetFullPathToDataSetFile(fDataSet, filename);
+      if (fr.OpenFileToRead(fullpath)) {
+         while (fr.IsOK()) {
+            fr.ReadLine(0);
+            if (fr.GetCurrentLine().BeginsWith("#") || fr.GetCurrentLine() == "") continue;
+            set_detector_thicknesses(KVDataSet::GetFullPathToDataSetFile(fDataSet, fr.GetCurrentLine()));
+         }
+         return;
+      }
+      else {
+         Warning("SetDetectorThicknesses", "Could not open DetectorThicknessesFile %s...", fullpath.Data());
+      }
+      return;
+   }
+   // look for single file
+   filename = GetDataSetEnv(fDataSet, "KVMultiDetArray.DetectorThicknesses", "");
+   if (filename == "") {
+      Error("SetDetectorThicknesses", "*.KVMultiDetArray.DetectorThicknesses not defined in .kvrootrc");
+      return;
+   }
+   TString fullpath;
+   fullpath = KVDataSet::GetFullPathToDataSetFile(fDataSet, filename);
+   if (fullpath == "") {
+      Info("SetDetectorThicknesses", "File %s not found", filename.Data());
+      return;
+   }
+   set_detector_thicknesses(fullpath);
+}
+
+void KVMultiDetArray::set_detector_thicknesses(const TString& fullpath)
+{
+   // Use file given by fullpath to set the real thicknesses of the detectors.
    // Any detector which is not in the file will be left with its nominal thickness.
    //
    // EXAMPLE FILE:
@@ -2222,23 +2275,12 @@ void KVMultiDetArray::SetDetectorThicknesses()
    // Multi-layer: Each layer is a KVMaterial object. The thickness MUST be given in centimetres
    //         (default thickness unit for KVMaterial).
 
-   TString filename = GetDataSetEnv(fDataSet, "KVMultiDetArray.DetectorThicknesses", "");
-   if (filename == "") {
-      Error("SetDetectorThicknesses", "*.KVMultiDetArray.DetectorThicknesses not defined in .kvrootrc");
-      return;
-   }
-   TString fullpath;
-   if (gDataSet) fullpath = gDataSet->GetFullPathToDataSetFile(filename);
-   if (fullpath == "") {
-      Info("SetDetectorThicknesses", "File %s not found", filename.Data());
-      return;
-   }
    TEnv thickdat;
    if (thickdat.ReadFile(fullpath, kEnvUser) != 0) {
       Error("SetDetectorThicknesses", "Problem opening file %s", fullpath.Data());
       return;
    }
-   Info("SetDetectorThicknesses", "Setting thicknesses of detectors from file %s", filename.Data());
+   Info("SetDetectorThicknesses", "Setting thicknesses of detectors from file %s", fullpath.Data());
    TIter next(GetDetectors());
    KVDetector* det;
    while ((det = (KVDetector*)next())) {
