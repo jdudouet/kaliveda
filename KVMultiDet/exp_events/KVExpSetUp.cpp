@@ -334,6 +334,7 @@ Bool_t KVExpSetUp::HandleRawDataEvent(KVRawDataReader* rawdata)
    }
    if (KVMultiDetArray::HandleRawDataEvent(rawdata)) {
       // copy fired signals & detectors of sub-arrays to main list
+      next_array.Reset();
       while ((mda = (KVMultiDetArray*)next_array())) {
          fFiredDetectors.AddAll(&mda->fFiredDetectors);
          fFiredSignals.AddAll(&mda->fFiredSignals);
