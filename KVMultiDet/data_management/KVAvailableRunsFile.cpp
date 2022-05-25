@@ -751,8 +751,12 @@ TList* KVAvailableRunsFile::GetListOfAvailableSystems(const KVDBSystem*
                      sys_list = new TList;
                      sys_list->SetOwner(kTRUE);//will delete objects
                   }
-                  KVRunFile* rf = new KVRunFile(a_run, filename, fDatime, kvversion, username);
-                  sys_list->Add(rf);
+                  if (IsCalled("raw")) {
+                     // for raw data files, use the actual date/time of the start of data taking in the database
+                     TString start_date = a_run->GetStartDate();
+                     if (start_date != "") fDatime.Set(start_date);
+                  }
+                  sys_list->Add(new KVRunFile(a_run, filename, fDatime, kvversion, username));
                }
             }
          }
