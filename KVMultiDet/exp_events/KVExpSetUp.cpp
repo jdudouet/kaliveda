@@ -328,9 +328,15 @@ Bool_t KVExpSetUp::HandleRawDataEvent(KVRawDataReader* rawdata)
    // for each sub-array, before treating raw data.
    TIter next_array(&fMDAList);
    KVMultiDetArray* mda;
+   std::vector<std::thread> threads;
    while ((mda = (KVMultiDetArray*)next_array())) {
-      mda->fRawDataReader = rawdata;
-      mda->prepare_to_handle_new_raw_data();
+      threads.push_back(std::thread([ = ]() {
+         mda->fRawDataReader = rawdata;
+         mda->prepare_to_handle_new_raw_data();
+      }));
+   }
+   for (auto& th : threads) {
+      if (th.joinable()) th.join();
    }
    if (KVMultiDetArray::HandleRawDataEvent(rawdata)) {
       // copy fired signals & detectors of sub-arrays to main list
