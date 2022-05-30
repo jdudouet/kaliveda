@@ -40,7 +40,8 @@ public:
    void flush_output_buffer_to_file()
    {
       // write buffer to file...
-      write(file_LUN, output_buffer.data(), bytes_in_buffer);
+      auto bytes_written = write(file_LUN, output_buffer.data(), bytes_in_buffer);
+      assert(bytes_written == bytes_in_buffer);
       //then add frame to beginning of (next) buffer
       bytes_in_buffer = 0;
    }
