@@ -137,9 +137,6 @@ private:
       kIsHeavy = BIT(17)        //flag when mass of nucleus is > 255
    };
 
-protected:
-   virtual void AddGroup_Withcondition(const Char_t* groupname, KVParticleCondition*) const;
-
 public:
    enum {                       //determines how to calculate mass from Z
       kBetaMass,

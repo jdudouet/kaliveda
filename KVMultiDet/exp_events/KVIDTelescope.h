@@ -23,7 +23,7 @@ $Id: KVIDTelescope.h,v 1.33 2009/04/01 15:58:10 ebonnet Exp $
 #include "KVDetector.h"
 #include "KVRList.h"
 #include "TGraph.h"
-
+#include "KVParticleCondition.h"
 class KVReconstructedNucleus;
 class KVGroup;
 class KVIDGraph;
@@ -31,7 +31,6 @@ class KVIDGrid;
 class KVMultiDetArray;
 class KVIdentificationResult;
 class TH2;
-class KVParticleCondition;
 
 #ifdef WITH_CPP11
 #include <unordered_map>

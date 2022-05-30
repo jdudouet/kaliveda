@@ -1045,19 +1045,6 @@ Int_t KVNucleus::GetAWithMaxBindingEnergy(Int_t zz)
    return amax;
 
 }
-//___________________________________________________________________________//
-
-void KVNucleus::AddGroup_Withcondition(const Char_t* groupname, KVParticleCondition* pc) const
-{
-   // implementation of AddGroup(const Char_t* groupname,KVParticleCondition* pc)
-   // Can be overriden in child classes [unlike
-   // KVParticle::AddGroup(const Char_t* groupname,KVParticleCondition* pc), which cannot]
-
-   if (pc) {
-      //pc->SetParticleClassName(this->IsA()->GetName());
-      if (pc->Test(this)) AddGroup_Sanscondition(groupname);
-   }
-}
 
 //________________________________________________________________________________________
 

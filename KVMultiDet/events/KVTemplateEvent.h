@@ -29,7 +29,7 @@ $Id: KVEvent.h,v 1.29 2008/12/17 11:23:12 ebonnet Exp $
 #include "KVConfig.h"
 #include "TRotation.h"
 #include "TLorentzRotation.h"
-#include "KVParticleCondition.h"
+#include "KVTemplateParticleCondition.h"
 #include "KVNameValueList.h"
 #include "TMethodCall.h"
 
@@ -94,7 +94,7 @@ public:
       };
 
    private:
-      KVParticleCondition fSelection;//condition for selecting particles
+      KVTemplateParticleCondition<Nucleus> fSelection;//condition for selecting particles
       TIter   fIter;//iterator over TClonesArray
       Type    fType;//iterator type
       mutable Bool_t  fIterating;//=kTRUE when iteration in progress
@@ -107,7 +107,7 @@ public:
 
          if (fType == Type::Bad)
             return kFALSE;
-         return fSelection.Test(dynamic_cast<const KVNucleus*>(current()));
+         return fSelection.Test(current());
       }
       Nucleus* current() const
       {
@@ -128,7 +128,7 @@ public:
            fIterating(i.fIterating)
       {}
 
-      Iterator(const KVEvent* e, const KVParticleCondition& selection)
+      Iterator(const KVEvent* e, const KVTemplateParticleCondition<Nucleus>& selection)
          : fSelection(selection), fIter(e->GetParticleArray()), fIterating(kTRUE)
       {
          // Construct an iterator object to read in sequence the particles in event *e
@@ -145,7 +145,7 @@ public:
          if (current() == nullptr) fIterating = kFALSE;
       }
 
-      Iterator(const KVEvent& e, const KVParticleCondition& selection)
+      Iterator(const KVEvent& e, const KVTemplateParticleCondition<Nucleus>& selection)
          : fSelection(selection), fIter(e.GetParticleArray()), fIterating(kTRUE)
       {
          // Construct an iterator object to read in sequence the particles in event *e
@@ -173,12 +173,12 @@ public:
             fType = Bad;
          }
          if (fType == Type::OK) {
-            fSelection.Set("ok", [](const KVNucleus * n) {
+            fSelection.Set("ok", [](const Nucleus * n) {
                return n->IsOK();
             });
          }
          else if (fType == Type::Group) {
-            fSelection.Set("group", [grp](const KVNucleus * n) {
+            fSelection.Set("group", [grp](const Nucleus * n) {
                return n->BelongsToGroup(grp);
             });
          }
@@ -199,12 +199,12 @@ public:
             fType = Bad;
          }
          if (fType == Type::OK) {
-            fSelection.Set("ok", [](const KVNucleus * n) {
+            fSelection.Set("ok", [](const Nucleus * n) {
                return n->IsOK();
             });
          }
          else if (fType == Type::Group) {
-            fSelection.Set("group", [grp](const KVNucleus * n) {
+            fSelection.Set("group", [grp](const Nucleus * n) {
                return n->BelongsToGroup(grp);
             });
          }
@@ -294,12 +294,12 @@ public:
          if (t != Type::Null) {
             fType = t;
             if (fType == Type::OK) {
-               fSelection.Set("ok", [](const KVNucleus * n) {
+               fSelection.Set("ok", [](const Nucleus * n) {
                   return n->IsOK();
                });
             }
             else if (fType == Type::Group) {
-               fSelection.Set("group", [grp](const KVNucleus * n) {
+               fSelection.Set("group", [grp](const Nucleus * n) {
                   return n->BelongsToGroup(grp);
                });
             }
@@ -650,8 +650,8 @@ public:
 
    void DefineGroup(const Char_t* groupname, const Char_t* from = "")
    {
-      //In the same philosophy as KVINDRAReconEvent::AcceptIDCodes() method
       // allow to affiliate a group name to particles of the event
+      //
       // if "from" is not null, a test of previously stored group name
       // such as "OK" is checked
 
@@ -659,17 +659,14 @@ public:
          (*it).AddGroup(groupname);
       }
    }
-   void DefineGroup(const Char_t* groupname, KVParticleCondition* cond, const Char_t* from = "")
+   void DefineGroup(const Char_t* groupname, KVTemplateParticleCondition<Nucleus>* cond, const Char_t* from = "")
    {
-      // allow to affiliate using a KVParticleCondition a group name to particles of the event
-      // if "from" is not null, a test of previously stored group name
-      // such as "OK" is checked
-      // the method used in KVParticleCondition has to be compatible with the KVNucleus
-      // concerned class.
-      // This can be done using first KVParticleCondition::SetParticleClassName(const Char_t* cl)
+      // allow to affiliate a group name to particles of the event selected according to cond.
+      //
+      // if "from" is not null, a test of previously stored group name such as "OK" is checked
 
       for (Iterator it = GetNextParticleIterator(from); it != end(); ++it) {
-         (*it).AddGroup(groupname, cond);
+         if (cond->Test(it.get_const_pointer()))(*it).AddGroup(groupname, from);
       }
    }
 
@@ -910,10 +907,10 @@ public:
       EventIterator(const KVEvent* event, typename Iterator::Type t = Iterator::Type::All, const TString& grp = "")
          : it(event, t, grp)
       {}
-      EventIterator(const KVEvent& event, const KVParticleCondition& selection)
+      EventIterator(const KVEvent& event, const KVTemplateParticleCondition<Nucleus>& selection)
          : it(event, selection)
       {}
-      EventIterator(const KVEvent* event, const KVParticleCondition& selection)
+      EventIterator(const KVEvent* event, const KVTemplateParticleCondition<Nucleus>& selection)
          : it(event, selection)
       {}
       Iterator begin() const
@@ -965,7 +962,7 @@ public:
    ClassDef(KVTemplateEvent, 0)         //Base class for all types of multiparticle event
 };
 
-typedef KVTemplateEvent<KVNucleus> KVNucleusEvent;
+using KVNucleusEvent = KVTemplateEvent<KVNucleus>;
 
 /**
   \class KVNucleusEvent
@@ -979,9 +976,9 @@ typedef KVTemplateEvent<KVNucleus> KVNucleusEvent;
   \sa KVTemplateEvent, KVEvent, NucEvents
  */
 
-typedef KVTemplateEvent<KVNucleus>::EventIterator EventIterator;
-typedef KVTemplateEvent<KVNucleus>::EventGroupIterator EventGroupIterator;
-typedef KVTemplateEvent<KVNucleus>::EventOKIterator EventOKIterator;
+using EventIterator = KVTemplateEvent<KVNucleus>::EventIterator;
+using EventGroupIterator = KVTemplateEvent<KVNucleus>::EventGroupIterator;
+using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
 /**
  \class EventIterator
  \brief Class for iterating over nuclei in events accessed through base pointer/reference

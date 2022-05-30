@@ -30,9 +30,9 @@ $Id: KVParticle.h,v 1.41 2008/05/21 13:19:56 ebonnet Exp $
 #include "TObjString.h"
 #include "KVNameValueList.h"
 #include "KVFrameTransform.h"
+#include "KVTemplateParticleCondition.h"
 
 class KVKinematicalFrame;
-class KVParticleCondition;
 
 /**
   \class KVParticle
@@ -544,8 +544,6 @@ private:
    }
 
 protected:
-   virtual void AddGroup_Withcondition(const Char_t*, KVParticleCondition*) const;
-   virtual void AddGroup_Sanscondition(const Char_t* groupname, const Char_t* from = "") const;
    void SetGroups(KVUniqueNameList* un);
    void AddGroups(KVUniqueNameList* un);
 
@@ -748,7 +746,6 @@ public:
    void SetName(const Char_t* nom);
 
    void AddGroup(const Char_t* groupname, const Char_t* from = "") const;
-   void AddGroup(const Char_t* groupname, KVParticleCondition*) const;
 
    Bool_t BelongsToGroup(const Char_t* groupname) const;
    void RemoveGroup(const Char_t* groupname);

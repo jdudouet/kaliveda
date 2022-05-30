@@ -11,6 +11,9 @@
 #pragma link C++ class KVParticle-;
 #pragma link C++ class KVFrameTransform+;
 #pragma link C++ class KVKinematicalFrame+;
+#pragma link C++ class KVTemplateParticleCondition<KVParticle>+;
+#pragma link C++ class KVTemplateParticleCondition<KVNucleus>+;
+#pragma link C++ class KVTemplateParticleCondition<KVSimNucleus>+;
 #pragma link C++ class KVParticleCondition+;
 #pragma link C++ class KVNuclData+;
 #pragma link C++ class NDT::value+;

@@ -248,7 +248,6 @@ public:
       //
       // \param[in] tree pointer to TTree
       // \param[in] branchname name of branch to create
-      // \param[in] classname name of actual class of object pointed to by event
       // \param[in] event pointer to a valid (constructed) KVEvent-derived object
       // \param[in] bufsize size of buffer to use for branch [default: 10000000]
 

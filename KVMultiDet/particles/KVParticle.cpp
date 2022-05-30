@@ -319,19 +319,11 @@ const Char_t* KVParticle::GetName() const
 }
 
 //___________________________________________________________________________//
-void KVParticle::AddGroup_Withcondition(const Char_t*, KVParticleCondition*) const
+void KVParticle::AddGroup(const Char_t* groupname, const Char_t* from) const
 {
-   // Dummy implementation of AddGroup(const Char_t* groupname, KVParticleCondition*)
-   // Does nothing. Real implementation is in KVNucleus::AddGroup_Withcondition.
-   Warning("AddGroup_Withcondition", "DUUUUUUUUUUUUUMYYYYYYY do nothing");
-};
-
-//___________________________________________________________________________//
-void KVParticle::AddGroup_Sanscondition(const Char_t* groupname, const Char_t* from) const
-{
-   // Implementation of AddGroup_Sansconditioncon(st Char_t*, const Char_t*)
-   // Can be overridden in child classes [instead of AddGroup(const Char_t*, const Char_t*),
-   // which cannot]
+   // Associate this particle with the given named group.
+   // Optional argument "from" allows to put a condition on the already stored
+   // group list, is set to "" by default
 
    TString sfrom(from);
    sfrom.ToUpper();
@@ -341,26 +333,6 @@ void KVParticle::AddGroup_Sanscondition(const Char_t* groupname, const Char_t* f
    if (BelongsToGroup(sfrom.Data()) && !BelongsToGroup(sgroupname.Data())) {
       GetGroups()->Add(new TObjString(sgroupname.Data()));
    }
-}
-
-//___________________________________________________________________________//
-void KVParticle::AddGroup(const Char_t* groupname, const Char_t* from) const
-{
-   // Associate this particle with the given named group.
-   // Optional argument "from" allows to put a condition on the already stored
-   // group list, is set to "" by default
-
-   AddGroup_Sanscondition(groupname, from);
-}
-
-
-//___________________________________________________________________________//
-
-void KVParticle::AddGroup(const Char_t* groupname, KVParticleCondition* cond) const
-{
-   //define and store a group name from a condition on the particle
-
-   AddGroup_Withcondition(groupname, cond);
 }
 
 //___________________________________________________________________________//

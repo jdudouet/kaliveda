@@ -24,6 +24,7 @@
 #pragma link C++ class KVReconNucTrajectory+;
 #pragma link C++ class KVReconstructedNucleus-;//customised streamer
 #pragma link C++ class KVDetectorEvent+;
+#pragma link C++ class KVTemplateParticleCondition<KVReconstructedNucleus>+;
 #pragma link C++ class KVTemplateEvent<KVReconstructedNucleus>+;
 #pragma link C++ class KVTemplateEvent<KVReconstructedNucleus>::Iterator+;
 #pragma link C++ class KVTemplateEvent<KVReconstructedNucleus>::EventIterator+;
