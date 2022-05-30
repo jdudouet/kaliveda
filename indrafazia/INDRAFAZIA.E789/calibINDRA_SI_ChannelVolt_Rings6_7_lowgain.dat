@@ -1,6 +1,6 @@
 # Electronic calibration generated using run 79
 # for silicons of rings 6 & 7 with gain (4*sqrt(2))
-RunList:                                 65000-199999
+RunList:                                 65000-144086
 SignalIn:                                PG
 SignalOut:                               Volts
 CalibType:                               ChannelVolt
