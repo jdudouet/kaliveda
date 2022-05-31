@@ -21,23 +21,25 @@ $Date: 2007/03/26 10:14:56 $
 class KVClassFactory;
 
 /**
-  \class KVParticleTemplateCondition
+\class KVTemplateParticleCondition
 \brief Handles particle selection criteria for data analysis classes
 \ingroup AnalysisInfra
 \ingroup NucEvents
+\tparam ParticleType class which is at least a base class of the particles to be selected
 
-A KVParticleCondition object can be used to select nuclei to include in data analysis
-(see KVEventSelector::SetParticleConditions()) or in the calculation of global
-variables (see KVVarGlob::SetSelection()). The Test() method returns true or false
+A KVTemplateParticleCondition<ParticleType> object can be used to select particles to include in data analysis
+(see KVEventSelector::SetParticleConditions()), in the calculation of global
+variables (see KVVarGlob::SetSelection()), or in iterations over events (see KVTemplateEvent).
+The Test() method returns true or false
 for a given nucleus depending on whether or not the condition is fulfilled. Combinations of
 selections can be performed using Boolean logic operations `&&` and `||`.
 
 Lambda expressions were introduced in C++11 and provide an easy way to define small functions
-on the fly inside code. The lambda must take a `const T*` pointer as argument and return
-a boolean:
+on the fly inside code. The lambda must take a `const ParticleType*` pointer as argument and return
+a boolean, e.g.:
 ~~~~~~{.cpp}
-KVParticleCondition l1("Z>2", [](const T* nuc){ return nuc->GetZ()>2; });
-KVParticleCondition l2("Vpar>0", [](const T* nuc){ return nuc->GetVpar()>0; });
+KVTemplateParticleCondition<KVNucleus> l1("Z>2", [](const KVNucleus* nuc){ return nuc->GetZ()>2; });
+KVTemplateParticleCondition<KVReconstructedNucleus> l2("Emeasured & Vpar>0", [](const KVReconstructedNucleus* nuc){ return nuc->IsCalibrated() && nuc->GetVpar()>0; });
 ~~~~~~
 Note the first argument to the constructor is a name which the user is free to define
 in order to remember what the condition does.
@@ -55,6 +57,8 @@ l3.Test(&N);      ==> returns true
 zmin=5;
 l3.Test(&N);      ==> returns false
 ~~~~~~
+
+\note KVParticleCondition is an alias for KVTemplateParticleCondition<KVNucleus>.
 */
 
 template<typename ParticleType>
@@ -298,11 +302,11 @@ public:
       : KVBase(name, "KVParticleCondition"), fLambdaCondition(F)
    {
       // Create named object using lambda expression for condition
-      // The lambda must take a `const KVNucleus*` pointer as argument and return
-      // a boolean:
+      // The lambda must take a `const ParticleType*` pointer as argument and return
+      // a boolean, e.g.:
       // ~~~~~~{.cpp}
-      // KVParticleCondition l1("Z>2", [](const KVNucleus* nuc){ return nuc->GetZ()>2; });
-      // KVParticleCondition l2("Vpar>0", [](const KVNucleus* nuc){ return nuc->GetVpar()>0; });
+      // KVTemplateParticleCondition<KVNucleus> l1("Z>2", [](const KVNucleus* nuc){ return nuc->GetZ()>2; });
+      // KVTemplateParticleCondition<KVReconstructedNucleus> l2("Emeasured & Vpar>0", [](const KVReconstructedNucleus* nuc){ return nuc->IsCalibrated() && nuc->GetVpar()>0; });
       // ~~~~~~
       // Note the first argument to the constructor is a name which the user is free to define
       // in order to remember what the condition does.

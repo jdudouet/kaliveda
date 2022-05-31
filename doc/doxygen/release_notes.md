@@ -1,8 +1,12 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 20th April 2022
+Last update: 31st May 2022
 
 ## Version 1.13/00 (current development version - dev branch)
+
+__Changes 31/5/2022 in__ \ref NucEvents : __Events can contain any KVParticle-derived class__
+
+Previously, 
 
 __Changes 5/8/2021 in__ \ref AnalysisInfra : __New data quality auditing tools__
 

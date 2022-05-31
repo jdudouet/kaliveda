@@ -44,46 +44,82 @@ class KVIntegerList;
 
 /**
  \class KVTemplateEvent
- \brief Base class for event classes as containers of different types of nucleus objects
+ \brief Base class for event classes (containers for different types of particle objects)
  \ingroup NucEvents
- \tparam Nucleus Class used to describe nuclei belonging to the event
- \sa NucEvents, KVNucleusEvent, KVSimEvent, KVReconstructedEvent
+ \tparam Particle Class used to describe particles belonging to the event: must derive from KVParticle
 
- Each event class can only contain nuclei represented by the same class: events are therefore containers in the same
- sense as STL containers such as std::vector.
+An event is a container for a collection of objects representing massive particles (derived from KVParticle):
+
+~~~~{.cpp}
+KVTemplateEvent<KVParticle> part_event;
+
+KVTemplateEvent<KVReconstructedNucleus> recon_event;
+~~~~
+
+Particles are added to an event using methods AddParticle() or AddNucleus().
+The first method returns a pointer to the added particle which is of the same type as the particle
+objects contained in the event, while the latter casts the pointer to KVNucleus* for classes
+which derive from KVNucleus, returning nullptr if not (but a particle is still created and added to the event):
+~~~~{.cpp}
+auto p = part_event.AddParticle(); // KVParticle* p
+auto n = part_event.AddNucleus(); // KVNucleus* n == nullptr
+
+auto r = recon_event.AddParticle(); // KVReconstructedNucleus* r
+auto s = recon_event.AddNucleus(); // KVNucleus* s == r
+~~~~
+
+Particles in events can be iterated over using range-based for loops:
+~~~~{.cpp}
+for(auto& p : part_event) std::cout << p.GetMass() << std::endl; // p is type KVParticle&
+
+for(auto& r : recon_event) if(r.IsAMeasured()) std::cout << r.GetRealA() << std::endl; // r is type KVReconstructedNucleus&
+~~~~
+\note that in such event loops, you should always use a reference to access each
+particle of the event as shown in these examples.
+
+The iteration can be limited to only a subset of particles in the event using particle selections (see KVTemplateParticleCondition):
+~~~~{.cpp}
+int ztot=0;
+for(auto& p : recon_event.ConditionalIterator({"IDZ", [](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}))
+   ztot += p.GetZ();
+~~~~
+ \sa NucEvents, KVEvent, KVParticle, KVTemplateParticleCondition, KVNucleusEvent, KVSimEvent, KVReconstructedEvent
  */
-template <typename Nucleus>
+template <typename Particle>
 class KVTemplateEvent: public KVEvent {
 
 public:
    /**
-    \class Iterator
-    \brief Class used for iterating over nuclei in events
-    \ingroup NucEvents
-    \tparam Nucleus Class used to describe nuclei belonging to the event
+   \class Iterator
+   \brief Class used for iterating over particles in events
+   \ingroup NucEvents
+   \tparam Particle Class used to describe particles belonging to the event: must derive from KVParticle
 
-    The Iterator class is an STL-compliant iterator which can be used to perform loops over nuclei in an event.
-    Iterators of different types can be used for different kinds of iteration:
+   The Iterator class is an STL-compliant iterator which can be used to perform loops over particles in an event.
+   Iterators of different types can be used for different kinds of iteration:
 
-    ~~~~{.cpp}
-    KVEvent* event; // base pointer to an object of some concrete implementation of an event class
+   ~~~~{.cpp}
+       KVEvent* event; // base pointer to an object of some concrete implementation of an event class
 
-    Iterator it(event);  // default: Type::All, iterate over all nuclei
+       Iterator it(event);  // default: Type::All, iterate over all particles
 
-    Iterator it2(event, Type::OK);  // iterate over nuclei whose method KVNucleus::IsOK() returns kTRUE
+       // iterate over particles selected with KVTemplateParticleCondition<Particle>:
+       Iterator it(event,{"some_selection", [](const Particle* n){ return // some condition applied to n}});
 
-    Iterator it3(event, Type::Group, "GroupName");  // iterate over nuclei belonging to previously-defined group "GroupName"
-    ~~~~
+       Iterator it2(event, Type::OK);  // iterate over nuclei whose method KVNucleus::IsOK() returns kTRUE
 
-    \sa KVTemplateEvent, NucEvents
-    */
+       Iterator it3(event, Type::Group, "GroupName");  // iterate over nuclei belonging to previously-defined group "GroupName"
+   ~~~~
+
+   \sa KVTemplateEvent, NucEvents
+   */
    class Iterator {
    public:
       typedef std::forward_iterator_tag iterator_category;
-      typedef Nucleus value_type;
+      typedef Particle value_type;
       typedef std::ptrdiff_t difference_type;
-      typedef Nucleus* pointer;
-      typedef Nucleus& reference;
+      typedef Particle* pointer;
+      typedef Particle& reference;
 
       enum Type {    // type of iterator
          Null,      // null value
@@ -94,7 +130,7 @@ public:
       };
 
    private:
-      KVTemplateParticleCondition<Nucleus> fSelection;//condition for selecting particles
+      KVTemplateParticleCondition<Particle> fSelection;//condition for selecting particles
       TIter   fIter;//iterator over TClonesArray
       Type    fType;//iterator type
       mutable Bool_t  fIterating;//=kTRUE when iteration in progress
@@ -109,10 +145,10 @@ public:
             return kFALSE;
          return fSelection.Test(current());
       }
-      Nucleus* current() const
+      Particle* current() const
       {
          // Returns pointer to current particle in iteration
-         return static_cast<Nucleus*>(*fIter);
+         return static_cast<Particle*>(*fIter);
       }
    public:
       Iterator()
@@ -128,36 +164,36 @@ public:
            fIterating(i.fIterating)
       {}
 
-      Iterator(const KVEvent* e, const KVTemplateParticleCondition<Nucleus>& selection)
+      Iterator(const KVEvent* e, const KVTemplateParticleCondition<Particle>& selection)
          : fSelection(selection), fIter(e->GetParticleArray()), fIterating(kTRUE)
       {
          // Construct an iterator object to read in sequence the particles in event *e
          // using the given KVParticleCondition to select acceptable particles.
 
-         if (!e->GetParticleArray()->GetClass()->InheritsFrom(Nucleus::Class())) {
-            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s nuclei requested for event containing %s nuclei. Iteration is aborted.",
-                      Nucleus::Class()->GetName(), Nucleus::Class()->GetName(), e->GetParticleArray()->GetClass()->GetName());
+         if (!e->GetParticleArray()->GetClass()->InheritsFrom(Particle::Class())) {
+            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s particles requested for event containing %s particles. Iteration is aborted.",
+                      Particle::Class()->GetName(), Particle::Class()->GetName(), e->GetParticleArray()->GetClass()->GetName());
             fType = Bad;
          }
-         // set iterator to first particle of event corresponding to selection
-         fIter.Begin();
+
+         fIter.Begin();// set iterator to first particle of event corresponding to selection
          while ((current() != nullptr) && !AcceptableIteration()) ++fIter;
          if (current() == nullptr) fIterating = kFALSE;
       }
 
-      Iterator(const KVEvent& e, const KVTemplateParticleCondition<Nucleus>& selection)
+      Iterator(const KVEvent& e, const KVTemplateParticleCondition<Particle>& selection)
          : fSelection(selection), fIter(e.GetParticleArray()), fIterating(kTRUE)
       {
          // Construct an iterator object to read in sequence the particles in event *e
          // using the given KVParticleCondition to select acceptable particles.
 
-         if (!e.GetParticleArray()->GetClass()->InheritsFrom(Nucleus::Class())) {
-            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s nuclei requested for event containing %s nuclei. Iteration is aborted.",
-                      Nucleus::Class()->GetName(), Nucleus::Class()->GetName(), e.GetParticleArray()->GetClass()->GetName());
+         if (!e.GetParticleArray()->GetClass()->InheritsFrom(Particle::Class())) {
+            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s particles requested for event containing %s particles. Iteration is aborted.",
+                      Particle::Class()->GetName(), Particle::Class()->GetName(), e.GetParticleArray()->GetClass()->GetName());
             fType = Bad;
          }
-         // set iterator to first particle of event corresponding to selection
-         fIter.Begin();
+
+         fIter.Begin();// set iterator to first particle of event corresponding to selection
          while ((current() != nullptr) && !AcceptableIteration()) ++fIter;
          if (current() == nullptr) fIterating = kFALSE;
       }
@@ -167,23 +203,23 @@ public:
       {
          // Construct an iterator object to read in sequence the particles in event *e
 
-         if (!e->GetParticleArray()->GetClass()->InheritsFrom(Nucleus::Class())) {
-            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s nuclei requested for event containing %s nuclei. Iteration is aborted.",
-                      Nucleus::Class()->GetName(), Nucleus::Class()->GetName(), e->GetParticleArray()->GetClass()->GetName());
+         if (!e->GetParticleArray()->GetClass()->InheritsFrom(Particle::Class())) {
+            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s particles requested for event containing %s particles. Iteration is aborted.",
+                      Particle::Class()->GetName(), Particle::Class()->GetName(), e->GetParticleArray()->GetClass()->GetName());
             fType = Bad;
          }
          if (fType == Type::OK) {
-            fSelection.Set("ok", [](const Nucleus * n) {
+            fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
          }
          else if (fType == Type::Group) {
-            fSelection.Set("group", [grp](const Nucleus * n) {
+            fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
          }
-         // set iterator to first particle of event corresponding to selection
-         fIter.Begin();
+
+         fIter.Begin();// set iterator to first particle of event corresponding to selection
          while ((current() != nullptr) && !AcceptableIteration()) ++fIter;
          if (current() == nullptr) fIterating = kFALSE;
       }
@@ -193,49 +229,49 @@ public:
       {
          // Construct an iterator object to read in sequence the particles in event *e
 
-         if (!e.GetParticleArray()->GetClass()->InheritsFrom(Nucleus::Class())) {
-            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s nuclei requested for event containing %s nuclei. Iteration is aborted.",
-                      Nucleus::Class()->GetName(), Nucleus::Class()->GetName(), e.GetParticleArray()->GetClass()->GetName());
+         if (!e.GetParticleArray()->GetClass()->InheritsFrom(Particle::Class())) {
+            ::Warning("KVTemplateEvent::Iterator", "KVTemplateEvent<%s>::Iterator for %s particles requested for event containing %s particles. Iteration is aborted.",
+                      Particle::Class()->GetName(), Particle::Class()->GetName(), e.GetParticleArray()->GetClass()->GetName());
             fType = Bad;
          }
          if (fType == Type::OK) {
-            fSelection.Set("ok", [](const Nucleus * n) {
+            fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
          }
          else if (fType == Type::Group) {
-            fSelection.Set("group", [grp](const Nucleus * n) {
+            fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
          }
-         // set iterator to first particle of event corresponding to selection
-         fIter.Begin();
+
+         fIter.Begin();// set iterator to first particle of event corresponding to selection
          while ((current() != nullptr) && !AcceptableIteration()) ++fIter;
          if (current() == nullptr) fIterating = kFALSE;
       }
 
-      Nucleus& operator* () const
+      Particle& operator* () const
       {
          // Returns reference to current particle in iteration
 
          return *(current());
       }
-      template<typename PointerType = Nucleus>
+      template<typename PointerType = Particle>
       PointerType * get_pointer() const
       {
          return dynamic_cast<PointerType*>(current());
       }
-      template<typename ReferenceType = Nucleus>
+      template<typename ReferenceType = Particle>
       ReferenceType & get_reference() const
       {
          return dynamic_cast<ReferenceType&>(*current());
       }
-      template<typename PointerType = Nucleus>
+      template<typename PointerType = Particle>
       const PointerType * get_const_pointer() const
       {
          return dynamic_cast<const PointerType*>(current());
       }
-      template<typename ReferenceType = Nucleus>
+      template<typename ReferenceType = Particle>
       const ReferenceType & get_const_reference() const
       {
          return dynamic_cast<const ReferenceType&>(*current());
@@ -294,12 +330,12 @@ public:
          if (t != Type::Null) {
             fType = t;
             if (fType == Type::OK) {
-               fSelection.Set("ok", [](const Nucleus * n) {
+               fSelection.Set("ok", [](const Particle * n) {
                   return n->IsOK();
                });
             }
             else if (fType == Type::Group) {
-               fSelection.Set("group", [grp](const Nucleus * n) {
+               fSelection.Set("group", [grp](const Particle * n) {
                   return n->BelongsToGroup(grp);
                });
             }
@@ -324,21 +360,21 @@ protected:
 
 public:
    KVTemplateEvent(Int_t mult = 50)
-      : KVEvent(Nucleus::Class(), mult)
+      : KVEvent(Particle::Class(), mult)
    {}
 
-   Nucleus* AddParticle()
+   Particle* AddParticle()
    {
-      // Add a nucleus to the event and return a pointer to it.
+      // Add a particle to the event and return a pointer to it.
       //
-      // All nuclei belong to the event and will be deleted either by the event
+      // All particles belong to the event and will be deleted either by the event
       // destructor or when method Clear() is called.
 
       Int_t mult = GetMult();
 #ifdef __WITHOUT_TCA_CONSTRUCTED_AT
-      Nucleus* tmp = (Nucleus*) ConstructedAt(mult, "C");
+      Particle* tmp = (Particle*) ConstructedAt(mult, "C");
 #else
-      Nucleus* tmp = (Nucleus*) fParticles->ConstructedAt(mult, "C");
+      Particle* tmp = (Particle*) fParticles->ConstructedAt(mult, "C");
 #endif
       if (!tmp) {
          Error("AddParticle", "Allocation failure, Mult=%d", mult);
@@ -346,7 +382,7 @@ public:
       }
       return tmp;
    }
-   Nucleus* GetParticle(Int_t npart) const
+   Particle* GetParticle(Int_t npart) const
    {
       //Access to event member with index npart (1<=npart<=GetMult() : error if out of bounds)
 
@@ -356,7 +392,7 @@ public:
          return 0;
       }
 
-      return (Nucleus*)((*fParticles)[npart - 1]);
+      return (Particle*)((*fParticles)[npart - 1]);
    }
    virtual Int_t GetMult(Option_t* opt = "") const
    {
@@ -420,14 +456,14 @@ public:
 
       Double_t fSum = 0;
       TMethodCall mt;
-      mt.InitWithPrototype(Nucleus::Class(), Nucleus_method, "");
+      mt.InitWithPrototype(Particle::Class(), Nucleus_method, "");
 
       if (mt.IsValid()) {
          Iterator it = GetNextParticleIterator(opt);
          if (mt.ReturnType() == TMethodCall::kLong) {
             Long_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, "", ret);
                fSum += ret;
             }
@@ -435,7 +471,7 @@ public:
          else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, "", ret);
                fSum += ret;
             }
@@ -455,14 +491,14 @@ public:
 
       Double_t fSum = 0;
       TMethodCall mt;
-      mt.InitWithPrototype(Nucleus::Class(), Nucleus_method, method_prototype);
+      mt.InitWithPrototype(Particle::Class(), Nucleus_method, method_prototype);
 
       if (mt.IsValid()) {
          Iterator it = GetNextParticleIterator(opt);
          if (mt.ReturnType() == TMethodCall::kLong) {
             Long_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, args, ret);
                fSum += ret;
             }
@@ -470,7 +506,7 @@ public:
          else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, args, ret);
                fSum += ret;
             }
@@ -489,14 +525,14 @@ public:
       // If opt = "name" only particles belonging to group "name" are considered.
 
       TMethodCall mt;
-      mt.InitWithPrototype(Nucleus::Class(), Nucleus_method, "");
+      mt.InitWithPrototype(Particle::Class(), Nucleus_method, "");
 
       if (mt.IsValid()) {
          Iterator it = GetNextParticleIterator(opt);
          if (mt.ReturnType() == TMethodCall::kLong) {
             Long_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, "", ret);
                h->Fill((Double_t)ret);
             }
@@ -504,7 +540,7 @@ public:
          else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, "", ret);
                h->Fill(ret);
             }
@@ -520,14 +556,14 @@ public:
       // If opt = "name" only particles belonging to group "name" are considered.
 
       TMethodCall mt;
-      mt.InitWithPrototype(Nucleus::Class(), Nucleus_method, method_prototype);
+      mt.InitWithPrototype(Particle::Class(), Nucleus_method, method_prototype);
 
       if (mt.IsValid()) {
          Iterator it = GetNextParticleIterator(opt);
          if (mt.ReturnType() == TMethodCall::kLong) {
             Long_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, args, ret);
                h->Fill((Double_t)ret);
             }
@@ -535,7 +571,7 @@ public:
          else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
-               Nucleus* tmp = it.get_pointer();
+               Particle* tmp = it.get_pointer();
                mt.Execute(tmp, args, ret);
                h->Fill(ret);
             }
@@ -556,20 +592,20 @@ public:
    {
       Print(t);
    }
-   Nucleus* GetParticleWithName(const Char_t* name) const
+   Particle* GetParticleWithName(const Char_t* name) const
    {
       //Find particle using its name (SetName()/GetName() methods)
       //In case more than one particle has the same name, the first one found is returned.
 
-      Nucleus* tmp = (Nucleus*)fParticles->FindObject(name);
+      Particle* tmp = (Particle*)fParticles->FindObject(name);
       return tmp;
    }
-   Nucleus* GetParticle(const Char_t* group_name) const
+   Particle* GetParticle(const Char_t* group_name) const
    {
       // Find first particle in event belonging to group with name "group_name"
 
       Iterator it = GetNextParticleIterator(group_name);
-      Nucleus* tmp = it.get_pointer();
+      Particle* tmp = it.get_pointer();
       if (!tmp) Warning("GetParticle", "Particle not found: %s", group_name);
       return tmp;
    }
@@ -585,7 +621,7 @@ public:
       return Iterator::End();
    }
 
-   Nucleus* GetNextParticle(Option_t* opt = "") const
+   Particle* GetNextParticle(Option_t* opt = "") const
    {
       // Use this method to iterate over the list of particles in the event
       // After the last particle GetNextParticle() returns a null pointer and
@@ -659,7 +695,7 @@ public:
          (*it).AddGroup(groupname);
       }
    }
-   void DefineGroup(const Char_t* groupname, KVTemplateParticleCondition<Nucleus>* cond, const Char_t* from = "")
+   void DefineGroup(const Char_t* groupname, KVTemplateParticleCondition<Particle>* cond, const Char_t* from = "")
    {
       // allow to affiliate a group name to particles of the event selected according to cond.
       //
@@ -737,7 +773,7 @@ public:
       }
    }
 
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
    FillIntegerList(KVIntegerList* IL, Option_t* opt)
    {
@@ -763,7 +799,7 @@ public:
       for (Iterator it = begin(); it != end(); ++it) mass[i++] = (*it).GetMass();
    }
 
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
    GetGSMasses(std::vector<Double_t>& mass)
    {
@@ -775,7 +811,7 @@ public:
       for (Iterator it = begin(); it != end(); ++it) mass[i++] = (*it).GetMassGS();
    }
 
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
    get_channel_qvalue() const
    {
@@ -795,7 +831,7 @@ public:
       //   E*(A) > -Q
 
       Double_t sumM = 0;
-      Nucleus CN;
+      Particle CN;
       Int_t M = GetMult();
       for (int i = 1; i <= M; i++) {
          sumM += GetParticle(i)->GetMass();
@@ -803,7 +839,7 @@ public:
       }
       return CN.GetMassGS() - sumM;
    }
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, Double_t >
    get_channel_qvalue() const
    {
@@ -814,7 +850,7 @@ public:
    {
       return get_channel_qvalue();
    }
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
    GetGSChannelQValue() const
    {
@@ -832,7 +868,7 @@ public:
       //   E*(A) > -Q
 
       Double_t sumM = 0;
-      Nucleus CN;
+      Particle CN;
       Int_t M = GetMult();
       for (int i = 1; i <= M; i++) {
          sumM += GetParticle(i)->GetMassGS();
@@ -840,7 +876,7 @@ public:
       }
       return CN.GetMassGS() - sumM;
    }
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t<std::is_base_of<KVNucleus, U>::value, KVString>
    get_partition_name()
    {
@@ -871,7 +907,7 @@ public:
       return partition;
    }
 
-   template<typename U = Nucleus>
+   template<typename U = Particle>
    std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, KVString >
    get_partition_name()
    {
@@ -907,10 +943,10 @@ public:
       EventIterator(const KVEvent* event, typename Iterator::Type t = Iterator::Type::All, const TString& grp = "")
          : it(event, t, grp)
       {}
-      EventIterator(const KVEvent& event, const KVTemplateParticleCondition<Nucleus>& selection)
+      EventIterator(const KVEvent& event, const KVTemplateParticleCondition<Particle>& selection)
          : it(event, selection)
       {}
-      EventIterator(const KVEvent* event, const KVTemplateParticleCondition<Nucleus>& selection)
+      EventIterator(const KVEvent* event, const KVTemplateParticleCondition<Particle>& selection)
          : it(event, selection)
       {}
       Iterator begin() const
@@ -959,6 +995,18 @@ public:
       return EventIterator(this).begin();
    }
 
+   EventIterator ConditionalIterator(const KVTemplateParticleCondition<Particle>& c)
+   {
+      // Can be used in a range-for loop to iterate over only particles which satisfy the given condition:
+      //
+      //~~~~{.cpp}
+      // KVTemplateEvent<KVNucleus> e;
+      // for(auto& n : e.ConditionalOperator( {"Z>0",[](const KVNucleus* n){ return n->GetZ()>0; }} ))
+      //      std::cout << n.GetZ() << std::endl;
+      //~~~~
+      return EventIterator(this, c);
+   }
+
    ClassDef(KVTemplateEvent, 0)         //Base class for all types of multiparticle event
 };
 
@@ -971,7 +1019,7 @@ using KVNucleusEvent = KVTemplateEvent<KVNucleus>;
 
   This is a typedef for KVTemplateEvent<KVNucleus>.
 
-  This is the most basic kind of event, made up of KVNucleus nuclei.
+  An event made up of KVNucleus nuclei.
 
   \sa KVTemplateEvent, KVEvent, NucEvents
  */
@@ -979,18 +1027,20 @@ using KVNucleusEvent = KVTemplateEvent<KVNucleus>;
 using EventIterator = KVTemplateEvent<KVNucleus>::EventIterator;
 using EventGroupIterator = KVTemplateEvent<KVNucleus>::EventGroupIterator;
 using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
+
 /**
  \class EventIterator
  \brief Class for iterating over nuclei in events accessed through base pointer/reference
  \ingroup NucEvents
 
  Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the Iterator class which allows to use iterators with events passed as base references or pointers:
+ the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
 
  ~~~~{.cpp}
  KVEvent* event; // pointer to valid event object
 
  for(auto& nuc : EventIterator(event)) { // loop over nuclei in event }
+ for(auto& nuc : EventIterator(event, {"selection",[](const KVNucleus* n){ return n->GetZ()>2; }})) { // loop over nuclei with Z>2 in event }
  ~~~~
  */
 /**
@@ -999,7 +1049,7 @@ using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
  \ingroup NucEvents
 
  Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the Iterator class which allows to use iterators with events passed as base references or pointers:
+ the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
 
  ~~~~{.cpp}
  KVEvent* event; // pointer to valid event object
@@ -1013,7 +1063,7 @@ using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
  \ingroup NucEvents
 
  Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the Iterator class which allows to use iterators with events passed as base references or pointers:
+ the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
 
  ~~~~{.cpp}
  KVEvent* event; // pointer to valid event object

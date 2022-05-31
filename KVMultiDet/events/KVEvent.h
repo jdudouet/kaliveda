@@ -149,6 +149,9 @@ public:
    }
    KVNucleus* AddNucleus()
    {
+      // Add a particle to the event
+      //
+      // \returns pointer to new particle if it inherits from KVNucleus, nullptr if not
       return dynamic_cast<KVNucleus*>(AddParticle());
    }
 
