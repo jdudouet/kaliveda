@@ -141,6 +141,9 @@ void KVBase::InitEnvironment()
 
    if (!fEnvIsInit) {//test if environment already initialised
 
+      // enable ROOT thread safety
+      ROOT::EnableThreadSafety();
+
       // Add path to kaliveda libraries to dynamic loader path
       // This is needed to find plugins
       // and also to be able to compile with kaliveda in the interpreter
@@ -180,12 +183,6 @@ void KVBase::InitEnvironment()
 
       //generate new seed from system clock
       gRandom->SetSeed(0);
-
-//#ifdef USING_ROOT6
-//      // enable implicit multithreading
-//      // comment because not compatible with CC batch system
-//      ROOT::EnableImplicitMT();
-//#endif
 
       // initialisation has been performed
       fEnvIsInit = kTRUE;

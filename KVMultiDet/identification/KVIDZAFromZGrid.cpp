@@ -39,7 +39,13 @@ void KVIDZAFromZGrid::Copy(TObject& obj) const
    //    CastedObj.SetToto( GetToto() );
 
    KVIDZAGrid::Copy(obj);
-   //KVIDZAFromZGrid& CastedObj = (KVIDZAFromZGrid&)obj;
+   KVIDZAFromZGrid& i = (KVIDZAFromZGrid&)obj;
+   i.fZmaxInt = fZmaxInt;
+   i.fPIDRange = fPIDRange;
+   i.fZminInt = fZminInt;
+   fTables.Copy(i.fTables);
+   i.fIgnoreMassID = fIgnoreMassID;
+   i.fHasMassIDRegion = fHasMassIDRegion;
 }
 
 

@@ -41,22 +41,15 @@ KVIDZAGrid::KVIDZAGrid(const KVIDZAGrid& grid)
 {
    //Copy constructor
    init();
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
    grid.Copy(*this);
-#else
-   ((KVIDZAGrid&) grid).Copy(*this);
-#endif
 }
 
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
 void KVIDZAGrid::Copy(TObject& obj) const
-#else
-void KVIDZAGrid::Copy(TObject& obj)
-#endif
 {
    //Copy this to 'obj'
    KVIDGrid::Copy(obj);
-   ((KVIDZAGrid&) obj).SetZmax(const_cast <KVIDZAGrid*>(this)->GetZmax());
+   // find the fZmax and fZmaxline pointer for new copy
+   ((KVIDZAGrid&) obj).Initialize();
 }
 
 //_________________________________________________________________________//
@@ -446,6 +439,7 @@ Bool_t KVIDZAGrid::FindFourEmbracingLines(Double_t x, Double_t y, const Char_t* 
    // The Z, A, width and distance to each of these lines are stored in the variables
    //      Zsups, Asups, wsups, dsups
    // etc. etc. to be used by IdentZA or IdentZ.
+
 
    kinfi = kinf = ksup = ksups = -1;
    dinf = dsup = dinfi = dsups = 0.;

@@ -100,11 +100,7 @@ void KVIDGraph::init()
 
 //________________________________________________________________________________
 
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
 void KVIDGraph::Copy(TObject& obj) const
-#else
-void KVIDGraph::Copy(TObject& obj)
-#endif
 {
    //Copy this to 'obj'
    TNamed::Copy(obj);

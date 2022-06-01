@@ -86,12 +86,7 @@ public:
    KVIDGraph(const KVIDGraph&);
    virtual ~KVIDGraph();
 
-   //virtual void Browse(TBrowser* b);
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
    virtual void Copy(TObject&) const;
-#else
-   virtual void Copy(TObject&);
-#endif
    virtual void Identify(Double_t /*x*/, Double_t /*y*/, KVIdentificationResult*) const = 0;
    virtual void Initialize() = 0;
    virtual Bool_t IsIdentifiable(Double_t /*x*/, Double_t /*y*/, TString* rejected_by = nullptr) const;
@@ -102,6 +97,12 @@ public:
       // after calling KVIDGraph::SetAutoAdd(), all grids are automatically added to ID Grid Manager
       // after calling KVIDGraph::SetAutoAdd(kFALSE), this mechanism is disabled
       fAutoAddGridManager = yes;
+   }
+   static Bool_t GetAutoAdd()
+   {
+      // if static method KVIDGraph::GetAutoAdd() returns kTRUE, all grids are automatically added to ID Grid Manager
+      // if not, this mechanism is disabled
+      return fAutoAddGridManager;
    }
    void ClearListOfTelescopes()
    {

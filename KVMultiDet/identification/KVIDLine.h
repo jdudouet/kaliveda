@@ -15,7 +15,6 @@ $Id: KVIDLine.h,v 1.16 2009/03/03 14:27:15 franklan Exp $
 #include "TMath.h"
 #include "TH2.h"
 #include "KVIDentifier.h"
-
 /**
 \class KVIDLine
 \brief Base class for lines/cuts used for particle identification in 2D data maps
@@ -142,6 +141,69 @@ Returns kTRUE for point (x,y) if :
 
 class KVIDLine : public KVIDentifier {
 
+   /**
+     \class MyVector2
+      @brief A lightweight replacement for the TVector2 class
+
+      This has only been added in order to be able to use KVIDLine in a multi-threaded environment.
+      Something in TVector2 seems to be not thread-friendly (and it is any case deprecated).
+
+      The previous implementation of KVIDLine::DistanceToLine(Double_t, Double_t, Double_t, Double_t, Double_t, Double_t, Int_t&)
+      using TVector2 required Mutex locking (R__LOCKGUARD(gGlobalMutex)) to be thread-safe, leading to a huge reduction in
+      speed.
+    */
+   class MyVector2 {
+      double x, y;
+   public:
+      MyVector2(double X, double Y) : x(X), y(Y) {}
+      MyVector2(const MyVector2& T)
+      {
+         *this = T;
+      }
+      MyVector2& operator=(const MyVector2& T)
+      {
+         if (this != &T) {
+            x = T.x;
+            y = T.y;
+         }
+         return *this;
+      }
+      friend MyVector2 operator-(const MyVector2& a, const MyVector2& b)
+      {
+         return {a.x - b.x, a.y - b.y};
+      }
+      friend double operator*(const MyVector2& a, const MyVector2& b)
+      {
+         return a.x * b.x + a.y * b.y;
+      }
+      friend MyVector2 operator*(const MyVector2& a, double s)
+      {
+         return {a.x * s, a.y * s};
+      }
+      friend MyVector2 operator*(double s, const MyVector2& a)
+      {
+         return a * s;
+      }
+      double Mod2() const
+      {
+         return (*this) * (*this);
+      }
+      double Mod() const
+      {
+         return sqrt(Mod2());
+      }
+      MyVector2 Proj(const MyVector2& v) const
+      {
+         double scalar = v * (*this);
+         scalar /= v.Mod2();
+         return v * scalar;
+      }
+      MyVector2 Norm(const MyVector2& v) const
+      {
+         return (*this) - Proj(v);
+      }
+   };
+
 public:
 
    KVIDLine();
@@ -265,11 +327,11 @@ inline Double_t KVIDLine::DistanceToLine(Double_t px, Double_t py,
    //of the two endpoints, but the value returned is negative; i_nearest_point gives the index (0 or 1)
    //of the nearer endpoint
 
-   TVector2 P1(xp1, yp1), P2(xp2, yp2), P(px, py);
-   TVector2 P1P2 = P2 - P1;
-   TVector2 P1P = P - P1;
-   TVector2 P2P = P - P2;
-   TVector2 MP = P1P.Norm((P1P2));
+   MyVector2 P1(xp1, yp1), P2(xp2, yp2), P(px, py);
+   MyVector2 P1P2 = P2 - P1;
+   MyVector2 P1P = P - P1;
+   MyVector2 P2P = P - P2;
+   MyVector2 MP = P1P.Norm((P1P2));
    i_nearest_point = 0;
    //check point lies between endpoints
    Double_t sum = (P1P - MP).Mod() + (P2P - MP).Mod();

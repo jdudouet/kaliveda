@@ -72,7 +72,7 @@ protected:
    void SetZmax(Int_t z)
    {
       fZMax = z;
-   };
+   }
 
    KVIDLine* fClosest;          //!closest line to last-identified point
    KVIDLine* fLsups;//!
@@ -115,11 +115,7 @@ public:
    KVIDZAGrid();
    KVIDZAGrid(const KVIDZAGrid&);
    virtual ~ KVIDZAGrid();
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
    virtual void Copy(TObject&) const;
-#else
-   virtual void Copy(TObject&);
-#endif
 
    void RemoveLine(Int_t Z, Int_t A = -1); // *MENU*
    void RemoveZLines(const Char_t* ZList);     // *MENU*
@@ -128,11 +124,11 @@ public:
    {
       SetVarX(VarX);
       SetVarY(VarY);
-   };
+   }
    void AddParameter(char* Name, char* Value)
    {
       fPar->SetValue(Name, Value);
-   };
+   }
 
    virtual void Initialize();// *MENU*
    void DrawLinesWithWidth();// *MENU={Hierarchy="View.../DrawLinesWithWidth"}*
@@ -141,41 +137,41 @@ public:
    Int_t GetZmax() const
    {
       return (Int_t)fZMax;
-   };
+   }
    virtual KVIDZALine* GetZLine(Int_t z, Int_t&) const;
    KVIDZALine* GetZmaxLine() const
    {
       return fZMaxLine;
-   };
+   }
    virtual KVIDZALine* GetZALine(Int_t z, Int_t a, Int_t&) const;
 
    virtual void IdentZA(Double_t x, Double_t y, Int_t& Z, Double_t& A);
    virtual TClass* DefaultIDLineClass()
    {
       return TClass::GetClass("KVIDZALine");
-   };
+   }
    virtual void IdentZ(Double_t x, Double_t y, Double_t& Z);
    Int_t GetQualityCode() const
    {
       // Return quality code for previously-attempted identification
       // Meanings of code values are given in class description
       return fICode;
-   };
+   }
 
    virtual void Identify(Double_t x, Double_t y, KVIdentificationResult*) const;
 
    inline KVIDLine* GetClosestLine() const
    {
       return fClosest;
-   };
+   }
    inline Double_t GetDistanceClosestLine() const
    {
       return fDistanceClosest;
-   };
+   }
    inline UChar_t GetIndexClosest() const
    {
       return fIdxClosest;
-   };
+   }
 
    //virtual void MakeEDeltaEZGrid(Int_t Zmin, Int_t Zmax, Int_t npoints=20, Double_t gamma = 2);//*MENU*
 

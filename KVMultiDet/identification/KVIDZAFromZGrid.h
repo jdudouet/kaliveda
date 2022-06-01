@@ -96,6 +96,8 @@ protected:
 public:
    KVIDZAFromZGrid();
    virtual ~KVIDZAFromZGrid();
+   ROOT_COPY_CTOR(KVIDZAFromZGrid, KVIDZAGrid)
+   ROOT_COPY_ASSIGN_OP(KVIDZAFromZGrid)
 
    void Copy(TObject& obj) const;
 
@@ -157,6 +159,20 @@ public:
    double fPIDMin;
    double fPIDmax;
 
+   void Copy(TObject& o) const
+   {
+      TNamed::Copy(o);
+      interval& i = dynamic_cast<interval&>(o);
+      i.fType = fType;
+      i.fZ = fZ;
+      i.fA = fA;
+      i.fPID = fPID;
+      i.fPIDMin = fPIDMin;
+      i.fPIDmax = fPIDmax;
+   }
+   ROOT_DEF_CTOR(interval, TNamed)
+   ROOT_COPY_CTOR(interval, TNamed)
+   ROOT_COPY_ASSIGN_OP(interval)
    interval(int zz, int aa, double pid, double pidmin = -1., double pidmax = -1.)
    {
       fZ = zz;
@@ -237,6 +253,19 @@ public:
    Int_t  fNPIDs;
    TGraph fPIDs;
 
+   void Copy(TObject& o) const
+   {
+      TNamed::Copy(o);
+      interval_set& i = dynamic_cast<interval_set&>(o);
+      i.fType = fType;
+      i.fZ = fZ;
+      fIntervals.Copy(i.fIntervals);
+      i.fNPIDs = fNPIDs;
+      i.fPIDs = fPIDs;//NB: TGraph::Copy not implemented, but copy ctor & copy assignment work
+   }
+   ROOT_DEF_CTOR(interval_set, TNamed)
+   ROOT_COPY_CTOR(interval_set, TNamed)
+   ROOT_COPY_ASSIGN_OP(interval_set)
    int GetZ()
    {
       return fZ;

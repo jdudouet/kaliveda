@@ -10,11 +10,8 @@
 #include "TGMsgBox.h"
 #include "TGFileDialog.h"
 #include "KVTestIDGridDialog.h"
-
-
-
 #include "KVIdentificationResult.h"
-
+#include <thread>
 
 ClassImp(KVItvFinderDialog)
 //ClassImp(interval_painter)
@@ -342,37 +339,82 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
 
    fLinearHisto = new TH1F("fLinearHisto", "fLinearHisto", zbins, zmin, zmax);
 
-   KVIdentificationResult idr;
    fGrid->SetOnlyZId(1);
 
-   for (int i = 1; i <= fHisto->GetNbinsX(); i++) {
-      for (int j = 1; j <= fHisto->GetNbinsY(); j++) {
-         Stat_t poids = fHisto->GetBinContent(i, j);
-         if (poids == 0) continue;
+   // use multi-threading capacities
+   Int_t xbins_per_cpu = fHisto->GetNbinsX() / WITH_MULTICORE_CPU;
 
-         Axis_t x0 = fHisto->GetXaxis()->GetBinCenter(i);
-         Axis_t y0 = fHisto->GetYaxis()->GetBinCenter(j);
-         Axis_t wx = fHisto->GetXaxis()->GetBinWidth(i);
-         Axis_t wy = fHisto->GetYaxis()->GetBinWidth(j);
+   std::vector<std::thread> jobs; // threads to do the work
 
-         if (x0 < 4) continue;
+   // to clean up copies of grid
+   TList grid_copies;
 
-         Double_t x, y;
-         Int_t kmax = (Int_t) TMath::Min(20., poids);
-         Double_t weight = (kmax == 20 ? poids / 20. : 1.);
-         for (int k = 0; k < kmax; k++) {
-            x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
-            y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
-            if (fGrid->IsIdentifiable(x, y)) {
-               fGrid->KVIDZAGrid::Identify(x, y, &idr);
-               if (idr.HasFlag(fGrid->GetName(), "MassID") || (fGrid->GetInfos()->FindObject("MassID") == nullptr)) {
-                  Float_t PID = idr.PID;
-                  fLinearHisto->Fill(PID, weight);
+   // do not add copies of grid to ID grid manager
+   auto save_auto_add = KVIDGraph::GetAutoAdd();
+   KVIDGraph::SetAutoAdd(false);
+
+   std::cout << "Will run " << WITH_MULTICORE_CPU << " threads, each for " << xbins_per_cpu << " bins in X" << std::endl;
+
+   int nthreads = WITH_MULTICORE_CPU;
+   // join threads
+   std::cout << "Histo linearization using " << nthreads << " threads..." << std::endl;
+
+   for (int job = 0; job < WITH_MULTICORE_CPU; ++job) {
+      auto imin = 1 + job * xbins_per_cpu;
+      auto imax = (job + 1) * xbins_per_cpu;
+      if (job == WITH_MULTICORE_CPU - 1) imax = fHisto->GetNbinsX();
+
+      // make new copy of grid
+      auto grid_copy = new KVIDZAFromZGrid(*fGrid);
+      grid_copies.Add(grid_copy);
+
+      // start new thread
+      jobs.push_back(std::thread([ =, &nthreads]() {
+
+         KVIdentificationResult idr;
+
+         for (int i = imin; i <= imax; ++i) {
+            for (int j = 1; j <= fHisto->GetNbinsY(); j++) {
+               Stat_t poids = fHisto->GetBinContent(i, j);
+               if (poids == 0) continue;
+
+               Axis_t x0 = fHisto->GetXaxis()->GetBinCenter(i);
+               Axis_t y0 = fHisto->GetYaxis()->GetBinCenter(j);
+               Axis_t wx = fHisto->GetXaxis()->GetBinWidth(i);
+               Axis_t wy = fHisto->GetYaxis()->GetBinWidth(j);
+
+               if (x0 < 4) continue;
+
+               Double_t x, y;
+               Int_t kmax = (Int_t) TMath::Min(20., poids);
+               Double_t weight = (kmax == 20 ? poids / 20. : 1.);
+               for (int k = 0; k < kmax; k++) {
+                  x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
+                  y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
+                  if (grid_copy->IsIdentifiable(x, y)) {
+                     grid_copy->KVIDZAGrid::Identify(x, y, &idr);
+                     if (idr.HasFlag(grid_copy->GetName(), "MassID")
+                           || (grid_copy->GetInfos()->FindObject("MassID") == nullptr)) {
+                        Float_t PID = idr.PID;
+                        fLinearHisto->Fill(PID, weight);
+                     }
+                  }
                }
             }
          }
-      }
+         --nthreads;
+         std::cout << "...remaining threads: " << nthreads << std::endl;
+      }));
    }
+   for (auto& j : jobs) {
+      if (j.joinable()) j.join();
+   }
+
+   // we should delete grid copies but something always goes wrong here...
+   // grid_copies.Delete();
+
+   // reset automatic grid adding to previous state
+   KVIDGraph::SetAutoAdd(save_auto_add);
 }
 
 void KVItvFinderDialog::Identify()
