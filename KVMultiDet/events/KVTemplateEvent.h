@@ -49,18 +49,14 @@ class KVIntegerList;
  \tparam Particle Class used to describe particles belonging to the event: must derive from KVParticle
 
 An event is a container for a collection of objects representing massive particles (derived from KVParticle):
-
-~~~~{.cpp}
-KVTemplateEvent<KVParticle> part_event;
-
-KVTemplateEvent<KVReconstructedNucleus> recon_event;
-~~~~
-
 Particles are added to an event using methods AddParticle() or AddNucleus().
 The first method returns a pointer to the added particle which is of the same type as the particle
 objects contained in the event, while the latter casts the pointer to KVNucleus* for classes
 which derive from KVNucleus, returning nullptr if not (but a particle is still created and added to the event):
 ~~~~{.cpp}
+KVTemplateEvent<KVParticle> part_event;
+KVTemplateEvent<KVReconstructedNucleus> recon_event;
+
 auto p = part_event.AddParticle(); // KVParticle* p
 auto n = part_event.AddNucleus(); // KVNucleus* n == nullptr
 
@@ -70,8 +66,10 @@ auto s = recon_event.AddNucleus(); // KVNucleus* s == r
 
 Particles in events can be iterated over using range-based for loops:
 ~~~~{.cpp}
+KVTemplateEvent<KVParticle> part_event;
 for(auto& p : part_event) std::cout << p.GetMass() << std::endl; // p is type KVParticle&
 
+KVTemplateEvent<KVReconstructedNucleus> recon_event;
 for(auto& r : recon_event) if(r.IsAMeasured()) std::cout << r.GetRealA() << std::endl; // r is type KVReconstructedNucleus&
 ~~~~
 \note that in such event loops, you should always use a reference to access each
@@ -79,6 +77,7 @@ particle of the event as shown in these examples.
 
 The iteration can be limited to only a subset of particles in the event using particle selections (see KVTemplateParticleCondition):
 ~~~~{.cpp}
+KVTemplateEvent<KVReconstructedNucleus> recon_event;
 int ztot=0;
 for(auto& p : recon_event.ConditionalIterator({"IDZ", [](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}))
    ztot += p.GetZ();
@@ -623,27 +622,28 @@ public:
 
    Particle* GetNextParticle(Option_t* opt = "") const
    {
-      // Use this method to iterate over the list of particles in the event
-      // After the last particle GetNextParticle() returns a null pointer and
+      // Use this method to iterate over the list of nuclei in the event
+      // After the last particle GetNextNucleus() returns a null pointer and
       // resets itself ready for a new iteration over the particle list.
       //
       // If opt="" all particles are included in the iteration.
-      // If opt="ok" or "OK" only particles whose IsOK() method returns kTRUE are included.
+      // If opt="ok" or "OK" only nuclei whose KVNucleus::IsOK() method returns kTRUE are included.
       //
       // Any other value of opt is interpreted as a (case-insensitive) particle group name: only
       // particles with BelongsToGroup(opt) returning kTRUE are included.
       //
       // If you want to start from the beginning again before getting to the end
       // of the list, especially if you want to change the selection criteria,
-      // call method ResetGetNextParticle() before continuing.
+      // call method ResetGetNextNucleus() before continuing.
+      //
       // If you interrupt an iteration before the end, then start another iteration
-      // without calling ResetGetNextParticle(), even if you change the argument of
-      // the call to GetNextParticle(), you will repeat exactly the same iteration
+      // without calling ResetGetNextNucleus(), even if you change the argument of
+      // the call to GetNextNucleus(), you will repeat exactly the same iteration
       // as the previous one.
       //
-      // WARNING: Only one iteration at a time over the event can be performed
+      // \warning Only one iteration at a time over the event can be performed
       //          using this method. If you want/need to perform several i.e. nested
-      //          iterations, use the KV*Event::Iterator classes
+      //          iterations, use the Iterator KVTemplateEvent::EventIterator
 
       TString Opt(opt);
       Opt.ToUpper();

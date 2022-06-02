@@ -5,7 +5,8 @@
 #include <TTree.h>
 #include "KVNameValueList.h"
 #include "TClonesArray.h"
-#include "KVNucleus.h"
+#include "KVParticle.h"
+class KVNucleus;
 class KVFrameTransform;
 
 #include <TH1.h>
@@ -19,15 +20,42 @@ class KVIntegerList;
   \ingroup NucEvents
 
 This base class defines the basic functionality and interface for all event classes, which in addition to handling a collection
-of particles/nuclei, also have in common the following functionality:
+of massive particles, also have in common the following functionality:
 
  - an associated list of parameters, accessible through the GetParameters() and SetParameter() methods;
  - iterators for looping over all or a subset of the particles of the event;
  - methods for defining named subsets ('groups') of particles according to various selection criteria;
  - methods for defining/modifying different relativistic reference frames in which to 'view' the particles of the event
 
-Concrete implementations of event classes derive from child class KVTemplateEvent.
+Concrete implementations of event classes (which define the type of particle objects used) derive from child class KVTemplateEvent.
+Note that any class derived from KVParticle can be used in an event (representing relativistic massive particles),
+not only KVNucleus and daughter classes.
 
+### Adding particles to an event
+Particles are added to an event using methods AddParticle() or AddNucleus().
+The first method returns a KVParticle pointer to the added particle while the latter casts to a KVNucleus pointer for classes
+which derive from KVNucleus, returning nullptr if not (but a particle is still created and added to the event):
+~~~~{.cpp}
+KVEvent& e; // base reference to some event class
+
+auto p = e.AddParticle(); // KVParticle* p
+
+auto n = e.AddNucleus(); // KVNucleus* n
+
+if(n) {
+   std::cout << "Event contains objects derived from KVNucleus" << std::endl;
+   assert(n->InheritsFrom(KVNucleus::Class())); // check using ROOT runtime inspection
+}
+else {
+   std::cout << "n == nullptr : Event contains objects NOT derived from KVNucleus" << std::endl;
+   assert(!(p->InheritsFrom(KVNucleus::Class()))); // check using ROOT runtime inspection
+}
+~~~~
+
+The number of particles in the event, its size or multiplicity, is given by GetMult():
+~~~~{.cpp}
+auto mult = e.GetMult();
+~~~~
 \sa KVTemplateEvent, NucEvents
 
  */
@@ -135,25 +163,14 @@ public:
    virtual KVParticle* GetParticle(Int_t npart) const = 0;
    virtual KVParticle* AddParticle() = 0;
 
-   KVNucleus* GetNextNucleus(Option_t* opt = "") const
-   {
-      return dynamic_cast<KVNucleus*>(GetNextParticle(opt));
-   }
+   KVNucleus* GetNextNucleus(Option_t* opt = "") const;
    void ResetGetNextNucleus() const
    {
+      // Used with GetNextNucleus() in order to reset the internal iterator to the beginning of the event
       ResetGetNextParticle();
    }
-   KVNucleus* GetNucleus(Int_t npart) const
-   {
-      return dynamic_cast<KVNucleus*>(GetParticle(npart));
-   }
-   KVNucleus* AddNucleus()
-   {
-      // Add a particle to the event
-      //
-      // \returns pointer to new particle if it inherits from KVNucleus, nullptr if not
-      return dynamic_cast<KVNucleus*>(AddParticle());
-   }
+   KVNucleus* GetNucleus(Int_t npart) const;
+   KVNucleus* AddNucleus();
 
    virtual void SetFrame(const Char_t*, const KVFrameTransform&) = 0;
    virtual void SetFrame(const Char_t*, const Char_t*, const KVFrameTransform&) = 0;
@@ -192,7 +209,7 @@ public:
       // in the list.
       //
       // If option "opt" is given, it is given as argument to each call to
-      // KVEvent::Clear() - this option is then passed on to the KVNucleus::Clear()
+      // KVEvent::Clear() - this option is then passed on to the KVParticle::Clear()
       // method of each particle in each event.
       //
       // \param[in] events A list of events to merge
@@ -231,13 +248,17 @@ public:
    const Char_t* GetFrameName() const
    {
       // Returns name of default kinematical frame for particles in event, if set
-      // (see KVEvent::SetFrameName)
+      // (see SetFrameName())
 
       return (GetParameters()->HasStringParameter("defaultFrame") ?
               GetParameters()->GetStringValue("defaultFrame") : "");
    }
    template<typename ValType> void SetParameter(const Char_t* name, ValType value) const
    {
+      // Set or change the value of a named paramater in the list associated with the event.
+      //
+      // \sa KVNameValueList
+
       GetParameters()->SetValue(name, value);
    }
    virtual void GetMasses(std::vector<Double_t>&) = 0;
@@ -253,6 +274,13 @@ public:
       // \param[in] branchname name of branch to create
       // \param[in] event pointer to a valid (constructed) KVEvent-derived object
       // \param[in] bufsize size of buffer to use for branch [default: 10000000]
+      //
+      // Example of use:
+      //~~~~{.cpp}
+      // auto tree = new TTree;
+      // auto event = new KVReconstructedEvent; // just an example: any type of event can be used
+      // KVEvent::MakeEventBranch(tree, "ReconEventBranch", event);
+      //~~~~
 
       tree->Branch(branchname, event->ClassName(), &event, bufsize, 0)->SetAutoDelete(kFALSE);
    }
@@ -268,9 +296,10 @@ public:
    }
    void Clear(Option_t* opt = "")
    {
-      // Reset the event to zero ready for new event.
+      // Reset the event to zero ready for new event. This will first call KVParticle::Clear() for each particle
+      // in the event before removing it from the event. After calling this method, GetMult() returns 0.
       //
-      // \param[in] opt option string passed on to the Clear() method of the particle objects in the TClonesArray fParticles
+      // \param[in] opt option string passed on to the KVParticle::Clear() method of each particle in the event
 
       if (strcmp(opt, "")) { // pass options to particle class Clear() method
          TString Opt = Form("C+%s", opt);
