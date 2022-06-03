@@ -50,14 +50,18 @@ run=49000 | Ni porte-cible, rien, nada
 run=50000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI. Cible Au 660ug/cm2 sur porte-cible lateral.
 run=51000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA M>=2 Si1/Si2/CsI.
 run=52000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA M>=2 Si1/Si2/CsI.
-run=53000 | INDRA and FAZIA (independent), 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
-run=59000 | No HT on INDRA Silicon!! INDRA and FAZIA (independent) as run 53000
-run=60000 | No HT on INDRA Silicon!! INDRA and FAZIA (independent) as run 53000
-run=61000 | No HT on INDRA Silicon!! INDRA and FAZIA (independent) as run 53000
-run=62000 | No HT on INDRA Silicon!! INDRA and FAZIA (independent) as run 53000
-run=58000 | No HT on INDRA Silicon!! INDRA and FAZIA (independent) as run 53000
-run=63000 | Restart after switch back on INDRA Si HT, INDRA and FAZIA (independent), same triggers
-run=64000 | After fixing Mesytec problem (SI_0901) - check all previous runs!, INDRA and FAZIA (independent), same triggers
+run=53000 | Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=54000 | Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=55000 | Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=56000 | Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=57000 | Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=58000 | No HT on INDRA Silicon!! Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=59000 | No HT on INDRA Silicon!! Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=60000 | No HT on INDRA Silicon!! Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=61000 | No HT on INDRA Silicon!! Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=62000 | No HT on INDRA Silicon!! Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=63000 | Restart after switch back on INDRA Si HT, Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
+run=64000 | After fixing Mesytec problem (SI_0901) - check all previous runs!, Merging INDRA-FAZIA with 2.5us window, 30kV on target, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
 run=65000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
 run=66000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
 run=67000 | Merging INDRA-FAZIA with 2.5us window, triggers: INDRA rings 6-12, FAZIA Si1/Si2/CsI
