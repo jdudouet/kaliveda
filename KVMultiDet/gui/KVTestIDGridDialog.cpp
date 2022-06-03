@@ -555,8 +555,8 @@ void KVTestIDGridDialog::TestGrid()
    histos.FindObject("ZIDENT_ICODE7")->Draw("same");
    cc->BuildLegend();
 
-   // close dialog
-   DoClose();
+   // do not close dialog - it can lead to X11 errors & death
+   //DoClose();
 }
 
 

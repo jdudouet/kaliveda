@@ -339,33 +339,35 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
 
    fLinearHisto = new TH1F("fLinearHisto", "fLinearHisto", zbins, zmin, zmax);
 
-   fGrid->SetOnlyZId(1);
+   fGrid->SetOnlyZId();
 
    // use multi-threading capacities
-   Int_t xbins_per_cpu = fHisto->GetNbinsX() / WITH_MULTICORE_CPU;
+   auto available_cpu = WITH_MULTICORE_CPU;
+   Int_t xbins_per_cpu = fHisto->GetNbinsX() / available_cpu;
 
    std::vector<std::thread> jobs; // threads to do the work
 
    // to clean up copies of grid
-   TList grid_copies;
+   KVList grid_copies;
 
    // do not add copies of grid to ID grid manager
    auto save_auto_add = KVIDGraph::GetAutoAdd();
    KVIDGraph::SetAutoAdd(false);
 
-   std::cout << "Will run " << WITH_MULTICORE_CPU << " threads, each for " << xbins_per_cpu << " bins in X" << std::endl;
+   std::cout << "Will run " << available_cpu << " threads, each for " << xbins_per_cpu << " bins in X" << std::endl;
 
-   int nthreads = WITH_MULTICORE_CPU;
+   int nthreads = available_cpu;
    // join threads
    std::cout << "Histo linearization using " << nthreads << " threads..." << std::endl;
 
-   for (int job = 0; job < WITH_MULTICORE_CPU; ++job) {
+   for (int job = 0; job < available_cpu; ++job) {
       auto imin = 1 + job * xbins_per_cpu;
       auto imax = (job + 1) * xbins_per_cpu;
-      if (job == WITH_MULTICORE_CPU - 1) imax = fHisto->GetNbinsX();
+      if (job == available_cpu - 1) imax = fHisto->GetNbinsX();
 
       // make new copy of grid
       auto grid_copy = new KVIDZAFromZGrid(*fGrid);
+      grid_copy->Initialize();
       grid_copies.Add(grid_copy);
 
       // start new thread
@@ -409,9 +411,6 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
    for (auto& j : jobs) {
       if (j.joinable()) j.join();
    }
-
-   // we should delete grid copies but something always goes wrong here...
-   // grid_copies.Delete();
 
    // reset automatic grid adding to previous state
    KVIDGraph::SetAutoAdd(save_auto_add);

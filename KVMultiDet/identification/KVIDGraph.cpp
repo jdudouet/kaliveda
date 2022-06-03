@@ -156,11 +156,7 @@ KVIDGraph::KVIDGraph(const KVIDGraph& grid) : TCutG(), fRunList(""), fDyName("")
 {
    //Copy constructor
    init();
-#if ROOT_VERSION_CODE >= ROOT_VERSION(3,4,0)
    grid.Copy(*this);
-#else
-   ((KVIDGraph&) grid).Copy(*this);
-#endif
 }
 
 KVIDGraph::~KVIDGraph()
@@ -174,6 +170,9 @@ KVIDGraph::~KVIDGraph()
    fInfoZones->Delete();
    delete fInfoZones;
    delete fPar;
+
+   // remove from grid manager
+   if (gIDGridManager) gIDGridManager->GetGrids()->RecursiveRemove(this);
 }
 
 //________________________________________________________________________________
@@ -1328,8 +1327,9 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
    Int_t events_read = 0;
    Int_t percent = 0, cumul = 0;
 
-   //loop over data in histo
-   for (int i = 1; i <= data->GetNbinsX(); i++) {
+   KVIdentificationResult idr;
+
+   for (int i = 1; i <= data->GetNbinsX(); ++i) {
       for (int j = 1; j <= data->GetNbinsY(); j++) {
 
          Stat_t poids = data->GetBinContent(i, j);
@@ -1350,7 +1350,6 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
             double x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
             double y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
             if (IsIdentifiable(x, y)) {
-               KVIdentificationResult idr;
                Identify(x, y, &idr);
                if (AcceptIDForTest(idr)) {
                   Float_t PID = idr.PID;
@@ -1439,6 +1438,7 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
             gSystem->ProcessEvents();
             cumul = percent;
          }
+
       }
    }
 }
