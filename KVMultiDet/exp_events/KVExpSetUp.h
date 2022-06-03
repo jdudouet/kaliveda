@@ -53,7 +53,7 @@ public:
    void GetDetectorEvent(KVDetectorEvent* detev, const TSeqCollection* fired_params = nullptr);
    KVGroupReconstructor* GetReconstructorForGroup(const KVGroup*) const;
    void SetRawDataFromReconEvent(KVNameValueList&);
-   void SetReconParametersInEvent(KVReconstructedEvent*) const;
+   //void SetReconParametersInEvent(KVReconstructedEvent*) const;
 
    void GetArrayMultiplicities(KVReconstructedEvent*, KVNameValueList&, Option_t* = "");
 

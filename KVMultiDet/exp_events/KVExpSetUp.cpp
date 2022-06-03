@@ -195,16 +195,16 @@ void KVExpSetUp::SetRawDataFromReconEvent(KVNameValueList& l)
    }
 }
 
-void KVExpSetUp::SetReconParametersInEvent(KVReconstructedEvent* e) const
-{
-   // Add contents of fReconParameters of each sub-array to the event parameter list
-   TIter next_array(&fMDAList);
-   KVMultiDetArray* mda;
-   while ((mda = (KVMultiDetArray*)next_array())) {
-      //*(e->GetParameters()) += mda->GetReconParameters();
-      mda->SetReconParametersInEvent(e);
-   }
-}
+//void KVExpSetUp::SetReconParametersInEvent(KVReconstructedEvent* e) const
+//{
+//   // Add contents of fReconParameters of each sub-array to the event parameter list
+//   TIter next_array(&fMDAList);
+//   KVMultiDetArray* mda;
+//   while ((mda = (KVMultiDetArray*)next_array())) {
+//      //*(e->GetParameters()) += mda->GetReconParameters();
+//      mda->SetReconParametersInEvent(e);
+//   }
+//}
 
 void KVExpSetUp::GetArrayMultiplicities(KVReconstructedEvent* e, KVNameValueList& m, Option_t* opt)
 {
@@ -326,6 +326,11 @@ Bool_t KVExpSetUp::HandleRawDataEvent(KVRawDataReader* rawdata)
 {
    // Set fRawDataReader pointer in each sub-array and call prepare_to_handle_new_raw_data()
    // for each sub-array, before treating raw data.
+   //
+   // copy fired signals & detectors of sub-arrays to main lists
+   //
+   // copy any reconstruction parameters from sub-arrays to main list
+
    TIter next_array(&fMDAList);
    KVMultiDetArray* mda;
    std::vector<std::thread> threads;
@@ -339,11 +344,12 @@ Bool_t KVExpSetUp::HandleRawDataEvent(KVRawDataReader* rawdata)
       if (th.joinable()) th.join();
    }
    if (KVMultiDetArray::HandleRawDataEvent(rawdata)) {
-      // copy fired signals & detectors of sub-arrays to main list
+      // copy fired signals & detectors of sub-arrays to main lists
       next_array.Reset();
       while ((mda = (KVMultiDetArray*)next_array())) {
          fFiredDetectors.AddAll(&mda->fFiredDetectors);
          fFiredSignals.AddAll(&mda->fFiredSignals);
+         fReconParameters += mda->GetReconParameters();
       }
       return true;
    }
