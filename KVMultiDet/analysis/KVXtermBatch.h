@@ -21,17 +21,21 @@
 */
 
 class KVXtermBatch : public KVBatchSystem {
+
+   int max_num_cpus = WITH_MULTICORE_CPU; // max number of CPUs to use: by default, all available
+
 public:
    KVXtermBatch(const Char_t* name)
       : KVBatchSystem(name)
    {}
-   virtual ~KVXtermBatch() {}
 
    Bool_t MultiJobsMode() const
    {
       return kTRUE;
    }
    void Run();
+   void GetBatchSystemParameterList(KVNameValueList& nl);
+   void SetBatchSystemParameters(const KVNameValueList& nl);
 
    ClassDef(KVXtermBatch, 1) //Run analysis in multiple xterm windows
 };

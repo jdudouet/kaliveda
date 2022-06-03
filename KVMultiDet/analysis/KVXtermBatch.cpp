@@ -16,13 +16,13 @@ void KVXtermBatch::Run()
    Int_t remaining_runs = runs.GetNValues();
 
    // to optimize use of CPUs, some jobs will have multiple runs
-   std::vector<int> runs_per_job(WITH_MULTICORE_CPU);
+   std::vector<int> runs_per_job(max_num_cpus);
    int job_index = 0;
    runs.Begin();
    while (!runs.End()) {
       runs.Next();
       ++runs_per_job[job_index++];
-      if (job_index == WITH_MULTICORE_CPU) job_index = 0;
+      if (job_index == max_num_cpus) job_index = 0;
    }
 
    fCurrJobRunList.Clear();
@@ -46,5 +46,26 @@ void KVXtermBatch::Run()
 }
 
 ClassImp(KVXtermBatch)
+
+
+void KVXtermBatch::GetBatchSystemParameterList(KVNameValueList& nl)
+{
+   // Add to batch parameters the number of CPUs to use
+   //
+   // By default, it is the number of CPUs on the machine
+
+   KVBatchSystem::GetBatchSystemParameterList(nl);
+   nl.SetValue("MaxNumCPUs", max_num_cpus);
+}
+
+void KVXtermBatch::SetBatchSystemParameters(const KVNameValueList& nl)
+{
+   // Add to batch parameters the number of CPUs to use
+   //
+   // By default, it is the number of CPUs on the machine
+
+   KVBatchSystem::SetBatchSystemParameters(nl);
+   max_num_cpus = nl.GetIntValue("MaxNumCPUs");
+}
 
 
