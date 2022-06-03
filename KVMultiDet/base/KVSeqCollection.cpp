@@ -129,16 +129,25 @@ KVSeqCollection::~KVSeqCollection()
 
 void KVSeqCollection::Copy(TObject& obj) const
 {
-   // Copy a list of objects, including the name of the list.
+   // Copy a list of objects.
+   //
+   // The name of the list is only copied if the list is not IsCleanup().
+   // Cleanup lists must have unique names otherwise the THashList which contains them cannot function correctly.
+   //
    // If this list owns its objects, we make new Clones of all objects in the list
    // (N.B. the Clone() method must work correctly for the objects in question)
    // and put them in the copy list, the copy will own these new objects.
-   // Copy will have same IsOwner and IsCleanup status as this list.
+   //
+   // Copy will have same IsOwner() and IsCleanup() status as this list.
+   //
    // If this list sends Modified() signal, the copy will do too.
 
    TSeqCollection::Copy(obj);            //in fact this calls TObject::Copy, no Copy method defined for collection classes
    KVSeqCollection& copy = (KVSeqCollection&) obj;
-   copy.SetName(GetName());
+
+   // if the list is to be placed in the list of cleanups, it must have
+   // a unique name. otherwise the name of the list can be copied.
+   if (!IsCleanup()) copy.SetName(GetName());
 
    //clear any pre-existing objects in copy list
    if (copy.IsOwner()) copy.Delete();
@@ -781,10 +790,21 @@ void KVSeqCollection::SetCleanup(Bool_t enable)
    // To use the ROOT cleanup mechanism to ensure that any objects in the list which get
    // deleted elsewhere are removed from this list, call SetCleanup(kTRUE)
 
-   //if(enable && IsOwner()) Warning("SetCleanup","List %s will be both owner & cleanup",GetName());
    SetBit(kCleanup, enable);
    if (enable) {
-      fgCleanups->Add(this);
+      // make sure there is not already a list with the same name in the list
+      auto l = fgCleanups->FindObject(GetName());
+      if (l) {
+         if (l != this) {
+            SetName(Form("KVSeqCollection_%lld", fSCCounter));
+            fSCCounter++;//always increases, so names are different
+            Info("SetCleanup", "A list with same name (%s) is already in cleanups list. Changed to %s.",
+                 l->GetName(), GetName());
+            fgCleanups->Add(this);
+         }
+      }
+      else
+         fgCleanups->Add(this);
       fCollection->R__FOR_EACH(TObject, SetBit)(kMustCleanup);
    }
    else {
