@@ -202,6 +202,10 @@ class KVIDLine : public KVIDentifier {
       {
          return (*this) - Proj(v);
       }
+      Double_t Phi() const
+      {
+         return TMath::Pi() + TMath::ATan2(-y, -x);
+      }
    };
 
 public:
@@ -306,24 +310,26 @@ inline Double_t KVIDLine::DistanceToLine(Double_t px, Double_t py,
       Double_t xp2, Double_t yp2,
       Int_t& i_nearest_point)
 {
-   //Given a line segment defined by endpoints (xp1,yp1) and (xp2,yp2) find the
-   //  shortest distance between point (px,py) and the line.
-   //
-   //                                                   M
+   //Given a line segment defined by endpoints \f$(xp1,yp1)\f$ and \f$(xp2,yp2)\f$ find the
+   //  shortest distance between point \f$(px,py)\f$ and the line:
+   //~~~~
+   //                                              M
    //      P1 (xp1,yp1) x---------------------------------------x P2 (xp2,yp2)
-   //                                                      |
-   //                                                      |
-   //                                                      |
-   //                                                      |
-   //                                                      |
-   //                                                      x
-   //                                                                P (px,py)
-   //This is simply the magnitude of the component of vector P1->P  (or P2->P)
-   //perpendicular to P1->P2.
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              x
+   //                                           P (px,py)
+   //~~~~
+   //This is simply the magnitude of the component of vector \f$\vec{P}-\vec{P1}\f$  (or \f$\vec{P}-\vec{P2}\f$)
+   //perpendicular to \f$\vec{P2}-\vec{P1}\f$
    //
    //If the point is indeed between the two endpoints as shown, then
-   //P1M + P2M = P1P2
-   //If not, P1M + P2M > P1P2. In this case the closest distance is that to the nearer
+   //\f$P1M + P2M = P1P2\f$
+   //
+   //If not, \f$P1M + P2M > P1P2\f$. In this case the closest distance is that to the nearer
    //of the two endpoints, but the value returned is negative; i_nearest_point gives the index (0 or 1)
    //of the nearer endpoint
 
@@ -359,16 +365,17 @@ inline Bool_t KVIDLine::PosRelToLine(Option_t* opt, Double_t px,
 {
    //Given a line segment defined by endpoints (xp1,yp1) and (xp2,yp2) test the
    //  direction of (px,py) with respect to the line in the (x,y) plane.
-   //
-   //                                                        M
+   //~~~~
+   //                                              M
    //      P1 (xp1,yp1) x---------------------------------------x P2 (xp2,yp2)
-   //                                                         |
-   //                                                         |
-   //                                                         |
-   //                                                         |
-   //                                                         |
-   //                                                         x
-   //                                                                P (px,py)
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              |
+   //                                              x
+   //                                           P (px,py)
+   //~~~~
    //This is given by the angle phi between vector MP (component of vector P1->P  (or P2->P)
    //perpendicular to P1->P2) and the +ve x-axis.
    //Point is left of line if 90<phi<270
@@ -380,10 +387,10 @@ inline Bool_t KVIDLine::PosRelToLine(Option_t* opt, Double_t px,
    //E.g. in the diagram shown above, PosRelToLine("below", ...) would give kTRUE - the point is
    //below the line.
 
-   TVector2 P1(xp1, yp1), P2(xp2, yp2), P(px, py);
-   TVector2 P1P2 = P2 - P1;
-   TVector2 P1P = P - P1;
-   TVector2 MP = P1P.Norm((P1P2));
+   MyVector2 P1(xp1, yp1), P2(xp2, yp2), P(px, py);
+   MyVector2 P1P2 = P2 - P1;
+   MyVector2 P1P = P - P1;
+   MyVector2 MP = P1P.Norm((P1P2));
    Double_t phi = MP.Phi() * TMath::RadToDeg();
    //Point is left of line if 90<phi<270
    //Point is right of line if 270<phi<90
