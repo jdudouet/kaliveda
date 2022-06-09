@@ -2,7 +2,6 @@
 //Author: Diego Gruyer
 
 #include "KVItvFinderDialog.h"
-#include "KVPIDIntervalPainter.h"
 #include "TRootEmbeddedCanvas.h"
 #include "TStyle.h"
 #include "TSystem.h"
@@ -17,6 +16,19 @@ ClassImp(KVItvFinderDialog)
 //ClassImp(interval_painter)
 
 
+void KVItvFinderDialog::delete_painter_from_painter_list(KVPIDIntervalPainter* p)
+{
+   // remove painter from list and modify the 'left_painter' and 'right_painter' references
+   // in any adjacent painters/intervals, then delete painter
+
+   std::unique_ptr<KVPIDIntervalPainter> _p(p);
+   auto pleft = p->get_left_interval();
+   auto pright = p->get_right_interval();
+   if (pleft) pleft->set_right_interval(pright);
+   if (pright) pright->set_left_interval(pleft);
+   fItvPaint.Remove(p);
+}
+
 KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7,1)
 {
    fGrid  = gg;
@@ -30,6 +42,12 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    gStyle->SetOptTitle(0);
 
    fMain = new TGTransientFrame(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), 10, 10);
+   // Here is the recipe for cleanly closing a window
+   // (see https://root-forum.cern.ch/t/error-in-rootx11errorhandler-baddrawable-quot/8095/6)
+   fMain->Connect("CloseWindow()", "KVItvFinderDialog", this, "DoClose()");
+   fMain->DontCallClose();
+   fMain->SetCleanup(kDeepCleanup);
+   // afterwards, in the destructor do fMain->CloseWindo(), and in DoClose(), do 'delete this'
 
    // Default constructor
    TGHorizontalFrame* fCanvasFrame = new TGHorizontalFrame(fMain, 627, 7000, kHorizontalFrame);
@@ -37,18 +55,17 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
 
    TRootEmbeddedCanvas* fRootEmbeddedCanvas615 = new TRootEmbeddedCanvas(0, fCanvasFrame, 800, 440);
-   Int_t wfRootEmbeddedCanvas615 = fRootEmbeddedCanvas615->GetCanvasWindowId();
-   fCanvas = new KVCanvas("c123", 10, 10, wfRootEmbeddedCanvas615);
+   // to replace the TCanvas in a TRootEmbeddedCanvas, just delete the original like so:
+   // (see https://root-forum.cern.ch/t/error-in-rootx11errorhandler-baddrawable-quot/8095/6)
+   auto WID = fRootEmbeddedCanvas615->GetCanvasWindowId();
+   delete fRootEmbeddedCanvas615->GetCanvas();
+   fCanvas = new KVCanvas("c123", 10, 10, WID);
+   fRootEmbeddedCanvas615->AdoptCanvas(fCanvas);
    fPad = fCanvas->cd();
    fCanvas->SetRightMargin(0.02);
    fCanvas->SetTopMargin(0.02);
    fCanvas->SetLeftMargin(0.08);
    fCanvas->SetBottomMargin(0.07);
-
-   //    fCanvas->AddExec("SingleShot","gOscillo->HandleEvents()");
-
-
-   fRootEmbeddedCanvas615->AdoptCanvas(fCanvas);
 
    fCanvasFrame->AddFrame(fRootEmbeddedCanvas615, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY, 2, 2, 2, 2));
    fMain->AddFrame(fCanvasFrame, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY, 0, 0, 0, 0));
@@ -60,8 +77,8 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    {
       const char* xpms[] = {
          "filesaveas.xpm",
-         "ed_new.png",
          "bld_copy.png",
+         "ed_new.png",
          "sm_delete.xpm",
          "profile_t.xpm",
          "refresh2.xpm",
@@ -73,8 +90,8 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
       // toolbar tool tip text
       const char* tips[] = {
          "Save intervals in current grid",
-         "Create a new interval",
          "Create a new interval set",
+         "Create a new interval",
          "Remove selected intervals",
          "Find intervals",
          "Update list views",
@@ -97,8 +114,8 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
       };
       const char* method[] = {
          "SaveGrid()",
-         "NewInterval()",
          "NewIntervalSet()",
+         "NewInterval()",
          "RemoveInterval()",
          "Identify()",
          "UpdateLists()",
@@ -130,11 +147,9 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    fCustomView->SetDataColumn(0, "Z", "GetZ", kTextLeft);
    fCustomView->SetDataColumn(1, "PIDs", "GetNPID", kTextCenterX);
    fCustomView->SetDataColumn(2, "Masses", "GetListOfMasses", kTextLeft);
-   //    fCustomView->ActivateSortButtons();
    fCustomView->Connect("SelectionChanged()", "KVItvFinderDialog", this, "DisplayPIDint()");
    fCustomView->SetDoubleClickAction("KVItvFinderDialog", this, "ZoomOnCanvas()");
    fCustomView->AllowContextMenu(kFALSE);
-   //    fCustomView->AddContextMenuClassException(FZCustomCard::Class());
    fControlOscillo->AddFrame(fCustomView, new TGLayoutHints(kLHintsTop | kLHintsExpandX | kLHintsExpandY, 2, 2, 2, 2));
 
    fCurrentView = new KVListView(interval::Class(), fControlOscillo, 450, 180);
@@ -204,6 +219,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    fMain->CenterOnParent();
 
    fMain->SetWindowName("Masses Identification");
+   fMain->RequestFocus();
    fMain->MapWindow();
 
    fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
@@ -211,7 +227,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
    LinearizeHisto(100);
    fLinearHisto->SetLineColor(kBlack);
-   fLinearHisto->SetFillColor(kGreen + 1);
+   fLinearHisto->SetFillColor(kGray + 1);
    fLinearHisto->Draw("hist");
 
    int tmp[30] = {3, 3, 3, 4, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
@@ -226,21 +242,15 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
 //____________________________________________________________________________//
 
-KVItvFinderDialog::~KVItvFinderDialog()
-{
-   // Destructor
-}
-
 void KVItvFinderDialog::DisplayPIDint()
 {
    //    DrawIntervals();
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    if (nSelected == 1) {
       interval_set* itv = (interval_set*)list->At(0);
       fCurrentView->Display(itv->GetIntervals());
    }
-   delete list;
    //    ZoomOnCanvas();
    SelectionITVChanged();
 }
@@ -263,25 +273,26 @@ void KVItvFinderDialog::SelectionITVChanged()
 
 void KVItvFinderDialog::UpdatePIDList()
 {
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    if (nSelected == 1) {
       interval_set* itv = (interval_set*)list->At(0);
       fCurrentView->Display(itv->GetIntervals());
    }
-   delete list;
 }
 
 void KVItvFinderDialog::ZoomOnCanvas()
 {
    if (!fCustomView->GetLastSelectedObject()) return;
-   int zz = ((interval_set*)fCustomView->GetLastSelectedObject())->GetZ();
+   int zz = dynamic_cast<interval_set*>(fCustomView->GetLastSelectedObject())->GetZ();
+
    fLinearHisto->GetXaxis()->SetRangeUser(zz - 0.5, zz + 0.5);
+
    fItvPaint.Execute("SetDisplayLabel", "0");
 
-   KVList* tmp = (KVList*) fItvPaint.GetSubListWithMethod(Form("%d", zz), "GetZ");
+   std::unique_ptr<KVSeqCollection> tmp(fItvPaint.GetSubListWithMethod(Form("%d", zz), "GetZ"));
+
    tmp->Execute("SetDisplayLabel", "1");
-   delete tmp;
 
    fCanvas->Modified();
    fCanvas->Update();
@@ -289,8 +300,8 @@ void KVItvFinderDialog::ZoomOnCanvas()
 
 void KVItvFinderDialog::DrawIntervals()
 {
-   //    fCanvas->cd();
    interval_set* itvs = 0;
+   last_drawn_interval = nullptr;
    TIter it(fGrid->GetIntervalSets());
    while ((itvs = (interval_set*)it())) {
       DrawInterval(itvs);
@@ -300,16 +311,21 @@ void KVItvFinderDialog::DrawIntervals()
 void KVItvFinderDialog::DrawInterval(interval_set* itvs, bool label)
 {
    fPad->cd();
-   interval* itv = 0;
+   interval* itv = nullptr;
+   // give a different colour to each interval
+   auto nitv = itvs->GetIntervals()->GetEntries();
+   auto cstep = TColor::GetPalette().GetSize() / (nitv + 1);
+   int i = 1;
    TIter itt(itvs->GetIntervals());
    while ((itv = (interval*)itt())) {
-      KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto);
-      fCanvas->GetListOfPrimitives()->Add(dummy);
+      KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto, TColor::GetPalette()[cstep * i], last_drawn_interval);
+      ++i;
+      if (label) dummy->SetDisplayLabel();
       dummy->Draw();
       dummy->SetCanvas(fCanvas);
-      if (label) dummy->SetDisplayLabel();
       dummy->Connect("IntMod()", "KVItvFinderDialog", this, "UpdatePIDList()");
       fItvPaint.Add(dummy);
+      last_drawn_interval = dummy;
    }
 }
 
@@ -318,11 +334,9 @@ void KVItvFinderDialog::ClearInterval(interval_set* itvs)
    for (int ii = 0; ii < itvs->GetNPID(); ii++) {
       interval* itv = (interval*)itvs->GetIntervals()->At(ii);
       KVPIDIntervalPainter* pid = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", itv->GetZ(), itv->GetA()));
-      fItvPaint.Remove(pid);
-      delete pid;
+      delete_painter_from_painter_list(pid);
    }
    itvs->GetIntervals()->Clear("all");
-
 }
 
 void KVItvFinderDialog::LinearizeHisto(int nbins)
@@ -428,7 +442,7 @@ void KVItvFinderDialog::Identify(double sigma, double ratio)
    fRat = ratio;
 
    fPad->cd();
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    if (!list->GetSize()) {
       ProcessIdentification(1, TMath::Min(fGrid->GetIdentifiers()->GetSize(), 25));
       for (int ii = 0; ii < fGrid->GetIntervalSets()->GetSize(); ii++) DrawInterval((interval_set*)fGrid->GetIntervalSets()->At(ii), 0);
@@ -441,7 +455,6 @@ void KVItvFinderDialog::Identify(double sigma, double ratio)
       }
    }
 
-   delete list;
    fCanvas->Modified();
    fCanvas->Update();
 
@@ -507,17 +520,16 @@ void KVItvFinderDialog::ExportToGrid()
 
 void KVItvFinderDialog::NewInterval()
 {
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    if (!list->GetSize()) {
-      delete list;
       return;
    }
 
    interval_set* itvs = (interval_set*)list->At(0);
-   delete list;
 
    fPad->WaitPrimitive("TMarker");
-   TMarker* mm = (TMarker*) fPad->GetListOfPrimitives()->Last();
+   TMarker* mm = dynamic_cast<TMarker*>(fPad->GetListOfPrimitives()->Last());
+   assert(mm);
 
    double pid = mm->GetX();
    int aa = 0;
@@ -550,17 +562,36 @@ void KVItvFinderDialog::NewInterval()
    interval* itv = new interval(itvs->GetZ(), aa, mm->GetX(), mm->GetX() - 0.05, mm->GetX() + 0.05);
    itvs->GetIntervals()->AddAt(itv, iint);
 
+   // find intervals which are now left (smaller mass) and right (higher mass) than this one
+   interval* left_interval = iint > 0 ? (interval*)itvs->GetIntervals()->At(iint - 1) : nullptr;
+   interval* right_interval = iint < itvs->GetIntervals()->GetEntries() - 1 ? (interval*)itvs->GetIntervals()->At(iint + 1) : nullptr;
+   // find the corresponding painters
+   KVPIDIntervalPainter* left_painter{nullptr}, *right_painter{nullptr};
+   TIter next_painter(&fItvPaint);
+   KVPIDIntervalPainter* pidpnt;
+   while ((pidpnt = (KVPIDIntervalPainter*)next_painter())) {
+      if (pidpnt->GetInterval() == left_interval) left_painter = pidpnt;
+      else if (pidpnt->GetInterval() == right_interval) right_painter = pidpnt;
+   }
 
-   KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto);
+   // give a different colour to each interval
+   auto nitv = itvs->GetIntervals()->GetEntries();
+   auto cstep = TColor::GetPalette().GetSize() / (nitv + 1);
+
+   KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto, TColor::GetPalette()[cstep * (iint + 1)],
+         left_painter);
+   // set up links between painters
+   if (right_painter) {
+      right_painter->set_left_interval(dummy);
+      dummy->set_right_interval(right_painter);
+   }
    fPad->cd();
-   fCanvas->GetListOfPrimitives()->Add(dummy);
    dummy->Draw();
    dummy->Connect("IntMod()", "KVItvFinderDialog", this, "UpdatePIDList()");
    dummy->SetDisplayLabel(1);
    dummy->SetCanvas(fCanvas);
    fItvPaint.Add(dummy);
 
-   fPad->GetListOfPrimitives()->Remove(mm);
    delete mm;
 
    fCurrentView->Display(itvs->GetIntervals());
@@ -576,33 +607,30 @@ void KVItvFinderDialog::NewIntervalSet()
    else fNextIntervalZ = ((interval_set*)fGrid->GetIntervalSets()->Last())->GetZ() + 1;
    //   KVBase::OpenContextMenu("SetNextIntervalZ()",this);
    fGrid->GetIntervalSets()->Add(new interval_set(fNextIntervalZ, KVIDZAFromZGrid::kIntType));
+   UpdateLists();
 }
 
 void KVItvFinderDialog::RemoveInterval()
 {
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    interval_set* itvs = 0;
    if (nSelected == 1) {
       itvs = (interval_set*)list->At(0);
-      delete list;
-
-      list = fCurrentView->GetSelectedObjects();
+      list.reset(fCurrentView->GetSelectedObjects());
       nSelected = list->GetSize();
       if (nSelected >= 1) {
          for (int ii = 0; ii < nSelected; ii++) {
             interval* itv = (interval*) list->At(ii);
             KVPIDIntervalPainter* pid = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", itv->GetZ(), itv->GetA()));
-            fItvPaint.Remove(pid);
-            delete pid;
             itvs->GetIntervals()->Remove(itv);
+            delete_painter_from_painter_list(pid);
          }
          fCurrentView->Display(itvs->GetIntervals());
          fCanvas->Modified();
          fCanvas->Update();
       }
       else ClearInterval(itvs);
-      delete list;
    }
    else if (nSelected > 1) {
       for (int ii = 0; ii < nSelected; ii++) {
@@ -610,20 +638,17 @@ void KVItvFinderDialog::RemoveInterval()
          ClearInterval(itvs);
       }
    }
-   else delete list;
-
 }
 
 void KVItvFinderDialog::MassesUp()
 {
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    interval_set* itvs = 0;
    if (nSelected == 1) {
       itvs = (interval_set*)list->At(0);
-      delete list;
 
-      list = fCurrentView->GetSelectedObjects();
+      list.reset(fCurrentView->GetSelectedObjects());
       nSelected = list->GetSize();
 
       if (nSelected == 1) {
@@ -649,18 +674,16 @@ void KVItvFinderDialog::MassesUp()
          }
       }
    }
-   else delete list;
 }
 
 void KVItvFinderDialog::MassesDown()
 {
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    interval_set* itvs = 0;
    if (nSelected == 1) {
       itvs = (interval_set*)list->At(0);
-      delete list;
-      list = fCurrentView->GetSelectedObjects();
+      list.reset(fCurrentView->GetSelectedObjects());
       nSelected = list->GetSize();
 
       if (nSelected == 1) {
@@ -685,20 +708,18 @@ void KVItvFinderDialog::MassesDown()
          }
       }
    }
-   else delete list;
 }
 
 void KVItvFinderDialog::UpdateLists()
 {
    fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
-   TList* list = fCustomView->GetSelectedObjects();
+   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    interval_set* itvs = 0;
    if (nSelected == 1) {
       itvs = (interval_set*)list->At(0);
       fCurrentView->Display(itvs->GetIntervals());
    }
-   delete list;
 }
 
 void KVItvFinderDialog::TestIdent()

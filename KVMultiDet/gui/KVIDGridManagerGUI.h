@@ -87,7 +87,7 @@ class KVIDGridManagerGUI: public TGMainFrame {
    KVIDGraph* fSelectedGrid;
    KVIDGraph* fLastSelectedGrid;
    TString fFileName;
-   TList* fSelectedEntries;
+   std::unique_ptr<TList> fSelectedEntries;
 
    TCollection* GetAllGridsInTab()
    {

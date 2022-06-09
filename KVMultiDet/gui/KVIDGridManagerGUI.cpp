@@ -32,7 +32,6 @@ KVIDGridManagerGUI::KVIDGridManagerGUI(): TGMainFrame(gClient->GetRoot(), 500, 3
    fFirstGrid = 0;
    fLastGrid = -1;
    fSelectedGrid = 0;
-   fSelectedEntries = 0;
    fLastSelectedGrid = 0;
 
    fIDGridEditor = new KVIDGridEditor;
@@ -287,9 +286,6 @@ KVIDGridManagerGUI::~KVIDGridManagerGUI()
    //close window
    UnmapWindow();
    gIDGridManager->Disconnect("Modified()", this, "UpdateListOfGrids()");
-   if (fSelectedEntries) delete fSelectedEntries;
-   fSelectedEntries = 0;
-//   if(fIDGridEditor) fIDGridEditor->Close();
 }
 
 void KVIDGridManagerGUI::CloseWindow()
@@ -358,7 +354,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
 
       case M_GRIDS_SAVE_SEL:
          // save current selection of grids in file
-         SaveGridsAs(fSelectedEntries);
+         SaveGridsAs(fSelectedEntries.get());
          break;
 
       case M_GRIDS_SAVE_TAB:
@@ -415,7 +411,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
             new KVInputDialog(this, "Enter list of runs for grid(s):", &runs, &ok_pressed,
                               "Example: 1-10, 13, 22-657");
             if (!ok_pressed) break; // user pressed 'cancel' or otherwise closed the dialog
-            TIter next(fSelectedEntries);
+            TIter next(fSelectedEntries.get());
             KVIDGraph* entry;
             while ((entry = (KVIDGraph*) next())) {
                entry->SetRunList(runs.Data());
@@ -431,7 +427,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
             new KVInputDialog(this, "Enter X variable for grid(s):", &runs, &ok_pressed,
                               "");
             if (!ok_pressed) break; // user pressed 'cancel' or otherwise closed the dialog
-            TIter next(fSelectedEntries);
+            TIter next(fSelectedEntries.get());
             KVIDGraph* entry;
             while ((entry = (KVIDGraph*) next())) {
                entry->SetVarX(runs.Data());
@@ -447,7 +443,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
             new KVInputDialog(this, "Enter Y variable for grid(s):", &runs, &ok_pressed,
                               "");
             if (!ok_pressed) break; // user pressed 'cancel' or otherwise closed the dialog
-            TIter next(fSelectedEntries);
+            TIter next(fSelectedEntries.get());
             KVIDGraph* entry;
             while ((entry = (KVIDGraph*) next())) {
                entry->SetVarY(runs.Data());
@@ -459,7 +455,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
          {
             if (!fSelectedGrid) break; // must have selected at least one grid
             Bool_t runs = !fSelectedGrid->HasMassIDCapability(); // fill dialog box with current runlist of selected grid
-            TIter next(fSelectedEntries);
+            TIter next(fSelectedEntries.get());
             KVIDGraph* entry;
             while ((entry = (KVIDGraph*) next())) {
                entry->SetOnlyZId(!runs);
@@ -470,7 +466,7 @@ void KVIDGridManagerGUI::HandleGridsMenu(Int_t id)
          // set varx for all selected grids
          {
             if (!fSelectedGrid) break; // must have selected at least one grid
-            TIter next(fSelectedEntries);
+            TIter next(fSelectedEntries.get());
             KVIDGraph* entry;
             while ((entry = (KVIDGraph*) next())) {
                entry->Clear();
@@ -556,9 +552,7 @@ void KVIDGridManagerGUI::SelectionChanged()
    //fSelectedGrid : the last selected grid (=the only grid selected if GeTNSelected==1)
 
    //get number of selected items
-   if (fSelectedEntries)
-      delete fSelectedEntries;
-   fSelectedEntries = fIDGridList->GetSelectedObjects();
+   fSelectedEntries.reset(fIDGridList->GetSelectedObjects());
    fSelectedGrid = (KVIDGraph*)fIDGridList->GetLastSelectedObject();
    if (!GetNSelected())fSelectedGrid = 0x0;
    ShowListOfLines();
@@ -581,7 +575,7 @@ void KVIDGridManagerGUI::DeleteGrids()
 
    if (!GetNSelected()) return;
 
-   TIter next(fSelectedEntries, kIterBackward);
+   TIter next(fSelectedEntries.get(), kIterBackward);
    KVIDGraph* entry;
    while ((entry = (KVIDGraph*) next())) {
       //  cout << "DEBUG: KVIDGridManagerGUI::DeleteGrids(): deleting grid '" << entry->GetName() << "' !" << endl;
@@ -589,9 +583,9 @@ void KVIDGridManagerGUI::DeleteGrids()
       gIDGridManager->DeleteGrid(entry, kFALSE);   //no update
       //  cout << "DEBUG: KVIDGridManagerGUI::DeleteGrids(): grid has been deleted !" << endl;
    }
-   if (fSelectedEntries) delete fSelectedEntries;
+
    //  cout << "DEBUG: KVIDGridManagerGUI::DeleteGrids(): list of selected grids has been deleted !" << endl;
-   fSelectedEntries = 0;
+   fSelectedEntries.reset(nullptr);
    fSelectedGrid = 0;
    UpdateListOfGrids();
    //  cout << "DEBUG: KVIDGridManagerGUI::DeleteGrids(): list of grids has been updated !" << endl;
@@ -606,8 +600,7 @@ void KVIDGridManagerGUI::DeleteAllGridsInTab()
    while ((entry = (KVIDGraph*) next())) {
       gIDGridManager->DeleteGrid(entry, kFALSE);   //no update
    }
-   if (fSelectedEntries) delete fSelectedEntries;
-   fSelectedEntries = 0;
+   fSelectedEntries.reset(nullptr);
    fSelectedGrid = 0;
    UpdateListOfGrids();
 }
@@ -633,7 +626,7 @@ void KVIDGridManagerGUI::ClearGrid()
       fSelectedGrid->Clear();
    else if (GetNSelected() > 1) {
       //multiselection
-      TIter next(fSelectedEntries);
+      TIter next(fSelectedEntries.get());
       KVIDGraph* grid;
       while ((grid = (KVIDGraph*) next())) {
          grid->Clear();

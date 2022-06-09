@@ -14,7 +14,7 @@ class interval_set;
 
 /**
 \class KVIDZAFromZGrid
-\brief Hybrid identification grid
+\brief Hybrid charge & mass identification grid
 \ingroup Identification
 
 Such a grid can identify simultaneously both the mass and charge of detected
@@ -150,7 +150,6 @@ public:
 
 
 class interval: public TNamed {
-public:
    int fType;
    int fZ;
    int fA;
@@ -159,6 +158,7 @@ public:
    double fPIDMin;
    double fPIDmax;
 
+public:
    void Copy(TObject& o) const
    {
       TNamed::Copy(o);

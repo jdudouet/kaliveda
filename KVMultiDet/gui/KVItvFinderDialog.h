@@ -31,6 +31,7 @@
 #include <TSpectrum.h>
 #include <TROOT.h>
 #include <TF1.h>
+#include "KVPIDIntervalPainter.h"
 
 
 /**
@@ -42,18 +43,6 @@
 class KVItvFinderDialog {
    RQ_OBJECT("KVZAFinderDialog")
 
-public:
-   enum {
-      M_SAVE,
-      M_NEW,
-      M_DEL,
-      M_MASS,
-      M_LOG,
-      M_UNZOOM
-   };
-
-
-public:
    TGTransientFrame* fMain;
    KVCanvas* fCanvas;
    TVirtualPad* fPad;
@@ -73,7 +62,6 @@ public:
    TH1*        fLinearHisto;
 
    KVList fItvPaint;
-//    KVPIDIntervalFinder* fPIDFinder;
 
    TSpectrum fSpectrum;
    TGraph*   fPoints;
@@ -85,10 +73,24 @@ public:
 
    Double_t fSig, fRat;
 
+   KVPIDIntervalPainter* last_drawn_interval;
+   void delete_painter_from_painter_list(KVPIDIntervalPainter*);
 
 public:
+   enum {
+      M_SAVE,
+      M_NEW,
+      M_DEL,
+      M_MASS,
+      M_LOG,
+      M_UNZOOM
+   };
+
    KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh);
-   virtual ~KVItvFinderDialog();
+   virtual ~KVItvFinderDialog()
+   {
+      fMain->CloseWindow();
+   }
 
    int  GetNextIntevalZ()
    {
@@ -112,8 +114,10 @@ public:
    void DoIdentification() {}
    void LinearizeHisto(int nbins);
 
-   void DoClose() {}
-   void CloseWindow() {}
+   void DoClose()
+   {
+      delete this;
+   }
 
    void Identify();//{ProcessIdentification(1,25);}//{Info("SaveGrid","Not yet implemented");}
    void Identify(double sigma, double ratio);//{ProcessIdentification(1,25);}//{Info("SaveGrid","Not yet implemented");}
