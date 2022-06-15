@@ -76,6 +76,8 @@ class KVItvFinderDialog {
    KVPIDIntervalPainter* last_drawn_interval;
    void delete_painter_from_painter_list(KVPIDIntervalPainter*);
 
+   interval_set* current_interval_set = nullptr;// interval selected by ZoomOnCanvas()
+
 public:
    enum {
       M_SAVE,
@@ -132,6 +134,8 @@ public:
    void TestIdent();//;{cout << "TestIdent()" << endl;}
    void SetLogy();
    void UnzoomHisto();
+   void FitIsotopes();
+   void RemoveFit();
 
    void ProcessIdentification(Int_t zmin = -1, Int_t zmax = -1);
    void FindPIDIntervals(Int_t zz);

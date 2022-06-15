@@ -27,11 +27,16 @@ void KVPIDIntervalPainter::HighLight(bool hi)
 
 void KVPIDIntervalPainter::Update()
 {
+   // updates the name & title from the interval's current Z & A
+   //
+   // updates the positions of the marker & lines from current values
    SetName(Form("%d_%d", fInterval->GetZ(), fInterval->GetA()));
    SetTitle(Form("%d_%d", fInterval->GetZ(), fInterval->GetA()));
    fZ = fInterval->GetZ();
    fA = fInterval->GetA();
-   fMarker.Update(fZ, fA);
+   fMarker.Update(fZ, fA, fInterval->GetPID());
+   fLine1.Update(fInterval->GetPIDmin());
+   fLine2.Update(fInterval->GetPIDmax());
 }
 
 KVPIDIntervalPainter::pid_marker::pid_marker(KVPIDIntervalPainter* P, Color_t itv_col)
@@ -181,8 +186,12 @@ void KVPIDIntervalPainter::pid_marker::HighLight(bool hi)
    }
 }
 
-void KVPIDIntervalPainter::pid_marker::Update(int z, int a)
+void KVPIDIntervalPainter::pid_marker::Update(int z, int a, double pid)
 {
+   // update Z, A, and position of PID marker
+   double fixed_Y = parent->GetHisto()->GetBinContent(parent->GetHisto()->FindBin(pid));
+   SetX(pid);
+   SetY(fixed_Y);
    fLabel.SetText(GetX(), GetY(), Form(" (%d,%d)", z, a));
 }
 

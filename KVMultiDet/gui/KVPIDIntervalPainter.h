@@ -50,7 +50,7 @@ class KVPIDIntervalPainter : public TNamed {
          return fDrawLabel;
       }
       void HighLight(bool hi = true);
-      void Update(int z, int a);
+      void Update(int z, int a, double pid);
       bool CheckPosition(double x)
       {
          // only allow PID marker to move between lower & upper limits
@@ -102,6 +102,13 @@ class KVPIDIntervalPainter : public TNamed {
             parent->IntMod();
          }
       }
+      void Update(double x)
+      {
+         SetX1(x);
+         SetX2(x);
+         pid = x;
+      }
+
       double GetX() const
       {
          assert(GetX1() == GetX2());

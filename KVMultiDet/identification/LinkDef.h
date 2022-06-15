@@ -19,6 +19,7 @@
 #pragma link C++ class KVTGIDGrid+;
 #endif
 
+#pragma link C++ class KVMultiGaussIsotopeFit+;
 #pragma link C++ class KVIdentificationResult+;
 #pragma link C++ class KVVirtualIDFitter+;
 #pragma link C++ class KVDroite+;
