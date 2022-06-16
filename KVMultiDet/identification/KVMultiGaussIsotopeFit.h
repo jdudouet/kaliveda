@@ -5,6 +5,7 @@
 #include "TVirtualPad.h"
 #include "TColor.h"
 #include "TArrayI.h"
+#include "KVNumberList.h"
 
 /**
  \class KVMultiGaussIsotopeFit
@@ -17,6 +18,14 @@
 */
 
 class KVMultiGaussIsotopeFit : public TF1 {
+   enum fit_param_index {
+      bkg_cst = 1,
+      bkg_slp = 2,
+      gauss_wid = 3,
+      pidvsA_a0 = 4,
+      pidvsA_a1 = 5,
+      pidvsA_a2 = 6
+   };
    double centroid_fit(double* x, double* p)
    {
       /*
@@ -42,9 +51,11 @@ class KVMultiGaussIsotopeFit : public TF1 {
          Total number of parameters is 7+2*Ng
       */
       int Ng = p[0];
-      double background = TMath::Exp(p[1] + p[2] * x[0]);
+      double background = TMath::Exp(p[fit_param_index::bkg_cst] + p[fit_param_index::bkg_slp] * x[0]);
       for (int i = 1; i <= Ng; ++i) {
-         background += p[get_gauss_norm_index(i)] * TMath::Gaus(x[0], centroid_fit(&p[get_mass_index(i, Ng)], &p[4]), p[3]);
+         background +=
+            p[get_gauss_norm_index(i)] * TMath::Gaus(x[0], centroid_fit(&p[get_mass_index(i, Ng)],
+                  &p[fit_param_index::pidvsA_a0]), p[fit_param_index::gauss_wid]);
       }
       return background;
    }
@@ -65,6 +76,8 @@ class KVMultiGaussIsotopeFit : public TF1 {
    double PIDmin, PIDmax; // PID limits for current set of isotopes
    std::vector<int> Alist; // list of masses of isotopes (in increasing order)
    std::vector<double> PIDlist; // list of initial centroid (PID) of each isotope (in increasing order)
+   double min_sigma = 1.e-2; // lower limit for width of gaussians
+   double max_sigma = 1.e-1; // upper limit for width of gaussians
 
 public:
    KVMultiGaussIsotopeFit() : TF1() {}
@@ -76,13 +89,32 @@ public:
       // This constructor cannot be used to perform fits, but can be used to UnDraw() an existing fit
    }
    KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, std::vector<int> alist, std::vector<double> pidlist);
+   KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, const KVNumberList& alist,
+                          double bkg_cst, double bkg_slp, double gaus_wid,
+                          double pidvsa_a0, double pidvsa_a1, double pidvsa_a2);
 
    void ReleaseCentroids()
    {
       // Release the constraint on the positions of the centroids
-      SetParLimits(4, -50, 50);
-      SetParLimits(5, 1.e-2, 5.);
-      SetParLimits(6, -5, 5.);
+      SetParLimits(fit_param_index::pidvsA_a0, -50, 50);
+      SetParLimits(fit_param_index::pidvsA_a1, 1.e-2, 5.);
+      SetParLimits(fit_param_index::pidvsA_a2, -5, 5.);
+   }
+
+   double GetPIDvsAfit_a0() const
+   {
+      // \returns constant term in PID vs. A relation
+      return GetParameter(fit_param_index::pidvsA_a0);
+   }
+   double GetPIDvsAfit_a1() const
+   {
+      // \returns coefficient of linear term in PID vs. A relation
+      return GetParameter(fit_param_index::pidvsA_a1);
+   }
+   double GetPIDvsAfit_a2() const
+   {
+      // \returns coefficient of quadratic term in PID vs. A relation
+      return GetParameter(fit_param_index::pidvsA_a2);
    }
 
    void UnDraw(TVirtualPad* pad = gPad) const;
@@ -99,6 +131,7 @@ public:
 
    int GetMostProbableA(double PID, double& P) const;
    double GetMeanA(double PID) const;
+   std::map<int, double> GetADistribution(double PID) const;
 
    static TString get_name_of_multifit(int z)
    {
@@ -109,22 +142,66 @@ public:
       return Form("gauss_fit_Z=%d_A=%d", z, a);
    }
 
+   double GetBackgroundConstant() const
+   {
+      // \returns fitted parameter constant term in exponential background
+      return GetParameter(fit_param_index::bkg_cst);
+   }
+   double GetBackgroundSlope() const
+   {
+      // \returns fitted parameter slope term in exponential background
+      return GetParameter(fit_param_index::bkg_slp);
+   }
    double GetCentroid(int i) const
    {
       // \returns the fitted centroid position of the ith gaussian (i=1,2,...,Niso)
       assert(i > 0 && i <= Niso);
-      return GetParameter(4) + (GetParameter(5) + GetParameter(6) * Alist[i - 1]) * Alist[i - 1];
+      return GetParameter(fit_param_index::pidvsA_a0)
+             + (GetParameter(fit_param_index::pidvsA_a1)
+                + GetParameter(fit_param_index::pidvsA_a2) * Alist[i - 1]) * Alist[i - 1];
    }
    double GetGaussianWidth(int) const
    {
       // \returns the fitted width (sigma) used for all gaussians
-      return GetParameter(3);
+      return GetParameter(fit_param_index::gauss_wid);
    }
    double GetGaussianNorm(int i) const
    {
       // \returns the fitted normalisation constant of the ith gaussian (i=1,2,...,Niso)
       assert(i > 0 && i <= Niso);
       return GetParameter(get_gauss_norm_index(i));
+   }
+   void SetGaussianNorm(int i, double v)
+   {
+      // set the normalisation constant of the ith gaussian (i=1,2,...,Niso)
+      assert(i > 0 && i <= Niso);
+      SetParameter(get_gauss_norm_index(i), v);
+   }
+
+   void SetFitRange(double min, double max);
+
+   double GetPIDmin() const
+   {
+      return PIDmin;
+   }
+   double GetPIDmax() const
+   {
+      return PIDmax;
+   }
+
+   double GetMinSigma() const
+   {
+      return min_sigma;
+   }
+   double GetMaxSigma() const
+   {
+      return max_sigma;
+   }
+   void SetSigmaLimits(double smin, double smax)
+   {
+      min_sigma = smin;
+      max_sigma = smax;
+      SetParLimits(fit_param_index::gauss_wid, min_sigma, max_sigma);
    }
 
    ClassDef(KVMultiGaussIsotopeFit, 1) //Function for fitting PID mass spectrum

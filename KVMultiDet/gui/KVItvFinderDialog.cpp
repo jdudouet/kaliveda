@@ -10,6 +10,7 @@
 #include "TGFileDialog.h"
 #include "KVTestIDGridDialog.h"
 #include "KVIdentificationResult.h"
+#include "KVNameValueListGUI.h"
 #include <KVMultiGaussIsotopeFit.h>
 #include <thread>
 
@@ -84,6 +85,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
          "refresh2.xpm",
          "sm_delete.xpm",
          "h1_t.xpm",
+         "query_new.xpm",
          "tb_back.xpm",
          "bld_colorselect.png",
          "latex.xpm",
@@ -99,6 +101,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
          "Update interval lists",
          "Remove selected intervals",
          "Multigauss fit to isotopes in interval set",
+         "Set parameters for fit",
          "Remove fit from selected interval set",
          "Test identification",
          "Set log scale on y axis",
@@ -114,6 +117,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
          20,
          50,
          0,
+         0,
          50,
          280,
          0,
@@ -127,6 +131,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
          "UpdateLists()",
          "RemoveInterval()",
          "FitIsotopes()",
+         "SetFitParameters()",
          "RemoveFit()",
          "TestIdent()",
          "SetLogy()",
@@ -247,6 +252,13 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
    DrawIntervals();
 
+   // Set default values for mass-fit parameters
+   mass_fit_parameters.SetValue("Limit range of fit", false);
+   mass_fit_parameters.SetValue("PID min for fit", 0.);
+   mass_fit_parameters.SetValue("PID max for fit", 100.);
+   mass_fit_parameters.SetValue("Minimum probability [%]", 25.);
+   mass_fit_parameters.SetValue("Minimum #sigma", 1.e-2);
+   mass_fit_parameters.SetValue("Maximum #sigma", 1.e-1);
 }
 
 //____________________________________________________________________________//
@@ -292,6 +304,8 @@ void KVItvFinderDialog::UpdatePIDList()
 
 void KVItvFinderDialog::ZoomOnCanvas()
 {
+   // Display the interval set for a given Z when the user double clicks on it
+
    if (!fCustomView->GetLastSelectedObject()) return;
    current_interval_set = dynamic_cast<interval_set*>(fCustomView->GetLastSelectedObject());
    auto zz = current_interval_set->GetZ();
@@ -303,6 +317,30 @@ void KVItvFinderDialog::ZoomOnCanvas()
    std::unique_ptr<KVSeqCollection> tmp(fItvPaint.GetSubListWithMethod(Form("%d", zz), "GetZ"));
 
    tmp->Execute("SetDisplayLabel", "1");
+
+   // Check - if no mass fit is displayed, we look to see if the grid has a saved
+   // multigauss fit from a previous session, and if so we display it
+   if (!fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_multifit(zz))) {
+      if (fGrid->GetParameters()->HasParameter(Form("MASSFIT_%d", zz))) {
+         KVString massfit = fGrid->GetParameters()->GetTStringValue(Form("MASSFIT_%d", zz));
+         massfit.ReplaceAll(":", "=");
+         KVNameValueList fitparams;
+         fitparams.Set(massfit);
+
+         KVMultiGaussIsotopeFit fitfunc(zz, fitparams.GetIntValue("Ng"), fitparams.GetDoubleValue("PIDmin"),
+                                        fitparams.GetDoubleValue("PIDmax"), fitparams.GetStringValue("Alist"),
+                                        fitparams.GetDoubleValue("Bkg_cst"), fitparams.GetDoubleValue("Bkg_slp"),
+                                        fitparams.GetDoubleValue("GausWid"),
+                                        fitparams.GetDoubleValue("PIDvsA_a0"),
+                                        fitparams.GetDoubleValue("PIDvsA_a1"),
+                                        fitparams.GetDoubleValue("PIDvsA_a2")
+                                       );
+         for (int ig = 1; ig <= fitparams.GetIntValue("Ng"); ++ig)
+            fitfunc.SetGaussianNorm(ig, fitparams.GetDoubleValue(Form("Norm_%d", ig)));
+
+         fitfunc.DrawFitWithGaussians("same");
+      }
+   }
 
    fCanvas->Modified();
    fCanvas->Update();
@@ -348,7 +386,7 @@ void KVItvFinderDialog::ClearInterval(interval_set* itvs)
       delete_painter_from_painter_list(pid);
       alist.push_back(itv->GetA());
    }
-   itvs->GetIntervals()->Clear("all");
+   itvs->GetIntervals()->Clear();
    // remove any fit displayed in pad
    KVMultiGaussIsotopeFit fitfunc(itvs->GetZ(), alist);
    fitfunc.UnDraw(fPad);
@@ -625,6 +663,15 @@ void KVItvFinderDialog::NewIntervalSet()
    UpdateLists();
 }
 
+void KVItvFinderDialog::remove_interval_from_interval_set(interval_set* itvs, interval* itv)
+{
+   KVPIDIntervalPainter* pid = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", itv->GetZ(), itv->GetA()));
+   itvs->GetIntervals()->Remove(itv);
+   delete_painter_from_painter_list(pid);
+   // remove any fits from pad corresponding to intervals
+   KVMultiGaussIsotopeFit::UnDrawGaussian(itvs->GetZ(), itv->GetA(), fPad);
+}
+
 void KVItvFinderDialog::RemoveInterval()
 {
    std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
@@ -638,11 +685,7 @@ void KVItvFinderDialog::RemoveInterval()
       if (nSelected >= 1) {
          for (int ii = 0; ii < nSelected; ii++) {
             interval* itv = (interval*) list->At(ii);
-            KVPIDIntervalPainter* pid = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", itv->GetZ(), itv->GetA()));
-            itvs->GetIntervals()->Remove(itv);
-            delete_painter_from_painter_list(pid);
-            // remove any fits from pad corresponding to intervals
-            KVMultiGaussIsotopeFit::UnDrawGaussian(itvs->GetZ(), itv->GetA(), fPad);
+            remove_interval_from_interval_set(itvs, itv);
          }
          fCurrentView->Display(itvs->GetIntervals());
          fCanvas->Modified();
@@ -799,6 +842,18 @@ void KVItvFinderDialog::FitIsotopes()
                                   current_interval_set->GetZ() - 0.5, current_interval_set->GetZ() + 0.5,
                                   alist, pidlist);
 
+   // check user fit parameters
+   if (mass_fit_parameters.GetBoolValue("Limit range of fit")) {
+      // if the user's range is not valid for the current interval set, we ignore it
+      if (mass_fit_parameters.GetDoubleValue("PID min for fit") >= current_interval_set->GetZ() - 0.5
+            && mass_fit_parameters.GetDoubleValue("PID max for fit") <= current_interval_set->GetZ() + 0.5)
+         fitfunc.SetFitRange(mass_fit_parameters.GetDoubleValue("PID min for fit"),
+                             mass_fit_parameters.GetDoubleValue("PID max for fit"));
+
+   }
+   fitfunc.SetSigmaLimits(mass_fit_parameters.GetDoubleValue("Minimum #sigma"),
+                          mass_fit_parameters.GetDoubleValue("Maximum #sigma"));
+
    fLinearHisto->Fit(&fitfunc, "NR");
 
    // now release the centroids
@@ -810,44 +865,75 @@ void KVItvFinderDialog::FitIsotopes()
    fitfunc.UnDraw();
 
    // draw fit with individual gaussians
-   fitfunc.SetLineColor(kBlack);
-   fitfunc.SetLineWidth(2);
-   fitfunc.SetNpx(500);
    fitfunc.DrawFitWithGaussians("same");
 
-   // set interval limits according to most probable mass
+   // set interval limits according to regions of most probable mass
    int most_prob_A = 0;
    nxt_int.Reset();
-   double min_proba = 0.25;
+   // minimum probability for which isotopes are taken into account
+   double min_proba = mass_fit_parameters.GetDoubleValue("Minimum probability [%]") / 100.;
    double delta_pid = 0.001;
-   for (double pid = current_interval_set->GetZ() - 0.5; pid <= current_interval_set->GetZ() + 0.5; pid += delta_pid) {
+   TList accepted_intervals;//any intervals not in this list at the end of the procedure will be removed
+   for (double pid = fitfunc.GetPIDmin() ; pid <= fitfunc.GetPIDmax(); pid += delta_pid) {
       double proba;
       auto Amax = fitfunc.GetMostProbableA(pid, proba);
       if (proba > min_proba) {
          if (most_prob_A) {
             if (Amax > most_prob_A) {
+               //std::cout << pid << "  " << Amax << "  " << proba << std::endl;
+               //std::cout << "got PIDmax for A=" << intvl->GetA() << std::endl;
                intvl->SetPIDmax(pid - delta_pid);
                most_prob_A = Amax;
                intvl = (interval*)nxt_int();
+               while (intvl->GetA() < most_prob_A) {
+                  intvl = (interval*)nxt_int();
+               }
+               accepted_intervals.Add(intvl);
                intvl->SetPIDmin(pid);
+               //std::cout << "got PIDmin for A=" << intvl->GetA() << std::endl;
             }
          }
          else {
             most_prob_A = Amax;
             intvl = (interval*)nxt_int();
+            while (intvl->GetA() < most_prob_A) {
+               intvl = (interval*)nxt_int();
+            }
+            accepted_intervals.Add(intvl);
             intvl->SetPIDmin(pid);
+            //std::cout << pid << "  " << Amax << "  " << proba << std::endl;
+            //std::cout << "got PIDmin for A=" << intvl->GetA() << std::endl;
          }
       }
       else if (most_prob_A) {
          intvl->SetPIDmax(pid - delta_pid);
+         //std::cout << pid << "  " << Amax << "  " << proba << std::endl;
+         //std::cout << "got PIDmax for A=" << intvl->GetA() << std::endl;
          most_prob_A = 0;
       }
    }
    nxt_int.Reset();
+   TList intervals_to_remove;
+   while ((intvl = (interval*)nxt_int())) {
+      if (!accepted_intervals.FindObject(intvl)) intervals_to_remove.Add(intvl);
+   }
+   if (intervals_to_remove.GetEntries()) {
+      // remove intervals below minimum probability
+      TIter it_rem(&intervals_to_remove);
+      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl);
+   }
    int ig(1);
    // update PID positions from fitted centroids
+   nxt_int.Reset();
+   KVNumberList remaining_gaussians, remaining_alist;
    while ((intvl = (interval*)nxt_int())) {
+      // in case we removed some peaks
+      while (alist[ig - 1] < intvl->GetA()) {
+         ++ig;
+      }
       intvl->SetPID(fitfunc.GetCentroid(ig));
+      remaining_gaussians.Add(ig);
+      remaining_alist.Add(intvl->GetA());
       ++ig;
    }
    UpdatePIDList();
@@ -855,6 +941,40 @@ void KVItvFinderDialog::FitIsotopes()
 
    fPad->Modified();
    fPad->Update();
+
+   // save results in grid parameters
+   KVNumberList zlist;
+   if (fGrid->GetParameters()->HasStringParameter("MASSFITS"))
+      zlist.Set(fGrid->GetParameters()->GetStringValue("MASSFITS"));
+   zlist.Add(current_interval_set->GetZ());
+   fGrid->GetParameters()->SetValue("MASSFITS", zlist.AsString());
+   TString massfit = Form("MASSFIT_%d", current_interval_set->GetZ());
+   KVNameValueList fitparams;
+   fitparams.SetValue("Ng", remaining_gaussians.GetNValues());
+   fitparams.SetValue("Alist", remaining_alist.AsString());
+   fitparams.SetValue("PIDmin", fitfunc.GetPIDmin());
+   fitparams.SetValue("PIDmax", fitfunc.GetPIDmax());
+   fitparams.SetValue("Bkg_cst", fitfunc.GetBackgroundConstant());
+   fitparams.SetValue("Bkg_slp", fitfunc.GetBackgroundSlope());
+   fitparams.SetValue("GausWid", fitfunc.GetGaussianWidth(0));
+   fitparams.SetValue("PIDvsA_a0", fitfunc.GetPIDvsAfit_a0());
+   fitparams.SetValue("PIDvsA_a1", fitfunc.GetPIDvsAfit_a1());
+   fitparams.SetValue("PIDvsA_a2", fitfunc.GetPIDvsAfit_a2());
+   ig = 1;
+   for (auto idx : remaining_gaussians) {
+      fitparams.SetValue(Form("Norm_%d", ig), fitfunc.GetGaussianNorm(idx));
+      ++ig;
+   }
+   auto sanitized = fitparams.Get().ReplaceAll("=", ":");
+   fGrid->GetParameters()->SetValue(massfit, sanitized);
+}
+
+void KVItvFinderDialog::SetFitParameters()
+{
+   // Open dialog to modify parameters for multigauss mass fit
+
+   bool cancel = false;
+   auto dialog = new KVNameValueListGUI(fMain, &mass_fit_parameters, &cancel);
 }
 
 void KVItvFinderDialog::RemoveFit()

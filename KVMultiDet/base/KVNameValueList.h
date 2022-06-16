@@ -215,6 +215,7 @@ public:
    }
 
    bool Set(const KVString&);
+   KVString Get() const;
 
    KVHashList* GetList() const;
 
@@ -351,7 +352,7 @@ public:
    {
       // Returns kTRUE if the list contains a parameter with given name and type Double.
       //
-      // WARNING: only returns kTRUE if paramete is STRICTLY of type Double,
+      // WARNING: only returns kTRUE if parameter is STRICTLY of type Double,
       // will return false for Int parameter.
       //
       // \sa HasNumericParameter()

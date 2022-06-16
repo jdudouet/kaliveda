@@ -78,6 +78,8 @@ class KVItvFinderDialog {
 
    interval_set* current_interval_set = nullptr;// interval selected by ZoomOnCanvas()
 
+   KVNameValueList mass_fit_parameters;// for user control of multi-gaussian fit
+
 public:
    enum {
       M_SAVE,
@@ -135,6 +137,7 @@ public:
    void SetLogy();
    void UnzoomHisto();
    void FitIsotopes();
+   void SetFitParameters();
    void RemoveFit();
 
    void ProcessIdentification(Int_t zmin = -1, Int_t zmax = -1);
@@ -143,6 +146,8 @@ public:
 
 
    ClassDef(KVItvFinderDialog, 1) //gui to KVPIDIntevalFinder
+private:
+   void remove_interval_from_interval_set(interval_set* itvs, interval* itv);
 };
 
 

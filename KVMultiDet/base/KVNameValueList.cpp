@@ -104,6 +104,30 @@ bool KVNameValueList::Set(const KVString& list)
    return true;
 }
 
+KVString KVNameValueList::Get() const
+{
+   // Fill and return a string containing a comma-separated list of the parameter/value pairs
+   //
+   //~~~~~~~~~~~~~~~~~~~
+   //"param1=val1,param2=val2,..."
+   //~~~~~~~~~~~~~~~~~~~
+   //
+   // Such a string can be used with method Set() in order to initialize a copy of this list.
+
+   KVString list;
+   for (auto& par : *this) {
+      if (list.Length()) list += ",";
+      list += Form("%s=", par.GetName());
+      if (par.IsString())
+         list += par.GetString();
+      else if (par.IsDouble())
+         list += Form("%g", par.GetDouble());
+      else if (par.IsInt())
+         list += Form("%d", par.GetInt());
+   }
+   return list;
+}
+
 //______________________________________________
 KVHashList* KVNameValueList::GetList() const
 {

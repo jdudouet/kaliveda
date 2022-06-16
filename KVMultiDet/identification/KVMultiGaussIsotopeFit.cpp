@@ -13,21 +13,22 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
 {
    // Constructor used to initialize and prepare a new fit of isotope PID spectrum
    FixParameter(0, Niso);
-   SetParLimits(1, 1e-3, 1e+3);
-   SetParameter(1, 4.);
-   SetParName(1, "Norm");
-   SetParLimits(2, -10, 1e-3);
-   SetParameter(2, -0.2);
-   SetParName(2, "Bkg. slope");
-   SetParName(3, "Sigma");
-   SetParLimits(3, 1.e-2, 1.e-1);
-   SetParameter(3, 0.1);
+   SetParLimits(fit_param_index::bkg_cst, 1e-3, 1e+5);
+   SetParameter(fit_param_index::bkg_cst, 4.);
+   SetParName(fit_param_index::bkg_cst, "Norm");
+   SetParLimits(fit_param_index::bkg_slp, -10, 10);
+   SetParameter(fit_param_index::bkg_slp, -0.2);
+   SetParName(fit_param_index::bkg_slp, "Bkg. slope");
+   SetParName(fit_param_index::gauss_wid, "Sigma");
+   SetParLimits(fit_param_index::gauss_wid, min_sigma, max_sigma);
+   SetParameter(fit_param_index::gauss_wid, 0.1);
 
    TGraph pid_vs_a;
    for (int ig = 1; ig <= Niso; ++ig) {
       SetParName(get_gauss_norm_index(ig), Form("Norm. A=%d", Alist[ig - 1]));
       SetParLimits(get_gauss_norm_index(ig), 1., 1.e+06);
       SetParameter(get_gauss_norm_index(ig), 15000.);
+      SetParName(get_mass_index(ig, Niso), Form("A_%d", ig));
       FixParameter(get_mass_index(ig, Niso), Alist[ig - 1]);
 
       pid_vs_a.AddPoint(Alist[ig - 1], PIDlist[ig - 1]);
@@ -43,10 +44,54 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
    centroidFit.SetParameter(2, -1.e-3);
    pid_vs_a.Fit(&centroidFit, "N");
 
-   for (int i = 0; i < 3; ++i) FixParameter(4 + i, centroidFit.GetParameter(i));
+   for (int i = 0; i < 3; ++i) {
+      FixParameter(fit_param_index::pidvsA_a0 + i, centroidFit.GetParameter(i));
+      SetParName(fit_param_index::pidvsA_a0 + i, Form("PIDvsA_a%d", i));
+   }
+
+   SetLineColor(kBlack);
+   SetLineWidth(2);
+   SetNpx(500);
 }
 
+KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max,
+      const KVNumberList& alist, double bkg_cst, double bkg_slp,
+      double gaus_wid, double pidvsa_a0, double pidvsa_a1, double pidvsa_a2)
+   : TF1("MultiGaussIsotopeFit", this, &KVMultiGaussIsotopeFit::FitFunc, PID_min, PID_max, total_number_parameters(Ngauss)),
+     Z{z},
+     Niso{Ngauss},
+     PIDmin{PID_min}, PIDmax{PID_max}
+{
+   // Constructor which can be used with existing fit results (not to perform new fits)
+   //
+   // Use SetGaussianNorm() to set the normalisation parameters for each gaussian
 
+   for (auto a : alist) Alist.push_back(a);
+
+   SetParameter(0, Niso);
+   SetParameter(fit_param_index::bkg_cst, bkg_cst);
+   SetParameter(fit_param_index::bkg_slp, bkg_slp);
+   SetParameter(fit_param_index::gauss_wid, gaus_wid);
+   SetParameter(fit_param_index::pidvsA_a0, pidvsa_a0);
+   SetParameter(fit_param_index::pidvsA_a1, pidvsa_a1);
+   SetParameter(fit_param_index::pidvsA_a2, pidvsa_a2);
+
+   SetParName(fit_param_index::bkg_cst, "Norm");
+   SetParName(fit_param_index::bkg_slp, "Bkg. slope");
+   SetParName(fit_param_index::gauss_wid, "Sigma");
+
+   for (int ig = 1; ig <= Niso; ++ig) {
+      SetParName(get_gauss_norm_index(ig), Form("Norm. A=%d", Alist[ig - 1]));
+      SetParName(get_mass_index(ig, Niso), Form("A_%d", ig));
+      FixParameter(get_mass_index(ig, Niso), Alist[ig - 1]);
+   }
+   for (int i = 0; i < 3; ++i)
+      SetParName(fit_param_index::pidvsA_a0 + i, Form("PIDvsA_a%d", i));
+
+   SetLineColor(kBlack);
+   SetLineWidth(2);
+   SetNpx(500);
+}
 
 void KVMultiGaussIsotopeFit::UnDraw(TVirtualPad* pad) const
 {
@@ -115,6 +160,30 @@ double KVMultiGaussIsotopeFit::GetMeanA(double PID) const
       ++ig;
    }
    return totprob > 0 ? amean / totprob : -1.;
+}
+
+std::map<int, double> KVMultiGaussIsotopeFit::GetADistribution(double PID) const
+{
+   // For the given PID, the map is filled with all possible values of A and the associated probability
+   auto total = Eval(PID);
+   TF1 fgaus("fgaus", "gaus", PIDmin, PIDmax);
+   std::map<int, double> Adist;
+   int ig = 1;
+   for (auto& a : Alist) {
+      fgaus.SetParameters(GetGaussianNorm(ig), GetCentroid(ig), GetGaussianWidth(ig));
+      Adist[a] = fgaus.Eval(PID) / total;
+      ++ig;
+   }
+   return Adist;
+}
+
+void KVMultiGaussIsotopeFit::SetFitRange(double min, double max)
+{
+   // Change range of fit
+
+   SetRange(min, max);
+   PIDmin = min;
+   PIDmax = max;
 }
 
 ClassImp(KVMultiGaussIsotopeFit)
