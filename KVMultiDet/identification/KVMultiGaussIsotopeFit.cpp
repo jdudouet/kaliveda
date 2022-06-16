@@ -1,9 +1,10 @@
 #include "KVMultiGaussIsotopeFit.h"
+#include "TGraph.h"
 
-
+#include <TCanvas.h>
 
 KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, std::vector<int> alist, std::vector<double> pidlist)
-   : TF1("MultiGaussIsotopeFit", this, &KVMultiGaussIsotopeFit::FitFunc, PID_min, PID_max, 2 * (Ngauss + 2)),
+   : TF1("MultiGaussIsotopeFit", this, &KVMultiGaussIsotopeFit::FitFunc, PID_min, PID_max, total_number_parameters(Ngauss)),
      Z{z},
      Niso{Ngauss},
      PIDmin{PID_min}, PIDmax{PID_max},
@@ -19,24 +20,33 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
    SetParameter(2, -0.2);
    SetParName(2, "Bkg. slope");
    SetParName(3, "Sigma");
-   SetParLimits(3, 1.e-2, 2.);
+   SetParLimits(3, 1.e-2, 1.e-1);
    SetParameter(3, 0.1);
+
+   TGraph pid_vs_a;
    for (int ig = 1; ig <= Niso; ++ig) {
-      SetParName(2 * (ig + 1), Form("Norm. A=%d", Alist[ig - 1]));
-      SetParLimits(2 * (ig + 1), 1., 1.e+06);
-      SetParameter(2 * (ig + 1), 15000.);
-      SetParName(2 * (ig + 1) + 1, Form("Centr. A=%d", Alist[ig - 1]));
-      FixParameter(2 * (ig + 1) + 1, PIDlist[ig - 1]);
+      SetParName(get_gauss_norm_index(ig), Form("Norm. A=%d", Alist[ig - 1]));
+      SetParLimits(get_gauss_norm_index(ig), 1., 1.e+06);
+      SetParameter(get_gauss_norm_index(ig), 15000.);
+      FixParameter(get_mass_index(ig, Niso), Alist[ig - 1]);
+
+      pid_vs_a.AddPoint(Alist[ig - 1], PIDlist[ig - 1]);
    }
+
+   // do initial fit of centroids
+   TF1 centroidFit("centroidFit", this, &KVMultiGaussIsotopeFit::centroid_fit, 0., 100., 3);
+   centroidFit.SetParLimits(0, -50, 50);
+   centroidFit.SetParameter(0, 0);
+   centroidFit.SetParLimits(1, 1.e-2, 5.);
+   centroidFit.SetParameter(1, 1.e-1);
+   centroidFit.SetParLimits(2, -5, 5.);
+   centroidFit.SetParameter(2, -1.e-3);
+   pid_vs_a.Fit(&centroidFit, "N");
+
+   for (int i = 0; i < 3; ++i) FixParameter(4 + i, centroidFit.GetParameter(i));
 }
 
-void KVMultiGaussIsotopeFit::ReleaseCentroids(double margin)
-{
-   // Release the constraint on the positions of the centroids, within +/-margin
-   for (int ig = 1; ig <= Niso; ++ig) {
-      SetParLimits(2 * (ig + 1) + 1, PIDlist[ig - 1] - 0.02, PIDlist[ig - 1] + 0.02);
-   }
-}
+
 
 void KVMultiGaussIsotopeFit::UnDraw(TVirtualPad* pad) const
 {
@@ -60,7 +70,7 @@ void KVMultiGaussIsotopeFit::DrawFitWithGaussians(Option_t* opt) const
    auto cstep = TColor::GetPalette().GetSize() / (Niso + 1);
    int ig = 1;
    for (auto& a : Alist) {
-      fgaus.SetParameters(GetParameter(2 * (ig + 1)), GetParameter(2 * (ig + 1) + 1), GetParameter(3));
+      fgaus.SetParameters(GetGaussianNorm(ig), GetCentroid(ig), GetGaussianWidth(ig));
       fgaus.SetNpx(500);
       fgaus.SetLineColor(TColor::GetPalette()[cstep * ig]);
       fgaus.SetLineWidth(2);
@@ -79,7 +89,7 @@ int KVMultiGaussIsotopeFit::GetMostProbableA(double PID, double& P) const
    std::map<double, int> probabilities;
    int ig = 1;
    for (auto& a : Alist) {
-      fgaus.SetParameters(GetParameter(2 * (ig + 1)), GetParameter(2 * (ig + 1) + 1), GetParameter(3));
+      fgaus.SetParameters(GetGaussianNorm(ig), GetCentroid(ig), GetGaussianWidth(ig));
       probabilities[fgaus.Eval(PID) / total] = a;
       ++ig;
    }
@@ -98,7 +108,7 @@ double KVMultiGaussIsotopeFit::GetMeanA(double PID) const
    int ig = 1;
    double amean(0), totprob(0);
    for (auto& a : Alist) {
-      fgaus.SetParameters(GetParameter(2 * (ig + 1)), GetParameter(2 * (ig + 1) + 1), GetParameter(3));
+      fgaus.SetParameters(GetGaussianNorm(ig), GetCentroid(ig), GetGaussianWidth(ig));
       auto weight = fgaus.Eval(PID) / total;
       amean += weight * a;
       totprob += weight;

@@ -801,8 +801,8 @@ void KVItvFinderDialog::FitIsotopes()
 
    fLinearHisto->Fit(&fitfunc, "NR");
 
-   // now release the centroids (within a small range)
-   fitfunc.ReleaseCentroids(0.02);
+   // now release the centroids
+   fitfunc.ReleaseCentroids();
 
    fLinearHisto->Fit(&fitfunc, "NRME");
 

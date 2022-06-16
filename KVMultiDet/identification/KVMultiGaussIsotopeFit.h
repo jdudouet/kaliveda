@@ -17,24 +17,48 @@
 */
 
 class KVMultiGaussIsotopeFit : public TF1 {
+   double centroid_fit(double* x, double* p)
+   {
+      /*
+         centroids of gaussians are expected to increase linearly with mass A
+         x[0]=A
+         p[0]=offset
+         p[1]=slope
+         */
+      return p[0] + p[1] * x[0] + p[2] * x[0] * x[0];
+   }
+
    double FitFunc(double* x, double* p)
    {
       /*
-         p[0] = number of gaussians = Ng
+         x[0] = PID
+         p[0] = number of gaussians = Ng (fixed)
          p[1],p[2] = background parameters: exp(p[1]+p[2]*x)
          p[3]      = sigma for all gaussians
-         p[4],p[5] = norm, mean of first gaussian
-         p[6],p[7] = norm, mean of second gaussian
-         ...
-         p[2*(N+1)],p[2*(N+1)+1] = norm, mean of Nth gaussian
+         p[4],p[5],p[6] = offset & slope for centroid PID vs. A correlation
+         p[7]...p[6+Ng] = norm of each gaussian
+         p[6+Ng+1]...p[6+2*Ng] = A of each gaussian
 
-         Total number of parameters is 2*(Ng+2).
+         Total number of parameters is 7+2*Ng
       */
+      int Ng = p[0];
       double background = TMath::Exp(p[1] + p[2] * x[0]);
-      for (int i = 1; i <= p[0]; ++i) {
-         background += p[2 * (i + 1)] * TMath::Gaus(x[0], p[2 * (i + 1) + 1], p[3]);
+      for (int i = 1; i <= Ng; ++i) {
+         background += p[get_gauss_norm_index(i)] * TMath::Gaus(x[0], centroid_fit(&p[get_mass_index(i, Ng)], &p[4]), p[3]);
       }
       return background;
+   }
+   int get_gauss_norm_index(int ig) const
+   {
+      return 6 + ig;
+   }
+   int get_mass_index(int ig, int ng) const
+   {
+      return 6 + ng + ig;
+   }
+   int total_number_parameters(int ng) const
+   {
+      return 7 + 2 * ng;
    }
    int Z; // atomic number of the isotopes
    int Niso; // number of isotopes to fit = number of gaussians
@@ -53,7 +77,13 @@ public:
    }
    KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, std::vector<int> alist, std::vector<double> pidlist);
 
-   void ReleaseCentroids(double margin = 0.02);
+   void ReleaseCentroids()
+   {
+      // Release the constraint on the positions of the centroids
+      SetParLimits(4, -50, 50);
+      SetParLimits(5, 1.e-2, 5.);
+      SetParLimits(6, -5, 5.);
+   }
 
    void UnDraw(TVirtualPad* pad = gPad) const;
 
@@ -83,12 +113,18 @@ public:
    {
       // \returns the fitted centroid position of the ith gaussian (i=1,2,...,Niso)
       assert(i > 0 && i <= Niso);
-      return GetParameter(2 * (i + 1) + 1);
+      return GetParameter(4) + (GetParameter(5) + GetParameter(6) * Alist[i - 1]) * Alist[i - 1];
    }
-   double GetGaussianWidth() const
+   double GetGaussianWidth(int) const
    {
       // \returns the fitted width (sigma) used for all gaussians
       return GetParameter(3);
+   }
+   double GetGaussianNorm(int i) const
+   {
+      // \returns the fitted normalisation constant of the ith gaussian (i=1,2,...,Niso)
+      assert(i > 0 && i <= Niso);
+      return GetParameter(get_gauss_norm_index(i));
    }
 
    ClassDef(KVMultiGaussIsotopeFit, 1) //Function for fitting PID mass spectrum
