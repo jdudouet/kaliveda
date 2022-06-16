@@ -110,7 +110,7 @@ void KVMultiGaussIsotopeFit::DrawFitWithGaussians(Option_t* opt) const
 
    DrawCopy(opt)->SetName(get_name_of_multifit(Z));
 
-   TF1 fgaus("fgaus", "gaus", PIDmin, PIDmax);
+   TF1 fgaus("fgaus", "gausn", PIDmin, PIDmax);
    // give a different colour to each gaussian
    auto cstep = TColor::GetPalette().GetSize() / (Niso + 1);
    int ig = 1;
@@ -130,7 +130,7 @@ int KVMultiGaussIsotopeFit::GetMostProbableA(double PID, double& P) const
    // for a given PID, calculate the most probable value of A, P is its probability.
 
    auto total = Eval(PID);
-   TF1 fgaus("fgaus", "gaus", PIDmin, PIDmax);
+   TF1 fgaus("fgaus", "gausn", PIDmin, PIDmax);
    std::map<double, int> probabilities;
    int ig = 1;
    for (auto& a : Alist) {
@@ -149,7 +149,7 @@ double KVMultiGaussIsotopeFit::GetMeanA(double PID) const
 {
    // for a given PID, calculate the weighted sum of A
    auto total = Eval(PID);
-   TF1 fgaus("fgaus", "gaus", PIDmin, PIDmax);
+   TF1 fgaus("fgaus", "gausn", PIDmin, PIDmax);
    int ig = 1;
    double amean(0), totprob(0);
    for (auto& a : Alist) {
@@ -166,7 +166,7 @@ std::map<int, double> KVMultiGaussIsotopeFit::GetADistribution(double PID) const
 {
    // For the given PID, the map is filled with all possible values of A and the associated probability
    auto total = Eval(PID);
-   TF1 fgaus("fgaus", "gaus", PIDmin, PIDmax);
+   TF1 fgaus("fgaus", "gausn", PIDmin, PIDmax);
    std::map<int, double> Adist;
    int ig = 1;
    for (auto& a : Alist) {

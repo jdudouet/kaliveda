@@ -55,7 +55,7 @@ class KVMultiGaussIsotopeFit : public TF1 {
       for (int i = 1; i <= Ng; ++i) {
          background +=
             p[get_gauss_norm_index(i)] * TMath::Gaus(x[0], centroid_fit(&p[get_mass_index(i, Ng)],
-                  &p[fit_param_index::pidvsA_a0]), p[fit_param_index::gauss_wid]);
+                  &p[fit_param_index::pidvsA_a0]), p[fit_param_index::gauss_wid], kTRUE);
       }
       return background;
    }
