@@ -53,6 +53,8 @@ TObject* KVNameValueListGUI::AddAInt(Int_t i, TGHorizontalFrame* hf)
    return num;
 }
 
+
+
 void KVNameValueListGUI::ReadData()
 {
    for (int i = 0; i < theList->GetNpar(); ++i) {
@@ -79,8 +81,29 @@ void KVNameValueListGUI::RestoreData()
    *fCancel = kTRUE;
 }
 
+void KVNameValueListGUI::DisplayDialog()
+{
+   fMain->MapSubwindows();
+
+   fHeight = fMain->GetDefaultHeight();
+   fMain->Resize(fWidth, fHeight);
+   fMain->SetWMSize(fWidth, fHeight);
+   fMain->SetWMSizeHints(fWidth, fHeight, fWidth, fHeight, 0, 0);
+   fMain->SetMWMHints(kMWMDecorAll | kMWMDecorResizeH | kMWMDecorMaximize |
+                      kMWMDecorMinimize | kMWMDecorMenu,
+                      kMWMFuncAll | kMWMFuncResize | kMWMFuncMaximize |
+                      kMWMFuncMinimize, kMWMInputModeless);
+
+   // position relative to the parent's window
+   fMain->CenterOnParent();
+   fMain->SetWindowName(theList->GetTitle());
+
+   fMain->MapWindow();
+   if (fWaitForMain) gClient->WaitFor(fMain);
+}
+
 KVNameValueListGUI::KVNameValueListGUI(const TGWindow* main, KVNameValueList* params, Bool_t* cancel_pressed, Bool_t wait_for_main)
-   : fData(params->GetNpar())
+   : fData(params->GetNpar()), fWaitForMain(wait_for_main)
 {
    // Constructor
    fMain = new TGTransientFrame(gClient->GetDefaultRoot(), main, 1, 1, kVerticalFrame);
@@ -125,45 +148,27 @@ KVNameValueListGUI::KVNameValueListGUI(const TGWindow* main, KVNameValueList* pa
 
    //--- create the OK, Apply and Cancel buttons
 
-   UInt_t width = max_width * 2, height = 0;
+   fWidth = max_width * 2;
+   fHeight = 0;
 
    TGHorizontalFrame* hf = new TGHorizontalFrame(fMain);
 
    fOKBut = new TGTextButton(hf, "&OK", 1);
    hf->AddFrame(fOKBut, new TGLayoutHints(kLHintsCenterY | kLHintsExpandX, 2, 3, 0, 0));
-   height = fOKBut->GetDefaultHeight();
+   fHeight = fOKBut->GetDefaultHeight();
    fOKBut->SetToolTipText("Save changes and close");
-   fOKBut->Resize(max_width, height);
+   fOKBut->Resize(max_width, fHeight);
    fOKBut->Connect("Clicked()", "KVNameValueListGUI", this, "ReadData()");
    fOKBut->Connect("Clicked()", "KVNameValueListGUI", this, "DoClose()");
 
    fCancelBut = new TGTextButton(hf, "&Cancel", 3);
    hf->AddFrame(fCancelBut, new TGLayoutHints(kLHintsCenterY | kLHintsExpandX, 3, 2, 0, 0));
-   fCancelBut->Resize(max_width, height);
+   fCancelBut->Resize(max_width, fHeight);
    fCancelBut->SetToolTipText("Discard changes and close");
    fCancelBut->Connect("Clicked()", "KVNameValueListGUI", this, "RestoreData()");
    fCancelBut->Connect("Clicked()", "KVNameValueListGUI", this, "DoClose()");
 
    fMain->AddFrame(hf, new TGLayoutHints(kLHintsBottom | kLHintsCenterX | kLHintsExpandX, 0, 0, 10, 5));
-
-   // map all widgets and calculate size of dialog
-   fMain->MapSubwindows();
-
-   height = fMain->GetDefaultHeight();
-   fMain->Resize(width, height);
-   fMain->SetWMSize(width, height);
-   fMain->SetWMSizeHints(width, height, width, height, 0, 0);
-   fMain->SetMWMHints(kMWMDecorAll | kMWMDecorResizeH | kMWMDecorMaximize |
-                      kMWMDecorMinimize | kMWMDecorMenu,
-                      kMWMFuncAll | kMWMFuncResize | kMWMFuncMaximize |
-                      kMWMFuncMinimize, kMWMInputModeless);
-
-   // position relative to the parent's window
-   fMain->CenterOnParent();
-   fMain->SetWindowName(theList->GetTitle());
-
-   fMain->MapWindow();
-   if (wait_for_main) gClient->WaitFor(fMain);
 }
 
 //____________________________________________________________________________//
@@ -189,4 +194,42 @@ void KVNameValueListGUI::DoClose()
 void KVNameValueListGUI::CloseWindow()
 {
    delete this;
+}
+
+bool KVNameValueListGUI::EnableDependingOnBool(const TString& value_to_enable, const TString& bool_parameter)
+{
+   // If the list of parameters contains a boolean variable with name bool_parameter,
+   // one or more of the widgets (number entry field, text entry field, etc.) can be disabled or enabled
+   // depending on the boolean state.
+   //
+   // if bool_parameter is not the name of a boolean in the list, or value_to_enable cannot be found in the list,
+   // returns false. otherwise, returns true in case of success.
+
+   if (!theList->HasBoolParameter(bool_parameter)) {
+      Warning("EnableDependingOnBool", "No boolean parameter with name \"%s\" in list", bool_parameter.Data());
+      return false;
+   }
+
+   auto bool_widget = dynamic_cast<TGCheckButton*>(GetDataWidget(bool_parameter));
+
+   if (!theList->HasParameter(value_to_enable)) {
+      Warning("EnableDependingOnBool", "No parameter with name \"%s\" in list", value_to_enable.Data());
+      return false;
+   }
+
+   auto value_widget = GetDataWidget(value_to_enable);
+   if (value_widget->InheritsFrom(TGNumberEntry::Class()))
+      bool_widget->Connect("Toggled(Bool_t)", value_widget->IsA()->GetName(), value_widget, "SetState(Bool_t)");
+   else
+      bool_widget->Connect("Toggled(Bool_t)", value_widget->IsA()->GetName(), value_widget, "SetEnabled(Bool_t)");
+
+   // set current state according to value
+   if (value_widget->InheritsFrom(TGTextEntry::Class()))
+      dynamic_cast<TGTextEntry*>(value_widget)->SetEnabled(theList->GetBoolValue(bool_parameter));
+   else if (value_widget->InheritsFrom(TGNumberEntry::Class()))
+      dynamic_cast<TGNumberEntry*>(value_widget)->SetState(theList->GetBoolValue(bool_parameter));
+   if (value_widget->InheritsFrom(TGCheckButton::Class()))
+      dynamic_cast<TGCheckButton*>(value_widget)->SetEnabled(theList->GetBoolValue(bool_parameter));
+
+   return true;
 }

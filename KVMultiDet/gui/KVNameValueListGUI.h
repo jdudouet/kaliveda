@@ -28,9 +28,11 @@ private:
    TGTextButton* fCancelBut;    //Cancel button
    Bool_t* fOK;                 //set to kTRUE if OK button is pressed
    UInt_t max_width;
+   UInt_t fWidth, fHeight;
    TObjArray fData;
 
    Bool_t* fCancel;
+   Bool_t fWaitForMain;
 
 protected:
    virtual TObject* AddAString(Int_t i, TGHorizontalFrame* hf);
@@ -50,6 +52,14 @@ protected:
    {
       return fMain;
    }
+   TObject* GetDataWidget(const TString& parname) const
+   {
+      // Return pointer to widget corresponding to named parameter in list
+
+      auto index = theList->GetNameIndex(parname);
+      if (index < 0) return nullptr;
+      return GetDataWidget(index);
+   }
 
 public:
    KVNameValueListGUI(const TGWindow* main, KVNameValueList* params, Bool_t* cancel_pressed, Bool_t wait_for_main = kTRUE);
@@ -61,7 +71,10 @@ public:
    void DoClose();
    void CloseWindow();
 
+   bool EnableDependingOnBool(const TString& value_to_enable, const TString& bool_parameter);
+
    ClassDef(KVNameValueListGUI, 1) //GUI for setting KVNameValueList parameters
+   void DisplayDialog();
 };
 
 #endif

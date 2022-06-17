@@ -6,20 +6,20 @@
 ClassImp(KVBatchSystemParametersGUI)
 
 KVBatchSystemParametersGUI::KVBatchSystemParametersGUI(const TGWindow* main, KVNameValueList* params, KVDataAnalyser* dan, Bool_t* cancel)
-   : KVNameValueListGUI(main, params, cancel, kFALSE), fAnalyser(dan)
+   : KVNameValueListGUI(main, params, cancel), fAnalyser(dan)
 {
    // Default constructor
-   fJN = (TGTextEntry*)GetDataWidget(GetList()->GetNameIndex("JobName"));
-   fJNF = (TGTextEntry*)GetDataWidget(GetList()->GetNameIndex("AutoJobNameFormat"));
+   fJN = (TGTextEntry*)GetDataWidget("JobName");
+   fJNF = (TGTextEntry*)GetDataWidget("AutoJobNameFormat");
    fJNF->SetToolTipText(dan->GetRecognisedAutoBatchNameKeywords());
-   fAJN = (TGCheckButton*)GetDataWidget(GetList()->GetNameIndex("AutoJobName"));
+   fAJN = (TGCheckButton*)GetDataWidget("AutoJobName");
    fAJN->Connect("Toggled(Bool_t)", "KVBatchSystemParametersGUI", this, "SetAutoBatchName(Bool_t)");
    fJNF->Connect("TextChanged(const char*)", "KVBatchSystemParametersGUI", this, "UpdateAutoBatchName(const char*)");
    SetAutoBatchName(fAJN->IsDown());
 
    if (GetList()->HasParameter("MultiJobsMode")) {
-      fMJ = (TGCheckButton*)GetDataWidget(GetList()->GetNameIndex("MultiJobsMode"));
-      fRPJ = (TGNumberEntry*)GetDataWidget(GetList()->GetNameIndex("RunsPerJob"));
+      fMJ = (TGCheckButton*)GetDataWidget("MultiJobsMode");
+      fRPJ = (TGNumberEntry*)GetDataWidget("RunsPerJob");
       fRPJ->SetLimits(TGNumberFormat::kNELLimitMinMax, 1, dan->GetNumberOfFilesToAnalyse());
       if (dan->GetNumberOfFilesToAnalyse() < 2) {
          fRPJ->SetState(kFALSE);
@@ -33,7 +33,7 @@ KVBatchSystemParametersGUI::KVBatchSystemParametersGUI(const TGWindow* main, KVN
          fRPJ->SetState(fMJ->IsDown());
       }
    }
-   gClient->WaitFor(GetMain());
+   DisplayDialog();
 }
 
 //____________________________________________________________________________//

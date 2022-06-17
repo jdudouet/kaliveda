@@ -272,8 +272,10 @@ void KVItvFinderDialog::DisplayPIDint()
       current_interval_set = (interval_set*)list->At(0);
       fIntervalListView->Display(current_interval_set->GetIntervals());
    }
-   else
+   else {
       current_interval_set = nullptr;
+      fIntervalListView->RemoveAll();
+   }
    SelectionITVChanged();
 }
 
@@ -301,8 +303,10 @@ void KVItvFinderDialog::UpdatePIDList()
       current_interval_set = (interval_set*)list->At(0);
       fIntervalListView->Display(current_interval_set->GetIntervals());
    }
-   else
+   else {
       current_interval_set = nullptr;
+      fIntervalListView->RemoveAll();
+   }
 }
 
 void KVItvFinderDialog::ZoomOnCanvas()
@@ -393,9 +397,12 @@ void KVItvFinderDialog::ClearInterval(interval_set* itvs)
       alist.push_back(itv->GetA());
    }
    itvs->GetIntervals()->Clear();
+   UpdateLists();
    // remove any fit displayed in pad
    KVMultiGaussIsotopeFit fitfunc(itvs->GetZ(), alist);
    fitfunc.UnDraw(fPad);
+   fCanvas->Modified();
+   fCanvas->Update();
 }
 
 void KVItvFinderDialog::LinearizeHisto(int nbins)
@@ -804,8 +811,10 @@ void KVItvFinderDialog::UpdateLists()
       current_interval_set = (interval_set*)list->At(0);
       fIntervalListView->Display(current_interval_set->GetIntervals());
    }
-   else
+   else {
       current_interval_set = nullptr;
+      fIntervalListView->RemoveAll();
+   }
 }
 
 void KVItvFinderDialog::TestIdent()
@@ -1000,6 +1009,9 @@ void KVItvFinderDialog::SetFitParameters()
 
    bool cancel = false;
    auto dialog = new KVNameValueListGUI(fMain, &mass_fit_parameters, &cancel);
+   dialog->EnableDependingOnBool("PID min for fit", "Limit range of fit");
+   dialog->EnableDependingOnBool("PID max for fit", "Limit range of fit");
+   dialog->DisplayDialog();
 }
 
 void KVItvFinderDialog::RemoveFit()
