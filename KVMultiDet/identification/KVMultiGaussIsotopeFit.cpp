@@ -3,12 +3,12 @@
 
 #include <TCanvas.h>
 
-KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, std::vector<int> alist, std::vector<double> pidlist)
+KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, const KVNumberList& alist, std::vector<double> pidlist)
    : TF1("MultiGaussIsotopeFit", this, &KVMultiGaussIsotopeFit::FitFunc, PID_min, PID_max, total_number_parameters(Ngauss)),
      Z{z},
      Niso{Ngauss},
      PIDmin{PID_min}, PIDmax{PID_max},
-     Alist{alist},
+     Alist{alist.GetArray()},
      PIDlist{pidlist}
 {
    // Constructor used to initialize and prepare a new fit of isotope PID spectrum
@@ -60,13 +60,12 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
    : TF1("MultiGaussIsotopeFit", this, &KVMultiGaussIsotopeFit::FitFunc, PID_min, PID_max, total_number_parameters(Ngauss)),
      Z{z},
      Niso{Ngauss},
-     PIDmin{PID_min}, PIDmax{PID_max}
+     PIDmin{PID_min}, PIDmax{PID_max},
+     Alist{alist.GetArray()}
 {
    // Constructor which can be used with existing fit results (not to perform new fits)
    //
    // Use SetGaussianNorm() to set the normalisation parameters for each gaussian
-
-   for (auto a : alist) Alist.push_back(a);
 
    SetParameter(0, Niso);
    SetParameter(fit_param_index::bkg_cst, bkg_cst);

@@ -156,23 +156,23 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
       fControlOscillo->AddFrame(fToolBar, new TGLayoutHints(kLHintsTop | kLHintsExpandX));
    }
 
-   fCustomView = new KVListView(interval_set::Class(), fControlOscillo, 450, 200);
-   fCustomView->SetDataColumns(3);
-   fCustomView->SetDataColumn(0, "Z", "GetZ", kTextLeft);
-   fCustomView->SetDataColumn(1, "PIDs", "GetNPID", kTextCenterX);
-   fCustomView->SetDataColumn(2, "Masses", "GetListOfMasses", kTextLeft);
-   fCustomView->Connect("SelectionChanged()", "KVItvFinderDialog", this, "DisplayPIDint()");
-   fCustomView->SetDoubleClickAction("KVItvFinderDialog", this, "ZoomOnCanvas()");
-   fCustomView->AllowContextMenu(kFALSE);
-   fControlOscillo->AddFrame(fCustomView, new TGLayoutHints(kLHintsTop | kLHintsExpandX | kLHintsExpandY, 2, 2, 2, 2));
+   fIntervalSetListView = new KVListView(interval_set::Class(), fControlOscillo, 450, 200);
+   fIntervalSetListView->SetDataColumns(3);
+   fIntervalSetListView->SetDataColumn(0, "Z", "GetZ", kTextLeft);
+   fIntervalSetListView->SetDataColumn(1, "PIDs", "GetNPID", kTextCenterX);
+   fIntervalSetListView->SetDataColumn(2, "Masses", "GetListOfMasses", kTextLeft);
+   fIntervalSetListView->Connect("SelectionChanged()", "KVItvFinderDialog", this, "DisplayPIDint()");
+   fIntervalSetListView->SetDoubleClickAction("KVItvFinderDialog", this, "ZoomOnCanvas()");
+   fIntervalSetListView->AllowContextMenu(kFALSE);
+   fControlOscillo->AddFrame(fIntervalSetListView, new TGLayoutHints(kLHintsTop | kLHintsExpandX | kLHintsExpandY, 2, 2, 2, 2));
 
-   fCurrentView = new KVListView(interval::Class(), fControlOscillo, 450, 180);
-   fCurrentView->SetDataColumns(5);
-   fCurrentView->SetDataColumn(0, "Z", "GetZ", kTextLeft);
-   fCurrentView->SetDataColumn(1, "A", "GetA", kTextCenterX);
-   fCurrentView->SetDataColumn(2, "min", "GetPIDmin", kTextCenterX);
-   fCurrentView->SetDataColumn(3, "pid", "GetPID", kTextCenterX);
-   fCurrentView->SetDataColumn(4, "max", "GetPIDmax", kTextCenterX);
+   fIntervalListView = new KVListView(interval::Class(), fControlOscillo, 450, 180);
+   fIntervalListView->SetDataColumns(5);
+   fIntervalListView->SetDataColumn(0, "Z", "GetZ", kTextLeft);
+   fIntervalListView->SetDataColumn(1, "A", "GetA", kTextCenterX);
+   fIntervalListView->SetDataColumn(2, "min", "GetPIDmin", kTextCenterX);
+   fIntervalListView->SetDataColumn(3, "pid", "GetPID", kTextCenterX);
+   fIntervalListView->SetDataColumn(4, "max", "GetPIDmax", kTextCenterX);
 
 
 
@@ -216,11 +216,11 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    }
 
    //    fCurrentView->ActivateSortButtons();
-   fCurrentView->Connect("SelectionChanged()", "KVItvFinderDialog", this, "SelectionITVChanged()");
+   fIntervalListView->Connect("SelectionChanged()", "KVItvFinderDialog", this, "SelectionITVChanged()");
    //    fCurrentView->SetDoubleClickAction("FZCustomFrameManager",this,"ChangeParValue()");
-   fCurrentView->AllowContextMenu(kFALSE);
+   fIntervalListView->AllowContextMenu(kFALSE);
 
-   fControlOscillo->AddFrame(fCurrentView, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 2));
+   fControlOscillo->AddFrame(fIntervalListView, new TGLayoutHints(kLHintsTop | kLHintsExpandX, 2, 2, 2, 2));
 
    fCanvasFrame->AddFrame(fControlOscillo, new TGLayoutHints(kLHintsExpandY, 0, 0, 0, 0));
 
@@ -236,7 +236,8 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
    fMain->RequestFocus();
    fMain->MapWindow();
 
-   fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
+   fIntervalSetListView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
+   current_interval_set = nullptr;
    fPad->cd();
 
    LinearizeHisto(100);
@@ -265,14 +266,14 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
 void KVItvFinderDialog::DisplayPIDint()
 {
-   //    DrawIntervals();
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    if (nSelected == 1) {
-      interval_set* itv = (interval_set*)list->At(0);
-      fCurrentView->Display(itv->GetIntervals());
+      current_interval_set = (interval_set*)list->At(0);
+      fIntervalListView->Display(current_interval_set->GetIntervals());
    }
-   //    ZoomOnCanvas();
+   else
+      current_interval_set = nullptr;
    SelectionITVChanged();
 }
 
@@ -281,9 +282,9 @@ void KVItvFinderDialog::SelectionITVChanged()
    fPad->cd();
    fItvPaint.Execute("HighLight", "0");
 
-   if (fCurrentView->GetLastSelectedObject()) {
-      int zz = ((interval*)fCurrentView->GetLastSelectedObject())->GetZ();
-      int aa = ((interval*)fCurrentView->GetLastSelectedObject())->GetA();
+   if (fIntervalListView->GetLastSelectedObject()) {
+      int zz = ((interval*)fIntervalListView->GetLastSelectedObject())->GetZ();
+      int aa = ((interval*)fIntervalListView->GetLastSelectedObject())->GetA();
       KVPIDIntervalPainter* painter = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", zz, aa));
       if (!painter) Info("SelectionITVChanged", "%d %d not found...", zz, aa);
       painter->HighLight();
@@ -294,20 +295,25 @@ void KVItvFinderDialog::SelectionITVChanged()
 
 void KVItvFinderDialog::UpdatePIDList()
 {
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    if (nSelected == 1) {
-      interval_set* itv = (interval_set*)list->At(0);
-      fCurrentView->Display(itv->GetIntervals());
+      current_interval_set = (interval_set*)list->At(0);
+      fIntervalListView->Display(current_interval_set->GetIntervals());
    }
+   else
+      current_interval_set = nullptr;
 }
 
 void KVItvFinderDialog::ZoomOnCanvas()
 {
    // Display the interval set for a given Z when the user double clicks on it
 
-   if (!fCustomView->GetLastSelectedObject()) return;
-   current_interval_set = dynamic_cast<interval_set*>(fCustomView->GetLastSelectedObject());
+   if (!fIntervalSetListView->GetLastSelectedObject()) {
+      current_interval_set = nullptr;
+      return;
+   }
+   current_interval_set = dynamic_cast<interval_set*>(fIntervalSetListView->GetLastSelectedObject());
    auto zz = current_interval_set->GetZ();
 
    fLinearHisto->GetXaxis()->SetRangeUser(zz - 0.5, zz + 0.5);
@@ -495,7 +501,7 @@ void KVItvFinderDialog::Identify(double sigma, double ratio)
    fRat = ratio;
 
    fPad->cd();
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    if (!list->GetSize()) {
       ProcessIdentification(1, TMath::Min(fGrid->GetIdentifiers()->GetSize(), 25));
       for (int ii = 0; ii < fGrid->GetIntervalSets()->GetSize(); ii++) DrawInterval((interval_set*)fGrid->GetIntervalSets()->At(ii), 0);
@@ -536,10 +542,11 @@ void KVItvFinderDialog::SaveGrid()
    dir = fi.fIniDir;
    fGrid->ReloadPIDRanges();
 
-   fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
-   fCurrentView->RemoveAll();
+   fIntervalSetListView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
+   current_interval_set = nullptr;
+   fIntervalListView->RemoveAll();
 
-   fItvPaint.Clear("all");
+   fItvPaint.Clear();
    DrawIntervals();
 }
 
@@ -573,51 +580,55 @@ void KVItvFinderDialog::ExportToGrid()
 
 void KVItvFinderDialog::NewInterval()
 {
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
-   if (!list->GetSize()) {
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
+   if (!list->GetSize() || list->GetSize() > 1) {
+      current_interval_set = nullptr;
       return;
    }
 
-   interval_set* itvs = (interval_set*)list->At(0);
+   current_interval_set = (interval_set*)list->At(0);
 
    fPad->WaitPrimitive("TMarker");
-   TMarker* mm = dynamic_cast<TMarker*>(fPad->GetListOfPrimitives()->Last());
+   auto mm = dynamic_cast<TMarker*>(fPad->GetListOfPrimitives()->Last());
    assert(mm);
-
    double pid = mm->GetX();
+   delete mm;
+
    int aa = 0;
    int iint = 0;
 
-   if (!itvs->GetNPID()) {
-      aa = itvs->GetZ() * 2;
+   if (!current_interval_set->GetNPID()) {
+      aa = current_interval_set->GetZ() * 2;
       iint = 0;
    }
-   else if (pid < ((interval*)itvs->GetIntervals()->First())->GetPID()) {
-      aa = ((interval*)itvs->GetIntervals()->First())->GetA() - 1;
+   else if (pid < ((interval*)current_interval_set->GetIntervals()->First())->GetPID()) {
+      aa = ((interval*)current_interval_set->GetIntervals()->First())->GetA() - 1;
       iint = 0;
    }
-   else if (pid > ((interval*)itvs->GetIntervals()->Last())->GetPID()) {
-      aa = ((interval*)itvs->GetIntervals()->Last())->GetA() + 1;
-      iint = itvs->GetNPID();
+   else if (pid > ((interval*)current_interval_set->GetIntervals()->Last())->GetPID()) {
+      aa = ((interval*)current_interval_set->GetIntervals()->Last())->GetA() + 1;
+      iint = current_interval_set->GetNPID();
    }
    else {
-      for (int ii = 1; ii < itvs->GetNPID(); ii++) {
+      for (int ii = 1; ii < current_interval_set->GetNPID(); ii++) {
          bool massok = false;
-         if (pid > ((interval*)itvs->GetIntervals()->At(ii - 1))->GetPID() && pid < ((interval*)itvs->GetIntervals()->At(ii))->GetPID()) {
-            aa = ((interval*)itvs->GetIntervals()->At(ii - 1))->GetA() + 1;
+         if (pid > ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetPID()
+               && pid < ((interval*)current_interval_set->GetIntervals()->At(ii))->GetPID()) {
+            aa = ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetA() + 1;
             iint = ii;
-            if (aa <= ((interval*)itvs->GetIntervals()->At(ii))->GetA() - 1) massok = true;
+            if (aa <= ((interval*)current_interval_set->GetIntervals()->At(ii))->GetA() - 1) massok = true;
          }
-         if (aa && !massok)((interval*)itvs->GetIntervals()->At(ii))->SetA(((interval*)itvs->GetIntervals()->At(ii))->GetA() + 1);
+         if (aa && !massok)
+            ((interval*)current_interval_set->GetIntervals()->At(ii))->SetA(((interval*)current_interval_set->GetIntervals()->At(ii))->GetA() + 1);
       }
    }
 
-   interval* itv = new interval(itvs->GetZ(), aa, mm->GetX(), mm->GetX() - 0.05, mm->GetX() + 0.05);
-   itvs->GetIntervals()->AddAt(itv, iint);
+   interval* itv = new interval(current_interval_set->GetZ(), aa, mm->GetX(), mm->GetX() - 0.05, mm->GetX() + 0.05);
+   current_interval_set->GetIntervals()->AddAt(itv, iint);
 
    // find intervals which are now left (smaller mass) and right (higher mass) than this one
-   interval* left_interval = iint > 0 ? (interval*)itvs->GetIntervals()->At(iint - 1) : nullptr;
-   interval* right_interval = iint < itvs->GetIntervals()->GetEntries() - 1 ? (interval*)itvs->GetIntervals()->At(iint + 1) : nullptr;
+   interval* left_interval = iint > 0 ? (interval*)current_interval_set->GetIntervals()->At(iint - 1) : nullptr;
+   interval* right_interval = iint < current_interval_set->GetIntervals()->GetEntries() - 1 ? (interval*)current_interval_set->GetIntervals()->At(iint + 1) : nullptr;
    // find the corresponding painters
    KVPIDIntervalPainter* left_painter{nullptr}, *right_painter{nullptr};
    TIter next_painter(&fItvPaint);
@@ -628,7 +639,7 @@ void KVItvFinderDialog::NewInterval()
    }
 
    // give a different colour to each interval
-   auto nitv = itvs->GetIntervals()->GetEntries();
+   auto nitv = current_interval_set->GetIntervals()->GetEntries();
    auto cstep = TColor::GetPalette().GetSize() / (nitv + 1);
 
    KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto, TColor::GetPalette()[cstep * (iint + 1)],
@@ -645,9 +656,7 @@ void KVItvFinderDialog::NewInterval()
    dummy->SetCanvas(fCanvas);
    fItvPaint.Add(dummy);
 
-   delete mm;
-
-   fCurrentView->Display(itvs->GetIntervals());
+   fIntervalListView->Display(current_interval_set->GetIntervals());
    fItvPaint.Execute("Update", "");
 
    fCanvas->Modified();
@@ -663,39 +672,41 @@ void KVItvFinderDialog::NewIntervalSet()
    UpdateLists();
 }
 
-void KVItvFinderDialog::remove_interval_from_interval_set(interval_set* itvs, interval* itv)
+void KVItvFinderDialog::remove_interval_from_interval_set(interval_set* itvs, interval* itv, bool remove_fit)
 {
    KVPIDIntervalPainter* pid = (KVPIDIntervalPainter*)fItvPaint.FindObject(Form("%d_%d", itv->GetZ(), itv->GetA()));
    itvs->GetIntervals()->Remove(itv);
    delete_painter_from_painter_list(pid);
-   // remove any fits from pad corresponding to intervals
-   KVMultiGaussIsotopeFit::UnDrawGaussian(itvs->GetZ(), itv->GetA(), fPad);
+   if (remove_fit) {
+      // remove any fits from pad corresponding to intervals
+      KVMultiGaussIsotopeFit::UnDrawGaussian(itvs->GetZ(), itv->GetA(), fPad);
+   }
 }
 
 void KVItvFinderDialog::RemoveInterval()
 {
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
-   interval_set* itvs = 0;
+   current_interval_set = nullptr;
 
    if (nSelected == 1) {
-      itvs = (interval_set*)list->At(0);
-      list.reset(fCurrentView->GetSelectedObjects());
+      current_interval_set = (interval_set*)list->At(0);
+      list.reset(fIntervalListView->GetSelectedObjects());
       nSelected = list->GetSize();
       if (nSelected >= 1) {
          for (int ii = 0; ii < nSelected; ii++) {
             interval* itv = (interval*) list->At(ii);
-            remove_interval_from_interval_set(itvs, itv);
+            remove_interval_from_interval_set(current_interval_set, itv);
          }
-         fCurrentView->Display(itvs->GetIntervals());
+         fIntervalListView->Display(current_interval_set->GetIntervals());
          fCanvas->Modified();
          fCanvas->Update();
       }
-      else ClearInterval(itvs);
+      else ClearInterval(current_interval_set);
    }
    else if (nSelected > 1) {
       for (int ii = 0; ii < nSelected; ii++) {
-         itvs = (interval_set*)list->At(ii);
+         auto itvs = (interval_set*)list->At(ii);
          ClearInterval(itvs);
       }
    }
@@ -703,33 +714,38 @@ void KVItvFinderDialog::RemoveInterval()
 
 void KVItvFinderDialog::MassesUp()
 {
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
-   interval_set* itvs = 0;
-   if (nSelected == 1) {
-      itvs = (interval_set*)list->At(0);
 
-      list.reset(fCurrentView->GetSelectedObjects());
+   current_interval_set = nullptr;
+   if (nSelected == 1) {
+      current_interval_set = (interval_set*)list->At(0);
+
+      list.reset(fIntervalListView->GetSelectedObjects());
       nSelected = list->GetSize();
 
       if (nSelected == 1) {
          interval* itv = (interval*) list->At(0);
          itv->SetA(itv->GetA() + 1);
          fItvPaint.Execute("Update", "");
-         //            fCurrentView->Display(itvs->GetIntervals());
+         // change the name of any gaussian in the pad associated with this isotope
+         auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() - 1));
+         if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
          fCanvas->Modified();
          fCanvas->Update();
       }
       else {
-         KVList* ll = itvs->GetIntervals();
+         KVList* ll = current_interval_set->GetIntervals();
          nSelected = ll->GetSize();
          if (nSelected >= 1) {
             for (int ii = 0; ii < nSelected; ii++) {
                interval* itv = (interval*) ll->At(ii);
                itv->SetA(itv->GetA() + 1);
+               // change the name of any gaussian in the pad associated with this isotope
+               auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() - 1));
+               if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
             }
             fItvPaint.Execute("Update", "");
-            //                fCurrentView->Display(itvs->GetIntervals());
             fCanvas->Modified();
             fCanvas->Update();
          }
@@ -739,29 +755,36 @@ void KVItvFinderDialog::MassesUp()
 
 void KVItvFinderDialog::MassesDown()
 {
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
-   interval_set* itvs = 0;
+
+   current_interval_set = nullptr;
    if (nSelected == 1) {
-      itvs = (interval_set*)list->At(0);
-      list.reset(fCurrentView->GetSelectedObjects());
+      current_interval_set = (interval_set*)list->At(0);
+      list.reset(fIntervalListView->GetSelectedObjects());
       nSelected = list->GetSize();
 
       if (nSelected == 1) {
          interval* itv = (interval*) list->At(0);
          itv->SetA(itv->GetA() - 1);
          fItvPaint.Execute("Update", "");
+         // change the name of any gaussian in the pad associated with this isotope
+         auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() + 1));
+         if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
          fCanvas->Modified();
          fCanvas->Update();
       }
       else {
 
-         KVList* ll = itvs->GetIntervals();
+         KVList* ll = current_interval_set->GetIntervals();
          nSelected = ll->GetSize();
          if (nSelected >= 1) {
             for (int ii = 0; ii < nSelected; ii++) {
                interval* itv = (interval*) ll->At(ii);
                itv->SetA(itv->GetA() - 1);
+               // change the name of any gaussian in the pad associated with this isotope
+               auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() + 1));
+               if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
             }
             fItvPaint.Execute("Update", "");
             fCanvas->Modified();
@@ -773,14 +796,16 @@ void KVItvFinderDialog::MassesDown()
 
 void KVItvFinderDialog::UpdateLists()
 {
-   fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
-   std::unique_ptr<TList> list(fCustomView->GetSelectedObjects());
+   fIntervalSetListView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
+   std::unique_ptr<TList> list(fIntervalSetListView->GetSelectedObjects());
    Int_t nSelected = list->GetSize();
    interval_set* itvs = 0;
    if (nSelected == 1) {
-      itvs = (interval_set*)list->At(0);
-      fCurrentView->Display(itvs->GetIntervals());
+      current_interval_set = (interval_set*)list->At(0);
+      fIntervalListView->Display(current_interval_set->GetIntervals());
    }
+   else
+      current_interval_set = nullptr;
 }
 
 void KVItvFinderDialog::TestIdent()
@@ -791,10 +816,11 @@ void KVItvFinderDialog::TestIdent()
 
    fGrid->ReloadPIDRanges();
 
-   fCustomView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
-   fCurrentView->RemoveAll();
+   fIntervalSetListView->Display(((KVIDZAFromZGrid*)fGrid)->GetIntervalSets());
+   current_interval_set = nullptr;
+   fIntervalListView->RemoveAll();
 
-   fItvPaint.Clear("all");
+   fItvPaint.Clear();
    DrawIntervals();
 
    new KVTestIDGridDialog(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), 10, 10, fGrid, fHisto);
@@ -830,12 +856,12 @@ void KVItvFinderDialog::FitIsotopes()
 
    if (!current_interval_set) return;
 
-   std::vector<int> alist;
+   KVNumberList alist;
    std::vector<double> pidlist;
    TIter nxt_int(current_interval_set->GetIntervals());
    interval* intvl = nullptr;
    while ((intvl = (interval*)nxt_int())) {
-      alist.push_back(intvl->GetA());
+      alist.Add(intvl->GetA());
       pidlist.push_back(intvl->GetPID());
    }
    KVMultiGaussIsotopeFit fitfunc(current_interval_set->GetZ(), current_interval_set->GetNPID(),
@@ -918,17 +944,18 @@ void KVItvFinderDialog::FitIsotopes()
       if (!accepted_intervals.FindObject(intvl)) intervals_to_remove.Add(intvl);
    }
    if (intervals_to_remove.GetEntries()) {
-      // remove intervals below minimum probability
+      // remove intervals below minimum probability (leave gaussians on display)
       TIter it_rem(&intervals_to_remove);
-      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl);
+      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
    }
    int ig(1);
    // update PID positions from fitted centroids
    nxt_int.Reset();
    KVNumberList remaining_gaussians, remaining_alist;
+   auto vec_alist = alist.GetArray();
    while ((intvl = (interval*)nxt_int())) {
       // in case we removed some peaks
-      while (alist[ig - 1] < intvl->GetA()) {
+      while (vec_alist[ig - 1] < intvl->GetA()) {
          ++ig;
       }
       intvl->SetPID(fitfunc.GetCentroid(ig));
@@ -950,8 +977,8 @@ void KVItvFinderDialog::FitIsotopes()
    fGrid->GetParameters()->SetValue("MASSFITS", zlist.AsString());
    TString massfit = Form("MASSFIT_%d", current_interval_set->GetZ());
    KVNameValueList fitparams;
-   fitparams.SetValue("Ng", remaining_gaussians.GetNValues());
-   fitparams.SetValue("Alist", remaining_alist.AsString());
+   fitparams.SetValue("Ng", alist.GetNValues());
+   fitparams.SetValue("Alist", alist.AsString());
    fitparams.SetValue("PIDmin", fitfunc.GetPIDmin());
    fitparams.SetValue("PIDmax", fitfunc.GetPIDmax());
    fitparams.SetValue("Bkg_cst", fitfunc.GetBackgroundConstant());
@@ -960,10 +987,8 @@ void KVItvFinderDialog::FitIsotopes()
    fitparams.SetValue("PIDvsA_a0", fitfunc.GetPIDvsAfit_a0());
    fitparams.SetValue("PIDvsA_a1", fitfunc.GetPIDvsAfit_a1());
    fitparams.SetValue("PIDvsA_a2", fitfunc.GetPIDvsAfit_a2());
-   ig = 1;
-   for (auto idx : remaining_gaussians) {
-      fitparams.SetValue(Form("Norm_%d", ig), fitfunc.GetGaussianNorm(idx));
-      ++ig;
+   for (ig = 1; ig <= alist.GetNValues(); ++ig) {
+      fitparams.SetValue(Form("Norm_%d", ig), fitfunc.GetGaussianNorm(ig));
    }
    auto sanitized = fitparams.Get().ReplaceAll("=", ":");
    fGrid->GetParameters()->SetValue(massfit, sanitized);
@@ -992,6 +1017,8 @@ void KVItvFinderDialog::RemoveFit()
    KVMultiGaussIsotopeFit fitfunc(current_interval_set->GetZ(), alist);
 
    fitfunc.UnDraw(fPad);
+   // mop up any stray gaussians (from intervals which have been removed)
+   KVMultiGaussIsotopeFit::UnDrawAnyGaussian(current_interval_set->GetZ(), fPad);
 
    fPad->Modified();
    fPad->Update();

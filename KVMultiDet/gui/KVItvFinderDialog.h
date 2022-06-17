@@ -54,8 +54,8 @@ class KVItvFinderDialog {
 
 
    KVList*     fCustoms;
-   KVListView* fCustomView;
-   KVListView* fCurrentView;
+   KVListView* fIntervalSetListView;
+   KVListView* fIntervalListView;
 
    KVIDZAFromZGrid* fGrid;
    TH2*        fHisto;
@@ -147,7 +147,7 @@ public:
 
    ClassDef(KVItvFinderDialog, 1) //gui to KVPIDIntevalFinder
 private:
-   void remove_interval_from_interval_set(interval_set* itvs, interval* itv);
+   void remove_interval_from_interval_set(interval_set* itvs, interval* itv, bool remove_fit = true);
 };
 
 

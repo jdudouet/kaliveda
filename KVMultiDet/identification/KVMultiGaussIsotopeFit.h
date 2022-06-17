@@ -6,6 +6,7 @@
 #include "TColor.h"
 #include "TArrayI.h"
 #include "KVNumberList.h"
+#include "KVList.h"
 
 /**
  \class KVMultiGaussIsotopeFit
@@ -88,7 +89,7 @@ public:
    {
       // This constructor cannot be used to perform fits, but can be used to UnDraw() an existing fit
    }
-   KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, std::vector<int> alist, std::vector<double> pidlist);
+   KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, const KVNumberList& alist, std::vector<double> pidlist);
    KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, const KVNumberList& alist,
                           double bkg_cst, double bkg_slp, double gaus_wid,
                           double pidvsa_a0, double pidvsa_a1, double pidvsa_a2);
@@ -126,6 +127,18 @@ public:
       auto old_fit = pad->FindObject(get_name_of_isotope_gaussian(z, a));
       if (old_fit) delete old_fit;
    }
+   static void UnDrawAnyGaussian(int z, TVirtualPad* pad = gPad)
+   {
+      // Remove the graphical representation of any gaussian for this Z from the given pad
+
+      TIter it(pad->GetListOfPrimitives());
+      TObject* ob;
+      KVList to_delete;
+      while ((ob = it())) {
+         TString obname = ob->GetName();
+         if (obname.BeginsWith(get_root_name_of_isotope_gaussian(z))) to_delete.Add(ob);
+      }
+   }
 
    void DrawFitWithGaussians(Option_t* opt = "") const;
 
@@ -140,6 +153,10 @@ public:
    static TString get_name_of_isotope_gaussian(int z, int a)
    {
       return Form("gauss_fit_Z=%d_A=%d", z, a);
+   }
+   static TString get_root_name_of_isotope_gaussian(int z)
+   {
+      return Form("gauss_fit_Z=%d_", z);
    }
 
    double GetBackgroundConstant() const
