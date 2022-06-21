@@ -82,6 +82,14 @@ class KVTestIDGridDialog {
    static Int_t hzvseymin;
    static Int_t hzvseymax;
 
+   std::unique_ptr<TCanvas> resultsCanvas;
+   KVHashList histos;
+   void add_histo(TH1* h)
+   {
+      h->SetDirectory(nullptr);
+      histos.Add(h);
+   }
+
 public:
    KVTestIDGridDialog(const TGWindow* p = 0, const TGWindow* main =
                          0, UInt_t w = 1, UInt_t h = 1, KVIDGraph* g = 0, TH2* data_histo = 0);
@@ -90,7 +98,7 @@ public:
    void DoClose();
    void CloseWindow();
    void TestGrid();
-   void DrawChart(KVCanvas* cc, Int_t zmin, Int_t zmax, Int_t nmin, Int_t nmax);
+   void DrawChart(TVirtualPad* cc, Int_t zmin, Int_t zmax, Int_t nmin, Int_t nmax);
 
    Bool_t CheckNameOK(const TString& name)
    {
