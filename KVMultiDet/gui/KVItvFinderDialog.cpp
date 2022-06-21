@@ -17,6 +17,15 @@
 ClassImp(KVItvFinderDialog)
 //ClassImp(interval_painter)
 
+// Set default values for mass-fit parameters
+KVNameValueList KVItvFinderDialog::mass_fit_parameters{
+   {"Limit range of fit", false},
+   {"PID min for fit", 0.},
+   {"PID max for fit", 10.},
+   {"Minimum probability [%]", 50.},
+   {"Minimum #sigma", 1.e-2},
+   {"Maximum #sigma", 5.e-2}
+};
 
 void KVItvFinderDialog::delete_painter_from_painter_list(KVPIDIntervalPainter* p)
 {
@@ -253,13 +262,6 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
 
    DrawIntervals();
 
-   // Set default values for mass-fit parameters
-   mass_fit_parameters.SetValue("Limit range of fit", false);
-   mass_fit_parameters.SetValue("PID min for fit", 0.);
-   mass_fit_parameters.SetValue("PID max for fit", 100.);
-   mass_fit_parameters.SetValue("Minimum probability [%]", 25.);
-   mass_fit_parameters.SetValue("Minimum #sigma", 1.e-2);
-   mass_fit_parameters.SetValue("Maximum #sigma", 1.e-1);
 }
 
 //____________________________________________________________________________//

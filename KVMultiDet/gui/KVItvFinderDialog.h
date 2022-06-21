@@ -78,7 +78,7 @@ class KVItvFinderDialog {
 
    interval_set* current_interval_set = nullptr;// interval selected by ZoomOnCanvas()
 
-   KVNameValueList mass_fit_parameters;// for user control of multi-gaussian fit
+   static KVNameValueList mass_fit_parameters;// for user control of multi-gaussian fit
 
 public:
    enum {
