@@ -228,9 +228,15 @@ public:
    {
       fZ = zz;
    }
-   void SetPID(double pid)
+   bool SetPID(double pid)
    {
+      // \returns true if PIDMin<pid<PIDMax, false otherwise
       fPID = pid;
+      if (fPIDMin > 0 && fPIDmax > 0) {
+         if (pid >= fPIDMin && pid <= fPIDmax) return true;
+         return false;
+      }
+      return true;
    }
    void SetPIDmin(double pidmin)
    {

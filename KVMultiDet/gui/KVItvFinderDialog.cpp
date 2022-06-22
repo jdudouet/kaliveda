@@ -900,6 +900,8 @@ void KVItvFinderDialog::FitIsotopes()
 
    // remove any previous fit from pad
    fitfunc.UnDraw();
+   // mop up any stray gaussians (from intervals which have been removed)
+   KVMultiGaussIsotopeFit::UnDrawAnyGaussian(current_interval_set->GetZ(), fPad);
 
    // draw fit with individual gaussians
    fitfunc.DrawFitWithGaussians("same");
@@ -959,6 +961,7 @@ void KVItvFinderDialog::FitIsotopes()
       TIter it_rem(&intervals_to_remove);
       while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
    }
+   intervals_to_remove.Clear();
    int ig(1);
    // update PID positions from fitted centroids
    nxt_int.Reset();
@@ -969,10 +972,21 @@ void KVItvFinderDialog::FitIsotopes()
       while (vec_alist[ig - 1] < intvl->GetA()) {
          ++ig;
       }
-      intvl->SetPID(fitfunc.GetCentroid(ig));
-      remaining_gaussians.Add(ig);
-      remaining_alist.Add(intvl->GetA());
+      if (intvl->SetPID(fitfunc.GetCentroid(ig))) {
+         // centroid is between PID limits derived from probability
+         remaining_gaussians.Add(ig);
+         remaining_alist.Add(intvl->GetA());
+      }
+      else {
+         // centroid is outside limits: bad interval, remove
+         intervals_to_remove.Add(intvl);
+      }
       ++ig;
+   }
+   if (intervals_to_remove.GetEntries()) {
+      // remove intervals with centroids outside PID limits
+      TIter it_rem(&intervals_to_remove);
+      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
    }
    UpdatePIDList();
    fItvPaint.Execute("Update", "");
