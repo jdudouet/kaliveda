@@ -4,7 +4,7 @@
 #include "KVGeoNavigator.h"
 #include "KVTemplateEvent.h"
 #include "KV3DGeoTrack.h"
-#include <KVTemplateEvent.h>
+#include "KVNucleusEvent.h"
 #include <TGeoManager.h>
 #include <TGeoMatrix.h>
 #include "KVGeoStrucElement.h"
@@ -34,24 +34,19 @@ void KVGeoNavigator::FormatStructureName(const Char_t* type, Int_t number, KVStr
             if (ind > -1) {
                bit.Remove(0, ind);
                name += Form(bit.Data(), type);
-            }
-            else
+            } else
                name += type;
-         }
-         else if (bit.BeginsWith("number")) {
+         } else if (bit.BeginsWith("number")) {
             Ssiz_t ind = bit.Index("%");
             if (ind > -1) {
                bit.Remove(0, ind);
                name += Form(bit.Data(), number);
-            }
-            else
+            } else
                name += number;
-         }
-         else
+         } else
             name += bit;
       }
-   }
-   else
+   } else
       name.Form("%s_%d", type, number);
    TString tmp;
    GetNameCorrespondance(name.Data(), tmp);
@@ -76,16 +71,14 @@ void KVGeoNavigator::FormatDetectorName(const Char_t* basename, KVString& name)
    if (!fCurStrucNumber) {
       // no parent structures
       name = basename;
-   }
-   else {
+   } else {
       if (fDetNameFmt == "") {
          for (int i = 0; i < fCurStrucNumber; i++) {
             KVGeoStrucElement* el = (KVGeoStrucElement*)fCurrentStructures[i];
             name += Form("%s_", el->GetName());
          }
          name += basename;
-      }
-      else {
+      } else {
          //    $det:name$             - will be replaced by the detector basename
          //    $struc:[type]:name$    - will be replaced by the name of the parent structure of given type
          //    $struc:[type]:type$    - will be replaced by the type of the parent structure of given type
@@ -103,12 +96,10 @@ void KVGeoNavigator::FormatDetectorName(const Char_t* basename, KVString& name)
                      if (ind > -1) {
                         itbit.Remove(0, ind);
                         name += Form(itbit.Data(), basename);
-                     }
-                     else
+                     } else
                         name += basename;
                   }
-               }
-               else if (itbit == "struc") {
+               } else if (itbit == "struc") {
                   KVString struc_typ = bit.Next();
                   KVGeoStrucElement* el = 0;
                   for (int i = 0; i < fCurStrucNumber; i++) {
@@ -122,32 +113,26 @@ void KVGeoNavigator::FormatDetectorName(const Char_t* basename, KVString& name)
                         if (ind > -1) {
                            itbit.Remove(0, ind);
                            name += Form(itbit.Data(), el->GetName());
-                        }
-                        else
+                        } else
                            name += el->GetName();
-                     }
-                     else if (itbit.BeginsWith("type")) {
+                     } else if (itbit.BeginsWith("type")) {
                         Ssiz_t ind = itbit.Index("%");
                         if (ind > -1) {
                            itbit.Remove(0, ind);
                            name += Form(itbit.Data(), el->GetType());
-                        }
-                        else
+                        } else
                            name += el->GetType();
-                     }
-                     else if (itbit.BeginsWith("number")) {
+                     } else if (itbit.BeginsWith("number")) {
                         Ssiz_t ind = itbit.Index("%");
                         if (ind > -1) {
                            itbit.Remove(0, ind);
                            name += Form(itbit.Data(), el->GetNumber());
-                        }
-                        else
+                        } else
                            name += el->GetNumber();
                      }
                   }
                }
-            }
-            else
+            } else
                name += bit;
          }
       }
@@ -323,8 +308,7 @@ TGeoVolume* KVGeoNavigator::GetCurrentDetectorNameAndVolume(KVString& detector_n
       // simple detector
       fCurrentDetectorNode = GetCurrentNode();
       detector_volume = GetCurrentVolume();
-   }
-   else {
+   } else {
       // have we hit 1 layer of a multilayer detector?
       TGeoVolume* mother_vol = GetCurrentNode()->GetMotherVolume();
       if (mother_vol) {
@@ -458,8 +442,7 @@ void KVGeoNavigator::ExtractDetectorNameFromPath(KVString& detname)
          FormatStructureName(type, number, name);
          gel->SetNameTitle(name, type);
          gel->SetNumber(number);
-      }
-      else if (elem.BeginsWith("DET_")) {
+      } else if (elem.BeginsWith("DET_")) {
          // detector name. strip off "DET_" and use rest as basename
          KVString basename(elem(4, elem.Length() - 4));
          FormatDetectorName(basename, detname);
@@ -580,8 +563,7 @@ void KVGeoNavigator::DrawTracks(KVNumberList* zlist)
             if (gPad) gtrack->Draw("same");
             else gtrack->Draw("ogl");
             first = false;
-         }
-         else gtrack->Draw("same");
+         } else gtrack->Draw("same");
       }
    }
 }

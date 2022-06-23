@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "TRandom.h"
+#include "KVNucleusEvent.h"
 #include "KVReconstructedEvent.h"
 using std::cout;
 using std::endl;

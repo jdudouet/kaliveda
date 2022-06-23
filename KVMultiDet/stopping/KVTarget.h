@@ -10,9 +10,10 @@ $Id: KVTarget.h,v 1.23 2008/12/11 16:39:47 ebonnet Exp $
 #ifndef _KV_TARGET_H_
 #define _KV_TARGET_H_
 
-#include "KVNucleus.h"
 #include "KVMaterial.h"
-#include "KVEvent.h"
+
+class KVEvent;
+class KVParticle;
 
 /**
 \class KVTarget
@@ -217,8 +218,7 @@ public:
       if (r) {
          SetBit(kIncoming);
          ResetBit(kOutgoing);
-      }
-      else
+      } else
          ResetBit(kIncoming);
    };
    Bool_t IsOutgoing() const
@@ -238,8 +238,7 @@ public:
       if (r) {
          SetBit(kOutgoing);
          ResetBit(kIncoming);
-      }
-      else
+      } else
          ResetBit(kOutgoing);
    };
 

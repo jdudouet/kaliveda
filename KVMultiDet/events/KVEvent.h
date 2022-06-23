@@ -5,9 +5,9 @@
 #include <TTree.h>
 #include "KVNameValueList.h"
 #include "TClonesArray.h"
-#include "KVParticle.h"
-class KVNucleus;
 class KVFrameTransform;
+class KVParticle;
+class KVNucleus;
 
 #include <TH1.h>
 #include <iterator>
@@ -128,17 +128,7 @@ public:
       SafeDelete(fParticles);
    }
 
-   void Copy(TObject& obj) const
-   {
-      // Copy this event into the object referenced by obj,
-      // assumed to be at least derived from KVEvent.
-      KVBase::Copy(obj);
-      fParameters.Copy(((KVEvent&)obj).fParameters);
-      Int_t MTOT = fParticles->GetEntriesFast();
-      for (Int_t nn = 0; nn < MTOT; nn += 1) {
-         GetParticle(nn + 1)->Copy(*((KVEvent&) obj).AddParticle());
-      }
-   }
+   void Copy(TObject& obj) const;
 
    const TClonesArray* GetParticleArray() const
    {
@@ -199,36 +189,7 @@ public:
       if (x == -1) return 1;
       return x;
    }
-   virtual void MergeEventFragments(TCollection* events, Option_t* opt = "")
-   {
-      // Merge all events in the list into one event (this one)
-      //
-      // We also merge/sum the parameter lists of the events
-      //
-      // First we clear this event, then we fill it with copies of each particle in each event
-      // in the list.
-      //
-      // If option "opt" is given, it is given as argument to each call to
-      // KVEvent::Clear() - this option is then passed on to the KVParticle::Clear()
-      // method of each particle in each event.
-      //
-      // \param[in] events A list of events to merge
-      // \param[in] opt Optional argument transmitted to KVEvent::Clear()
-      //
-      // \note the events in the list will be empty and useless after this!
-
-      Clear(opt);
-      TIter it(events);
-      KVEvent* e;
-      while ((e = (KVEvent*)it())) {
-         e->ResetGetNextParticle();
-         while (auto n = e->GetNextParticle()) {
-            n->Copy(*AddParticle());
-         }
-         GetParameters()->Merge(*(e->GetParameters()));
-         e->Clear(opt);
-      }
-   }
+   virtual void MergeEventFragments(TCollection* events, Option_t* opt = "");
 
    void CustomStreamer()
    {
@@ -304,8 +265,7 @@ public:
       if (strcmp(opt, "")) { // pass options to particle class Clear() method
          TString Opt = Form("C+%s", opt);
          fParticles->Clear(Opt);
-      }
-      else
+      } else
          fParticles->Clear("C");
       fParameters.Clear();
       ResetGetNextParticle();

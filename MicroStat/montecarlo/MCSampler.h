@@ -5,7 +5,7 @@
 #define __MCSAMPLER_H
 
 #include "KVBase.h"
-#include "KVTemplateEvent.h"
+#include "KVNucleusEvent.h"
 #include "TTree.h"
 #include "TLegend.h"
 #include "StatWeight.h"

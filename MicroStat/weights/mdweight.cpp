@@ -3,6 +3,7 @@
 
 #include "mdweight.h"
 #include "TMath.h"
+#include "KVNucleusEvent.h"
 
 ClassImp(MicroStat::mdweight)
 
@@ -148,8 +149,7 @@ namespace MicroStat {
             // draw random KE from 1-particle distribution for given N & ratio
             ec = eDisp * getKEdist(N, ratio)->GetRandom();
             p = sqrt(2.*mPart * ec);
-         }
-         else {
+         } else {
             // last 2 particles: share remaining available energy
             p = sqrt(2.*(massTot - mPart) * mPart * eDisp / massTot);
             ec = p * p / 2. / mPart;
@@ -163,8 +163,7 @@ namespace MicroStat {
          ppx += px * rR;
          ppy += py * rR;
          ppz += pz * rR;
-      }
-      else if (N == 1) {
+      } else if (N == 1) {
          ppx = px;
          ppy = py;
          ppz = pz;

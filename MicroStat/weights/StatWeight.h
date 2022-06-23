@@ -4,7 +4,10 @@
 #ifndef __STATWEIGHT_H
 #define __STATWEIGHT_H
 
-#include "KVTemplateEvent.h"
+#include "TObject.h"
+
+class KVEvent;
+class KVNucleus;
 
 namespace MicroStat {
 

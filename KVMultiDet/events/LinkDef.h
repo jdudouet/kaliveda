@@ -12,12 +12,15 @@
 #pragma link C++ class KVNucleusEvent+;
 #pragma link C++ class KVTemplateEvent<KVNucleus>::Iterator+;
 #pragma link C++ class KVNucleusEvent::Iterator+;
-#pragma link C++ class KVTemplateEvent<KVNucleus>::EventIterator+;
-#pragma link C++ class KVTemplateEvent<KVNucleus>::EventGroupIterator+;
-#pragma link C++ class KVTemplateEvent<KVNucleus>::EventOKIterator+;
-#pragma link C++ class EventIterator+;
-#pragma link C++ class EventGroupIterator+;
-#pragma link C++ class EventOKIterator+;
+// #pragma link C++ class KVTemplateEvent<KVNucleus>::EventIterator+;
+// #pragma link C++ class KVTemplateEvent<KVNucleus>::EventGroupIterator+;
+// #pragma link C++ class KVTemplateEvent<KVNucleus>::EventOKIterator+;
+// #pragma link C++ class KVNucleusEvent::EventIterator+;
+// #pragma link C++ class KVNucleusEvent::EventGroupIterator+;
+// #pragma link C++ class KVNucleusEvent::EventOKIterator+;
+// #pragma link C++ class EventIterator+;
+// #pragma link C++ class EventGroupIterator+;
+// #pragma link C++ class EventOKIterator+;
 #ifdef WITH_OPENGL
 #pragma link C++ class KVEventViewer+;
 #pragma link C++ enum KVEventViewer::EHighlightMode;

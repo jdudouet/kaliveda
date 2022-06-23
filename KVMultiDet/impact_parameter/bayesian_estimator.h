@@ -602,24 +602,36 @@ namespace KVImpactParameters {
          // total measured cross-section \f$\sigma_R\f$ in [mb] and the desired fall-off parameter
          // \f$\Delta b\f$ in [fm] (see impact_parameter_distribution).
 
-
+         int debug_i = 1;
+         std::cout << debug_i++ << "\n";
          B_dist_for_X_select.SetParameters(Xrange.Min(), Xrange.Max());
+         std::cout << debug_i++ << "\n";
          //TF1* f = B_dist_for_X_select.DrawCopy(opt);
          TGraph* f = new TGraph;
+         std::cout << debug_i++ << "\n";
          double maxS = 0;
          for (int i = 0; i < 500; ++i) {
             double b = 2 * i * GetIPDist().GetB0() / 499.;
+            std::cout << "get ipdist\n";
             double sig = B_dist_for_X_select.Eval(b);
+            std::cout << "b_dist_for_xsele\n";
             if (sig > maxS) maxS = sig;
             f->SetPoint(i, b, sig);
+            std::cout << "set_point\n";
          }
          f->SetLineColor(color);
          f->SetMarkerColor(color);
          f->SetLineWidth(2);
          f->SetTitle(title);
+         std::cout << debug_i++ << "\n";
          if (TString(opt) == "same") f->Draw("c");
          else f->Draw("ac");
+         std::cout << debug_i++ << "\n";
          return maxS;
+      }
+      TF1& GetB_dist_for_X_select()
+      {
+         return B_dist_for_X_select;
       }
       TGraph* GraphBDistForXSelection(KVValueRange<double> Xrange, int npts = 500)
       {

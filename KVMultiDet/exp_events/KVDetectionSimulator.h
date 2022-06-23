@@ -6,7 +6,7 @@
 
 #include "KVBase.h"
 #include "KVMultiDetArray.h"
-#include "KVEvent.h"
+#include "KVNucleusEvent.h"
 #include "KVDetectorEvent.h"
 #include "KVTarget.h"
 #include "KVRangeTableGeoNavigator.h"

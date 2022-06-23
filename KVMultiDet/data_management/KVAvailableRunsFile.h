@@ -19,12 +19,12 @@ $Date: 2008/02/07 09:25:39 $
 #include "KVLockfile.h"
 #include "KVDatime.h"
 #include "KVDataSet.h"
+#include "KVList.h"
+#include "KVHashList.h"
+#include "KVNameValueList.h"
 
 class KVDBSystem;
 class TList;
-class KVList;
-class KVHashList;
-class KVNameValueList;
 
 /**
   \class KVAvailableRunsFile

@@ -38,7 +38,6 @@ $Id: KVEvent.h,v 1.29 2008/12/17 11:23:12 ebonnet Exp $
 #include <TH1.h>
 #include <TObjString.h>
 #include <iterator>
-#include "KVNucleus.h"
 
 class KVIntegerList;
 
@@ -211,8 +210,7 @@ public:
             fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
-         }
-         else if (fType == Type::Group) {
+         } else if (fType == Type::Group) {
             fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
@@ -237,8 +235,7 @@ public:
             fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
-         }
-         else if (fType == Type::Group) {
+         } else if (fType == Type::Group) {
             fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
@@ -332,8 +329,7 @@ public:
                fSelection.Set("ok", [](const Particle * n) {
                   return n->IsOK();
                });
-            }
-            else if (fType == Type::Group) {
+            } else if (fType == Type::Group) {
                fSelection.Set("group", [grp](const Particle * n) {
                   return n->BelongsToGroup(grp);
                });
@@ -466,8 +462,7 @@ public:
                mt.Execute(tmp, "", ret);
                fSum += ret;
             }
-         }
-         else if (mt.ReturnType() == TMethodCall::kDouble) {
+         } else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -501,8 +496,7 @@ public:
                mt.Execute(tmp, args, ret);
                fSum += ret;
             }
-         }
-         else if (mt.ReturnType() == TMethodCall::kDouble) {
+         } else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -535,8 +529,7 @@ public:
                mt.Execute(tmp, "", ret);
                h->Fill((Double_t)ret);
             }
-         }
-         else if (mt.ReturnType() == TMethodCall::kDouble) {
+         } else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -566,8 +559,7 @@ public:
                mt.Execute(tmp, args, ret);
                h->Fill((Double_t)ret);
             }
-         }
-         else if (mt.ReturnType() == TMethodCall::kDouble) {
+         } else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -774,7 +766,7 @@ public:
    }
 
    template<typename U = Particle>
-   std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
+   typename std::enable_if<std::is_base_of<KVNucleus, U>::value>::type
    FillIntegerList(KVIntegerList* IL, Option_t* opt)
    {
       // Clear & fill the KVIntegerList with the contents of this event,
@@ -800,7 +792,7 @@ public:
    }
 
    template<typename U = Particle>
-   std::enable_if_t<std::is_base_of<KVNucleus, U>::value>
+   typename std::enable_if<std::is_base_of<KVNucleus, U>::value>::type
    GetGSMasses(std::vector<Double_t>& mass)
    {
       // Fill vector with ground state mass of each nucleus of event (in MeV).
@@ -812,7 +804,7 @@ public:
    }
 
    template<typename U = Particle>
-   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
+   typename std::enable_if<std::is_base_of<KVNucleus, U>::value, Double_t>::type
    get_channel_qvalue() const
    {
       // Calculate the Q-value [MeV] for this event as if all nuclei were produced by
@@ -840,7 +832,7 @@ public:
       return CN.GetMassGS() - sumM;
    }
    template<typename U = Particle>
-   std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, Double_t >
+   typename std::enable_if < !std::is_base_of<KVNucleus, U>::value, Double_t >::type
    get_channel_qvalue() const
    {
       // for non nuclear particle types: returns 0
@@ -851,7 +843,7 @@ public:
       return get_channel_qvalue();
    }
    template<typename U = Particle>
-   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, Double_t>
+   typename std::enable_if<std::is_base_of<KVNucleus, U>::value, Double_t>::type
    GetGSChannelQValue() const
    {
       // Calculate the Q-value [MeV] for this event as if all nuclei were produced by
@@ -877,7 +869,7 @@ public:
       return CN.GetMassGS() - sumM;
    }
    template<typename U = Particle>
-   std::enable_if_t<std::is_base_of<KVNucleus, U>::value, KVString>
+   typename std::enable_if<std::is_base_of<KVNucleus, U>::value, KVString>::type
    get_partition_name()
    {
       //
@@ -908,7 +900,7 @@ public:
    }
 
    template<typename U = Particle>
-   std::enable_if_t < !std::is_base_of<KVNucleus, U>::value, KVString >
+   typename std::enable_if < !std::is_base_of<KVNucleus, U>::value, KVString >::type
    get_partition_name()
    {
       // for non nuclear particle species: returns empty string
@@ -1010,65 +1002,4 @@ public:
    ClassDef(KVTemplateEvent, 0)         //Base class for all types of multiparticle event
 };
 
-using KVNucleusEvent = KVTemplateEvent<KVNucleus>;
-
-/**
-  \class KVNucleusEvent
-  \brief An event container for KVNucleus objects
-    \ingroup NucEvents
-
-  This is a typedef for KVTemplateEvent<KVNucleus>.
-
-  An event made up of KVNucleus nuclei.
-
-  \sa KVTemplateEvent, KVEvent, NucEvents
- */
-
-using EventIterator = KVTemplateEvent<KVNucleus>::EventIterator;
-using EventGroupIterator = KVTemplateEvent<KVNucleus>::EventGroupIterator;
-using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
-
-/**
- \class EventIterator
- \brief Class for iterating over nuclei in events accessed through base pointer/reference
- \ingroup NucEvents
-
- Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
-
- ~~~~{.cpp}
- KVEvent* event; // pointer to valid event object
-
- for(auto& nuc : EventIterator(event)) { // loop over nuclei in event }
- for(auto& nuc : EventIterator(event, {"selection",[](const KVNucleus* n){ return n->GetZ()>2; }})) { // loop over nuclei with Z>2 in event }
- ~~~~
- */
-/**
- \class EventOKIterator
- \brief Class for iterating over "OK" nuclei in events accessed through base pointer/reference
- \ingroup NucEvents
-
- Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
-
- ~~~~{.cpp}
- KVEvent* event; // pointer to valid event object
-
- for(auto& nuc : EventOKIterator(event)) { // loop over OK nuclei in event }
- ~~~~
- */
-/**
- \class EventGroupIterator
- \brief Class for iterating over nuclei of given group in events accessed through base pointer/reference
- \ingroup NucEvents
-
- Iterators are not defined for the abstract base class KVEvent. This class is a wrapper for
- the KVTemplateEvent<KVNucleus>::Iterator class which allows to use iterators with events passed as base references or pointers:
-
- ~~~~{.cpp}
- KVEvent* event; // pointer to valid event object
-
- for(auto& nuc : EventGroupIterator(event,"groupname")) { // loop over nuclei of group "groupname" in event }
- ~~~~
- */
 #endif
