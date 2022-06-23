@@ -15,9 +15,8 @@ $Date: 2007/12/11 12:45:47 $
 #include "TSystem.h"
 #include "KVAvailableRunsFile.h"
 #include "TEnv.h"
-
-class KVList;
-class KVUniqueNameList;
+#include "KVList.h"
+#include "KVUniqueNameList.h"
 class TFile;
 class KVDataSet;
 class KVDataSetManager;

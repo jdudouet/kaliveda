@@ -12,8 +12,7 @@ void KVEvent::Streamer(TBuffer& R__b)
    if (R__b.IsReading()) {
       Clear();
       R__b.ReadClassBuffer(KVEvent::Class(), this);
-   }
-   else {
+   } else {
       R__b.WriteClassBuffer(KVEvent::Class(), this);
    }
 }
@@ -66,4 +65,46 @@ KVNucleus* KVEvent::AddNucleus()
    return dynamic_cast<KVNucleus*>(AddParticle());
 }
 
+void KVEvent::Copy(TObject& obj) const
+{
+   // Copy this event into the object referenced by obj,
+   // assumed to be at least derived from KVEvent.
+   KVBase::Copy(obj);
+   fParameters.Copy(((KVEvent&)obj).fParameters);
+   Int_t MTOT = fParticles->GetEntriesFast();
+   for (Int_t nn = 0; nn < MTOT; nn += 1) {
+      GetParticle(nn + 1)->Copy(*((KVEvent&) obj).AddParticle());
+   }
+}
+
+void KVEvent::MergeEventFragments(TCollection* events, Option_t* opt)
+{
+   // Merge all events in the list into one event (this one)
+   //
+   // We also merge/sum the parameter lists of the events
+   //
+   // First we clear this event, then we fill it with copies of each particle in each event
+   // in the list.
+   //
+   // If option "opt" is given, it is given as argument to each call to
+   // KVEvent::Clear() - this option is then passed on to the KVParticle::Clear()
+   // method of each particle in each event.
+   //
+   // \param[in] events A list of events to merge
+   // \param[in] opt Optional argument transmitted to KVEvent::Clear()
+   //
+   // \note the events in the list will be empty and useless after this!
+
+   Clear(opt);
+   TIter it(events);
+   KVEvent* e;
+   while ((e = (KVEvent*)it())) {
+      e->ResetGetNextParticle();
+      while (auto n = e->GetNextParticle()) {
+         n->Copy(*AddParticle());
+      }
+      GetParameters()->Merge(*(e->GetParameters()));
+      e->Clear(opt);
+   }
+}
 

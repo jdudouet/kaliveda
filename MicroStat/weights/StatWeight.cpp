@@ -2,6 +2,7 @@
 //Author: John Frankland,,,
 
 #include "StatWeight.h"
+#include "KVNucleusEvent.h"
 
 ClassImp(MicroStat::StatWeight)
 

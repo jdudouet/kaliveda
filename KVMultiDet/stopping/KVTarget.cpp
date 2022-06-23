@@ -1,5 +1,5 @@
 #include "KVTarget.h"
-#include "KVTemplateEvent.h"
+#include "KVNucleusEvent.h"
 #include "KVUnits.h"
 #include "TMath.h"
 #include "Riostream.h"
@@ -90,8 +90,7 @@ void KVTarget::AddLayer(const Char_t* material, Double_t thick)
    fNLayers++;
    if (fNLayers == 1) {
       SetName(material);
-   }
-   else {
+   } else {
       TString _name(GetName());
       _name += "/";
       _name += material;
@@ -359,8 +358,7 @@ void KVTarget::DetectParticle(KVNucleus* kvp, TVector3*)
             i++) {
          GetLayerByIndex(i)->DetectParticle(kvp, &fNormal);
       }
-   }
-   else {
+   } else {
 
       //find starting or ending layer (where is I.P. ?)
       Int_t iplay_index = GetLayerIndex(GetInteractionPoint());
@@ -414,8 +412,7 @@ void KVTarget::DetectParticle(KVNucleus* kvp, TVector3*)
             for (int i = ilay1;
                   i >= ilay2 && kvp->GetKE() > 0.; i--)
                GetLayerByIndex(i)->DetectParticle(kvp, &fNormal);
-         }
-         else {
+         } else {
             for (int i = ilay1;
                   i <= ilay2 && kvp->GetKE() > 0.; i++)
                GetLayerByIndex(i)->DetectParticle(kvp, &fNormal);
@@ -424,8 +421,7 @@ void KVTarget::DetectParticle(KVNucleus* kvp, TVector3*)
          //reset original thickness of IP layer
          iplay->SetAreaDensity(thick_iplay);
 
-      }
-      else {
+      } else {
          Error("DetectParticle", "Interaction point is outside of target");
       }
    }
@@ -464,8 +460,7 @@ Double_t KVTarget::GetELostByParticle(KVNucleus* kvp, TVector3*)
             GetLayerByIndex(i)->GetELostByParticle(clone_part, &fNormal);
          clone_part->SetKE(E0 - Eloss);
       }
-   }
-   else {
+   } else {
 
       //find starting or ending layer (where is I.P. ?)
       Int_t iplay_index = GetLayerIndex(GetInteractionPoint());
@@ -523,8 +518,7 @@ Double_t KVTarget::GetELostByParticle(KVNucleus* kvp, TVector3*)
                         &fNormal);
                clone_part->SetKE(E0 - Eloss);
             }
-         }
-         else {
+         } else {
             for (int i = ilay1;
                   i <= ilay2 && clone_part->GetKE() > 0.; i++) {
                Eloss +=
@@ -537,8 +531,7 @@ Double_t KVTarget::GetELostByParticle(KVNucleus* kvp, TVector3*)
          //reset original thickness of IP layer
          iplay->SetAreaDensity(thick_iplay);
 
-      }
-      else {
+      } else {
          Error("DetectParticle", "Interaction point is outside of target");
       }
    }
@@ -603,8 +596,7 @@ TVector3& KVTarget::GetInteractionPoint(KVParticle* part)
          return fIntPoint;
       //set default direction - beam direction
       dir.SetXYZ(0, 0, 1);
-   }
-   else {
+   } else {
       dir = part->GetMomentum();
    }
    Double_t e_eff = GetTotalEffectiveThickness(dir);
@@ -749,8 +741,7 @@ Double_t KVTarget::GetParticleEIncFromERes(KVNucleus* kvp, TVector3*)
       delete clone_part;
       return ERes;
 
-   }
-   else {
+   } else {
 
       //find starting or ending layer (where is I.P. ?)
       Int_t iplay_index = GetLayerIndex(GetInteractionPoint());
@@ -799,8 +790,7 @@ Double_t KVTarget::GetParticleEIncFromERes(KVNucleus* kvp, TVector3*)
                clone_part->SetKE(ERes);
             }
 
-         }
-         else {
+         } else {
 
             for (int i = ilay2;
                   i >= ilay1 ; i--) {
@@ -815,8 +805,7 @@ Double_t KVTarget::GetParticleEIncFromERes(KVNucleus* kvp, TVector3*)
          //reset original thickness of IP layer
          iplay->SetAreaDensity(thick_iplay);
 
-      }
-      else {
+      } else {
          Error("GetParticleEIncFromERes", "Interaction point is outside of target");
       }
    }

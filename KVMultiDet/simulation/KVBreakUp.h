@@ -20,7 +20,8 @@
 #include "TDatime.h"
 #include <cstdlib>
 #include "Riostream.h"
-#include "KVEvent.h"
+
+class KVEvent;
 
 /**
 \class KVBreakUp

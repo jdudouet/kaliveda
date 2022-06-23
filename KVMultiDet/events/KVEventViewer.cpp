@@ -9,9 +9,8 @@
 #include "TSystem.h"
 #include "TRandom.h"
 #include "TGLPerspectiveCamera.h"
-#include <KVNucleus.h>
 #include <TBranch.h>
-#include "KVTemplateEvent.h"
+#include "KVNucleusEvent.h"
 #include "TTree.h"
 
 ClassImp(KVEventViewer)
@@ -137,8 +136,7 @@ void KVEventViewer::DrawEvent(KVEvent* event, const Char_t* frame)
       // for all other events
       if (fMaxVelocity > 0) maxV = fMaxVelocity;
       else fMaxVelocity = maxV;
-   }
-   else if (fMaxVelocity > 0) maxV = fMaxVelocity;
+   } else if (fMaxVelocity > 0) maxV = fMaxVelocity;
 
    TGeoVolume* box  = geom->MakeSphere("box",  Box,  0.99 * maxV, maxV);
    box->SetLineColor(kBlack);
@@ -215,8 +213,7 @@ void KVEventViewer::ReadEvent()
    if (textInput) {
       if (!theEvent) theEvent = new KVNucleusEvent;
       ReadTextEvent();
-   }
-   else {
+   } else {
       ReadTreeEvent();
    }
 

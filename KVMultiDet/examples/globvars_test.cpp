@@ -2,7 +2,7 @@
    Demonstrate use of global variables and check correct function
    */
 
-#include <KVTemplateEvent.h>
+#include <KVNucleusEvent.h>
 #include <KVGVList.h>
 #include <KVPosition.h>
 #include <iostream>
@@ -74,7 +74,8 @@ void globvars_test(const KVParticleCondition& selection = KVParticleCondition())
    globVars.AddGV("KVMult", "MultOK")->SetSelection({"ok", [](const KVNucleus * n)
    {
       return n->IsOK();
-   }});// multiplicity of 'OK' particles
+   }
+                                                    });// multiplicity of 'OK' particles
    globVars.AddGV("KVZmean", "MeanZ");
    globVars.AddGV("KVDirectivity", "Directo"); // FOPI directivity variable
 
@@ -104,7 +105,8 @@ void globvars_test(const KVParticleCondition& selection = KVParticleCondition())
    vg->AddSelection({"Vpar<0", [](const KVNucleus * nuc)
    {
       return nuc->GetVpar() < 0;
-   }});
+   }
+                    });
 
    // initialize all variables
    globVars.Init();

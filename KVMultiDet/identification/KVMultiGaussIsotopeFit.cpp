@@ -31,7 +31,11 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
       SetParName(get_mass_index(ig, Niso), Form("A_%d", ig));
       FixParameter(get_mass_index(ig, Niso), Alist[ig - 1]);
 
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6,24,0)
       pid_vs_a.AddPoint(Alist[ig - 1], PIDlist[ig - 1]);
+#else
+      pid_vs_a.SetPoint(pid_vs_a.GetN(), Alist[ig - 1], PIDlist[ig - 1]);
+#endif
    }
 
    // do initial fit of centroids
