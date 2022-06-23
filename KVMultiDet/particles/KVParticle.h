@@ -30,7 +30,6 @@ $Id: KVParticle.h,v 1.41 2008/05/21 13:19:56 ebonnet Exp $
 #include "TObjString.h"
 #include "KVNameValueList.h"
 #include "KVFrameTransform.h"
-#include "KVTemplateParticleCondition.h"
 
 class KVKinematicalFrame;
 

@@ -18,9 +18,9 @@ using KVNucleusEvent = KVTemplateEvent<KVNucleus>;
   \sa KVTemplateEvent, KVEvent, NucEvents
  */
 
-using EventIterator = KVNucleusEvent::EventIterator;
-using EventGroupIterator = KVNucleusEvent::EventGroupIterator;
-using EventOKIterator = KVNucleusEvent::EventOKIterator;
+using EventIterator = KVTemplateEvent<KVNucleus>::EventIterator;
+using EventGroupIterator = KVTemplateEvent<KVNucleus>::EventGroupIterator;
+using EventOKIterator = KVTemplateEvent<KVNucleus>::EventOKIterator;
 
 /**
  \class EventIterator

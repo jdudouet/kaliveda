@@ -18,7 +18,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 #--look for ROOT & all essential libraries
-set(REQUIRED_ROOT_VERSION 6.00)
+set(REQUIRED_ROOT_VERSION 6.22)
 find_package(ROOT QUIET
    COMPONENTS Rint Graf Geom Spectrum Proof ProofPlayer Physics Hist
    RIO Tree MathCore Matrix Gpad Gui Net Graf3d Thread
