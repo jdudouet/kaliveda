@@ -338,18 +338,7 @@ void KVItvFinderDialog::ZoomOnCanvas()
          massfit.ReplaceAll(":", "=");
          KVNameValueList fitparams;
          fitparams.Set(massfit);
-
-         KVMultiGaussIsotopeFit fitfunc(zz, fitparams.GetIntValue("Ng"), fitparams.GetDoubleValue("PIDmin"),
-                                        fitparams.GetDoubleValue("PIDmax"), fitparams.GetStringValue("Alist"),
-                                        fitparams.GetDoubleValue("Bkg_cst"), fitparams.GetDoubleValue("Bkg_slp"),
-                                        fitparams.GetDoubleValue("GausWid"),
-                                        fitparams.GetDoubleValue("PIDvsA_a0"),
-                                        fitparams.GetDoubleValue("PIDvsA_a1"),
-                                        fitparams.GetDoubleValue("PIDvsA_a2")
-                                       );
-         for (int ig = 1; ig <= fitparams.GetIntValue("Ng"); ++ig)
-            fitfunc.SetGaussianNorm(ig, fitparams.GetDoubleValue(Form("Norm_%d", ig)));
-
+         KVMultiGaussIsotopeFit fitfunc(zz, fitparams);
          fitfunc.DrawFitWithGaussians("same");
       }
    }
@@ -391,6 +380,10 @@ void KVItvFinderDialog::DrawInterval(interval_set* itvs, bool label)
 
 void KVItvFinderDialog::ClearInterval(interval_set* itvs)
 {
+   // empty an interval set, effectively removing it from the interval sets which will be saved with the grid.
+   //
+   // we also remove any previous fits from the grid's parameters
+
    std::vector<int> alist;
    for (int ii = 0; ii < itvs->GetNPID(); ii++) {
       interval* itv = (interval*)itvs->GetIntervals()->At(ii);
@@ -403,6 +396,16 @@ void KVItvFinderDialog::ClearInterval(interval_set* itvs)
    // remove any fit displayed in pad
    KVMultiGaussIsotopeFit fitfunc(itvs->GetZ(), alist);
    fitfunc.UnDraw(fPad);
+   // mop up any stray gaussians (from intervals which have been removed)
+   KVMultiGaussIsotopeFit::UnDrawAnyGaussian(itvs->GetZ(), fPad);
+
+   // remove from grid parameters
+   if (fGrid->GetParameters()->HasParameter(Form("MASSFIT_%d", itvs->GetZ()))) {
+      fGrid->GetParameters()->RemoveParameter(Form("MASSFIT_%d", itvs->GetZ()));
+      KVNumberList zlist(fGrid->GetParameters()->GetStringValue("MASSFITS"));
+      zlist.Remove(itvs->GetZ());
+      fGrid->GetParameters()->SetValue("MASSFITS", zlist.AsString());
+   }
    fCanvas->Modified();
    fCanvas->Update();
 }

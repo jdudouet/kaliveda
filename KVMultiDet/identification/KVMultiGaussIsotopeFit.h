@@ -8,6 +8,8 @@
 #include "KVNumberList.h"
 #include "KVList.h"
 
+#include <KVNameValueList.h>
+
 /**
  \class KVMultiGaussIsotopeFit
  \brief Function for fitting PID mass spectra
@@ -80,6 +82,11 @@ class KVMultiGaussIsotopeFit : public TF1 {
    double min_sigma = 1.e-2; // lower limit for width of gaussians
    double max_sigma = 1.e-1; // upper limit for width of gaussians
 
+   double evaluate_gaussian(int i, double pid) const
+   {
+      // return weight of gaussian i (i=1,2,...) for given value of pid
+      return GetGaussianNorm(i) * TMath::Gaus(pid, GetCentroid(i), GetGaussianWidth(i), kTRUE);
+   }
 public:
    KVMultiGaussIsotopeFit() : TF1() {}
    KVMultiGaussIsotopeFit(int z, std::vector<int> alist)
@@ -93,13 +100,14 @@ public:
    KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min, double PID_max, const KVNumberList& alist,
                           double bkg_cst, double bkg_slp, double gaus_wid,
                           double pidvsa_a0, double pidvsa_a1, double pidvsa_a2);
+   KVMultiGaussIsotopeFit(int z, const KVNameValueList&);
 
    void ReleaseCentroids()
    {
       // Release the constraint on the positions of the centroids
       SetParLimits(fit_param_index::pidvsA_a0, -50, 50);
       SetParLimits(fit_param_index::pidvsA_a1, 1.e-2, 5.);
-      SetParLimits(fit_param_index::pidvsA_a2, -5, 5.);
+      SetParLimits(fit_param_index::pidvsA_a2, -1e-2, 5.);
    }
 
    double GetPIDvsAfit_a0() const
@@ -145,6 +153,16 @@ public:
    int GetMostProbableA(double PID, double& P) const;
    double GetMeanA(double PID) const;
    std::map<int, double> GetADistribution(double PID) const;
+   int GetA(double PID, double& P) const;
+   double GetInterpolatedA(double PID) const
+   {
+      // calculate interpolated A from PID using the quadratic fit parameters
+
+      auto a = GetPIDvsAfit_a2();
+      auto b = GetPIDvsAfit_a1();
+      auto c = GetPIDvsAfit_a0() - PID;
+      return (TMath::Sqrt(b * b - 4.*a * c) - b) / 2. / a;
+   }
 
    static TString get_name_of_multifit(int z)
    {

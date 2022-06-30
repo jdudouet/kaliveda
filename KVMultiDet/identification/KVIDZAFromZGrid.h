@@ -6,7 +6,9 @@
 
 #include "KVIDZAGrid.h"
 #include "KVList.h"
+#include "KVUniqueNameList.h"
 #include "KVIdentificationResult.h"
+#include "KVMultiGaussIsotopeFit.h"
 
 
 class interval;
@@ -86,7 +88,8 @@ protected:
    Int_t  fZmaxInt;
    Bool_t fPIDRange;
    Int_t  fZminInt;
-   KVList fTables;
+   KVList fTables; // intervals for mass id
+   KVUniqueNameList fFits;   // multi-gaussian fits for mass id
 
    Bool_t fIgnoreMassID;
    Bool_t fHasMassIDRegion;// set to true if grid has a limited region for mass identification, indicated by an info "MassID"
@@ -95,7 +98,6 @@ protected:
 
 public:
    KVIDZAFromZGrid();
-   virtual ~KVIDZAFromZGrid();
    ROOT_COPY_CTOR(KVIDZAFromZGrid, KVIDZAGrid)
    ROOT_COPY_ASSIGN_OP(KVIDZAFromZGrid)
 
@@ -142,6 +144,12 @@ public:
       // Therefore we disable the possibility to change it.
 
       KVIDZAGrid::SetOnlyZId(true);
+   }
+
+   bool MassIdentificationFromMultiGaussFit(KVMultiGaussIsotopeFit*, KVIdentificationResult*) const;
+   KVMultiGaussIsotopeFit* GetMultiGaussFit(int z) const
+   {
+      return (KVMultiGaussIsotopeFit*)fFits.FindObject(Form("MultiGaussIsotopeFit_Z=%d", z));
    }
 
    ClassDef(KVIDZAFromZGrid, 1) //Compute Z and A only from Z lines...

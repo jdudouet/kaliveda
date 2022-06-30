@@ -18,13 +18,9 @@ KVIDZAFromZGrid::KVIDZAFromZGrid()
 
    init();
    fTables.SetOwner(kTRUE);
+   fFits.SetOwner();
    SetOnlyZId();
    fIgnoreMassID = false;
-}
-
-KVIDZAFromZGrid::~KVIDZAFromZGrid()
-{
-   // Destructor
 }
 
 //________________________________________________________________
@@ -223,6 +219,37 @@ void KVIDZAFromZGrid::Initialize()
 
    // set to true if grid has a limited region for mass identification, indicated by an info "MassID"
    fHasMassIDRegion = (GetInfos()->FindObject("MassID") != nullptr);
+
+   // set up mass fits (if any)
+   fFits.Clear();
+   if (GetParameters()->HasStringParameter("MASSFITS")) {
+      KVNumberList zlist(GetParameters()->GetStringValue("MASSFITS"));
+      for (auto z : zlist) {
+         auto massfit = GetParameters()->GetTStringValue(Form("MASSFIT_%d", z));
+         massfit.ReplaceAll(":", "=");
+         KVNameValueList fitparams;
+         fitparams.Set(massfit);
+         fFits.Add(new KVMultiGaussIsotopeFit(z, fitparams));
+      }
+   }
+}
+
+bool KVIDZAFromZGrid::MassIdentificationFromMultiGaussFit(KVMultiGaussIsotopeFit* fitfunc, KVIdentificationResult* idr) const
+{
+   double P;
+   auto A = fitfunc->GetA(idr->PID, P);
+   if (A) {
+      idr->A = A;
+      idr->PID = fitfunc->GetInterpolatedA(idr->PID);
+      if (P > 0.5) idr->IDquality = KVIDZAGrid::kICODE0; // probability of A is >50%
+      else idr->IDquality = KVIDZAGrid::kICODE3;// OK, slight ambiguity of A
+   }
+   else {
+      // returned A=0 => background noise
+      idr->IDquality = KVIDZAGrid::kICODE5;
+      return false;
+   }
+   return true;
 }
 
 void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* idr) const
@@ -245,12 +272,17 @@ void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* i
    if (!idr->IDOK) return;
 
    bool have_pid_range_for_Z = fPIDRange && (idr->Z <= fZmaxInt) && (idr->Z > fZminInt - 1);
+   auto mass_fit_for_Z = GetMultiGaussFit(idr->Z);
+   bool have_mass_fit_for_Z = (mass_fit_for_Z != nullptr);
    bool mass_id_success = false;
 
-   if (have_pid_range_for_Z
+   if ((have_mass_fit_for_Z || have_pid_range_for_Z)
          && (!fHasMassIDRegion || idr->IdentifyingGridHasFlag("MassID"))) { // if a mass ID region is defined, we must be inside it
       // try mass identification
-      mass_id_success = (DeduceAfromPID(idr) > 0);
+      if (have_mass_fit_for_Z)
+         mass_id_success = MassIdentificationFromMultiGaussFit(mass_fit_for_Z, idr);
+      else
+         mass_id_success = (DeduceAfromPID(idr) > 0);
       if (mass_id_success) {
          // mass identification was at least attempted
          // make sure grid's quality code is consistent with KVIdentificationResult
