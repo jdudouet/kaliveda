@@ -479,6 +479,7 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
                   x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
                   y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
                   if (grid_copy->IsIdentifiable(x, y)) {
+                     idr.Clear();
                      grid_copy->KVIDZAGrid::Identify(x, y, &idr);
                      if (idr.HasFlag(grid_copy->GetName(), "MassID")
                            || (grid_copy->GetInfos()->FindObject("MassID") == nullptr)) {

@@ -1350,6 +1350,7 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
             double x = gRandom->Uniform(x0 - .5 * wx, x0 + .5 * wx);
             double y = gRandom->Uniform(y0 - .5 * wy, y0 + .5 * wy);
             if (IsIdentifiable(x, y)) {
+               idr.Clear();
                Identify(x, y, &idr);
                if (AcceptIDForTest(idr)) {
                   Float_t PID = idr.PID;
