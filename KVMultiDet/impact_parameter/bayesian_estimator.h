@@ -615,8 +615,8 @@ namespace KVImpactParameters {
          f->SetMarkerColor(color);
          f->SetLineWidth(2);
          f->SetTitle(title);
-         if (TString(opt) == "same") f->Draw("c");
-         else f->Draw("ac");
+         if (TString(opt) == "same") f->Draw("l");
+         else f->Draw("al");
          return maxS;
       }
       TF1& GetB_dist_for_X_select()
@@ -712,8 +712,8 @@ namespace KVImpactParameters {
          mean = bmean / sigtot;
          bsqrmean /= sigtot;
          sigma = TMath::Sqrt(bsqrmean - mean * mean);
-         if (TString(opt) == "same") f->Draw("c");
-         else f->Draw("ac");
+         if (TString(opt) == "same") f->Draw("l");
+         else f->Draw("al");
       }
 
       void GetMeanAndSigmaBDistForSelection(TH1* sel, TH1* incl, double& mean, double& sigma)
