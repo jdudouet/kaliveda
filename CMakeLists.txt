@@ -55,21 +55,8 @@ include(SetUpROOTBuild)
 #--determine what C++ standard is used by the compiler
 include(GetCompilerStandard)
 GET_COMPILER_STANDARD(CURRENT_CXX_COMPILER_STANDARD)
-
-#--if C++14 support is not enabled (i.e. current standard is < C++14)
-#--we require it here [C++14 is needed for std::make_unique etc.]
-if(CURRENT_CXX_COMPILER_STANDARD LESS CXX_STANDARD_14)
-    set(CMAKE_CXX_STANDARD 14)
-    set(CMAKE_CXX_STANDARD_REQUIRED yes)
-    message(STATUS "KaliVeda: C++14 support is required and has been enabled")
-    set(KALIVEDA_NEEDS_CXX14 TRUE)
-else()
-    set(KALIVEDA_NEEDS_CXX14 FALSE)
-endif()
-
-#--check whether compiler implementation of C++14 includes std::enable_if_t
-include(TestForEnableIfT)
-TEST_FOR_ENABLE_IF_T(WITH_STD_ENABLE_IF_T)
+GET_NAME_OF_COMPILER_STANDARD(CXX_COMPILER_STANDARD_NAME ${CURRENT_CXX_COMPILER_STANDARD})
+message(STATUS "KaliVeda is being compiled with the ${CXX_COMPILER_STANDARD_NAME} standard")
 
 #--check for BOOST - minimum version corresponds progress_display
 set(WITH_BOOST)

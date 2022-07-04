@@ -20,8 +20,10 @@ class KVValueRange : public KVBase {
    ValueType fSize;
 
 public:
+   KVValueRange() : KVBase("KVValueRange", "Templated range of values") {}
    KVValueRange(ValueType min, ValueType max)
-      : fMin(min), fMax(max), fSize(fMax - fMin)
+      : KVBase("KVValueRange", "Templated range of values"),
+        fMin(min), fMax(max), fSize(fMax - fMin)
    {}
    KVValueRange(const KVValueRange& r)
       : KVBase()
@@ -62,7 +64,6 @@ public:
       return fMin + i * fSize / (n - 1.);
    }
 
-   virtual ~KVValueRange() {}
    TString GetExpression(const TString& obs_name)
    {
       // Return cut expressed as "Xmin \leq X \leq Xmax" with "X" given by obs_name
