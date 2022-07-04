@@ -88,7 +88,7 @@ bool KVNameValueList::Set(const KVString& list)
       pair.Begin("=");
       KVString parname = pair.Next(kTRUE);
       KVString parval = pair.Next(kTRUE);
-      if (parval.IsDigit()) {
+      if (parval.IsDec()) {
          // integer number
          SetValue(parname, parval.Atoi());
       }
