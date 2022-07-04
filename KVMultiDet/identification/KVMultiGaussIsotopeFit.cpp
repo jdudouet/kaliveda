@@ -13,7 +13,7 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
 {
    // Constructor used to initialize and prepare a new fit of isotope PID spectrum
    FixParameter(0, Niso);
-   SetParLimits(fit_param_index::bkg_cst, 1e-3, 1e+5);
+   SetParLimits(fit_param_index::bkg_cst, -1.e+5, 1e+5);
    SetParameter(fit_param_index::bkg_cst, 4.);
    SetParName(fit_param_index::bkg_cst, "Norm");
    SetParLimits(fit_param_index::bkg_slp, -10, 10);
