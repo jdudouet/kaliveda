@@ -40,7 +40,7 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
    centroidFit.SetParameter(0, 0);
    centroidFit.SetParLimits(1, 1.e-2, 5.);
    centroidFit.SetParameter(1, 1.e-1);
-   centroidFit.SetParLimits(2, -1.e-2, 1.);
+   centroidFit.SetParLimits(2, -2.e-2, 1.);
    centroidFit.SetParameter(2, 1.e-3);
    pid_vs_a.Fit(&centroidFit, "N");
 

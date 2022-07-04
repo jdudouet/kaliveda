@@ -107,7 +107,7 @@ public:
       // Release the constraint on the positions of the centroids
       SetParLimits(fit_param_index::pidvsA_a0, -50, 50);
       SetParLimits(fit_param_index::pidvsA_a1, 1.e-2, 5.);
-      SetParLimits(fit_param_index::pidvsA_a2, -1e-2, 5.);
+      SetParLimits(fit_param_index::pidvsA_a2, -2.e-2, 5.);
    }
 
    double GetPIDvsAfit_a0() const
