@@ -1309,11 +1309,14 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
    //  i.e. it may have any of the following parameters
    //
    //        "ID_REAL"="[name of histo to fill with PID spectrum]"
+   //        "ID_REAL_AIDENT"="[name of histo to fill with PID spectrum]" Z&A identification
+   //        "ID_REAL_ZIDENT"="[name of histo to fill with PID spectrum]" Only Z identification
    //        "ID_REAL_VS_ERES" - PID vs. Eres histo
+   //        "ID_REAL_VS_ERES_AIDENT" - PID vs. Eres histo, Z&A identification
+   //        "ID_REAL_VS_ERES_ZIDENT" - PID vs. Eres histo, only Z identification
+   //     - only for isotopic identificiation:
    //        "Z_A_REAL" - 2D map (nuclear chart)
    //        "ZADIST_AIDENT" - integer A  vs. integer Z distribution for isotopically-identified particles
-   //        "ZIDENT_ICODE0" - map of points leading to Z-only identification with quality code 0
-   //        "ZIDENT_ICODES_1_2" - map of points leading to Z-only identification with quality codes 1 or 2
 
    //Initialize the grid: calculate line widths etc.
    Initialize();
@@ -1363,72 +1366,13 @@ void KVIDGraph::TestIdentification(TH2F* data, KVHashList& histos, KVNameValueLi
                   if (idr.Aident) {
                      idresults.fill("Z_A_REAL", RealA - RealZ, gRandom->Gaus(RealZ, 0.15), weight);
                      idresults.fill("ZADIST_AIDENT", idr.Z, idr.A, weight);
-                     switch (idr.IDquality) {
-                        case 0:
-                           idresults.fill("AIDENT_ICODE0", x, y, weight);
-                           break;
-                        case 1:
-                        case 2:
-                        case 3:
-                           idresults.fill("AIDENT_ICODE123", x, y, weight);
-                           break;
-                        default:
-                           break;
-                     }
+                     idresults.fill("ID_REAL_AIDENT", PID, weight);
+                     idresults.fill("ID_REAL_VS_ERES_AIDENT", x, PID, weight);
                   }
                   else if (idr.Zident) {
-                     switch (idr.IDquality) {
-                        case 0:
-                           idresults.fill("ZIDENT_ICODE0", x, y, weight);
-                           break;
-                        case 1:
-                        case 2:
-                        case 3:
-                           idresults.fill("ZIDENT_ICODE123", x, y, weight);
-                           break;
-                        default:
-                           break;
-                     }
+                     idresults.fill("ID_REAL_ZIDENT", PID, weight);
+                     idresults.fill("ID_REAL_VS_ERES_ZIDENT", x, PID, weight);
                   }
-               }
-               else {
-                  if (idr.Aident) {
-                     switch (idr.IDquality) {
-                        case 4:
-                           idresults.fill("AIDENT_ICODE4", x, y, weight);
-                           break;
-                        case 5:
-                           idresults.fill("AIDENT_ICODE5", x, y, weight);
-                           break;
-                        case 6:
-                           idresults.fill("AIDENT_ICODE6", x, y, weight);
-                           break;
-                        case 7:
-                           idresults.fill("AIDENT_ICODE7", x, y, weight);
-                           break;
-                        default:
-                           break;
-                     }
-                  }
-                  else if (idr.Zident) {
-                     switch (idr.IDquality) {
-                        case 4:
-                           idresults.fill("ZIDENT_ICODE4", x, y, weight);
-                           break;
-                        case 5:
-                           idresults.fill("ZIDENT_ICODE5", x, y, weight);
-                           break;
-                        case 6:
-                           idresults.fill("ZIDENT_ICODE6", x, y, weight);
-                           break;
-                        case 7:
-                           idresults.fill("ZIDENT_ICODE7", x, y, weight);
-                           break;
-                        default:
-                           break;
-                     }
-                  }
-
                }
             }
          }

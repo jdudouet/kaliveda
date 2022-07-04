@@ -460,6 +460,8 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
 
          KVIdentificationResult idr;
 
+         bool no_mass_id_zone_defined = (grid_copy->GetInfos()->FindObject("MassID") == nullptr);
+
          for (int i = imin; i <= imax; ++i) {
             for (int j = 1; j <= fHisto->GetNbinsY(); j++) {
                Stat_t poids = fHisto->GetBinContent(i, j);
@@ -481,8 +483,7 @@ void KVItvFinderDialog::LinearizeHisto(int nbins)
                   if (grid_copy->IsIdentifiable(x, y)) {
                      idr.Clear();
                      grid_copy->KVIDZAGrid::Identify(x, y, &idr);
-                     if (idr.HasFlag(grid_copy->GetName(), "MassID")
-                           || (grid_copy->GetInfos()->FindObject("MassID") == nullptr)) {
+                     if (no_mass_id_zone_defined || idr.HasFlag(grid_copy->GetName(), "MassID")) {
                         Float_t PID = idr.PID;
                         fLinearHisto->Fill(PID, weight);
                      }

@@ -277,7 +277,7 @@ void KVIDZAFromZGrid::Identify(Double_t x, Double_t y, KVIdentificationResult* i
    bool mass_id_success = false;
 
    if ((have_mass_fit_for_Z || have_pid_range_for_Z)
-         && (!fHasMassIDRegion || idr->IdentifyingGridHasFlag("MassID"))) { // if a mass ID region is defined, we must be inside it
+         && (!fHasMassIDRegion || idr->HasFlag(GetName(), "MassID"))) { // if a mass ID region is defined, we must be inside it
       // try mass identification
       if (have_mass_fit_for_Z)
          mass_id_success = MassIdentificationFromMultiGaussFit(mass_fit_for_Z, idr);

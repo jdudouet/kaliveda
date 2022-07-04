@@ -258,6 +258,7 @@ KVTestIDGridDialog::~KVTestIDGridDialog()
 {
    //Delete all widgets
 
+   gStyle->SetOptTitle(0);
    delete fMain;
 }
 
@@ -322,6 +323,8 @@ void KVTestIDGridDialog::TestGrid()
       return;
    }
 
+   KVNameValueList histo_names;
+
    // clear any previous results
    histos.Clear();
 
@@ -330,9 +333,6 @@ void KVTestIDGridDialog::TestGrid()
       new TH1F(fNameZreal.Data(), "PID distribution", hzrealbins,
                hzrealxmin, hzrealxmax);
    add_histo(hzreal);
-
-   KVNameValueList histo_names;
-
    histo_names.SetValue("ID_REAL", fNameZreal.Data());
 
    auto hzvse =
@@ -344,17 +344,50 @@ void KVTestIDGridDialog::TestGrid()
 
    // A vs Z map in case of mass identification
    // A dist for isotopically identified particles
-   TH2F* hazreal = 0;
-   TH2F* adist_aident = 0;
    if (fSelectedGrid->HasMassIDCapability()) {
-      hazreal = new TH2F("AZMap", "Z vs. A", 30 * (hnmax - hnmin + 0.5), hnmin - 0.5, hnmax + 1, 30 * (hzrealxmax - hzrealxmin + 1), hzrealxmin - 1, hzrealxmax + 1);
+
+      // make sure to always begin from Z=1 N=0
+      hnmin = 0;
+      auto mapzrealxmin = 0;
+      auto hazreal = new TH2F("AZMap", "N vs. Z [Z&A identified]", 30 * (hnmax - hnmin + 0.5), hnmin - 0.5, hnmax + 1, 30 * (hzrealxmax - mapzrealxmin + 1), mapzrealxmin - 1, hzrealxmax + 1);
 
       histo_names.SetValue("Z_A_REAL", "AZMap");
       add_histo(hazreal);
 
-      adist_aident = new TH2F("ZADIST_AIDENT", "Z-A distribution [isotopic ID OK]", hzmax - hzmin + 1, hzmin - .5, hzmax + .5, hamax - hamin + 1, hamin - .5, hamax + .5);
+      auto adist_aident = new TH2F("ZADIST_AIDENT", "A vs. Z distribution [Z&A identified]", hzmax - hzmin + 1, hzmin - .5, hzmax + .5, hamax - hamin + 1, hamin - .5, hamax + .5);
       histo_names.SetValue("ZADIST_AIDENT", "ZADIST_AIDENT");
       add_histo(adist_aident);
+
+      auto hzreal_aident = new TH1F("ID_REAL_AIDENT", "PID distribution [Z&A identified]",
+                                    hzrealbins, hzrealxmin, hzrealxmax);
+      histo_names.SetValue("ID_REAL_AIDENT", "ID_REAL_AIDENT");
+      add_histo(hzreal_aident);
+
+      auto hzreal_zident = new TH1F("ID_REAL_ZIDENT", "PID distribution [only Z identified]",
+                                    hzrealbins, hzrealxmin, hzrealxmax);
+      histo_names.SetValue("ID_REAL_ZIDENT", "ID_REAL_ZIDENT");
+      add_histo(hzreal_zident);
+
+      auto hzvse =
+         new TH2F(fNameZvsE.Data(), "PID vs. E_{res}", hzvsexbins, hzvsexmin,
+                  hzvsexmax, hzvseybins, hzvseymin, hzvseymax);
+
+      histo_names.SetValue("ID_REAL_VS_ERES", fNameZvsE.Data());
+      add_histo(hzvse);
+
+      auto hzvse_aident =
+         new TH2F("ID_REAL_VS_ERES_AIDENT", "PID vs. E_{res} [Z&A identified]", hzvsexbins, hzvsexmin,
+                  hzvsexmax, hzvseybins, hzvseymin, hzvseymax);
+
+      histo_names.SetValue("ID_REAL_VS_ERES_AIDENT", "ID_REAL_VS_ERES_AIDENT");
+      add_histo(hzvse_aident);
+
+      auto hzvse_zident =
+         new TH2F("ID_REAL_VS_ERES_ZIDENT", "PID vs. E_{res} [only Z identified]", hzvsexbins, hzvsexmin,
+                  hzvsexmax, hzvseybins, hzvseymin, hzvseymax);
+
+      histo_names.SetValue("ID_REAL_VS_ERES_ZIDENT", "ID_REAL_VS_ERES_ZIDENT");
+      add_histo(hzvse_zident);
    }
 
    //progress bar set up
@@ -378,40 +411,23 @@ void KVTestIDGridDialog::TestGrid()
                              "SetPosition(Float_t)");
    fProgressBar->Reset();
 
-   KVCanvas* cc = new KVCanvas;
+   TCanvas* cc = new TCanvas;
    resultsCanvas.reset(cc);
 
    gStyle->SetOptTitle(); // display histo title in pads
-   cc->Divide(2, 2);
-   int ipad = 1;
-   if (hazreal) {
-      //cc->SetTitle(Form("Z vs N map for %s", fSelectedGrid->GetName()));
-      auto pad = cc->cd(ipad++);
-      pad->SetLogz();
-      hazreal->Draw("col");
 
-      if (!strcmp(hazreal->GetTitle(), "Z vs. A")) {
-         TAxis* ax = 0;
-         ax = hazreal->GetXaxis();
-         ax->SetNdivisions(000);
-         ax->SetLabelOffset(-0.04);
-         ax->SetTickLength(0);
-
-         ax = hazreal->GetYaxis();
-         ax->SetNdivisions(000);
-         ax->SetLabelOffset(-0.03);
-         ax->SetTickLength(0);
-         hazreal->SetMinimum(1);
-         DrawChart(pad, (Int_t)hzrealxmin, (Int_t)hzrealxmax, (Int_t)hnmin, (Int_t)hnmax);
-      }
-
-      pad = cc->cd(ipad++);
-      //cc->SetTitle(Form("ZA identification for %s", fSelectedGrid->GetName()));
-      //cc->cd();
-      pad->SetLogz();
-      adist_aident->Draw("col");
+   if (fSelectedGrid->HasMassIDCapability()) {
+      cc->Divide(2, 3);
+      cc->SetWindowPosition(100, 100);
+      cc->SetWindowSize(1000, 1300);
+   }
+   else {
+      cc->Divide(2, 1);
+      cc->SetWindowPosition(100, 100);
+      cc->SetWindowSize(1000, 500);
    }
 
+   int ipad = 1;
 
    // show results in canvas
    auto pad = cc->cd(ipad++);
@@ -419,6 +435,8 @@ void KVTestIDGridDialog::TestGrid()
    pad->SetGridy();
    hzreal->SetStats(kFALSE);
    hzreal->Draw("hist");
+   pad->Modified();
+   pad->Update();
 
    pad = cc->cd(ipad++);
    pad->SetLogz(kTRUE);
@@ -426,8 +444,72 @@ void KVTestIDGridDialog::TestGrid()
    pad->SetGridy();
    hzvse->SetStats(kFALSE);
    hzvse->Draw("zcol");
+   pad->Modified();
+   pad->Update();
 
-   gStyle->SetOptTitle(0);
+   if (fSelectedGrid->HasMassIDCapability()) {
+      pad = cc->cd(ipad++);
+      pad->SetGridx();
+      pad->SetGridy();
+      hzreal = histos.get_object<TH1F>("ID_REAL_AIDENT");
+      hzreal->SetStats(kFALSE);
+      hzreal->Draw("hist");
+      pad->Modified();
+      pad->Update();
+
+      pad = cc->cd(ipad++);
+      pad->SetLogz(kTRUE);
+      pad->SetGridx();
+      pad->SetGridy();
+      hzvse = histos.get_object<TH2F>("ID_REAL_VS_ERES_AIDENT");
+      hzvse->SetStats(kFALSE);
+      hzvse->Draw("zcol");
+      pad->Modified();
+      pad->Update();
+
+      pad = cc->cd(ipad++);
+      pad->SetGridx();
+      pad->SetGridy();
+      hzreal = histos.get_object<TH1F>("ID_REAL_ZIDENT");
+      hzreal->SetStats(kFALSE);
+      hzreal->Draw("hist");
+      pad->Modified();
+      pad->Update();
+
+      pad = cc->cd(ipad++);
+      pad->SetLogz(kTRUE);
+      pad->SetGridx();
+      pad->SetGridy();
+      hzvse = histos.get_object<TH2F>("ID_REAL_VS_ERES_ZIDENT");
+      hzvse->SetStats(kFALSE);
+      hzvse->Draw("zcol");
+      pad->Modified();
+      pad->Update();
+
+      auto kvc = new KVCanvas;
+      resultsKVCanvas.reset(kvc);
+      kvc->SetWindowPosition(1000, 100);
+      kvc->SetWindowSize(900, 900);
+      kvc->SetLogz();
+      auto hazreal = histos.get_object<TH2F>("AZMap");
+      hazreal->Draw("col");
+
+      TAxis* ax = 0;
+      ax = hazreal->GetXaxis();
+      ax->SetNdivisions(000);
+      ax->SetLabelOffset(-0.04);
+      ax->SetTickLength(0);
+
+      ax = hazreal->GetYaxis();
+      ax->SetNdivisions(000);
+      ax->SetLabelOffset(-0.03);
+      ax->SetTickLength(0);
+      hazreal->SetMinimum(1);
+      DrawChart(kvc, -1, (Int_t)hzrealxmax, -1, (Int_t)hnmax);
+      kvc->Modified();
+      kvc->Update();
+   }
+
 }
 
 
@@ -440,6 +522,7 @@ void KVTestIDGridDialog::DrawChart(TVirtualPad* pp, Int_t zmin, Int_t zmax, Int_
    pp->SetLeftMargin(marging);
 
    KVNuclearChart* nucChar = new KVNuclearChart(nmin + 1, nmax, zmin, zmax);
+   nucChar->SetShowSymbol();
    nucChar->Draw("same");
 
    return;

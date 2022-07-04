@@ -83,6 +83,7 @@ class KVTestIDGridDialog {
    static Int_t hzvseymax;
 
    std::unique_ptr<TCanvas> resultsCanvas;
+   std::unique_ptr<KVCanvas> resultsKVCanvas;
    KVHashList histos;
    void add_histo(TH1* h)
    {
