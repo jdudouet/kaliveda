@@ -349,7 +349,7 @@ void KVTestIDGridDialog::TestGrid()
       // make sure to always begin from Z=1 N=0
       hnmin = 0;
       auto mapzrealxmin = 0;
-      auto hazreal = new TH2F("AZMap", "N vs. Z [Z&A identified]", 30 * (hnmax - hnmin + 0.5), hnmin - 0.5, hnmax + 1, 30 * (hzrealxmax - mapzrealxmin + 1), mapzrealxmin - 1, hzrealxmax + 1);
+      auto hazreal = new TH2F("AZMap", "N vs. Z [Z&A identified]", 30 * (hnmax - hnmin + 1.5), hnmin - 0.5, hnmax + 2, 30 * (hzrealxmax - mapzrealxmin + 1), mapzrealxmin - 1, hzrealxmax + 1);
 
       histo_names.SetValue("Z_A_REAL", "AZMap");
       add_histo(hazreal);
@@ -505,7 +505,7 @@ void KVTestIDGridDialog::TestGrid()
       ax->SetLabelOffset(-0.03);
       ax->SetTickLength(0);
       hazreal->SetMinimum(1);
-      DrawChart(kvc, -1, (Int_t)hzrealxmax, -1, (Int_t)hnmax);
+      DrawChart(kvc, -1, hzrealxmax, -1, hnmax + 2);
       kvc->Modified();
       kvc->Update();
    }
