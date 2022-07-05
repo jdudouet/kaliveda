@@ -16,7 +16,7 @@ KVMultiGaussIsotopeFit::KVMultiGaussIsotopeFit(int z, int Ngauss, double PID_min
    SetParLimits(fit_param_index::bkg_cst, -1.e+5, 1e+5);
    SetParameter(fit_param_index::bkg_cst, 4.);
    SetParName(fit_param_index::bkg_cst, "Norm");
-   SetParLimits(fit_param_index::bkg_slp, -10, 10);
+   SetParLimits(fit_param_index::bkg_slp, -10, 0);
    SetParameter(fit_param_index::bkg_slp, -0.2);
    SetParName(fit_param_index::bkg_slp, "Bkg. slope");
    SetParName(fit_param_index::gauss_wid, "Sigma");
