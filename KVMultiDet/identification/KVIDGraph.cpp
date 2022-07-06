@@ -790,6 +790,23 @@ void KVIDGraph::ResetDraw()
    fPad = 0;
 }
 
+void KVIDGraph::ExtendBeginningAllIdentLines(Double_t newX, Option_t* Direction)
+{
+   // Extend the first segment of each identification line back to new coordinate newX
+   //
+   // See KVIDentifier::ExtendLine()
+
+   fIdentifiers->R__FOR_EACH(KVIDentifier, ExtendLine)(true, newX, Direction);
+}
+
+void KVIDGraph::ExtendEndAllIdentLines(Double_t newX, Option_t* Direction)
+{
+   // Extend the last segment of each identification line to new coordinate newX
+   //
+   // See KVIDentifier::ExtendLine()
+   fIdentifiers->R__FOR_EACH(KVIDentifier, ExtendLine)(false, newX, Direction);
+}
+
 //_______________________________________________________________________________________________//
 
 void KVIDGraph::Print(Option_t*) const

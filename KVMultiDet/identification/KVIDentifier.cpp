@@ -295,9 +295,9 @@ void KVIDentifier::ExtendLine(Double_t Limit, Option_t* Direction)
    // menu allows to add a straight-line segment at the end or the beginning
    // of the line (whichever is closest to the mouse).
    //
-   //  Direction = "" (default) - continue in the direction of first/last segment
-   //  Direction = "H", "h", "hori", "HORI" etc. - add horizontal segment
-   //  Direction = "v", "V", "vert", "VERT" etc. - add vertical segment
+   //   - Direction = "" (default) - continue in the direction of first/last segment
+   //   - Direction = "H", "h", "hori", "HORI" etc. - add horizontal segment
+   //   - Direction = "v", "V", "vert", "VERT" etc. - add vertical segment
 
    if (!GetEditable()) return;
 
@@ -312,8 +312,22 @@ void KVIDentifier::ExtendLine(Double_t Limit, Option_t* Direction)
    Int_t dist_N = dpx * dpx + dpy * dpy;
    Int_t ipoint = (dist_N < dist_1 ? fNpoints - 1 : 0);
 
-   // coordinates of new point
-   TString opt(Direction);
+   // are we looking at beginning or end of line? (don't assume points are sorted in ascending X)
+   bool first_point = (ipoint == 0 && fX[0] < fX[fNpoints - 1]);
+   ExtendLine(first_point, Limit, Direction);
+}
+
+void KVIDentifier::ExtendLine(bool fromBeginning, Double_t Limit, Option_t* Direction)
+{
+   // Add a straight-line segment at the end or the beginning of the line depending on fromBeginning.
+   //
+   //   - Direction = "" (default) - continue in the direction of first/last segment
+   //   - Direction = "H", "h", "hori", "HORI" etc. - add horizontal segment
+   //   - Direction = "v", "V", "vert", "VERT" etc. - add vertical segment
+
+   Int_t ipoint = (fromBeginning && (fX[0] < fX[fNpoints - 1]) ? 0 : fNpoints - 1);
+
+   TString opt(Direction);// coordinates of new point
    opt.ToUpper();
    Double_t newX = fX[ipoint];
    Double_t newY = fY[ipoint];
@@ -324,26 +338,26 @@ void KVIDentifier::ExtendLine(Double_t Limit, Option_t* Direction)
          Error("ExtendLine", "Cannot extend line, need at least one segment!");
          return;
       }
-      // trouver equation de la droite du dernier/premier segment
+      // find equation y = ax+b of last/first segment
       Double_t u, v, uu, vv;
       Int_t iipoint = (ipoint == 0 ? 1 : fNpoints - 2);
       u = fX[ipoint];
       uu = fX[iipoint];
       v = fY[ipoint];
       vv = fY[iipoint];
-      Double_t a = vv - v;
-      Double_t b = u - uu;
-      Double_t c = -(b * v + a * u);
-      //
-      // Check that 'Limit' the x-coordinate of the new point is larger than the x-coordinate of the last existing point, in order to avoid issues
-      if (Limit < u) {
-         Error("ExtendLine", "Cannot extend line, with x-coordinate wanted smaller than the one of the existing last point!");
+      Double_t a = (vv - v) / (uu - u);
+      Double_t b = (uu * v - u * vv) / (uu - u);
+      // Check that 'Limit' the x-coordinate of the new point is larger than the x-coordinate of the
+      // last existing point, or smaller than that of the first, in order to avoid issues
+      if ((fromBeginning && Limit > u) || (!fromBeginning && Limit < u)) {
+         Error("ExtendLine", "Cannot extend line, with x-coordinate wanted %s than the one of the existing %s point!",
+               (fromBeginning ? "greater" : "smaller"), (fromBeginning ? "first" : "last"));
          return;
       }
       //
       // use 'Limit' as x-coordinate of new point
       newX = Limit;
-      newY = -(a * newX + c) / b;
+      newY = a * newX + b;
    }
 
    // add point

@@ -204,6 +204,8 @@ public:
       Modified();
    } // *MENU={Hierarchy="View.../SetLineWidth"}*
 
+   void ExtendBeginningAllIdentLines(Double_t, Option_t* = "");// *MENU*
+   void ExtendEndAllIdentLines(Double_t, Option_t* = "");// *MENU*
 
    Double_t GetXScaleFactor();
    Double_t GetYScaleFactor();

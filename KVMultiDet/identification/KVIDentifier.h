@@ -135,7 +135,8 @@ public:
 
    virtual void WaitForPrimitive();
 
-   virtual void ExtendLine(Double_t, Option_t* Direction = ""); // *MENU={Hierarchy="Modify Line.../ExtendLine"}*
+   void ExtendLine(Double_t, Option_t* Direction = ""); // *MENU={Hierarchy="Modify Line.../ExtendLine"}*
+   void ExtendLine(bool fromBeginning, Double_t Limit, Option_t* Direction);
 
    //---- The following redeclarations are here just to remove the *MENU* tag which
    //---- is present in TGraph.h, to stop these methods appearing in the ID line context menus
