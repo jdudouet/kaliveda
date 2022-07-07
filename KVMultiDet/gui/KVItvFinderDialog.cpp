@@ -1008,7 +1008,7 @@ void KVItvFinderDialog::FitIsotopes()
    TString massfit = Form("MASSFIT_%d", current_interval_set->GetZ());
    KVNameValueList fitparams;
    fitparams.SetValue("Ng", alist.GetNValues());
-   fitparams.SetValue("Alist", alist.AsString());
+   fitparams.SetValue("Alist", alist.AsQuotedString());
    fitparams.SetValue("PIDmin", fitfunc.GetPIDmin());
    fitparams.SetValue("PIDmax", fitfunc.GetPIDmax());
    fitparams.SetValue("Bkg_cst", fitfunc.GetBackgroundConstant());

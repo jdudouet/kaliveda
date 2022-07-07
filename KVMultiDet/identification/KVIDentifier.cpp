@@ -371,7 +371,10 @@ void KVIDentifier::ExtendLine(bool fromBeginning, Double_t Limit, Option_t* Dire
    if (ipoint > 0) ipoint = fNpoints - 1;
    fX[ipoint] = newX;
    fY[ipoint] = newY;
-   gPad->Modified();
+   if (gPad) {
+      gPad->Modified();
+      gPad->Update();
+   }
 }
 
 void KVIDentifier::CloneScaleStore(Int_t newzt, Int_t newar, Double_t dy, Double_t sx, Double_t sy)
