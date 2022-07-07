@@ -184,6 +184,7 @@ public:
    const Char_t* GetList() const;
    const Char_t* GetExpandedList() const;
    const Char_t* AsString(Int_t maxchars = 0) const;
+   const Char_t* AsQuotedString() const;
    const Char_t* AsHumanReadableString() const;
 
    Int_t GetRandom() const;

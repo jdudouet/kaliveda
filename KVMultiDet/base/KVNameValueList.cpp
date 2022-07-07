@@ -78,6 +78,19 @@ bool KVNameValueList::Set(const KVString& list)
    // then use it to initialise the parameters of the list, and return true (any existing parameters will be removed).
    //
    // If list does not contain at least one '=' character, do nothing and return false.
+   //
+   // ### Note on deduction of parameter types
+   //
+   // The type of each parameter is deduced from the given values, using the following methods
+   // in the following order:
+   //
+   //   + string in single quotes      => string parameter (e.g. val="'7 9'")
+   //   + KVString::IsDigit(val)       => integer parameter if true (e.g. val="3" _or_ val="7 9")
+   //   + KVString::IsFloat(val)       => double parameter if true (e.g. val="3.14e+03")
+   //   + all other cases              => string parameter
+   //
+   // Note that in the case of the quoted string, the parameter is stored without the
+   // enclosing quotes (i.e. for val="'7 9'" the stored string is "7 9")
 
    if (!list.Contains("=")) return false;
 
@@ -88,7 +101,13 @@ bool KVNameValueList::Set(const KVString& list)
       pair.Begin("=");
       KVString parname = pair.Next(kTRUE);
       KVString parval = pair.Next(kTRUE);
-      if (parval.IsDec()) {
+      if (parval.BeginsWith("'") && parval.EndsWith("'")) {
+         // quoted string
+         parval.Remove(parval.Length() - 1);
+         parval.Remove(0, 1);
+         SetValue(parname, parval);
+      }
+      else if (parval.IsDigit()) {
          // integer number
          SetValue(parname, parval.Atoi());
       }

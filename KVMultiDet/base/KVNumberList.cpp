@@ -757,6 +757,19 @@ const Char_t* KVNumberList::AsString(Int_t maxlen) const
    return fTMPSTR.Data();
 }
 
+const Char_t* KVNumberList::AsQuotedString() const
+{
+   // Get a string containing the compact representation of the list, enclosed
+   // by single quotes, i.e. if AsString() returns "1 3 5-7", this method will
+   // return "'1 3 5-7'"
+
+   KVString tmp = AsString();
+   fTMPSTR = "'";
+   fTMPSTR.Append(tmp);
+   fTMPSTR.Append("'");
+   return fTMPSTR.Data();
+}
+
 const Char_t* KVNumberList::AsHumanReadableString() const
 {
    KVString tmp = AsString();
