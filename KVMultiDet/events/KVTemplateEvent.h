@@ -74,7 +74,7 @@ for(auto& r : recon_event) if(r.IsAMeasured()) std::cout << r.GetRealA() << std:
 \note that in such event loops, you should always use a reference to access each
 particle of the event as shown in these examples.
 
-The iteration can be limited to only a subset of particles in the event using particle selections (see KVTemplateParticleCondition):
+The iteration can be limited to only a subset of particles in the event using arbitrary particle selections (see KVTemplateParticleCondition):
 ~~~~{.cpp}
 KVTemplateEvent<KVReconstructedNucleus> recon_event;
 int ztot=0;
@@ -210,7 +210,8 @@ public:
             fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
-         } else if (fType == Type::Group) {
+         }
+         else if (fType == Type::Group) {
             fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
@@ -235,7 +236,8 @@ public:
             fSelection.Set("ok", [](const Particle * n) {
                return n->IsOK();
             });
-         } else if (fType == Type::Group) {
+         }
+         else if (fType == Type::Group) {
             fSelection.Set("group", [grp](const Particle * n) {
                return n->BelongsToGroup(grp);
             });
@@ -329,7 +331,8 @@ public:
                fSelection.Set("ok", [](const Particle * n) {
                   return n->IsOK();
                });
-            } else if (fType == Type::Group) {
+            }
+            else if (fType == Type::Group) {
                fSelection.Set("group", [grp](const Particle * n) {
                   return n->BelongsToGroup(grp);
                });
@@ -462,7 +465,8 @@ public:
                mt.Execute(tmp, "", ret);
                fSum += ret;
             }
-         } else if (mt.ReturnType() == TMethodCall::kDouble) {
+         }
+         else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -496,7 +500,8 @@ public:
                mt.Execute(tmp, args, ret);
                fSum += ret;
             }
-         } else if (mt.ReturnType() == TMethodCall::kDouble) {
+         }
+         else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -529,7 +534,8 @@ public:
                mt.Execute(tmp, "", ret);
                h->Fill((Double_t)ret);
             }
-         } else if (mt.ReturnType() == TMethodCall::kDouble) {
+         }
+         else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -559,7 +565,8 @@ public:
                mt.Execute(tmp, args, ret);
                h->Fill((Double_t)ret);
             }
-         } else if (mt.ReturnType() == TMethodCall::kDouble) {
+         }
+         else if (mt.ReturnType() == TMethodCall::kDouble) {
             Double_t ret;
             for (; it != end(); ++it) {
                Particle* tmp = it.get_pointer();
@@ -993,7 +1000,7 @@ public:
       //
       //~~~~{.cpp}
       // KVTemplateEvent<KVNucleus> e;
-      // for(auto& n : e.ConditionalOperator( {"Z>0",[](const KVNucleus* n){ return n->GetZ()>0; }} ))
+      // for(auto& n : e.ConditionalIterator( {"Z>0",[](const KVNucleus* n){ return n->GetZ()>0; }} ))
       //      std::cout << n.GetZ() << std::endl;
       //~~~~
       return EventIterator(this, c);
@@ -1003,3 +1010,24 @@ public:
 };
 
 #endif
+
+/** \example KVEvent_iterator_example.C
+# Example of different ways to iterate over KVTemplateEvent objects
+
+This demonstrates the use of
+  - KVTemplateEvent::Iterator class
+  - EventIterator wrapper class
+  - KVEvent::GetNextParticle()
+
+All of these can be used to iterate over the particles in an event, optionally applying some selection criteria.
+
+The KVTemplateEvent::Iterator/EventIterator classes also allow to use
+STL algorithms, and range-based for-loops.
+
+To execute this function, do
+
+    $ kaliveda
+    kaliveda[0] .L KVEvent_iterator_example.C+
+    kaliveda[1] iterator_examples()
+
+*/

@@ -1,12 +1,71 @@
 \page release_notes Release Notes for KaliVeda
 
-Last update: 31st May 2022
+Last update: 8th July 2022
 
 ## Version 1.13/00 (current development version - dev branch)
 
-__Changes 31/5/2022 in__ \ref NucEvents : __Events can contain any KVParticle-derived class__
+__Changes 31/5/2022 in__ \ref NucEvents : __General event iterators and new KVTemplateParticleCondition__
 
-Previously, 
+It is now possible to iterate over an arbitrary selection of particles in an event using a KVTemplateParticleCondition
+object (KVParticleCondition is now an alias for KVTemplateParticleCondition<KVNucleus>):
+
+~~~~{.cpp}
+KVReconstructedEvent recev;
+for(auto& rn : recev.ConditionalIterator({"Zid",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}))
+{
+  // loop over reconstructed nuclei with identified Z
+}
+
+// OR:
+
+KVEvent* e = &recev;
+for(auto& rn : ReconEventIterator(e, {"Zid",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}))
+{
+  // loop over reconstructed nuclei with identified Z
+}
+~~~~
+
+Note that the type of the pointer used in the lambda function argument must match the event particle type:
+
+Event class            | Iterator wrapper   | Particle condition class                            | lambda signature
+-----------------------|--------------------|-----------------------------------------------------|-------------------------------
+KVNucleusEvent         | EventIterator      | KVTemplateParticleCondition<KVNucleus>              | bool [](const KVNucleus*)
+KVReconstructedEvent   | ReconEventIterator | KVTemplateParticleCondition<KVReconstructedNucleus> | bool [](const KVReconstructedNucleus*)
+KVSimEvent             | SimEventIterator   | KVTemplateParticleCondition<KVSimNucleus>           | bool [](const KVSimNucleus*)
+
+__Changes 19/5/2022 in__ \ref NucEvents : __Events can contain any KVParticle-derived class__
+
+Previously, KVTemplateEvent could only be used with KVNucleus and derived classes. This condition has now been
+relaxed to include the KVParticle base class of KVNucleus. As a result, the behaviour of some old KVEvent methods
+has changed:
+
+~~~~{.cpp}
+KVReconstructedEvent recev;
+KVEvent* p_ev = &recev;
+
+recev.AddParticle(); // returns KVReconstructedNucleus*
+p_ev->AddParticle(); // return KVParticle* (used to be KVNucleus*)
+
+recev.GetParticle(1); // returns KVReconstructedNucleus*
+p_ev->GetParticle(1); // return KVParticle* (used to be KVNucleus*)
+
+recev.GetNextParticle(); // returns KVReconstructedNucleus*
+p_ev->GetNextParticle(); // return KVParticle* (used to be KVNucleus*)
+~~~~
+
+New methods have been added which return KVNucleus pointers:
+~~~~{.cpp}
+recev.AddNucleus(); // returns KVNucleus*
+p_ev->AddNucleus(); // returns KVNucleus*
+~~~~
+
+If the event does not contain particles derived from KVNucleus, these methods return `nullptr`:
+~~~~{.cpp}
+KVTemplateEvent<KVParticle> partev;
+partev.AddNucleus();   // returns nullptr
+partev.GetNucleus(1);  // returns nullptr
+partev.GetParticle(1); // returns KVParticle* pointer to particle
+~~~~
 
 __Changes 5/8/2021 in__ \ref AnalysisInfra : __New data quality auditing tools__
 

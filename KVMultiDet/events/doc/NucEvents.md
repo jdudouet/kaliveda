@@ -48,8 +48,8 @@ print_event(simev); // OK
 
 \subsection evBuild 2.1 Event building
 
-Events are built up by successive calls to the KVEvent::AddParticle() method, which adds a KVNucleus -derived object to the event corresponding
-to the event's defined nucleus type, and returns a pointer to the new nucleus:
+Events are built up by successive calls to the KVEvent::AddParticle() method, which adds a particle object to the event corresponding
+to the event's defined particle type, and returns a pointer to the new particle:
 
 ~~~~{.cpp}
 KVReconstructedEvent recev;
@@ -60,7 +60,7 @@ std::cout << nuc->ClassName() << std::endl;
 ~~~~
 
 A small subtlety of this (virtual) method is that, when the event is accessed through a base pointer or reference,
-the pointer returned by KVEvent::AddParticle() is also a base pointer (to a KVNucleus), although the added nucleus is
+the pointer returned by KVEvent::AddParticle() is also a base pointer (to a KVParticle), although the added particle is
 of course always of the correct type for the event:
 
 ~~~~{.cpp}
@@ -72,10 +72,26 @@ std::cout << nuc->ClassName() << std::endl;
 "KVReconstructedNucleus"  // type of the nucleus object
 
 std::cout << nuc->Class_Name() << std::endl;
-"KVNucleus"  // type of the nucleus pointer
+"KVParticle"  // type of the pointer
 ~~~~
 
-Once added to an event, a nucleus cannot be removed from the event; however, all nuclei can be removed (deleted)
+We also provide the KVEvent::AddNucleus() method, which does exactly the same thing as KVEvent::AddParticle(),
+except that it always returns a pointer to KVNucleus, as long as the particles contained in the event derive
+from KVNucleus (otherwise it returns `nullptr`):
+
+~~~~{.cpp}
+KVReconstructedEvent recev;
+KVEvent& eventRef = recev;
+auto nuc = eventRef.AddNucleus();
+
+std::cout << nuc->ClassName() << std::endl;
+"KVReconstructedNucleus"  // type of the nucleus object
+
+std::cout << nuc->Class_Name() << std::endl;
+"KVNucleus"  // type of the pointer
+~~~~
+
+Once added to an event, a particle cannot be removed from the event; however, all particles can be removed (deleted)
 in order to build a new event with method Clear():
 
 ~~~~{.cpp}
@@ -87,7 +103,7 @@ recev.GetMult(); // size (multiplicity) of event
 
 \subsubsection multEv 2.1.1 Event multiplicities
 
-The number of nuclei in any event (the size of the container) is called the multiplicity of the event,
+The number of particles in any event (the size of the container) is called the multiplicity of the event,
 and is given by the method KVEvent::GetMult():
 
 ~~~~{.cpp}
@@ -113,14 +129,12 @@ event->GetMult("qP"); // group names are also case insensitive
 
 \subsubsection objOwn 2.1.2 Object ownership
 
-Events are built up by repeated calls to the KVEvent::AddParticle() method which creates a new
-nucleus object, adds it to the event, and returns a pointer to the new nucleus.
 All nuclei in an event __belong__ to the event and are destroyed by the KVEvent destructor
 when it goes out of scope.
 
 Therefore a KVEvent cannot be used to store references to nuclei in another KVEvent object,
 for example if one wants to handle a subset of the nuclei in the event. This is why the
-iterators presented below allow to iterate only over selected subsets (groups) of nuclei if required (see \ref iterEv).
+iterators presented below allow to iterate only over selected subsets (groups) of particles if required (see \ref iterEv).
 
 \subsubsection stoRef 2.1.3 Storing references to nuclei in an event
 
@@ -243,20 +257,26 @@ auto ztot = simev.GetSum("GetZ");
 ~~~~
 
 As for the KVEvent::AddParticle() method (see above), the type of pointer returned by KVEvent::GetParticle() changes if the event
-is accessed through a base pointer or reference: in this case a base KVNucleus pointer or reference is returned.
-Therefore if specific child class methods are accessed for the nuclei in the event, care must be taken:
+is accessed through a base pointer or reference: in this case a base KVParticle pointer or reference is returned.
+If the particles in the event are derived from KVNucleus, KVEvent::GetNucleus() can be used in cases where a
+pointer to KVNucleus is sufficient. If more specific child class methods are accessed for the nuclei in the event,
+casting is required:
 
 ~~~~{.cpp}
 KVSimEvent simev;
 
 TVector3 total_spin;
 for(int i=1; i<=simev.GetMult(); ++i)
-         total_spin += simev.GetParticle(i)->GetAngMom(); // OK: returns KVSimNucleus pointer
+         total_spin += simev.GetParticle(i)->GetAngMom(); // OK: KVSimEvent::GetParticle() returns KVSimNucleus*
 
 KVEvent* event = &simev;
-for(int i=1; i<=event->GetMult(); ++i)
-         // total_spin += event->GetParticle(i)->GetAngMom(); => compile error: returns KVNucleus pointer
+int ztot = 0;
+for(int i=1; i<=event->GetMult(); ++i) {
+         // ztot += event->GetParticle(i)->GetZ(); => compile error: KVEvent::GetParticle() returns KVParticle*
+         ztot += event->GetNucleus(i)->GetZ(); // OK : KVEvent::GetNucleus() always returns KVNucleus*
          total_spin += dynamic_cast<KVSimNucleus*>(event->GetParticle(i))->GetAngMom(); // OK
+         /* total_spin += dynamic_cast<KVSimNucleus*>(event->GetNucleus(i))->GetAngMom(); // also OK */
+}
 ~~~~
 
 In a simple indexed loop, if the iteration is to be restricted to only "OK" particles, or only those
@@ -264,15 +284,15 @@ belonging to a previously-defined group, the loop must still be carried out over
 event (i.e. using KVEvent::GetMult() with no arguments), and the test performed for each particle:
 
 ~~~~{.cpp}
-// sum of Z for all "OK" particles
+// sum of Z for all "OK" nuclei
 for(int i=1; i<=simev.GetMult(); ++i)
   if(simev.GetParticle(i)->IsOK())
-     ztot_ok += simev.GetParticle(i)->GetZ();
+     ztot_ok += simev.GetNucleus(i)->GetZ();
 
 // sum of Z for all "QP" particles
 for(int i=1; i<=simev.GetMult(); ++i)
   if(simev.GetParticle(i)->BelongsToGroup("QP"))
-     ztot_qp += simev.GetParticle(i)->GetZ();
+     ztot_qp += simev.GetNucleus(i)->GetZ();
 ~~~~
 
 Note that each of these iterations can be replaced by:
@@ -286,7 +306,9 @@ ztot_qp = simev.GetSum("GetZ","Qp");  // groupname case insensitive
 
 \subsubsection simpIt 2.3.2 Simple (deprecated) iterator
 
-The KVEvent::GetNextParticle() method can be used to easily loop over nuclei in an event:
+The KVEvent::GetNextParticle() and KVEvent::GetNextNucleus() methods can be used to easily loop over nuclei in an event
+(the former returns a pointer of the type of the particles in the event - unless the event is accessed through a
+base KVEvent pointer or reference, in which case a KVParticle pointer is returned - , the latter a KVNucleus pointer):
 
 ~~~~{.cpp}
 KVReconstructedEvent recev;
@@ -304,22 +326,22 @@ internal iterator, therefore using any of those inside a loop using KVEvent::Get
 will have unexpected results!
 
 As for the KVEvent::GetParticle() method (see above), the type of pointer returned by KVEvent::GetNextParticle() changes if the event
-is accessed through a base pointer or reference: in this case a base KVNucleus pointer or reference is returned.
+is accessed through a base pointer or reference: in this case a base KVParticle pointer or reference is returned.
 Therefore if specific child class methods are accessed for the nuclei in the event, care must be taken:
 
 ~~~~{.cpp}
 KVEvent* event = &recev; // base class pointer to event
-// while( (nuc = event->GetNextParticle()) ) { ... } => does not compile: event->GetNextParticle() returns KVNucleus*
+// while( (nuc = event->GetNextParticle()) ) { ... } => does not compile: event->GetNextParticle() returns KVParticle*
 
 KVNucleus* nunuc;
-while( (nunuc = event->GetNextParticle()) ) // OK
+while( (nunuc = event->GetNextNucleus()) ) // OK
 // { std::cout << nunuc->GetStoppingDetector()->GetName() << std::endl; } => does not compile: KVNucleus has no "GetStoppingDetector" method
 
-while( (nunuc = event->GetNextParticle()) )
+while( (nunuc = event->GetNextNucleus()) )
 { std::cout << dynamic_cast<KVReconstructedNucleus*>(nunuc)->GetStoppingDetector()->GetName() << std::endl; } // => OK
 ~~~~
 
-With the KVEvent::GetNextParticle() method, it is easy to restrict the loop to only nuclei which are
+With the KVEvent::GetNextParticle()/KVEvent::GetNextNucleus() methods, it is easy to restrict the loop to only nuclei which are
 "OK" or only those belonging to a previously defined group:
 
 ~~~~{.cpp}
@@ -372,44 +394,47 @@ KVNucleusEvent       | KVNucleusEvent::Iterator       | KVNucleus
 KVSimEvent           | KVSimEvent::Iterator           | KVSimNucleus           
 KVReconstructedEvent | KVReconstructedEvent::Iterator | KVReconstructedNucleus 
 
-#### Iterating over "OK" particles or groups of particles
+#### Iterating over selected subgroups of particles
 
 The iterator returned by KVReconstructedEvent::begin() in the previous example will include all nuclei of the event in the loop:
 this Iterator is of type KVReconstructedEvent::Iterator::Type::All.
-Iterators of different types can be used in order to limit loops to include only particles which are `"OK"` (used for analysis
-of reconstructed nuclei):
+Iterating over only a selection of particles can be achieved using the KVTemplateParticleCondition class,
+which is just a wrapper for a lambda function used to select each particle according to user-defined criteria:
 
 ~~~~{.cpp}
-for(auto it = KVReconstructedEvent::Iterator(recev, KVReconstructedEvent::Iterator::Type::OK); it!=recev.end(); ++it)
+KVTemplateParticleCondition<KVNucleus> is_lcp("Z<3", [](const KVNucleus* n){ return n->GetZ()<3; });
+KVNucleus helium("4He"), carbon("12C");
+std::cout << std::boolalpha << is_lcp.Test(helium) << std::endl;
+true
+std::cout << std::boolalpha << is_lcp.Test(carbon) << std::endl;
+false
+~~~~
+
+To iterate over a selected subgroup of particles can therefore be carried out as in the following example:
+~~~~{.cpp}
+KVReconstructedEvent recev;
+for(auto it = KVReconstructedEvent::Iterator(recev, {"ZId",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}); it!=recev.end(); ++it)
 {
-  // loop over all "OK" particles
+  // loop over all reconstructed nuclei whose Z was measured (identified)
+}
+~~~~
+Note that the type of the particle pointer argument in the lambda function must match the type of particles in the event.
+
+Alternatively, you can call the ConditionalIterator() method of the event:
+~~~~{.cpp}
+for(auto it = recev.ConditionalIterator({"ZId",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}); it!=recev.end(); ++it)
+{
+  // loop over all reconstructed nuclei whose Z was measured (identified)
 }
 ~~~~
 
-Similarly, in order to loop over all particles belonging to a previously defined group,
+In order to simplify the use of such iterators, and especially when events are accessed through a KVEvent base pointer or reference (see below),
+we provide wrapper classes and aliases for an easier interface:
 
 ~~~~{.cpp}
-for(auto it = KVReconstructedEvent::Iterator(recev, KVReconstructedEvent::Iterator::Type::Group, "QP"); it!=recev.end(); ++it)
+for(auto it = ReconEventIterator(recev, {"ZId",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}).begin(); it!=recev.end(); ++it)
 {
-  // loop over particles in "QP" group
-}
-~~~~
-
-In order to simplify the use of such iterators, we provide wrapper classes for an easier interface
-
-~~~~{.cpp}
-for(auto it = KVReconstructedEvent::EventOKIterator(recev).begin(); it!=recev.end(); ++it)
-{
-  // loop over all "OK" particles
-}
-~~~~
-
-and to further simplify the code, we provide aliases for these wrappers:
-
-~~~~{.cpp}
-for(auto it = ReconEventOKIterator(recev).begin(); it!=recev.end(); ++it)
-{
-  // loop over all "OK" particles
+  // loop over all reconstructed nuclei whose Z was measured (identified)
 }
 ~~~~
 
@@ -426,6 +451,9 @@ KVReconstructedEvent       | KVReconstructedEvent::Iterator::Type::All   | KVRec
 KVSimEvent       | KVSimEvent::Iterator::Type::All   | KVSimEvent::EventIterator      | SimEventIterator
 ^                    | KVSimEvent::Iterator::Type::OK    | KVSimEvent::EventOKIterator    | SimEventOKIterator
 ^                    | KVSimEvent::Iterator::Type::Group | KVSimEvent::EventGroupIterator | SimEventGroupIterator
+
+The `Group` and `OK` variants are specialized versions for selecting all particles belonging to a named group,
+or all particles which are "OK".
 
 \subsubsection rangeIter 2.3.4 Range-based for loops
 
@@ -452,11 +480,16 @@ for(auto& nuc : event)  { nuc.Print(); }
 Note the use of an automatic reference type for `nuc`: this is recommended to avoid copying of underlying nucleus
 objects, which may have unfortunate side-effects in certain cases (KVReconstructedNucleus).
 
-Range-based for loops limited to either "OK" particles or particles in different groups can also be easily
+Range-based for loops limited to subsets of selected particles can also be easily
 implemented thanks to the wrappers introduced above:
 
 ~~~~{.cpp}
 KVReconstructedEvent recev;
+for(auto& nuc : ReconEventIterator(recev, {"ZId",[](const KVReconstructedNucleus* n){ return n->IsZMeasured(); }}))
+{
+  // loop over all reconstructed nuclei whose Z was measured (identified)
+}
+
 for(auto& nuc : ReconEventOKIterator(recev))
 {
   // loop over all "OK" particles

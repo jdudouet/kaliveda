@@ -22,14 +22,15 @@ class KVClassFactory;
 
 /**
 \class KVTemplateParticleCondition
-\brief Handles particle selection criteria for data analysis classes
+\brief An object for handling particle selection
 \ingroup AnalysisInfra
 \ingroup NucEvents
 \tparam ParticleType class which is at least a base class of the particles to be selected
 
-A KVTemplateParticleCondition<ParticleType> object can be used to select particles to include in data analysis
+A KVTemplateParticleCondition object can be used to select particles to include in data analysis
 (see KVEventSelector::SetParticleConditions()), in the calculation of global
 variables (see KVVarGlob::SetSelection()), or in iterations over events (see KVTemplateEvent).
+
 The Test() method returns true or false
 for a given nucleus depending on whether or not the condition is fulfilled. Combinations of
 selections can be performed using Boolean logic operations `&&` and `||`.

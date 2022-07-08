@@ -63,24 +63,3 @@ which should be used whenever it is required to stock KVEvent-derived objects in
 */
 /////////////////////////////////////////////////////////////////////////////://
 
-/** \example KVEvent_iterator_example.C
-# Example of different ways to iterate over KVEvent objects
-
-This demonstrates the use of
-  - KVEvent::Iterator class
-  - EventIterator wrapper class
-  - KVEvent::GetNextParticle()
-
-All of these can be used to iterate over the particles in an event, optionally applying some selection criteria.
-
-The KVEvent::Iterator/EventIterator classes also allow to use
-(a restricted set of) STL algorithms, and (from C++11 onwards)
-the use of range-based for-loops.
-
-To execute this function, do
-
-    $ kaliveda
-    kaliveda[0] .L KVEvent_iterator_example.C+
-    kaliveda[1] iterator_examples()
-
-*/
