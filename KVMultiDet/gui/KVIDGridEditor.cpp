@@ -704,11 +704,13 @@ void KVIDGridEditor::SetHisto(TH2* hh)
    }
 
    if (!IsClosed() && (TheHisto)) {
-      //std::cout << "got histo to draw: "<< TheHisto << std::endl;
-      //TheHisto->Print();
-      //std::cout << "current canvas is " << fCanvas->GetName() << std::endl;
       fPad = fCanvas->cd();//au cas ou il y a plusieurs canvas ouverts
-      //std::cout << "current pad is " << fPad->GetName() << std::endl;
+      // set axes range of histo to grid size
+      if (TheGrid) {
+         TheGrid->FindAxisLimits();
+         TheHisto->GetXaxis()->SetRangeUser(TheGrid->GetXmin(), TheGrid->GetXmax());
+         TheHisto->GetYaxis()->SetRangeUser(TheGrid->GetYmin(), TheGrid->GetYmax());
+      }
       TheHisto->Draw("col");
       fPad->SetLogz(true);
       TheHisto->SetMinimum(1);
