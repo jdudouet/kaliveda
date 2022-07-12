@@ -118,6 +118,9 @@ protected:
 #endif
 #endif
 
+   KVIDGrid* newGrid(bool onlyZ);
+   void addLineToGrid(KVIDGrid* gg, int zz, int aa, int npoints);
+
 public:
 
    // status of particle calibration after Calibrate(KVReconstructedNucleus*) is called
@@ -247,6 +250,7 @@ public:
    };
 
    const Char_t* GetDefaultIDGridClass();
+   KVIDGrid* CalculateDeltaE_EGrid(const KVNameValueList& AperZ, Int_t npoints = 30, Double_t xfactor = 1.);
    KVIDGrid* CalculateDeltaE_EGrid(const KVNumberList& Zrange, Int_t deltaMasse, Int_t npoints, Double_t lifetime = -10/*s*/, UChar_t massformula = 0, Double_t xfactor = 1.);
    KVIDGrid* CalculateDeltaE_EGrid(TH2* haa_zz, Bool_t Zonly, Int_t npoints);
    // status codes for GetMeanDEFromID
