@@ -317,11 +317,21 @@ public:
    virtual Int_t GetIDCode() const
    {
       // Returns value of VEDA ID code
+      //
+      // For older data, this may be written in the KVINDRACodes object
+      //
+      // For more recent data, this is written in a (int) parameter IDCODE
+      if (GetParameters()->HasIntParameter("IDCODE")) return GetParameters()->GetIntValue("IDCODE");
       return GetCodes().GetVedaIDCode();
    }
    virtual Int_t GetECode() const
    {
       // Return value of VEDA E code
+      //
+      // For older data, this may be written in the KVINDRACodes object
+      //
+      // For more recent data, this is written in a (int) parameter ECODE
+      if (GetParameters()->HasIntParameter("ECODE")) return GetParameters()->GetIntValue("ECODE");
       return GetCodes().GetVedaECode();
    }
 
