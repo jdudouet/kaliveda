@@ -4,7 +4,6 @@ INDRA_camp2.DataSet.RepositoryDir:   campagne2
 INDRA_camp2.KVDataSet.DataTypes: raw dst root
 INDRA_camp2.Reconstruction.DataAnalysisTask.Prereq:     XXX
 INDRA_camp2.DataSet.RunFileName.raw:    run%R.raw
-INDRA_camp2.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_camp2.HasCalibIdentInfos:   no
 INDRA_camp2.DataSet.RunFile.DoNotDelete: raw dst
 INDRA_camp2.DataSet.RunFileClass.raw:    GANIL

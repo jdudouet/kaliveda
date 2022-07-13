@@ -3,7 +3,6 @@ INDRA_camp5.DataSet.Title:    5th INDRA campaign (2001)
 INDRA_camp5.DataSet.RepositoryDir:   campagne5
 INDRA_camp5.KVDataSet.DataTypes: raw recon ident root
 INDRA_camp5.DataSet.RunFileName.raw:    run%R.raw
-INDRA_camp5.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_camp5.DataSet.RunFile.DoNotDelete: raw
 INDRA_camp5.DataSet.RunFileClass.raw:    GANIL
 INDRA_camp5.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData

@@ -11,7 +11,6 @@ INDRAFAZIA.E789.DataSet.RunFile.DoNotDelete: raw
 INDRAFAZIA.E789.DataSet.RunFileClass.raw:    MFM
 INDRAFAZIA.E789.MFM.WithEbyedat:  yes
 INDRAFAZIA.E789.MFM.EbyedatActionsExpName:  fazia
-INDRAFAZIA.E789.ReconstructedEventClassName:	KVReconstructedEvent
 INDRAFAZIA.E789.KVDataSet.DataType.Subdir.recon:  recon
 INDRAFAZIA.E789.DataSet.ExpSetUp.ClassList: KVINDRA KVFAZIA
 INDRAFAZIA.E789.EventReconstruction.DoCalibration: yes

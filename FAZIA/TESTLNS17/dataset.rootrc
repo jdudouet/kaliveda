@@ -3,7 +3,6 @@
 TESTLNS17.DataSet.Title:   Test done at LNS during July 2016
 TESTLNS17.DataSet.RepositoryDir:   TESTLNS17
 TESTLNS17.DataSet.RunFileName.raw:    run%R.root.%D
-TESTLNS17.ReconstructedEventClassName:	KVReconstructedEvent
 TESTLNS17.DataSet.RunFileClass.raw:    TFile
 TESTLNS17.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 TESTLNS17.KVDataSet.DataType.Subdir.recon:  recon

@@ -384,7 +384,9 @@ public:
    {
       // Returns the name of the class used to store reconstructed events for this dataset.
       // This is defined by the value of environment variable
+      //~~~~
       //        [dataset name].ReconstructedEventClassName:      [name of class]
+      //~~~~
       // The default value (if no variable defined) is KVReconstructedEvent.
 
       return GetDataSetEnv("ReconstructedEventClassName", "KVReconstructedEvent");

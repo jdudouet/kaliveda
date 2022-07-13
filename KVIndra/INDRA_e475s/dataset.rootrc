@@ -2,7 +2,6 @@
 INDRA_e475s.DataSet.Title:    Isospin dependence of the emission of complex fragments (E475S) (2006)
 INDRA_e475s.DataSet.RepositoryDir:   e475s
 INDRA_e475s.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e475s.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e475s.KVDataSet.DataType.Subdir.recon:  recon
 INDRA_e475s.DataSet.RunFile.DoNotDelete: raw
 INDRA_e475s.DataSet.RunFileClass.raw:    GANIL

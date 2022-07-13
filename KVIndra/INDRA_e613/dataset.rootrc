@@ -3,7 +3,6 @@ INDRA_e613.DataSet.Title:    The Last Experiment (Ever)
 INDRA_e613.DataSet.RepositoryDir:   e613
 INDRA_e613.KVDataSet.DataTypes: raw recon ident root
 INDRA_e613.DataSet.RunFileName.raw:    run_%R.dat.%D
-INDRA_e613.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e613.DataSet.RunFile.DoNotDelete: raw
 INDRA_e613.DataSet.RunFileClass.raw:    GANIL
 INDRA_e613.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData

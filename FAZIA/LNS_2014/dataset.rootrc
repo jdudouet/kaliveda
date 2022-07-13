@@ -2,7 +2,6 @@
 LNS_2014.DataSet.Title:    FAZIA commissioning at LNS (2014)
 LNS_2014.DataSet.RepositoryDir:   LNS_2014
 LNS_2014.DataSet.RunFileName.raw:    run%R.root.%D
-LNS_2014.ReconstructedEventClassName:	KVReconstructedEvent
 LNS_2014.DataSet.RunFileClass.raw:    TFile
 LNS_2014.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 LNS_2014.KVDataSet.DataType.Subdir.recon:  recon

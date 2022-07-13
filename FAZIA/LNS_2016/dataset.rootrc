@@ -2,7 +2,6 @@
 LNS_2016.DataSet.Title:   Test done at LNS during July 2016
 LNS_2016.DataSet.RepositoryDir:   LNS_2016
 LNS_2016.DataSet.RunFileName.raw:    run%R.root.%D
-LNS_2016.ReconstructedEventClassName:	KVReconstructedEvent
 LNS_2016.DataSet.RunFileClass.raw:    TFile
 LNS_2016.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 LNS_2016.KVDataSet.DataType.Subdir.recon:  recon

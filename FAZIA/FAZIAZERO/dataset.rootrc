@@ -2,7 +2,6 @@
 FAZIAZERO.DataSet.Title:   FAZIAZERO experiment at LNS (may. 2018)
 FAZIAZERO.DataSet.RepositoryDir:   FAZIAZERO
 FAZIAZERO.DataSet.RunFileName.raw:    run%R.root.%D
-FAZIAZERO.ReconstructedEventClassName:	KVReconstructedEvent
 FAZIAZERO.DataSet.RunFileClass.raw:    TFile
 FAZIAZERO.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 FAZIAZERO.KVDataSet.DataType.Subdir.recon:  recon

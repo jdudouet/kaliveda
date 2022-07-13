@@ -5,7 +5,6 @@ FAZIAPRE-MAY2018.ThetaMinCompactGeo: 1
 +DataSet:   FAZIAPRE-MAY2018
 FAZIAPRE-MAY2018.DataSet.Title:   FAZIAPRE-MAY2018 experiment at LNS (may. 2018)
 FAZIAPRE-MAY2018.DataSet.RepositoryDir:   FAZIAPRE-MAY2018
-FAZIAPRE-MAY2018.ReconstructedEventClassName:	KVReconstructedEvent
 FAZIAPRE-MAY2018.DataSet.RunFileClass.raw:    FZDATA
 FAZIAPRE-MAY2018.DataSet.RunFile.DoNotDelete: raw
 FAZIAPRE-MAY2018.DataSet.RunFileName.raw:    run%R

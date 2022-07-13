@@ -3,7 +3,6 @@ INDRA_e416a.DataSet.Title:    Fission lifetimes of SHE (E416a) (2005)
 INDRA_e416a.DataSet.RepositoryDir:   e416a
 INDRA_e416a.DataSet.UserGroup:   e416a
 INDRA_e416a.DataSet.RunFileName.raw:    Run%R_%D.dat
-INDRA_e416a.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e416a.DataSet.RunFile.DoNotDelete: raw
 INDRA_e416a.KVMultiDetArray.ROOTGeometry:  no
 INDRA_e416a.DataSet.RunFileClass.raw:    GANIL

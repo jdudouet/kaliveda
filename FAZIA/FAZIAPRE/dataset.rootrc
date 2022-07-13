@@ -2,7 +2,6 @@
 FAZIAPRE.DataSet.Title:   FAZIA-PRE experiment at LNS (feb. 2018)
 FAZIAPRE.DataSet.RepositoryDir:   FAZIAPRE
 FAZIAPRE.DataSet.RunFileName.raw:    run%R.root.%D
-FAZIAPRE.ReconstructedEventClassName:	KVReconstructedEvent
 FAZIAPRE.DataSet.RunFileClass.raw:    TFile
 FAZIAPRE.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 FAZIAPRE.KVDataSet.DataType.Subdir.recon:  recon

@@ -2,7 +2,6 @@
 FAZIASYM.DataSet.Title:    FAZIASYM experiment at LNS (2015)
 FAZIASYM.DataSet.RepositoryDir:   FAZIASYM
 FAZIASYM.DataSet.RunFileName.raw:    run%R.root.%D
-FAZIASYM.ReconstructedEventClassName:	KVReconstructedEvent
 FAZIASYM.DataSet.RunFileClass.raw:    TFile
 FAZIASYM.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 FAZIASYM.KVDataSet.DataType.Subdir.recon:  recon

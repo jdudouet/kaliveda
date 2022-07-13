@@ -2,7 +2,6 @@
 ISOFAZIA.DataSet.Title:    ISOFAZIA experiment at LNS (2015)
 ISOFAZIA.DataSet.RepositoryDir:   ISOFAZIA
 ISOFAZIA.DataSet.RunFileName.raw:    run%R.root.%D
-ISOFAZIA.ReconstructedEventClassName:	KVReconstructedEvent
 ISOFAZIA.DataSet.RunFileClass.raw:    TFile
 ISOFAZIA.DataAnalysisTask:     RawAnalysis Reconstruction ReconAnalysis
 ISOFAZIA.KVDataSet.DataType.Subdir.recon:  recon

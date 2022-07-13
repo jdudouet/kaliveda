@@ -2,7 +2,6 @@
 INDRA_e494s_woVAMOS.DataSet.Title:   Isospin dependence of level density parameter (E494S) (2007)
 INDRA_e494s_woVAMOS.DataSet.RepositoryDir:   e494s
 INDRA_e494s_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e494s_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e494s_woVAMOS.HasCalibIdentInfos:   no
 INDRA_e494s_woVAMOS.DataSet.RunFile.DoNotDelete: raw
 INDRA_e494s_woVAMOS.DataSet.RunFileClass.raw:    GANIL

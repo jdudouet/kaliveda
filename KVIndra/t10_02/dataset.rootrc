@@ -2,7 +2,6 @@
 t10_02.DataSet.Title:    Test INDRA T10_02 (Nov.-Dec. 2010)
 t10_02.DataSet.RepositoryDir:   t10_02
 t10_02.DataSet.RunFileName.raw:    run_%R.dat.%D
-t10_02.ReconstructedEventClassName:   KVINDRAReconEvent
 t10_02.DataSet.RunFile.DoNotDelete: raw
 t10_02.DataSet.RunFileClass.raw:    GANIL
 t10_02.ReconAnalysis.DataAnalysisTask.Analyser:     INDRAReconData

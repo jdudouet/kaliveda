@@ -2,7 +2,6 @@
 INDRA_e503_woVAMOS.DataSet.Title:   Symmetry energy of nuclear EOS (E503) (2007)
 INDRA_e503_woVAMOS.DataSet.RepositoryDir:   e503
 INDRA_e503_woVAMOS.DataSet.RunFileName.raw:    run_%R.dat.%D1.%D2
-INDRA_e503_woVAMOS.ReconstructedEventClassName:   KVINDRAReconEvent
 INDRA_e503_woVAMOS.HasCalibIdentInfos:   no
 INDRA_e503_woVAMOS.DataSet.RunFile.DoNotDelete: raw
 INDRA_e503_woVAMOS.DataSet.RunFileClass.raw:    GANIL

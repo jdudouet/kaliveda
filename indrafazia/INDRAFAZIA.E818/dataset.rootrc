@@ -11,7 +11,6 @@ INDRAFAZIA.E818.DataSet.RunFile.DoNotDelete: raw
 INDRAFAZIA.E818.DataSet.RunFileClass.raw:    MFM
 INDRAFAZIA.E818.MesytecCrateConf:   mesytec_crate_map.dat
 INDRAFAZIA.E818.MesytecChannelsConf:   mesytec_conf_list.dat
-INDRAFAZIA.E818.ReconstructedEventClassName:	KVReconstructedEvent
 INDRAFAZIA.E818.KVDataSet.DataType.Subdir.recon:  recon
 INDRAFAZIA.E818.DataSet.ExpSetUp.ClassList: KVINDRA KVFAZIA
 INDRAFAZIA.E818.EventReconstruction.DoCalibration: yes

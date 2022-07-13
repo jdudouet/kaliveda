@@ -9,7 +9,6 @@ INDRAFAZIA.E789_test.DataSet.RunFileIndexMultiplier.raw:    100
 INDRAFAZIA.E789_test.DataSet.RunFile.DoNotDelete: raw
 INDRAFAZIA.E789_test.DataSet.RunFileClass.raw:    MFM
 INDRAFAZIA.E789_test.MFM.WithEbyedat:  yes
-INDRAFAZIA.E789_test.ReconstructedEventClassName:	KVReconstructedEvent
 INDRAFAZIA.E789_test.KVDataSet.DataType.Subdir.recon:  recon
 INDRAFAZIA.E789_test.DataSet.ExpSetUp.ClassList: KVFAZIA KVINDRA
 INDRAFAZIA.E789_test.EventReconstruction.DoCalibration: yes

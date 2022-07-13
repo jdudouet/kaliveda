@@ -7,7 +7,6 @@
 +DataSet:   FAZIAT2103
 FAZIAT2103.DataSet.Title:   FAZIA test at GANIL (2021)
 FAZIAT2103.DataSet.RepositoryDir:   FAZIAT2103
-FAZIAT2103.ReconstructedEventClassName:	KVReconstructedEvent
 FAZIAT2103.DataSet.RunFileClass.raw:    FZDATA
 FAZIAT2103.DataSet.RunFile.DoNotDelete: raw
 FAZIAT2103.DataSet.RunFileName.raw:    run%R

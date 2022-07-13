@@ -3,7 +3,6 @@
 +DataSet:	  INDRAFAZIA
 INDRAFAZIA.DataSet.Title:    INDRA-FAZIA Campaign (2018-)
 INDRAFAZIA.DataSet.RepositoryDir:	indrafazia
-INDRAFAZIA.ReconstructedEventClassName:	KVReconstructedEvent
 INDRAFAZIA.KVDataSet.DataType.Subdir.recon:  recon
 INDRAFAZIA.KVDataSet.DataType.Subdir.root:  root
 INDRAFAZIA.DataSet.ExpSetUp.ClassList: KVFAZIA KVINDRA

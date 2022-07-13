@@ -7,7 +7,6 @@ INDRAFAZIA.T18_02.DataSet.RepositoryDir:	INDRAFAZIA/T18_02
 INDRAFAZIA.T18_02.DataSet.RunFileName.raw:    run_%R.dat.%D.%I
 INDRAFAZIA.T18_02.DataSet.RunFile.DoNotDelete: raw
 INDRAFAZIA.T18_02.DataSet.RunFileClass.raw:    MFM
-INDRAFAZIA.T18_02.ReconstructedEventClassName:	KVReconstructedEvent
 INDRAFAZIA.T18_02.KVDataSet.DataType.Subdir.recon:  recon
 INDRAFAZIA.T18_02.KVDataSet.DataType.Subdir.root:  root
 INDRAFAZIA.T18_02.DataSet.ExpSetUp.ClassList: KVFAZIA KVINDRA

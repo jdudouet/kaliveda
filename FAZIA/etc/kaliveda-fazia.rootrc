@@ -188,7 +188,6 @@ Q3.MinimumAmplitude: 5
 #LNL_2007.DataSet.RepositoryDir:   LNL_2007
 #LNL_2007.DataSet.RunFileName.raw:    run_%04d.root
 #LNL_2007.RawAnalysis.DataAnalysisTask.UserClass.Base:     INDRARawDataAnalyser
-#LNL_2007.ReconstructedEventClassName:   KVINDRAReconEvent
 #LNL_2007.DataSet.RunFileClass.raw:    TFile
 
 #+DataSet:   LNS_2009
@@ -196,7 +195,6 @@ Q3.MinimumAmplitude: 5
 #LNS_2009.DataSet.RepositoryDir:   LNS_2009
 #LNS_2009.DataSet.RunFileName.raw:    run_%04d.root
 #LNS_2009.RawAnalysis.DataAnalysisTask.UserClass.Base:     INDRARawDataAnalyser
-#LNS_2009.ReconstructedEventClassName:   KVINDRAReconEvent
 #LNS_2009.DataSet.RunFileClass.raw:    TFile
 
 #+DataSet:   GANIL_2010
@@ -205,7 +203,6 @@ Q3.MinimumAmplitude: 5
 #GANIL_2010.DataSet.RunFileName.raw:    run_%04d.root
 #GANIL_2010.RawAnalysis.DataAnalysisTask.Analyser:     FAZIARawDataAnalyser
 #GANIL_2010.RawAnalysis.DataAnalysisTask.UserClass.Base:     INDRARawDataAnalyser
-#GANIL_2010.ReconstructedEventClassName:   KVINDRAReconEvent
 #GANIL_2010.DataSet.RunFileClass.raw:    TFile
 
 #+DataSet:   LNS_2011
@@ -219,5 +216,4 @@ Q3.MinimumAmplitude: 5
 #LNS_2012.DataSet.RepositoryDir:   LNS_2012
 #LNS_2012.DataSet.RunFileName.raw:    run_%04d.root
 #LNS_2012.RawAnalysis.DataAnalysisTask.UserClass.Base:     INDRARawDataAnalyser
-#LNS_2012.ReconstructedEventClassName:   KVINDRAReconEvent
 #LNS_2012.DataSet.RunFileClass.raw:    TFile
