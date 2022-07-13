@@ -14,15 +14,19 @@ ClassImp(KVPIDIntervalPainter)
 void KVPIDIntervalPainter::Draw(Option_t*)
 {
    fMarker.Draw();
-   fLine1.Draw();
-   fLine2.Draw();
+   if (active_intervals) {
+      fLine1.Draw();
+      fLine2.Draw();
+   }
 }
 
 void KVPIDIntervalPainter::HighLight(bool hi)
 {
    fMarker.HighLight(hi);
-   fLine1.HighLight(hi);
-   fLine2.HighLight(hi);
+   if (active_intervals) {
+      fLine1.HighLight(hi);
+      fLine2.HighLight(hi);
+   }
 }
 
 void KVPIDIntervalPainter::Update()
@@ -37,6 +41,16 @@ void KVPIDIntervalPainter::Update()
    fMarker.Update(fZ, fA, fInterval->GetPID());
    fLine1.Update(fInterval->GetPIDmin());
    fLine2.Update(fInterval->GetPIDmax());
+   if (!active_intervals) {
+      fCanvas->GetListOfPrimitives()->Remove(&fLine1);
+      fCanvas->GetListOfPrimitives()->Remove(&fLine2);
+      fCanvas->Modified();
+      fCanvas->Update();
+   }
+   else {
+      fLine1.Update(fInterval->GetPIDmin());
+      fLine2.Update(fInterval->GetPIDmax());
+   }
 }
 
 KVPIDIntervalPainter::pid_marker::pid_marker(KVPIDIntervalPainter* P, Color_t itv_col)

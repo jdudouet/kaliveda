@@ -340,6 +340,8 @@ void KVItvFinderDialog::ZoomOnCanvas()
          fitparams.Set(massfit);
          KVMultiGaussIsotopeFit fitfunc(zz, fitparams);
          fitfunc.DrawFitWithGaussians("same");
+         // deactivate intervals in painter
+         tmp->Execute("DeactivateIntervals", "");
       }
    }
 
@@ -365,11 +367,14 @@ void KVItvFinderDialog::DrawInterval(interval_set* itvs, bool label)
    auto nitv = itvs->GetIntervals()->GetEntries();
    auto cstep = TColor::GetPalette().GetSize() / (nitv + 1);
    int i = 1;
+   auto deactivate_intervals = fGrid->GetParameters()->HasParameter(Form("MASSFIT_%d", itvs->GetZ()));
+
    TIter itt(itvs->GetIntervals());
    while ((itv = (interval*)itt())) {
       KVPIDIntervalPainter* dummy = new KVPIDIntervalPainter(itv, fLinearHisto, TColor::GetPalette()[cstep * i], last_drawn_interval);
       ++i;
       if (label) dummy->SetDisplayLabel();
+      if (deactivate_intervals) dummy->DeactivateIntervals();
       dummy->Draw();
       dummy->SetCanvas(fCanvas);
       dummy->Connect("IntMod()", "KVItvFinderDialog", this, "UpdatePIDList()");
@@ -566,6 +571,8 @@ void KVItvFinderDialog::SaveGrid()
 
 void KVItvFinderDialog::ExportToGrid()
 {
+   // Write all PID intervals in grid parameters "PIDRANGE", "PIDRANGE%d", etc.
+
    fGrid->ClearPIDIntervals();
    KVNumberList pids;
    interval_set* itvs = 0;
@@ -836,8 +843,8 @@ void KVItvFinderDialog::TestIdent()
    current_interval_set = nullptr;
    fIntervalListView->RemoveAll();
 
-   fItvPaint.Clear();
-   DrawIntervals();
+//   fItvPaint.Clear();
+//   DrawIntervals();
 
    new KVTestIDGridDialog(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), 10, 10, fGrid, fHisto);
 }
@@ -911,6 +918,10 @@ void KVItvFinderDialog::FitIsotopes()
    // draw fit with individual gaussians
    fitfunc.DrawFitWithGaussians("same");
 
+   // deactivate intervals for fitted masses
+   std::unique_ptr<KVSeqCollection> tmp(fItvPaint.GetSubListWithMethod(Form("%d", current_interval_set->GetZ()), "GetZ"));
+   tmp->Execute("DeactivateIntervals", "");
+
    // set interval limits according to regions of most probable mass
    int most_prob_A = 0;
    nxt_int.Reset();
@@ -957,16 +968,16 @@ void KVItvFinderDialog::FitIsotopes()
       }
    }
    nxt_int.Reset();
-   TList intervals_to_remove;
-   while ((intvl = (interval*)nxt_int())) {
-      if (!accepted_intervals.FindObject(intvl)) intervals_to_remove.Add(intvl);
-   }
-   if (intervals_to_remove.GetEntries()) {
-      // remove intervals below minimum probability (leave gaussians on display)
-      TIter it_rem(&intervals_to_remove);
-      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
-   }
-   intervals_to_remove.Clear();
+//   TList intervals_to_remove;
+//   while ((intvl = (interval*)nxt_int())) {
+//      if (!accepted_intervals.FindObject(intvl)) intervals_to_remove.Add(intvl);
+//   }
+//   if (intervals_to_remove.GetEntries()) {
+//      // remove intervals below minimum probability (leave gaussians on display)
+//      TIter it_rem(&intervals_to_remove);
+//      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
+//   }
+//   intervals_to_remove.Clear();
    int ig(1);
    // update PID positions from fitted centroids
    nxt_int.Reset();
@@ -977,22 +988,16 @@ void KVItvFinderDialog::FitIsotopes()
       while (vec_alist[ig - 1] < intvl->GetA()) {
          ++ig;
       }
-      if (intvl->SetPID(fitfunc.GetCentroid(ig))) {
-         // centroid is between PID limits derived from probability
-         remaining_gaussians.Add(ig);
-         remaining_alist.Add(intvl->GetA());
-      }
-      else {
-         // centroid is outside limits: bad interval, remove
-         intervals_to_remove.Add(intvl);
-      }
+      intvl->SetPID(fitfunc.GetCentroid(ig));
+      remaining_gaussians.Add(ig);
+      remaining_alist.Add(intvl->GetA());
       ++ig;
    }
-   if (intervals_to_remove.GetEntries()) {
-      // remove intervals with centroids outside PID limits
-      TIter it_rem(&intervals_to_remove);
-      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
-   }
+//   if (intervals_to_remove.GetEntries()) {
+//      // remove intervals with centroids outside PID limits
+//      TIter it_rem(&intervals_to_remove);
+//      while ((intvl = (interval*)it_rem())) remove_interval_from_interval_set(current_interval_set, intvl, false);
+//   }
    UpdatePIDList();
    fItvPaint.Execute("Update", "");
 

@@ -54,7 +54,10 @@ class KVPIDIntervalPainter : public TNamed {
       bool CheckPosition(double x)
       {
          // only allow PID marker to move between lower & upper limits
-         return x >= parent->GetPIDIntervalLowerLimit() && x <= parent->GetPIDIntervalUpperLimit();
+         //
+         // deactivated if parent->active_interval=false
+         return (!parent->active_intervals)
+                || (x >= parent->GetPIDIntervalLowerLimit() && x <= parent->GetPIDIntervalUpperLimit());
       }
    };
    class pid_line : public TLine {
@@ -125,6 +128,8 @@ class KVPIDIntervalPainter : public TNamed {
       double pid;
    };
 
+   friend class pid_marker;
+
    TH1* fLinearHisto = nullptr;
    interval* fInterval = nullptr;
    TAxis* fXaxis{nullptr}, *fYaxis{nullptr};
@@ -140,6 +145,8 @@ class KVPIDIntervalPainter : public TNamed {
    KVPIDIntervalPainter* right_interval = nullptr; // interval to the right (i.e. larger mass) than this one
 
    KVCanvas* fCanvas = nullptr;
+
+   Bool_t active_intervals = true;
 
 public:
    void set_right_interval(KVPIDIntervalPainter* i)
@@ -182,6 +189,21 @@ public:
    KVPIDIntervalPainter(const TString& name, const TString& title)
       : TNamed(name, title)
    {}
+
+   void DeactivateIntervals()
+   {
+      active_intervals = false;
+      if (fCanvas) {
+         fCanvas->GetListOfPrimitives()->Remove(&fLine1);
+         fCanvas->GetListOfPrimitives()->Remove(&fLine2);
+         fCanvas->Modified();
+         fCanvas->Update();
+      }
+   }
+   void ActivateIntervals()
+   {
+      active_intervals = true;
+   }
 
    void Draw(Option_t*     option = "");
    void HighLight(bool hi = true);
