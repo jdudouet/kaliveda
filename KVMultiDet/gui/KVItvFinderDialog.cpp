@@ -618,24 +618,38 @@ void KVItvFinderDialog::NewInterval()
    int aa = 0;
    int iint = 0;
 
+   // try to guess mass from position (PID)
+   // typical isotope separation in PID is 0.12 (e.g. for carbon isotopes)
+   // assume that PID=z means A=2*Z
+   auto aa_guessstimate = TMath::Nint(current_interval_set->GetZ() * 2 + (pid - current_interval_set->GetZ()) / 0.12);
+
    if (!current_interval_set->GetNPID()) {
-      aa = current_interval_set->GetZ() * 2;
+      aa = aa_guessstimate;
       iint = 0;
    }
-   else if (pid < ((interval*)current_interval_set->GetIntervals()->First())->GetPID()) {
+   else if (pid < ((interval*)current_interval_set->GetIntervals()->First())->GetPID()) { // to left of all others
       aa = ((interval*)current_interval_set->GetIntervals()->First())->GetA() - 1;
+      // use guesstimate as long as it is smaller than A of previously defined interval with largest PID
+      if (aa_guessstimate < aa + 1) aa = aa_guessstimate;
       iint = 0;
    }
-   else if (pid > ((interval*)current_interval_set->GetIntervals()->Last())->GetPID()) {
+   else if (pid > ((interval*)current_interval_set->GetIntervals()->Last())->GetPID()) { // to right of all others
       aa = ((interval*)current_interval_set->GetIntervals()->Last())->GetA() + 1;
+      // use guesstimate as long as it is larger than A of previously defined interval with smallest PID
+      if (aa_guessstimate > aa - 1) aa = aa_guessstimate;
       iint = current_interval_set->GetNPID();
    }
    else {
+      // look for intervals between which the new one is places
       for (int ii = 1; ii < current_interval_set->GetNPID(); ii++) {
          bool massok = false;
          if (pid > ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetPID()
                && pid < ((interval*)current_interval_set->GetIntervals()->At(ii))->GetPID()) {
             aa = ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetA() + 1;
+            // use guesstimate if it is in between masses of adjacent intervals (in terms of PID)
+            if ((aa_guessstimate > (aa - 1)) &&
+                  (aa_guessstimate < ((interval*)current_interval_set->GetIntervals()->At(ii))->GetA()))
+               aa = aa_guessstimate;
             iint = ii;
             if (aa <= ((interval*)current_interval_set->GetIntervals()->At(ii))->GetA() - 1) massok = true;
          }
@@ -757,20 +771,17 @@ void KVItvFinderDialog::MassesUp()
          fCanvas->Update();
       }
       else {
-         KVList* ll = current_interval_set->GetIntervals();
-         nSelected = ll->GetSize();
-         if (nSelected >= 1) {
-            for (int ii = 0; ii < nSelected; ii++) {
-               interval* itv = (interval*) ll->At(ii);
-               itv->SetA(itv->GetA() + 1);
-               // change the name of any gaussian in the pad associated with this isotope
-               auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() - 1));
-               if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
-            }
-            fItvPaint.Execute("Update", "");
-            fCanvas->Modified();
-            fCanvas->Update();
+         TIter next_itv(list.get());
+         interval* itv;
+         while ((itv = (interval*)next_itv())) {
+            itv->SetA(itv->GetA() + 1);
+            // change the name of any gaussian in the pad associated with this isotope
+            auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() - 1));
+            if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
          }
+         fItvPaint.Execute("Update", "");
+         fCanvas->Modified();
+         fCanvas->Update();
       }
    }
 }
@@ -797,21 +808,17 @@ void KVItvFinderDialog::MassesDown()
          fCanvas->Update();
       }
       else {
-
-         KVList* ll = current_interval_set->GetIntervals();
-         nSelected = ll->GetSize();
-         if (nSelected >= 1) {
-            for (int ii = 0; ii < nSelected; ii++) {
-               interval* itv = (interval*) ll->At(ii);
-               itv->SetA(itv->GetA() - 1);
-               // change the name of any gaussian in the pad associated with this isotope
-               auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() + 1));
-               if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
-            }
-            fItvPaint.Execute("Update", "");
-            fCanvas->Modified();
-            fCanvas->Update();
+         TIter next_itv(list.get());
+         interval* itv;
+         while ((itv = (interval*)next_itv())) {
+            itv->SetA(itv->GetA() - 1);
+            // change the name of any gaussian in the pad associated with this isotope
+            auto gfit = (TNamed*)fPad->GetPrimitive(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA() + 1));
+            if (gfit) gfit->SetName(KVMultiGaussIsotopeFit::get_name_of_isotope_gaussian(itv->GetZ(), itv->GetA()));
          }
+         fItvPaint.Execute("Update", "");
+         fCanvas->Modified();
+         fCanvas->Update();
       }
    }
 }
