@@ -678,6 +678,7 @@ void KVItvFinderDialog::NewInterval()
    fItvPaint.Add(dummy);
 
    fIntervalListView->Display(current_interval_set->GetIntervals());
+
    fItvPaint.Execute("Update", "");
 
    fCanvas->Modified();
@@ -843,8 +844,8 @@ void KVItvFinderDialog::TestIdent()
    current_interval_set = nullptr;
    fIntervalListView->RemoveAll();
 
-//   fItvPaint.Clear();
-//   DrawIntervals();
+   fItvPaint.Clear();
+   DrawIntervals();
 
    new KVTestIDGridDialog(gClient->GetDefaultRoot(), gClient->GetDefaultRoot(), 10, 10, fGrid, fHisto);
 }
