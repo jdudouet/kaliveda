@@ -622,7 +622,7 @@ void KVItvFinderDialog::NewInterval()
    // typical isotope separation in PID is 0.12 (e.g. for carbon isotopes)
    // assume that PID=z means A=2*Z
    auto aa_guessstimate = TMath::Nint(current_interval_set->GetZ() * 2 + (pid - current_interval_set->GetZ()) / 0.12);
-
+//Info("NewINt","pid = %f guess a=%d",pid,aa_guessstimate);
    if (!current_interval_set->GetNPID()) {
       aa = aa_guessstimate;
       iint = 0;
@@ -630,19 +630,20 @@ void KVItvFinderDialog::NewInterval()
    else if (pid < ((interval*)current_interval_set->GetIntervals()->First())->GetPID()) { // to left of all others
       aa = ((interval*)current_interval_set->GetIntervals()->First())->GetA() - 1;
       // use guesstimate as long as it is smaller than A of previously defined interval with largest PID
+      //Info("NewInt","before first interval, with a=%d",aa+1);
       if (aa_guessstimate < aa + 1) aa = aa_guessstimate;
       iint = 0;
    }
    else if (pid > ((interval*)current_interval_set->GetIntervals()->Last())->GetPID()) { // to right of all others
       aa = ((interval*)current_interval_set->GetIntervals()->Last())->GetA() + 1;
       // use guesstimate as long as it is larger than A of previously defined interval with smallest PID
+      //Info("NewInt","after last interval, with a=%d",aa-1);
       if (aa_guessstimate > aa - 1) aa = aa_guessstimate;
       iint = current_interval_set->GetNPID();
    }
    else {
       // look for intervals between which the new one is places
       for (int ii = 1; ii < current_interval_set->GetNPID(); ii++) {
-         bool massok = false;
          if (pid > ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetPID()
                && pid < ((interval*)current_interval_set->GetIntervals()->At(ii))->GetPID()) {
             aa = ((interval*)current_interval_set->GetIntervals()->At(ii - 1))->GetA() + 1;
@@ -651,10 +652,8 @@ void KVItvFinderDialog::NewInterval()
                   (aa_guessstimate < ((interval*)current_interval_set->GetIntervals()->At(ii))->GetA()))
                aa = aa_guessstimate;
             iint = ii;
-            if (aa <= ((interval*)current_interval_set->GetIntervals()->At(ii))->GetA() - 1) massok = true;
+            break;
          }
-         if (aa && !massok)
-            ((interval*)current_interval_set->GetIntervals()->At(ii))->SetA(((interval*)current_interval_set->GetIntervals()->At(ii))->GetA() + 1);
       }
    }
 
