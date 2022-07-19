@@ -128,7 +128,7 @@ KVItvFinderDialog::KVItvFinderDialog(KVIDZAFromZGrid* gg, TH2* hh)//:fSpectrum(7
          0,
          0,
          50,
-         280,
+         80,
          0,
          0
       };
