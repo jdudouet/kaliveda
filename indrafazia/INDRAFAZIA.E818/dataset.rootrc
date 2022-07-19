@@ -21,11 +21,13 @@ INDRAFAZIA.E818.ActiveIdentifications:      INDRA.CSI INDRA.SI-CSI FAZIA.Si-Si F
 # DETECTOR THICKNESSES
 INDRAFAZIA.E818.DetectorThicknessesFile: DetectorThicknessFiles.dat
 
-# IDENTIFICATION GRIDS
+# IDENTIFICATION GRIDS INDRA
 INDRAFAZIA.E818.IdentificationParameterFile.INDRA.CSI: IDGridsINDRA_CSI.dat
 INDRAFAZIA.E818.IdentificationParameterList.INDRA.SI-CSI: INDRA.SI-CSI.IdentificationFiles.dat
 INDRAFAZIA.E818.INDRA.SI-CSI.GridOrder:    ADC_TotLight,1.0*ADC_TotLight
-INDRAFAZIA.E818.IdentificationParameterFile.FAZIA.CsI: IDGridsFAZIA_CSI.dat
+
+# IDENTIFICATION GRIDS FAZIA
+INDRAFAZIA.E818.IdentificationParameterList.FAZIA.CsI: FAZIA.CsI.IdentificationFiles.dat
 
 # nominal geometry (85.43cm is distance to true target position, i.e. approx. 1 cm upstream of theoretical target position)
 INDRAFAZIA.E818.FAZIETO.DistanceZ:       85.43
