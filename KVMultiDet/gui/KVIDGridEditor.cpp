@@ -1732,7 +1732,25 @@ void KVIDGridEditor::SelectLinesByZ(const Char_t* ListOfZ)
 void KVIDGridEditor::SaveCurrentGrid()
 {
    if (!TheGrid) return;
+
    TString currentdir(gSystem->ExpandPathName("."));
+
+   TString fn = TheHisto->GetName();
+   fn += ".dat";
+
+   Int_t ret_code;
+   new TGMsgBox(
+      gClient->GetRoot(),
+      gClient->GetDefaultRoot(),
+      "KVIDGridEditor::SaveCurrentGrid", Form("Do you wat to save the grid here : %s/%s", currentdir.Data(), fn.Data()),
+      kMBIconExclamation, kMBYes | kMBNo, &ret_code
+   );
+
+   if (ret_code == kMBYes) {
+      TheGrid->WriteAsciiFile(Form("%s/%s", currentdir.Data(), fn.Data()));
+      return;
+   }
+
 
    static TString dir(gSystem->ExpandPathName("."));
    const char* filetypes[] = {
